@@ -9,368 +9,54 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-cormorant);
   --font-display: var(--font-playfair);
   --font-brand: var(--font-logo);
 }
 
+/* ================================
+   CUSTOM CURSOR
+   Hide native cursor on non-touch devices.
+   Restore on touch devices.
+   ================================ */
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
   cursor: none !important;
 }
 
-/* Ensure cursor is hidden on all elements */
-html, body, a, button, input, textarea, select {
-  cursor: none !important;
-}
-
-/* Restore cursor on touch devices */
 @media (hover: none) and (pointer: coarse) {
-  *, html, body, a, button, input, textarea, select {
+  * {
     cursor: auto !important;
   }
 }
 
-html, body {
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  background: #0a0a0a;
-  color: #ffffff;
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+/* ================================
+   BASE
+   ================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
 }
 
 /* ================================
-   MENU ANIMATION STRUCTURE
+   TYPOGRAPHY — kept in CSS because
+   they use custom font stacks that
+   are cleaner as reusable classes.
    ================================ */
 
-/* Menu Background - Soft cream, always behind */
-.menu-bg {
-  position: fixed;
-  inset: 0;
-  background: #f8f6f3;
-  z-index: 1;
-}
-
-/* Hero Wrapper - This animates size */
-.hero-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  overflow: hidden;
-  will-change: width, height, border-radius, top, left;
-  /* Starting state is fullscreen */
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  border-radius: 0;
-}
-
-/* Hero Content - Stays full size, gets clipped */
-.hero-content {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-  /* Never changes size - the illusion is clipping, not shrinking */
-}
-
-/* Menu Content - Fades in when open */
-.menu-content {
-  position: fixed;
-  inset: 0;
-  z-index: 3;
-  opacity: 0;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 120px 80px 60px;
-  overflow: visible;
-}
-
-.menu-content.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Menu Items Container */
-.menu-items-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: auto;
-  padding-top: 60px;
-}
-
-/* Individual Menu Item - Large navigation */
-.menu-nav-item {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 300;
-  color: rgba(10, 10, 10, 0.7);
-  text-decoration: none;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-block;
-  opacity: 0;
-}
-
-.menu-nav-item:hover {
-  color: rgba(10, 10, 10, 1);
-  letter-spacing: 0.02em;
-}
-
-/* Menu Footer */
-.menu-footer {
-  display: flex;
-  gap: 60px;
-  margin-top: auto;
-  padding-top: 40px;
-}
-
-.menu-footer-col {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.menu-footer-label {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 12px;
-  font-style: italic;
-  letter-spacing: 0.05em;
-  color: rgba(10, 10, 10, 0.4);
-  font-weight: 400;
-}
-
-.menu-footer-link {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 15px;
-  color: rgba(10, 10, 10, 0.6);
-  text-decoration: none;
-  transition: all 0.4s ease;
-  letter-spacing: 0.02em;
-}
-
-.menu-footer-link:hover {
-  color: rgba(10, 10, 10, 0.9);
-  letter-spacing: 0.04em;
-}
-
-.menu-footer-social {
-  display: flex;
-  gap: 20px;
-}
-
-/* ================================
-   MENU BUTTON - Frosted Glass Pill
-   ================================ */
-
-.menu-btn {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 100px;
-  padding: 12px 24px;
-  margin: 24px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.menu-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-/* Dark variant for when menu is open */
-.menu-btn-dark {
-  color: rgba(30, 30, 28, 0.9);
-  background: rgba(30, 30, 28, 0.08);
-  border-color: rgba(30, 30, 28, 0.2);
-}
-
-.menu-btn-dark:hover {
-  background: rgba(30, 30, 28, 0.15);
-  border-color: rgba(30, 30, 28, 0.35);
-}
-
-/* Hamburger Icon - Delicate lines */
-.menu-icon {
-  width: 18px;
-  height: 10px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.menu-icon span {
-  display: block;
-  width: 100%;
-  height: 1px;
-  background: currentColor;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: center;
-  opacity: 0.7;
-}
-
-.menu-icon.open span {
-  opacity: 1;
-}
-
-.menu-icon.open span:first-child {
-  transform: translateY(4.5px) rotate(45deg);
-}
-
-.menu-icon.open span:last-child {
-  transform: translateY(-4.5px) rotate(-45deg);
-}
-
-/* Logo */
-.logo-text {
+.logo {
   font-family: var(--font-logo), Georgia, serif;
   font-size: 28px;
-  font-weight: 400;
   font-style: italic;
   letter-spacing: -0.01em;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
 }
-
-/* Header Meta */
-.header-meta {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 14px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  display: flex;
-  align-items: center;
-}
-
-/* ================================
-   PROJECT LIST - Frosted Glass Pills
-   ================================ */
-
-.project-item {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  text-align: left;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 100px;
-  padding: 12px 24px;
-  margin: 4px 0;
-  cursor: pointer;
-  display: block;
-  width: fit-content;
-  transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-.project-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateX(4px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-.project-item.active {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateX(4px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
-}
-
-.project-item-all {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 100px;
-  padding: 12px 24px;
-  margin-top: 10px;
-  cursor: pointer;
-  text-align: left;
-  display: block;
-  width: fit-content;
-  transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-.project-item-all:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateX(4px);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-}
-
-/* ================================
-   VIDEO BACKGROUND
-   ================================ */
-
-.video-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
-
-/* ================================
-   PROJECT OVERLAY & SHOWCASE
-   ================================ */
-
-.project-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 35;
-  pointer-events: none;
-  opacity: 0;
-  will-change: opacity;
-}
-
-.project-overlay.active {
-  opacity: 1;
-}
-
-.project-showcase {
-  position: absolute;
-  z-index: 2;
-}
-
-.showcase-image {
-  border-radius: 12px;
-  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-}
-
-/* ================================
-   TYPOGRAPHY
-   ================================ */
 
 .headline {
   font-family: var(--font-cormorant), Georgia, serif;
@@ -380,73 +66,56 @@ html, body {
   letter-spacing: -0.02em;
 }
 
-.headline-accent {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-}
-
-.project-info {
-  position: absolute;
-  max-width: 280px;
-}
-
-.project-title {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1;
-}
-
-.project-description {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 18px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
-
-.project-tags {
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.company-description {
+.section-heading {
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 22px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
 }
 
 /* ================================
-   LOADING SPINNER - Gentle breath
+   PRELOADER
    ================================ */
 
-.loader {
-  width: 6px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 50%;
-  animation: breathe 3s ease-in-out infinite;
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  overflow: hidden;
+  will-change: transform, opacity;
+  transform-origin: center center;
 }
 
-@keyframes breathe {
-  0%, 100% {
-    opacity: 0.2;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
+.preloader-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preloader-mask {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  mix-blend-mode: multiply;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preloader-word {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(5rem, 18vw, 14rem);
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-align: center;
+  padding: 0 1rem;
 }
 
 /* ================================
