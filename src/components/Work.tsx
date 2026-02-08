@@ -57,8 +57,11 @@ export default function Work() {
     <section
       id="work"
       ref={sectionRef}
-      className="pt-28 pb-40 px-6 md:px-10 border-t border-black/[0.06]"
+      className="pt-28 pb-16 px-6 md:px-10 border-t border-black/[0.06]"
     >
+      <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(3rem,7vw,5rem)] uppercase tracking-tight max-w-[1400px] mx-auto mb-16">
+        What We've Built
+      </h2>
       <div className="max-w-[1400px] mx-auto flex gap-8 md:gap-12">
         {/* Left sidebar — category filters */}
         <div className="hidden md:block w-[200px] shrink-0 sticky top-[50vh] -translate-y-1/2 self-start mt-40">
@@ -114,28 +117,53 @@ export default function Work() {
 }
 
 function ProjectCard({ project }: { project: (typeof projects)[number] }) {
-  return (
-    <div className="group">
+  const content = (
+    <>
       <div className="relative w-full aspect-[3/4] overflow-hidden bg-black/[0.03]">
         <Image
           src={project.image}
-          alt={project.name}
+          alt={`${project.name} - ${project.description} | Web design project by Cloverfield Studio Vancouver BC`}
           fill
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+          className={`object-cover transition-all duration-700 ease-out ${
+            project.hoverImage
+              ? "group-hover:opacity-0"
+              : "group-hover:scale-[1.03]"
+          }`}
         />
+        {project.hoverImage && (
+          <Image
+            src={project.hoverImage}
+            alt={`${project.name} website preview - ${project.tags.join(", ")} project by Cloverfield Studio`}
+            fill
+            className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03]"
+          />
+        )}
       </div>
 
-      <div className="mt-4 border-t border-black/[0.08] pt-3">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-black/40 flex items-center gap-1.5">
+      <div className="mt-4 border-t border-black/25 pt-3">
+        <p className="text-[10px] uppercase tracking-[0.2em] text-black/60 flex items-center gap-1.5">
           <span className="inline-block">&#9654;</span>
           {project.tags.join("  ·  ")}
         </p>
-        <h3
-          className="mt-1.5 font-[family-name:var(--font-cormorant)] text-[clamp(1.1rem,2vw,1.5rem)] tracking-tight italic"
-        >
+        <h3 className="mt-1.5 font-[family-name:var(--font-outfit)] font-normal text-[clamp(1.1rem,2vw,1.5rem)] tracking-tight">
           {project.name}
         </h3>
       </div>
-    </div>
+    </>
   );
+
+  if (project.url) {
+    return (
+      <a
+        href={project.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group block cursor-view"
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <div className="group cursor-view">{content}</div>;
 }

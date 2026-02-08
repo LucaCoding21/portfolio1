@@ -94,6 +94,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 35%;
 }
 
 .preloader-svg {
@@ -125,3 +126,4 @@ body {
   background: rgba(0, 0, 0, 0.2);
   color: black;
 }
+

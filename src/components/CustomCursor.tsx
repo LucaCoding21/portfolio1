@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-type CursorState = "default" | "hover" | "play";
+type CursorState = "default" | "hover" | "play" | "view";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -11,6 +11,7 @@ export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const playRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<HTMLDivElement>(null);
   const [cursorState, setCursorState] = useState<CursorState>("default");
   const [isVisible, setIsVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -49,6 +50,15 @@ export default function CustomCursor() {
         playCursorX = mouseX;
         playCursorY = mouseY;
       }
+
+      // Safety check: verify cursor state matches what's under the mouse
+      const el = e.target as HTMLElement;
+      const overPlay = el.classList.contains("cursor-play") || !!el.closest(".cursor-play");
+      const overView = el.classList.contains("cursor-view") || !!el.closest(".cursor-view");
+
+      if (!overPlay && !overView) {
+        setCursorState((prev) => (prev === "play" || prev === "view" ? "default" : prev));
+      }
     };
 
     const animate = () => {
@@ -78,6 +88,15 @@ export default function CustomCursor() {
         return;
       }
 
+      // Check for view cursor (project cards)
+      if (
+        target.classList.contains("cursor-view") ||
+        target.closest(".cursor-view")
+      ) {
+        setCursorState("view");
+        return;
+      }
+
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
@@ -104,6 +123,23 @@ export default function CustomCursor() {
           relatedTarget &&
           (relatedTarget.classList.contains("cursor-play") ||
             relatedTarget.closest(".cursor-play"))
+        ) {
+          return;
+        }
+        setCursorState("default");
+        return;
+      }
+
+      // If leaving a cursor-view element
+      if (
+        target.classList.contains("cursor-view") ||
+        target.closest(".cursor-view")
+      ) {
+        // Check if moving to another cursor-view element
+        if (
+          relatedTarget &&
+          (relatedTarget.classList.contains("cursor-view") ||
+            relatedTarget.closest(".cursor-view"))
         ) {
           return;
         }
@@ -151,8 +187,10 @@ export default function CustomCursor() {
       if (!el) return;
       const overPlay =
         el.classList.contains("cursor-play") || !!el.closest(".cursor-play");
-      if (!overPlay) {
-        setCursorState((prev) => (prev === "play" ? "default" : prev));
+      const overView =
+        el.classList.contains("cursor-view") || !!el.closest(".cursor-view");
+      if (!overPlay && !overView) {
+        setCursorState((prev) => (prev === "play" || prev === "view" ? "default" : prev));
       }
     };
 
@@ -180,20 +218,29 @@ export default function CustomCursor() {
     const dot = dotRef.current;
     const ring = ringRef.current;
     const play = playRef.current;
-    if (!dot || !ring || !play || isTouchDevice) return;
+    const view = viewRef.current;
+    if (!dot || !ring || !play || !view || isTouchDevice) return;
 
     if (cursorState === "play") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(play, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+    } else if (cursorState === "view") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
     } else if (cursorState === "hover") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" });
       gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     } else {
       gsap.to(dot, { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     }
   }, [cursorState, isTouchDevice]);
 
@@ -288,6 +335,36 @@ export default function CustomCursor() {
             }}
           >
             Play Reel
+          </span>
+        </div>
+        <div
+          ref={viewRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 90,
+            height: 90,
+            background: "#ffffff",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#0a0a0a",
+            }}
+          >
+            View
           </span>
         </div>
       </div>

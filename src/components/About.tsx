@@ -162,9 +162,9 @@ export default function About({ ready }: AboutProps) {
         </h2>
         <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto">
           {[
-            "I\u2019m a designer and developer passionate about crafting thoughtful",
-            "digital experiences. I focus on clean design, smooth interactions, and",
-            "solving real problems for real people.",
+            "Based in Vancouver and Surrey, BC, we're a creative studio passionate",
+            "about crafting thoughtful digital experiences. We care deeply about our",
+            "clients, the process, and ensuring every result is nothing short of beautiful.",
           ].map((line, i) => (
             <div key={i} className="reveal-line overflow-hidden">
               <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
@@ -175,7 +175,7 @@ export default function About({ ready }: AboutProps) {
           <div className="mt-4" />
           {[
             "With experience across product design, brand identity, and full-stack",
-            "development, I help ambitious brands bring their vision to life \u2014 from",
+            "development, we help ambitious brands bring their vision to life from",
             "concept to launch.",
           ].map((line, i) => (
             <div key={`b-${i}`} className="reveal-line overflow-hidden">

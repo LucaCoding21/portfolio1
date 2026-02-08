@@ -7,9 +7,23 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Work from "@/components/Work";
 import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+
+  // Ensure page starts at top on refresh (no visible scroll)
+  useEffect(() => {
+    window.history.scrollRestoration = "manual";
+
+    // Scroll to top before unload so refresh starts at top
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
 
   // Lock scroll during loading, reset to top when done
   useEffect(() => {
@@ -35,6 +49,7 @@ export default function Home() {
         <About ready={!isLoading} />
         <Work />
         <Contact />
+        <Footer />
       </div>
     </div>
   );

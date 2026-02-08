@@ -38,20 +38,29 @@ const instrumentSerif = Instrument_Serif({
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
-  title: "Studio | Digital Experiences",
+  title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
   description:
-    "We craft digital experiences worth talking about. Product design, development, and brand strategy for innovative startups and reputable brands.",
+    "Cloverfield is a creative studio in Vancouver and Surrey, BC specializing in web design, development, and brand identity. We craft beautiful digital experiences for ambitious brands.",
   keywords: [
-    "design studio",
-    "digital agency",
-    "product design",
-    "web development",
-    "brand strategy",
+    "web design Vancouver",
+    "web development Surrey BC",
+    "creative studio Vancouver",
+    "digital agency Surrey",
+    "brand identity Vancouver",
+    "website design BC",
+    "product design Vancouver",
+    "web developer Surrey BC",
   ],
+  openGraph: {
+    title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
+    description: "Creative studio in Vancouver and Surrey, BC crafting beautiful digital experiences for ambitious brands.",
+    locale: "en_CA",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

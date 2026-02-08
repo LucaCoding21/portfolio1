@@ -41,16 +41,19 @@ export default function Hero({ ready }: HeroProps) {
 
   return (
     <section className="sticky top-0 h-screen w-full overflow-hidden -z-0">
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover"
-      >
-        <source src="/hero.mp4" type="video/mp4" />
-      </video>
-      <div ref={overlayRef} className="absolute inset-0 bg-black/8 opacity-0" />
+      <div className="fixed inset-0 overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: "center 35%" }}
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+        <div ref={overlayRef} className="absolute inset-0 bg-black/8 opacity-0" />
+      </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
         <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-tight opacity-0">built with care.</h1>
