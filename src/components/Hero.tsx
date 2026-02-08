@@ -8,20 +8,39 @@ interface HeroProps {
 }
 
 export default function Hero({ ready }: HeroProps) {
-  const contentRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const subtextRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
-    if (ready && contentRef.current) {
-      gsap.fromTo(
-        contentRef.current,
-        { opacity: 0, y: 60 },
-        { opacity: 1, y: 0, duration: 1.2, ease: "power3.out", delay: 0.3 }
-      );
-    }
+    if (!ready) return;
+
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+    tl.fromTo(
+      overlayRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.6 },
+      0
+    );
+
+    tl.fromTo(
+      headingRef.current,
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8 },
+      0
+    );
+
+    tl.fromTo(
+      subtextRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.7 },
+      0.15
+    );
   }, [ready]);
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="sticky top-0 h-screen w-full overflow-hidden -z-0">
       <video
         autoPlay
         muted
@@ -31,14 +50,11 @@ export default function Hero({ ready }: HeroProps) {
       >
         <source src="/hero.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 bg-black/30" />
+      <div ref={overlayRef} className="absolute inset-0 bg-black/8 opacity-0" />
 
-      <div
-        ref={contentRef}
-        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6 opacity-0"
-      >
-        <h1 className="headline">built with care</h1>
-        <p className="mt-6 text-lg text-white/70 max-w-md font-light tracking-wide">
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+        <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-tight opacity-0">built with care.</h1>
+        <p ref={subtextRef} className="mt-6 text-lg text-white/70 max-w-md font-medium tracking-wide opacity-0">
           Building digital products for ambitious brands since 2020.
         </p>
       </div>

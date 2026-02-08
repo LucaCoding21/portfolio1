@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
+type CursorState = "default" | "hover" | "play";
+
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
+  const playCursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const playRef = useRef<HTMLDivElement>(null);
+  const [cursorState, setCursorState] = useState<CursorState>("default");
   const [isVisible, setIsVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
@@ -24,12 +28,15 @@ export default function CustomCursor() {
     if (isTouchDevice) return;
 
     const cursor = cursorRef.current;
-    if (!cursor) return;
+    const playCursor = playCursorRef.current;
+    if (!cursor || !playCursor) return;
 
     let mouseX = 0;
     let mouseY = 0;
     let cursorX = 0;
     let cursorY = 0;
+    let playCursorX = 0;
+    let playCursorY = 0;
 
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
@@ -39,6 +46,8 @@ export default function CustomCursor() {
         setIsVisible(true);
         cursorX = mouseX;
         cursorY = mouseY;
+        playCursorX = mouseX;
+        playCursorY = mouseY;
       }
     };
 
@@ -46,14 +55,29 @@ export default function CustomCursor() {
       const ease = 0.35;
       cursorX += (mouseX - cursorX) * ease;
       cursorY += (mouseY - cursorY) * ease;
-
       cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0) translate(-50%, -50%)`;
+
+      // Play cursor follows a bit slower for a laggy/magnetic feel
+      const playEase = 0.18;
+      playCursorX += (mouseX - playCursorX) * playEase;
+      playCursorY += (mouseY - playCursorY) * playEase;
+      playCursor.style.transform = `translate3d(${playCursorX}px, ${playCursorY}px, 0) translate(-50%, -50%)`;
 
       requestAnimationFrame(animate);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+
+      // Check for play cursor (video reel)
+      if (
+        target.classList.contains("cursor-play") ||
+        target.closest(".cursor-play")
+      ) {
+        setCursorState("play");
+        return;
+      }
+
       if (
         target.tagName === "BUTTON" ||
         target.tagName === "A" ||
@@ -62,13 +86,30 @@ export default function CustomCursor() {
         target.classList.contains("hoverable") ||
         target.closest(".hoverable")
       ) {
-        setIsHovering(true);
+        setCursorState("hover");
       }
     };
 
     const handleMouseOut = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const relatedTarget = e.relatedTarget as HTMLElement | null;
+
+      // If leaving a cursor-play element
+      if (
+        target.classList.contains("cursor-play") ||
+        target.closest(".cursor-play")
+      ) {
+        // Check if moving to another cursor-play element
+        if (
+          relatedTarget &&
+          (relatedTarget.classList.contains("cursor-play") ||
+            relatedTarget.closest(".cursor-play"))
+        ) {
+          return;
+        }
+        setCursorState("default");
+        return;
+      }
 
       if (relatedTarget && (
         relatedTarget.tagName === "BUTTON" ||
@@ -89,16 +130,30 @@ export default function CustomCursor() {
         target.classList.contains("hoverable") ||
         target.closest(".hoverable")
       ) {
-        setIsHovering(false);
+        setCursorState("default");
       }
     };
 
     const handleMouseLeave = () => {
       gsap.to(cursor, { opacity: 0, duration: 0.2 });
+      gsap.to(playCursor, { opacity: 0, duration: 0.2 });
     };
 
     const handleMouseEnter = () => {
       gsap.to(cursor, { opacity: 1, duration: 0.2 });
+      gsap.to(playCursor, { opacity: 1, duration: 0.2 });
+    };
+
+    // When scrolling, the element can move away from under a stationary cursor
+    // without firing mouseout. Re-check what's under the cursor on scroll.
+    const handleScroll = () => {
+      const el = document.elementFromPoint(mouseX, mouseY);
+      if (!el) return;
+      const overPlay =
+        el.classList.contains("cursor-play") || !!el.closest(".cursor-play");
+      if (!overPlay) {
+        setCursorState((prev) => (prev === "play" ? "default" : prev));
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -106,6 +161,7 @@ export default function CustomCursor() {
     document.addEventListener("mouseout", handleMouseOut);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
+    window.addEventListener("scroll", handleScroll, true);
 
     animate();
 
@@ -115,6 +171,7 @@ export default function CustomCursor() {
       document.removeEventListener("mouseout", handleMouseOut);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [isTouchDevice, isVisible]);
 
@@ -122,85 +179,118 @@ export default function CustomCursor() {
   useEffect(() => {
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring || isTouchDevice) return;
+    const play = playRef.current;
+    if (!dot || !ring || !play || isTouchDevice) return;
 
-    if (isHovering) {
-      // Fade out dot, scale up ring
-      gsap.to(dot, {
-        scale: 0,
-        opacity: 0,
-        duration: 0.25,
-        ease: "power2.out",
-      });
-      gsap.to(ring, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.35,
-        ease: "power2.out",
-      });
+    if (cursorState === "play") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+    } else if (cursorState === "hover") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     } else {
-      // Fade in dot, scale down ring
-      gsap.to(dot, {
-        scale: 1,
-        opacity: 1,
-        duration: 0.25,
-        ease: "power2.out",
-      });
-      gsap.to(ring, {
-        scale: 0.3,
-        opacity: 0,
-        duration: 0.25,
-        ease: "power2.out",
-      });
+      gsap.to(dot, { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     }
-  }, [isHovering, isTouchDevice]);
+  }, [cursorState, isTouchDevice]);
 
   if (isTouchDevice) return null;
 
   return (
-    <div
-      ref={cursorRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        pointerEvents: "none",
-        zIndex: 9999,
-        willChange: "transform",
-        mixBlendMode: "difference",
-        opacity: isVisible ? 1 : 0,
-      }}
-    >
-      {/* Main dot */}
+    <>
+      {/* Default cursor — mix-blend-mode: difference */}
       <div
-        ref={dotRef}
+        ref={cursorRef}
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 18,
-          height: 18,
-          backgroundColor: "rgba(255, 255, 255, 0.9)",
-          borderRadius: "50%",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 99999,
+          willChange: "transform",
+          mixBlendMode: "difference",
+          opacity: isVisible ? 1 : 0,
         }}
-      />
-      {/* Expanding ring */}
+      >
+        {/* Main dot */}
+        <div
+          ref={dotRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 18,
+            height: 18,
+            backgroundColor: "rgba(255, 255, 255, 0.9)",
+            borderRadius: "50%",
+          }}
+        />
+        {/* Expanding ring */}
+        <div
+          ref={ringRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 60,
+            height: 60,
+            backgroundColor: "transparent",
+            border: "1.5px solid rgba(255, 255, 255, 0.9)",
+            borderRadius: "50%",
+            opacity: 0,
+          }}
+        />
+      </div>
+
+      {/* Play reel cursor — normal blend, own color */}
       <div
-        ref={ringRef}
+        ref={playCursorRef}
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%) scale(0.3)",
-          width: 60,
-          height: 60,
-          backgroundColor: "transparent",
-          border: "1.5px solid rgba(255, 255, 255, 0.9)",
-          borderRadius: "50%",
-          opacity: 0,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          pointerEvents: "none",
+          zIndex: 99999,
+          willChange: "transform",
+          opacity: isVisible ? 1 : 0,
         }}
-      />
-    </div>
+      >
+        <div
+          ref={playRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 110,
+            height: 110,
+            background: "#CDFF50",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#0a0a0a",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Play Reel
+          </span>
+        </div>
+      </div>
+    </>
   );
 }

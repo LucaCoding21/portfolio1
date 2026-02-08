@@ -4,6 +4,7 @@ import {
   Cormorant_Garamond,
   Playfair_Display,
   Instrument_Serif,
+  Outfit,
 } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
@@ -34,6 +35,12 @@ const instrumentSerif = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
+const outfit = Outfit({
+  variable: "--font-outfit",
+  subsets: ["latin"],
+  weight: ["700"],
+});
+
 export const metadata: Metadata = {
   title: "Studio | Digital Experiences",
   description:
@@ -55,7 +62,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${cormorant.variable} ${playfair.variable} ${instrumentSerif.variable} antialiased`}
+        className={`${geistSans.variable} ${cormorant.variable} ${playfair.variable} ${instrumentSerif.variable} ${outfit.variable} antialiased`}
       >
         <CustomCursor />
         {children}
