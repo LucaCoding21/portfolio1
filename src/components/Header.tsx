@@ -18,6 +18,7 @@ export default function Header() {
       // Hide header when scrolling down, show when scrolling up
       if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
         setHidden(true);
+        setMenuOpen(false);
       } else {
         setHidden(false);
       }
@@ -102,29 +103,41 @@ export default function Header() {
       </div>
 
       {/* Mobile dropdown */}
-      {menuOpen && (
-        <nav className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-white/95 backdrop-blur-xl border border-black/10 py-2 md:hidden">
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="block px-6 py-3.5 text-[15px] text-black/80 hover:text-black hover:bg-black/5 transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
-          <div className="px-4 pt-2 pb-3">
-            <a
-              href="#contact"
-              className="block w-full text-center px-5 py-3 rounded-full bg-black text-white text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Get Started
-            </a>
-          </div>
-        </nav>
-      )}
+      <nav
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-white/95 backdrop-blur-xl border border-black/10 py-2 md:hidden transition-all duration-300 ease-out origin-top ${
+          menuOpen
+            ? "opacity-100 scale-y-100 pointer-events-auto"
+            : "opacity-0 scale-y-[0.96] pointer-events-none"
+        }`}
+      >
+        {NAV_ITEMS.map((item, i) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className={`block px-6 py-3.5 text-[15px] font-[family-name:var(--font-outfit)] text-black/80 hover:text-black active:bg-black/5 transition-all duration-300 ${
+              menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+            }`}
+            style={{ transitionDelay: menuOpen ? `${75 + i * 50}ms` : "0ms" }}
+            onClick={() => setMenuOpen(false)}
+          >
+            {item.label}
+          </a>
+        ))}
+        <div
+          className={`px-4 pt-2 pb-3 transition-all duration-300 ${
+            menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+          }`}
+          style={{ transitionDelay: menuOpen ? `${75 + NAV_ITEMS.length * 50}ms` : "0ms" }}
+        >
+          <a
+            href="#contact"
+            className="block w-full text-center px-5 py-3 rounded-full bg-black text-white text-sm font-[family-name:var(--font-outfit)] font-medium active:scale-[0.98] transition-transform"
+            onClick={() => setMenuOpen(false)}
+          >
+            Get Started
+          </a>
+        </div>
+      </nav>
     </header>
   );
 }

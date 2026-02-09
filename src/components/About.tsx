@@ -29,6 +29,14 @@ export default function About({ ready }: AboutProps) {
     if (ready && sectionRef.current) {
       gsap.set(sectionRef.current, { opacity: 1 });
     }
+    // Set initial video scale per breakpoint
+    if (ready && videoInnerRef.current) {
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      gsap.set(videoInnerRef.current, {
+        scale: isDesktop ? 0.8 : 1,
+        borderRadius: isDesktop ? "24px" : "16px",
+      });
+    }
   }, [ready]);
 
   // Heading: smooth slide-in from the right with blur
@@ -83,35 +91,60 @@ export default function About({ ready }: AboutProps) {
     if (!ready || !videoWrapperRef.current || !videoInnerRef.current) return;
 
     const inner = videoInnerRef.current;
+    const mm = gsap.matchMedia();
 
-    const st1 = ScrollTrigger.create({
-      trigger: videoWrapperRef.current,
-      start: "top 95%",
-      end: "top 20%",
-      scrub: 0.6,
-      animation: gsap.fromTo(
-        inner,
-        { scale: 0.8, borderRadius: "24px" },
-        { scale: 0.7, borderRadius: "12px", ease: "none" }
-      ),
+    // Desktop: dramatic scale animation
+    mm.add("(min-width: 768px)", () => {
+      const st1 = ScrollTrigger.create({
+        trigger: videoWrapperRef.current,
+        start: "top 95%",
+        end: "top 20%",
+        scrub: 0.6,
+        animation: gsap.fromTo(
+          inner,
+          { scale: 0.8, borderRadius: "24px" },
+          { scale: 0.7, borderRadius: "12px", ease: "none" }
+        ),
+      });
+
+      const st2 = ScrollTrigger.create({
+        trigger: videoWrapperRef.current,
+        start: "bottom 80%",
+        end: "bottom 10%",
+        scrub: 0.6,
+        animation: gsap.fromTo(
+          inner,
+          { scale: 0.7, borderRadius: "12px" },
+          { scale: 0.55, borderRadius: "28px", ease: "none" }
+        ),
+      });
+
+      return () => {
+        st1.kill();
+        st2.kill();
+      };
     });
 
-    const st2 = ScrollTrigger.create({
-      trigger: videoWrapperRef.current,
-      start: "bottom 80%",
-      end: "bottom 10%",
-      scrub: 0.6,
-      animation: gsap.fromTo(
-        inner,
-        { scale: 0.7, borderRadius: "12px" },
-        { scale: 0.55, borderRadius: "28px", ease: "none" }
-      ),
+    // Mobile: subtler scale, stays larger
+    mm.add("(max-width: 767px)", () => {
+      gsap.set(inner, { scale: 1, borderRadius: "16px" });
+
+      const st = ScrollTrigger.create({
+        trigger: videoWrapperRef.current,
+        start: "top 90%",
+        end: "top 20%",
+        scrub: 0.6,
+        animation: gsap.fromTo(
+          inner,
+          { scale: 1, borderRadius: "16px" },
+          { scale: 0.95, borderRadius: "12px", ease: "none" }
+        ),
+      });
+
+      return () => st.kill();
     });
 
-    return () => {
-      st1.kill();
-      st2.kill();
-    };
+    return () => mm.revert();
   }, [ready]);
 
   const handleVideoClick = useCallback(() => {
@@ -151,16 +184,17 @@ export default function About({ ready }: AboutProps) {
     <section
       id="about"
       ref={sectionRef}
-      className="py-28 px-6 md:px-10 border-t border-black/[0.06] opacity-0"
+      className="py-20 md:py-28 px-6 md:px-10 border-t border-black/[0.06] opacity-0"
     >
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:gap-24 gap-8">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:gap-24 gap-6">
         <h2
           ref={headingRef}
-          className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(3rem,7vw,5rem)] uppercase tracking-tight md:w-2/5 shrink-0 opacity-0 will-change-[transform,opacity,filter]"
+          className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight md:w-2/5 shrink-0 opacity-0 will-change-[transform,opacity,filter]"
         >
           ABOUT US
         </h2>
-        <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto">
+        {/* Desktop: line-by-line reveal */}
+        <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto hidden md:block">
           {[
             "Based in Vancouver and Surrey, BC, we're a creative studio passionate",
             "about crafting thoughtful digital experiences. We care deeply about our",
@@ -185,20 +219,28 @@ export default function About({ ready }: AboutProps) {
             </div>
           ))}
         </div>
+        {/* Mobile: natural paragraph flow */}
+        <div className="md:hidden">
+          <p className="text-base leading-relaxed text-black/60 font-light">
+            Based in Vancouver and Surrey, BC, we&apos;re a creative studio passionate about crafting thoughtful digital experiences. We care deeply about our clients, the process, and ensuring every result is nothing short of beautiful.
+          </p>
+          <p className="text-base leading-relaxed text-black/60 font-light mt-4">
+            With experience across product design, brand identity, and full-stack development, we help ambitious brands bring their vision to life from concept to launch.
+          </p>
+        </div>
       </div>
 
       {/* Video reel */}
       <div
         ref={videoWrapperRef}
-        className="mt-20 max-w-7xl mx-auto"
+        className="mt-12 md:mt-20 max-w-7xl mx-auto"
       >
         <div
           ref={videoInnerRef}
           onClick={handleVideoClick}
           className="cursor-play relative overflow-hidden will-change-transform"
           style={{
-            borderRadius: "24px",
-            transform: "scale(0.8)",
+            borderRadius: "16px",
           }}
         >
           <video

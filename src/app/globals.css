@@ -114,6 +114,12 @@ body {
   letter-spacing: -0.03em;
 }
 
+@media (max-width: 767px) {
+  .preloader-svg-text {
+    font-size: 160px;
+  }
+}
+
 /* ================================
    UTILITIES
    ================================ */
@@ -125,5 +131,14 @@ body {
 ::selection {
   background: rgba(0, 0, 0, 0.2);
   color: black;
+}
+
+/* Hide scrollbar for horizontal scroll elements */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 

@@ -9,7 +9,6 @@ export default function Contact() {
     message: "",
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,14 +36,14 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="py-28 pb-20 px-6 md:px-10 border-t border-black/[0.06]"
+      className="relative z-10 py-20 md:py-28 pb-20 px-6 md:px-10 border-t border-black/[0.06]"
     >
       <div className="max-w-xl mx-auto">
-        <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2rem,5vw,3rem)] uppercase tracking-tight text-center mb-4">
+        <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.8rem,5vw,3rem)] uppercase tracking-tight text-center mb-3 md:mb-4">
           Get In Touch
         </h2>
-        <p className="text-center text-black/50 mb-12">
-          Have a project in mind? We'd love to hear from you.
+        <p className="text-center text-black/50 text-sm md:text-base mb-8 md:mb-12">
+          Have a project in mind? We&apos;d love to hear from you.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
@@ -108,19 +107,27 @@ export default function Contact() {
           <button
             type="submit"
             disabled={status === "sending"}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="mt-4 py-4 px-8 text-sm uppercase tracking-widest disabled:opacity-50"
-            style={{
-              background: isHovered && status !== "sending" ? "black" : "transparent",
-              color: isHovered && status !== "sending" ? "white" : "black",
-              border: "2px solid black",
-              transform: isHovered && status !== "sending" ? "scale(1.05)" : "scale(1)",
-              boxShadow: isHovered && status !== "sending" ? "0 10px 15px -3px rgb(0 0 0 / 0.1)" : "none",
-              transition: "all 0.3s ease-out",
-            }}
+            className="group relative mt-4 w-full md:w-auto py-4 px-8 text-sm uppercase tracking-widest disabled:opacity-50 bg-transparent text-black border-2 border-black overflow-hidden transition-colors duration-500 ease-out hover:text-white disabled:hover:text-black active:scale-[0.98] transition-transform"
           >
-            {status === "sending" ? "Sending..." : "Send Message"}
+            <span className="absolute inset-0 bg-black -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.77,0,0.175,1)] group-disabled:!-translate-x-full" />
+            <span className="relative flex items-center justify-center gap-2">
+              {status === "sending" ? (
+                "Sending..."
+              ) : (
+                <>
+                  Send Message
+                  <svg
+                    className="w-4 h-4 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 ease-out"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </>
+              )}
+            </span>
           </button>
 
           {status === "sent" && (

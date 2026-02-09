@@ -39,6 +39,26 @@ export default function CustomCursor() {
     let playCursorX = 0;
     let playCursorY = 0;
 
+    let currentState: CursorState = "default";
+
+    const resolveState = (el: HTMLElement): CursorState => {
+      if (el.classList.contains("cursor-play") || el.closest(".cursor-play")) return "play";
+      if (el.classList.contains("cursor-view") || el.closest(".cursor-view")) return "view";
+      if (
+        el.tagName === "BUTTON" || el.tagName === "A" ||
+        el.closest("button") || el.closest("a") ||
+        el.classList.contains("hoverable") || el.closest(".hoverable")
+      ) return "hover";
+      return "default";
+    };
+
+    const updateState = (next: CursorState) => {
+      if (next !== currentState) {
+        currentState = next;
+        setCursorState(next);
+      }
+    };
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
@@ -51,14 +71,7 @@ export default function CustomCursor() {
         playCursorY = mouseY;
       }
 
-      // Safety check: verify cursor state matches what's under the mouse
-      const el = e.target as HTMLElement;
-      const overPlay = el.classList.contains("cursor-play") || !!el.closest(".cursor-play");
-      const overView = el.classList.contains("cursor-view") || !!el.closest(".cursor-view");
-
-      if (!overPlay && !overView) {
-        setCursorState((prev) => (prev === "play" || prev === "view" ? "default" : prev));
-      }
+      updateState(resolveState(e.target as HTMLElement));
     };
 
     const animate = () => {
@@ -76,101 +89,8 @@ export default function CustomCursor() {
       requestAnimationFrame(animate);
     };
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-
-      // Check for play cursor (video reel)
-      if (
-        target.classList.contains("cursor-play") ||
-        target.closest(".cursor-play")
-      ) {
-        setCursorState("play");
-        return;
-      }
-
-      // Check for view cursor (project cards)
-      if (
-        target.classList.contains("cursor-view") ||
-        target.closest(".cursor-view")
-      ) {
-        setCursorState("view");
-        return;
-      }
-
-      if (
-        target.tagName === "BUTTON" ||
-        target.tagName === "A" ||
-        target.closest("button") ||
-        target.closest("a") ||
-        target.classList.contains("hoverable") ||
-        target.closest(".hoverable")
-      ) {
-        setCursorState("hover");
-      }
-    };
-
-    const handleMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const relatedTarget = e.relatedTarget as HTMLElement | null;
-
-      // If leaving a cursor-play element
-      if (
-        target.classList.contains("cursor-play") ||
-        target.closest(".cursor-play")
-      ) {
-        // Check if moving to another cursor-play element
-        if (
-          relatedTarget &&
-          (relatedTarget.classList.contains("cursor-play") ||
-            relatedTarget.closest(".cursor-play"))
-        ) {
-          return;
-        }
-        setCursorState("default");
-        return;
-      }
-
-      // If leaving a cursor-view element
-      if (
-        target.classList.contains("cursor-view") ||
-        target.closest(".cursor-view")
-      ) {
-        // Check if moving to another cursor-view element
-        if (
-          relatedTarget &&
-          (relatedTarget.classList.contains("cursor-view") ||
-            relatedTarget.closest(".cursor-view"))
-        ) {
-          return;
-        }
-        setCursorState("default");
-        return;
-      }
-
-      if (relatedTarget && (
-        relatedTarget.tagName === "BUTTON" ||
-        relatedTarget.tagName === "A" ||
-        relatedTarget.closest("button") ||
-        relatedTarget.closest("a") ||
-        relatedTarget.classList.contains("hoverable") ||
-        relatedTarget.closest(".hoverable")
-      )) {
-        return;
-      }
-
-      if (
-        target.tagName === "BUTTON" ||
-        target.tagName === "A" ||
-        target.closest("button") ||
-        target.closest("a") ||
-        target.classList.contains("hoverable") ||
-        target.closest(".hoverable")
-      ) {
-        setCursorState("default");
-      }
-    };
-
     const handleMouseLeave = () => {
+      updateState("default");
       gsap.to(cursor, { opacity: 0, duration: 0.2 });
       gsap.to(playCursor, { opacity: 0, duration: 0.2 });
     };
@@ -180,23 +100,12 @@ export default function CustomCursor() {
       gsap.to(playCursor, { opacity: 1, duration: 0.2 });
     };
 
-    // When scrolling, the element can move away from under a stationary cursor
-    // without firing mouseout. Re-check what's under the cursor on scroll.
     const handleScroll = () => {
       const el = document.elementFromPoint(mouseX, mouseY);
-      if (!el) return;
-      const overPlay =
-        el.classList.contains("cursor-play") || !!el.closest(".cursor-play");
-      const overView =
-        el.classList.contains("cursor-view") || !!el.closest(".cursor-view");
-      if (!overPlay && !overView) {
-        setCursorState((prev) => (prev === "play" || prev === "view" ? "default" : prev));
-      }
+      if (el) updateState(resolveState(el as HTMLElement));
     };
 
     window.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseover", handleMouseOver);
-    document.addEventListener("mouseout", handleMouseOut);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
     window.addEventListener("scroll", handleScroll, true);
@@ -205,8 +114,6 @@ export default function CustomCursor() {
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseover", handleMouseOver);
-      document.removeEventListener("mouseout", handleMouseOut);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
       window.removeEventListener("scroll", handleScroll, true);

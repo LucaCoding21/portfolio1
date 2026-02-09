@@ -1,44 +1,55 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 
 export default function Footer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollY, setScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        // Calculate how far into the viewport the footer is
-        if (rect.top < windowHeight && rect.bottom > 0) {
-          const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
-          setScrollY(progress);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
-
-    return () => window.removeEventListener("scroll", handleScroll);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
+
+  const handleScroll = useCallback(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      if (rect.top < windowHeight && rect.bottom > 0) {
+        const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
+        setScrollY(progress);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
+
+  // Reduce parallax intensity on mobile
+  const backSpeed = isMobile ? -15 : -40;
+  const midSpeed = isMobile ? -60 : -200;
+  const frontSpeed = isMobile ? -100 : -350;
 
   return (
     <footer
       ref={containerRef}
-      className="relative w-full h-[60vh] md:h-[80vh] overflow-hidden -mt-40"
+      className="relative z-0 w-full h-[50vh] md:h-[80vh] overflow-hidden -mt-20 md:-mt-40"
     >
       {/* Back layer - moves slower */}
       <div
         className="absolute w-full"
         style={{
-          top: "-100px",
-          bottom: "-150px",
-          transform: `translateY(${scrollY * -40}px)`,
+          top: isMobile ? "-40px" : "-100px",
+          bottom: isMobile ? "-60px" : "-150px",
+          transform: `translateY(${scrollY * backSpeed}px)`,
         }}
       >
         <Image
@@ -54,11 +65,11 @@ export default function Footer() {
       <div
         className="absolute inset-0 flex items-start justify-center z-10 pt-[10%]"
         style={{
-          transform: `translateY(${scrollY * -200}px)`,
+          transform: `translateY(${scrollY * midSpeed}px)`,
         }}
       >
         <h2
-          className="text-[24vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tight"
+          className="text-[13vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
           style={{
             fontFamily: "var(--font-outfit)",
             fontWeight: 800,
@@ -73,9 +84,9 @@ export default function Footer() {
       <div
         className="absolute w-full z-20 pointer-events-none"
         style={{
-          top: "100px",
-          bottom: "-160px",
-          transform: `translateY(${scrollY * -350}px)`,
+          top: isMobile ? "30px" : "100px",
+          bottom: isMobile ? "-60px" : "-160px",
+          transform: `translateY(${scrollY * frontSpeed}px)`,
         }}
       >
         <Image

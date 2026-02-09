@@ -56,9 +56,9 @@ export default function Hero({ ready }: HeroProps) {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(3rem,10vw,7rem)] leading-[0.9] tracking-tight opacity-0">built with care.</h1>
-        <p ref={subtextRef} className="mt-6 text-lg text-white/70 max-w-md font-medium tracking-wide opacity-0">
-          Building digital products for ambitious brands since 2020.
+        <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(2.5rem,10vw,7rem)] leading-[0.9] tracking-tight opacity-0">built with care.</h1>
+        <p ref={subtextRef} className="mt-4 md:mt-6 text-base md:text-lg text-white/70 max-w-sm md:max-w-md font-medium tracking-wide opacity-0">
+          Web design that feels like you, not everyone else.
         </p>
       </div>
     </section>

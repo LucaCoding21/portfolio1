@@ -43,10 +43,9 @@ export default function LoadingScreen({
     const assets = [
       "/hero.mp4",
       "/portfolio-prev2.mp4",
-      "/njagih2.jpg",
-      "/njagih studios.png",
-      "/ace.png",
-      "/Clover Studio.png",
+      "/Njagih/njagih studios.png",
+      "/ACE/ace.png",
+      "/clover/Clover Studio.png",
       "/Sophie.png",
     ];
 
