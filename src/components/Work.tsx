@@ -146,11 +146,18 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
   const content = (
     <>
       <div className="relative w-full aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-black/[0.03]">
+        {/* Mobile: show hoverImage directly if available, Desktop: show cover with hover swap */}
+        <Image
+          src={project.hoverImage || project.image}
+          alt={`${project.name} - ${project.description} | Web design project by Cloverfield Studio Vancouver BC`}
+          fill
+          className="object-cover md:hidden"
+        />
         <Image
           src={project.image}
           alt={`${project.name} - ${project.description} | Web design project by Cloverfield Studio Vancouver BC`}
           fill
-          className={`object-cover transition-all duration-700 ease-out ${
+          className={`object-cover transition-all duration-700 ease-out hidden md:block ${
             project.hoverImage
               ? "group-hover:opacity-0"
               : "group-hover:scale-[1.03]"
@@ -161,7 +168,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
             src={project.hoverImage}
             alt={`${project.name} website preview - ${project.tags.join(", ")} project by Cloverfield Studio`}
             fill
-            className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03]"
+            className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03] hidden md:block"
           />
         )}
       </div>
