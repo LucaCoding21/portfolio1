@@ -41,7 +41,7 @@ export const projects: Project[] = [
     id: 4,
     name: "ACE",
     description: "Reimagining digital experiences for tomorrow.",
-    tags: ["Software"],
+    tags: ["Photography"],
     image: "/ACE/ace-cover.jpg",
     hoverImage: "/ACE/ace.webp",
     url: "https://acesuasola.com/",
