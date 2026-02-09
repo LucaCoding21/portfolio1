@@ -60,6 +60,20 @@ export const metadata: Metadata = {
     description: "Creative studio in Vancouver and Surrey, BC crafting beautiful digital experiences for ambitious brands.",
     locale: "en_CA",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Cloverfield Studio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
+    description: "Creative studio in Vancouver and Surrey, BC crafting beautiful digital experiences for ambitious brands.",
+    images: ["/og-image.jpeg"],
   },
 };
 
