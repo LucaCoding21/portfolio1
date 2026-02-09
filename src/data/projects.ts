@@ -16,7 +16,7 @@ export const projects: Project[] = [
       "Crafting visual stories for artists and creatives through bold photography.",
     tags: ["Photography"],
     image: "/Njagih/njagih-cover.jpg",
-    hoverImage: "/Njagih/njagih studios.png",
+    hoverImage: "/Njagih/njagih studios.webp",
     url: "https://njagihstudios.com/",
   },
   {
@@ -25,7 +25,7 @@ export const projects: Project[] = [
     description: "Designing seamless fintech solutions.",
     tags: ["Realtors"],
     image: "/sophia/sophia-cover2.jpg",
-    hoverImage: "/sophia/sophia-cover.png",
+    hoverImage: "/sophia/sophia-cover.webp",
     url: "https://realtor-mock.vercel.app/",
   },
   {
@@ -34,7 +34,7 @@ export const projects: Project[] = [
     description: "Building intelligent interfaces that inspire.",
     tags: ["Realtors"],
     image: "/clover/clover-cover.jpg",
-    hoverImage: "/clover/cloverspace.png",
+    hoverImage: "/clover/cloverspace.webp",
     url: "https://cloverspace.studio/",
   },
   {
@@ -43,7 +43,7 @@ export const projects: Project[] = [
     description: "Reimagining digital experiences for tomorrow.",
     tags: ["Software"],
     image: "/ACE/ace-cover.jpg",
-    hoverImage: "/ACE/ace.png",
+    hoverImage: "/ACE/ace.webp",
     url: "https://acesuasola.com/",
   },
   {
@@ -61,7 +61,7 @@ export const projects: Project[] = [
     description: "Modern real estate solutions for property professionals.",
     tags: ["Realtors"],
     image: "/sophia/sophia-cover1.jpg",
-    hoverImage: "/rivera.png",
+    hoverImage: "/rivera.webp",
     url: "https://realtor-mock2.vercel.app/",
   },
 ];

@@ -43,10 +43,10 @@ export default function LoadingScreen({
     const assets = [
       "/hero.mp4",
       "/portfolio-prev2.mp4",
-      "/Njagih/njagih studios.png",
-      "/ACE/ace.png",
-      "/clover/Clover Studio.png",
-      "/Sophie.png",
+      "/Njagih/njagih studios.webp",
+      "/ACE/ace.webp",
+      "/clover/Clover Studio.webp",
+      "/Sophie.webp",
     ];
 
     const preloadAsset = (src: string): Promise<void> => {

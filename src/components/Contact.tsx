@@ -14,9 +14,15 @@ export default function Contact() {
     e.preventDefault();
     setStatus("sending");
 
-    // TODO: Replace with your form handling logic (e.g., API route, Formspree, etc.)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error("Failed to send");
+
       setStatus("sent");
       setFormData({ name: "", email: "", message: "" });
     } catch {

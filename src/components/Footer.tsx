@@ -53,7 +53,7 @@ export default function Footer() {
         }}
       >
         <Image
-          src="/footer/BackFooter.png"
+          src="/footer/BackFooter.webp"
           alt="Cloverfield Studio Vancouver BC creative agency background landscape"
           fill
           className="object-cover object-center"
@@ -90,7 +90,7 @@ export default function Footer() {
         }}
       >
         <Image
-          src="/footer/FrontFooter.png"
+          src="/footer/FrontFooter.webp"
           alt="Cloverfield Studio footer grass landscape design element"
           fill
           className="object-cover object-bottom"
