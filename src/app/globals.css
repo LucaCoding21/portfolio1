@@ -98,7 +98,6 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center 35%;
-  background: #1a1a1a;
 }
 
 .preloader-svg {
@@ -118,11 +117,6 @@ body {
   letter-spacing: -0.03em;
 }
 
-@media (max-width: 767px) {
-  .preloader-svg-text {
-    font-size: 160px;
-  }
-}
 
 /* ================================
    UTILITIES
