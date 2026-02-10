@@ -184,7 +184,7 @@ export default function About({ ready }: AboutProps) {
     <section
       id="about"
       ref={sectionRef}
-      className="py-20 md:py-28 px-6 md:px-10 border-t border-black/[0.06] opacity-0"
+      className="py-20 md:py-28 px-6 md:px-10 border-t border-black/[0.06] opacity-0 overflow-x-hidden"
     >
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:gap-24 gap-6">
         <h2

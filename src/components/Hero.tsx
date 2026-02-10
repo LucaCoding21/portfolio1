@@ -41,7 +41,7 @@ export default function Hero({ ready }: HeroProps) {
 
   return (
     <section className="sticky top-0 h-screen w-full overflow-hidden -z-0">
-      <div className="fixed inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden">
         <video
           autoPlay
           muted
