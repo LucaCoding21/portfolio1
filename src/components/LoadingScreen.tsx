@@ -81,15 +81,20 @@ export default function LoadingScreen({
     return () => clearTimeout(minTimer);
   }, []);
 
-  // Cycle through words
+  // Cycle through words — loop until exit conditions are met
+  const firstCycleRef = useRef(true);
+
   useEffect(() => {
     if (index === words.length - 1) {
       wordsCompleteRef.current = true;
-      return;
+      firstCycleRef.current = false;
+      // Loop back to keep rotating while waiting for assets
+      const timeout = setTimeout(() => setIndex(0), 150);
+      return () => clearTimeout(timeout);
     }
     const timeout = setTimeout(
       () => setIndex(index + 1),
-      index === 0 ? 1000 : 150
+      index === 0 && firstCycleRef.current ? 1000 : 150
     );
     return () => clearTimeout(timeout);
   }, [index]);

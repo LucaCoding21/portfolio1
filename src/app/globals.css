@@ -88,6 +88,7 @@ body {
   overflow: hidden;
   will-change: transform, opacity;
   transform-origin: center center;
+  touch-action: none;
 }
 
 .preloader-video {
