@@ -43,9 +43,6 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  icons: {
-    icon: "/favicon.ico",
-  },
   title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
   description:
     "Cloverfield is a creative studio in Vancouver and Surrey, BC specializing in web design, development, and brand identity. We craft beautiful digital experiences for ambitious brands.",
