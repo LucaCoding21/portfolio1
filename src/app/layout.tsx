@@ -6,6 +6,7 @@ import {
   Instrument_Serif,
   Outfit,
 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -87,6 +88,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0HNWS9W1ZE"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-0HNWS9W1ZE');
+          `}
+        </Script>
+      </head>
       <body
         className={`${geistSans.variable} ${cormorant.variable} ${playfair.variable} ${instrumentSerif.variable} ${outfit.variable} antialiased`}
       >
