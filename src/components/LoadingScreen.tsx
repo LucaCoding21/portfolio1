@@ -58,6 +58,9 @@ export default function LoadingScreen({
           video.onerror = () => resolve();
           video.src = src;
           video.load();
+          // Mobile browsers may never fire oncanplaythrough for
+          // programmatic videos — don't let preloading hang forever
+          setTimeout(() => resolve(), 3000);
         } else {
           const img = new window.Image();
           img.onload = () => resolve();
