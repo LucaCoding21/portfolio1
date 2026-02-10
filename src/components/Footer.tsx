@@ -63,13 +63,13 @@ export default function Footer() {
 
       {/* Middle layer - Title */}
       <div
-        className="absolute inset-0 flex items-start justify-center z-10 pt-[10%]"
+        className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[40%] md:pt-[10%]"
         style={{
           transform: `translateY(${scrollY * midSpeed}px)`,
         }}
       >
         <h2
-          className="text-[13vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
+          className="text-[22vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
           style={{
             fontFamily: "var(--font-outfit)",
             fontWeight: 800,
