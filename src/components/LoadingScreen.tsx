@@ -83,20 +83,23 @@ export default function LoadingScreen({
     return () => clearTimeout(minTimer);
   }, []);
 
-  // Cycle through words — loop until exit conditions are met
+  // Cycle through words — desktop stops on last "Hello", mobile loops
   useEffect(() => {
     if (index === words.length - 1) {
       wordsCompleteRef.current = true;
       firstCycleRef.current = false;
-      const timeout = setTimeout(() => setIndex(0), 150);
-      return () => clearTimeout(timeout);
+      if (isMobile) {
+        const timeout = setTimeout(() => setIndex(0), 150);
+        return () => clearTimeout(timeout);
+      }
+      return;
     }
     const timeout = setTimeout(
       () => setIndex(index + 1),
       index === 0 && firstCycleRef.current ? 1000 : 150
     );
     return () => clearTimeout(timeout);
-  }, [index]);
+  }, [index, isMobile]);
 
   // Fade in text on mount
   useEffect(() => {
