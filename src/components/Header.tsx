@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { NAV_ITEMS } from "@/data/projects";
+import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,17 +34,19 @@ export default function Header() {
   return (
     <header className={`fixed left-0 right-0 z-50 flex justify-center px-4 py-4 transition-all duration-300 ${hidden ? "-top-24" : "top-0"}`}>
       <div
-        className={`flex items-center justify-between w-full max-w-5xl px-8 py-4 rounded-full transition-all duration-500 ${
-          scrolled
-            ? "bg-white/70 backdrop-blur-xl border border-black/[0.08] shadow-lg shadow-black/[0.03]"
-            : "bg-white/10 backdrop-blur-md border border-white/20"
+        className={`relative z-50 flex items-center justify-between w-full max-w-5xl px-8 py-4 rounded-full transition-all duration-500 ${
+          menuOpen
+            ? "bg-transparent border border-transparent"
+            : scrolled
+              ? "bg-white/70 backdrop-blur-xl border border-black/[0.08] shadow-lg shadow-black/[0.03]"
+              : "bg-white/10 backdrop-blur-md border border-white/20"
         }`}
       >
         {/* Logo */}
         <a
           href="/"
           className={`font-[family-name:var(--font-outfit)] font-semibold text-2xl tracking-tight transition-colors duration-500 ${
-            scrolled ? "text-black/90" : "text-white"
+            menuOpen ? "text-black/90" : scrolled ? "text-black/90" : "text-white"
           }`}
         >
           cloverstudio
@@ -80,64 +83,30 @@ export default function Header() {
 
         {/* Hamburger (mobile) */}
         <button
-          className="relative md:hidden flex flex-col justify-center gap-[5px] w-7 h-7 bg-transparent border-none"
+          className="relative z-50 md:hidden flex flex-col justify-center gap-[5px] w-7 h-7 bg-transparent border-none"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 ${
-              scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </button>
       </div>
 
-      {/* Mobile dropdown */}
-      <nav
-        className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[calc(100%-2rem)] max-w-4xl rounded-2xl bg-white/95 backdrop-blur-xl border border-black/10 py-2 md:hidden transition-all duration-300 ease-out origin-top ${
-          menuOpen
-            ? "opacity-100 scale-y-100 pointer-events-auto"
-            : "opacity-0 scale-y-[0.96] pointer-events-none"
-        }`}
-      >
-        {NAV_ITEMS.map((item, i) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className={`block px-6 py-3.5 text-[15px] font-[family-name:var(--font-outfit)] text-black/80 hover:text-black active:bg-black/5 transition-all duration-300 ${
-              menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-            }`}
-            style={{ transitionDelay: menuOpen ? `${75 + i * 50}ms` : "0ms" }}
-            onClick={() => setMenuOpen(false)}
-          >
-            {item.label}
-          </a>
-        ))}
-        <div
-          className={`px-4 pt-2 pb-3 transition-all duration-300 ${
-            menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-          }`}
-          style={{ transitionDelay: menuOpen ? `${75 + NAV_ITEMS.length * 50}ms` : "0ms" }}
-        >
-          <a
-            href="#contact"
-            className="block w-full text-center px-5 py-3 rounded-full bg-black text-white text-sm font-[family-name:var(--font-outfit)] font-medium active:scale-[0.98] transition-transform"
-            onClick={() => setMenuOpen(false)}
-          >
-            Get Started
-          </a>
-        </div>
-      </nav>
+      {/* Full-page mobile menu */}
+      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </header>
   );
 }
