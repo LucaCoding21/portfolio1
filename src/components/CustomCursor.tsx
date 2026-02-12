@@ -86,6 +86,10 @@ export default function CustomCursor() {
       playCursorY += (mouseY - playCursorY) * playEase;
       playCursor.style.transform = `translate3d(${playCursorX}px, ${playCursorY}px, 0) translate(-50%, -50%)`;
 
+      // Check element under cursor every frame to catch momentum scroll
+      const el = document.elementFromPoint(mouseX, mouseY);
+      if (el) updateState(resolveState(el as HTMLElement));
+
       requestAnimationFrame(animate);
     };
 
@@ -100,15 +104,9 @@ export default function CustomCursor() {
       gsap.to(playCursor, { opacity: 1, duration: 0.2 });
     };
 
-    const handleScroll = () => {
-      const el = document.elementFromPoint(mouseX, mouseY);
-      if (el) updateState(resolveState(el as HTMLElement));
-    };
-
     window.addEventListener("mousemove", handleMouseMove);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
-    window.addEventListener("scroll", handleScroll, true);
 
     animate();
 
@@ -116,7 +114,6 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", handleMouseMove);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
-      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [isTouchDevice, isVisible]);
 
@@ -127,6 +124,9 @@ export default function CustomCursor() {
     const play = playRef.current;
     const view = viewRef.current;
     if (!dot || !ring || !play || !view || isTouchDevice) return;
+
+    // Kill any in-flight tweens so a longer "show" can't outlast a shorter "hide"
+    gsap.killTweensOf([dot, ring, play, view]);
 
     if (cursorState === "play") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
