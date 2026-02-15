@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await resend.emails.send({
     from: "Cloverfield Studio <hello@cloverfield.studio>",
-    to: ["nguyen.william0121@gmail.com"],
+    to: ["events@southboundsips.com", "nguyen.william0121@gmail.com"],
     subject: `South Bound Sips — New Inquiry from ${email}`,
     replyTo: email,
     text: `New inquiry from the South Bound Sips coming soon page.\n\nEmail: ${email}\n\nThis person is interested in booking or learning more about South Bound Sips.`,

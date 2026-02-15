@@ -318,7 +318,14 @@ export default function CountdownPage() {
                   marginBottom: "clamp(12px, 2vh, 18px)",
                 }}
               >
-                Have a question or want to book? Drop your email below.
+                Have a question or want to book? Drop your email below or
+                email{" "}
+                <a
+                  href="mailto:events@southboundsips.com"
+                  style={{ color: "#D4A574", textDecoration: "underline" }}
+                >
+                  events@southboundsips.com
+                </a>
               </p>
               <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
                 <input
