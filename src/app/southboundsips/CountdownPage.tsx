@@ -62,6 +62,7 @@ export default function CountdownPage() {
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
         @keyframes sbs-fadeUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
@@ -92,7 +93,7 @@ export default function CountdownPage() {
       `}</style>
 
       <div
-        className="relative h-screen flex flex-col items-center justify-center px-6 overflow-hidden"
+        className="relative h-screen flex flex-col items-center justify-center pt-16 sm:pt-20 px-6 overflow-hidden"
         style={{ background: "#c9e5d6" }}
       >
         {/* ── Ambient orbs ── */}
@@ -149,6 +150,40 @@ export default function CountdownPage() {
           }}
         />
 
+        {/* ── Top Design ── */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[45%] z-10">
+          <Image
+            src="/southbound/top-design.png"
+            alt=""
+            width={1500}
+            height={750}
+            className="w-[90vw] sm:w-[55vw] md:w-[50vw] lg:w-[45vw] h-auto max-w-none"
+            priority
+          />
+        </div>
+        {/* ── Top Design Left ── */}
+        <div className="absolute top-0 left-[15%] -translate-x-1/2 -translate-y-[45%] z-9">
+          <Image
+            src="/southbound/top-design.png"
+            alt=""
+            width={800}
+            height={400}
+            className="w-[70vw] sm:w-[55vw] md:w-[50vw] lg:w-[45vw] h-auto"
+            priority
+          />
+        </div>
+        {/* ── Top Design Right ── */}
+        <div className="absolute top-0 right-[15%] translate-x-1/2 -translate-y-[45%] z-9">
+          <Image
+            src="/southbound/top-design.png"
+            alt=""
+            width={800}
+            height={400}
+            className="w-[70vw] sm:w-[55vw] md:w-[50vw] lg:w-[45vw] h-auto"
+            priority
+          />
+        </div>
+
         {/* ── Content ── */}
         <div className="relative z-10 flex flex-col items-center w-full">
           {/* Logo */}
@@ -158,7 +193,7 @@ export default function CountdownPage() {
               alt="South Bound Sips — Artisan Sodas & Traveling Bar"
               width={200}
               height={200}
-              className="w-[120px] sm:w-[150px] h-auto"
+              className="w-[150px] sm:w-[180px] h-auto"
               style={{ filter: "drop-shadow(0 4px 20px rgba(0,0,0,0.08))" }}
               priority
             />
@@ -168,12 +203,12 @@ export default function CountdownPage() {
           <h1
             className="sbs-s2 text-center"
             style={{
-              fontFamily: "var(--font-outfit), sans-serif",
-              fontSize: "clamp(0.65rem, 1.8vw, 0.82rem)",
+              fontFamily: "'Ephesis', cursive",
+              fontSize: "clamp(2rem, 4vw, 2.2rem)",
               color: "#de7f34",
-              fontWeight: 500,
-              letterSpacing: "0.3em",
-              textTransform: "uppercase",
+              fontWeight: 700,
+              letterSpacing: "0.05em",
+              textTransform: "none",
               marginBottom: "clamp(14px, 2.5vh, 24px)",
             }}
           >
@@ -189,8 +224,8 @@ export default function CountdownPage() {
               <div key={i} className="flex items-baseline">
                 <span
                   style={{
-                    fontFamily: "var(--font-outfit), sans-serif",
-                    fontSize: "clamp(2.4rem, 8vw, 4.5rem)",
+                    fontFamily: "Futura, 'Futura PT', 'Century Gothic', sans-serif",
+                    fontSize: "clamp(3.2rem, 8vw, 4.5rem)",
                     color: "#2f4e7e",
                     fontWeight: 200,
                     lineHeight: 1,
@@ -203,7 +238,7 @@ export default function CountdownPage() {
                   <span
                     className="mx-1 sm:mx-2"
                     style={{
-                      fontFamily: "var(--font-outfit), sans-serif",
+                      fontFamily: "Futura, 'Futura PT', 'Century Gothic', sans-serif",
                       fontSize: "clamp(1.4rem, 4vw, 2.5rem)",
                       color: "rgba(47,78,126,0.2)",
                       fontWeight: 200,
@@ -227,9 +262,9 @@ export default function CountdownPage() {
                 key={label}
                 style={{
                   fontFamily: "var(--font-outfit), sans-serif",
-                  fontSize: "0.55rem",
-                  color: "rgba(47,78,126,0.4)",
-                  fontWeight: 500,
+                  fontSize: "0.7rem",
+                  color: "rgba(47,78,126,0.7)",
+                  fontWeight: 600,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
                 }}
@@ -242,7 +277,7 @@ export default function CountdownPage() {
           {/* Divider */}
           <div
             className="sbs-s4 flex items-center gap-3"
-            style={{ marginBottom: "clamp(16px, 2.5vh, 28px)" }}
+            style={{ marginBottom: "clamp(32px, 5vh, 50px)" }}
           >
             <div
               style={{
@@ -275,10 +310,10 @@ export default function CountdownPage() {
             <div className="sbs-s4 w-full max-w-[320px] text-center mx-auto">
               <p
                 style={{
-                  fontFamily: "var(--font-cormorant), serif",
+                  fontFamily: "var(--font-outfit), sans-serif",
                   fontSize: "clamp(0.95rem, 2.5vw, 1.15rem)",
                   color: "rgba(47,78,126,0.55)",
-                  fontStyle: "italic",
+                  fontStyle: "normal",
                   lineHeight: 1.5,
                   marginBottom: "clamp(12px, 2vh, 18px)",
                 }}
