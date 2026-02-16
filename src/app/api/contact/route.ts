@@ -25,5 +25,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Fire-and-forget acknowledgment email to the submitter
+  resend.emails.send({
+    from: "Cloverfield Studio <hello@cloverfield.studio>",
+    to: email,
+    subject: "Thanks for reaching out!",
+    text: `Hi ${name},\n\nThanks for reaching out! I've received your message and will get back to you as soon as I can.\n\n— William`,
+  }).catch(() => {});
+
   return NextResponse.json({ success: true, id: data?.id });
 }
