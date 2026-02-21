@@ -29,9 +29,16 @@ export default function Work() {
     return projects.filter((p) => p.tags.includes(activeFilter));
   }, [activeFilter]);
 
-  // Split into two columns
-  const leftProjects = filtered.filter((_, i) => i % 2 === 0);
-  const rightProjects = filtered.filter((_, i) => i % 2 === 1);
+  // Split into two columns — respect explicit column overrides, alternate the rest
+  const alternating = filtered.filter((p) => !p.column);
+  const leftProjects = [
+    ...alternating.filter((_, i) => i % 2 === 0),
+    ...filtered.filter((p) => p.column === "left"),
+  ];
+  const rightProjects = [
+    ...alternating.filter((_, i) => i % 2 === 1),
+    ...filtered.filter((p) => p.column === "right"),
+  ];
 
   // Parallax: right column scrolls faster (desktop only)
   useEffect(() => {
@@ -40,11 +47,24 @@ export default function Work() {
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 768px)", () => {
-      gsap.to(rightColRef.current, {
-        yPercent: -35,
+      const rightCol = rightColRef.current!;
+      const section = sectionRef.current!;
+      const PARALLAX = -35;
+
+      // The parallax translates the right column up (CSS transform),
+      // but the DOM still reserves the original height — creating a gap.
+      // Compensate by pulling the section bottom up by the expected shift
+      // at the point the section bottom reaches the viewport bottom.
+      const parallaxPx = rightCol.offsetHeight * Math.abs(PARALLAX) / 100;
+      const sectionH = section.offsetHeight;
+      const progress = sectionH / (sectionH + window.innerHeight);
+      section.style.marginBottom = `-${Math.round(parallaxPx * progress - 120)}px`;
+
+      gsap.to(rightCol, {
+        yPercent: PARALLAX,
         ease: "none",
         scrollTrigger: {
-          trigger: sectionRef.current,
+          trigger: section,
           start: "top bottom",
           end: "bottom top",
           scrub: 0.4,
@@ -52,14 +72,17 @@ export default function Work() {
       });
     });
 
-    return () => mm.revert();
+    return () => {
+      mm.revert();
+      if (sectionRef.current) sectionRef.current.style.marginBottom = "";
+    };
   }, [filtered]);
 
   return (
     <section
       id="work"
       ref={sectionRef}
-      className="pt-20 md:pt-28 pb-16 px-6 md:px-10 border-t border-black/[0.06]"
+      className="pt-20 md:pt-28 px-6 md:px-10 border-t border-black/[0.06]"
     >
       <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight max-w-[1400px] mx-auto mb-6 md:mb-16">
         What We've Built
@@ -137,7 +160,7 @@ export default function Work() {
         </div>
 
         {/* Project columns */}
-        <div className="flex-1 flex flex-col md:flex-row gap-8 md:gap-16">
+        <div className="flex-1 flex flex-col md:flex-row gap-8 md:gap-16 overflow-hidden">
           {/* Left column */}
           <div ref={leftColRef} className="flex-1 flex flex-col gap-8 md:gap-10">
             {leftProjects.map((project) => (
@@ -148,7 +171,7 @@ export default function Work() {
           {/* Right column — offset down + parallax (desktop only) */}
           <div
             ref={rightColRef}
-            className="flex-1 flex flex-col gap-8 md:gap-10 md:mt-64"
+            className="flex-1 flex flex-col gap-8 md:gap-10 md:mt-40"
           >
             {rightProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />

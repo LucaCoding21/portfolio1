@@ -8,6 +8,7 @@ export interface Project {
   image: string;
   hoverImage?: string;
   url?: string;
+  column?: "left" | "right";
 }
 
 export const projects: Project[] = [
@@ -46,7 +47,7 @@ export const projects: Project[] = [
     id: 6,
     name: "Rivera",
     description: "Modern real estate solutions for property professionals.",
-    kpis: ["4 qualified buyer inquiries", "+130% listing engagement"],
+    kpis: ["4 qualified buyer leads · first month", "+130% listing engagement"],
     tags: ["Realtors"],
     image: "/sophia/sophia-cover1.jpg",
     hoverImage: "/rivera.webp",
@@ -62,15 +63,6 @@ export const projects: Project[] = [
     hoverImage: "/ACE/ace.webp",
   },
   {
-    id: 8,
-    name: "WrapCity",
-    description: "Vinyl car wrap shop built to turn heads online and in the streets.",
-    kpis: ["Newly launched"],
-    tags: ["Local Business"],
-    image: "/clover/clover-cover.jpg",
-    hoverImage: "/clover/cloverspace.webp",
-  },
-  {
     id: 9,
     name: "Nancy Tran",
     description: "Real estate agent helping families find their perfect home in Vancouver.",
@@ -78,6 +70,16 @@ export const projects: Project[] = [
     tags: ["Realtors"],
     image: "/sophia/sophia-cover2.jpg",
     hoverImage: "/sophia/sophia-cover.webp",
+  },
+  {
+    id: 8,
+    name: "WrapCity",
+    description: "Vinyl car wrap shop built to turn heads online and in the streets.",
+    kpis: ["Newly launched"],
+    tags: ["Local Business"],
+    column: "right",
+    image: "/clover/clover-cover.jpg",
+    hoverImage: "/clover/cloverspace.webp",
   },
 ];
 
