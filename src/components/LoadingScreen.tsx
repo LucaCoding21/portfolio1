@@ -68,6 +68,7 @@ export default function LoadingScreen({
           img.onload = () => resolve();
           img.onerror = () => resolve();
           img.src = src;
+          setTimeout(() => resolve(), 3000);
         }
       });
     };
