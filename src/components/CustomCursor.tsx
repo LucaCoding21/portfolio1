@@ -110,8 +110,20 @@ export default function CustomCursor() {
       gsap.to(playCursor, { opacity: 1, duration: 0.2 });
     };
 
+    // Hide cursor when hovering over iframes (e.g. Cal.com embed)
+    const handleCursorHide = () => {
+      gsap.to(cursor, { opacity: 0, duration: 0.15 });
+      gsap.to(playCursor, { opacity: 0, duration: 0.15 });
+    };
+    const handleCursorShow = () => {
+      gsap.to(cursor, { opacity: 1, duration: 0.15 });
+      gsap.to(playCursor, { opacity: 1, duration: 0.15 });
+    };
+
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("cursor:hide", handleCursorHide);
+    window.addEventListener("cursor:show", handleCursorShow);
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
 
@@ -121,6 +133,8 @@ export default function CustomCursor() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("cursor:hide", handleCursorHide);
+      window.removeEventListener("cursor:show", handleCursorShow);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
     };

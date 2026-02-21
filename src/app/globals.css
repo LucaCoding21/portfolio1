@@ -119,6 +119,18 @@ body {
 
 
 /* ================================
+   CAL.COM EMBED
+   Tailwind preflight sets border-width:0
+   on *, which strips the widget's own
+   borders. Revert inside the embed.
+   ================================ */
+
+[data-cal-link] *,
+[data-cal-link] iframe {
+  border-width: revert;
+}
+
+/* ================================
    UTILITIES
    ================================ */
 
