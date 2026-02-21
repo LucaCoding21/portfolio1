@@ -30,6 +30,7 @@ export const projects: Project[] = [
     tags: ["Sports & Events"],
     image: "/league1v1-cover.webp",
     hoverImage: "/league1v1.webp",
+    url: "https://league1v1.com/",
   },
   {
     id: 4,
@@ -70,6 +71,7 @@ export const projects: Project[] = [
     tags: ["Realtors"],
     image: "/sophia/sophia-cover2.jpg",
     hoverImage: "/nancy-mockup.webp",
+    url: "https://nancytranrealtor.com/",
   },
   {
     id: 8,
@@ -80,6 +82,7 @@ export const projects: Project[] = [
     column: "right",
     image: "/wrapcity-cover.webp",
     hoverImage: "/wrapcity-mockup.webp",
+    url: "https://wrapcity.co/",
   },
 ];
 
