@@ -71,9 +71,19 @@ export default function CustomCursor() {
         playCursorY = mouseY;
       }
 
-      updateState(resolveState(e.target as HTMLElement));
+      // Resolve cursor state from the event target (cheap) instead of
+      // calling elementFromPoint every RAF frame (expensive layout thrash)
+      const target = e.target as HTMLElement;
+      if (target) updateState(resolveState(target));
     };
 
+    // Re-check cursor state on scroll so momentum-scroll still updates
+    const handleScroll = () => {
+      const el = document.elementFromPoint(mouseX, mouseY);
+      if (el) updateState(resolveState(el as HTMLElement));
+    };
+
+    let rafId: number;
     const animate = () => {
       const ease = 0.35;
       cursorX += (mouseX - cursorX) * ease;
@@ -86,11 +96,7 @@ export default function CustomCursor() {
       playCursorY += (mouseY - playCursorY) * playEase;
       playCursor.style.transform = `translate3d(${playCursorX}px, ${playCursorY}px, 0) translate(-50%, -50%)`;
 
-      // Check element under cursor every frame to catch momentum scroll
-      const el = document.elementFromPoint(mouseX, mouseY);
-      if (el) updateState(resolveState(el as HTMLElement));
-
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
 
     const handleMouseLeave = () => {
@@ -105,13 +111,16 @@ export default function CustomCursor() {
     };
 
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     document.documentElement.addEventListener("mouseleave", handleMouseLeave);
     document.documentElement.addEventListener("mouseenter", handleMouseEnter);
 
     animate();
 
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("scroll", handleScroll);
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
     };

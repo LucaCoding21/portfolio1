@@ -13,39 +13,48 @@ export default function Hero({ ready }: HeroProps) {
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const underlineRef = useRef<SVGPathElement>(null);
 
+  // Pre-promote elements to GPU layers on mount (while loading screen is
+  // still showing). This forces the browser to rasterize the text now so
+  // there's no expensive first-paint when the animation starts later.
+  useEffect(() => {
+    gsap.set(headingRef.current, {
+      opacity: 0, y: 30, force3D: true,
+    });
+    gsap.set(subtextRef.current, {
+      opacity: 0, y: 20, force3D: true,
+    });
+    gsap.set(overlayRef.current, { opacity: 0 });
+
+    if (underlineRef.current) {
+      const length = underlineRef.current.getTotalLength();
+      gsap.set(underlineRef.current, {
+        strokeDasharray: length,
+        strokeDashoffset: length,
+      });
+    }
+  }, []);
+
+  // Animate in — elements are already on the GPU, no stutter
   useEffect(() => {
     if (!ready) return;
 
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.out" },
+      onComplete: () => {
+        // Free GPU memory after animation settles
+        gsap.set([headingRef.current, subtextRef.current], {
+          clearProps: "willChange",
+        });
+      },
+    });
 
-    tl.fromTo(
-      overlayRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.6 },
-      0
-    );
+    tl.to(overlayRef.current, { opacity: 1, duration: 0.6 }, 0);
+    tl.to(headingRef.current, { opacity: 1, y: 0, duration: 0.8 }, 0);
+    tl.to(subtextRef.current, { opacity: 1, y: 0, duration: 0.7 }, 0.15);
 
-    tl.fromTo(
-      headingRef.current,
-      { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.8 },
-      0
-    );
-
-    tl.fromTo(
-      subtextRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.7 },
-      0.15
-    );
-
-    // Animate the SVG underline drawing in
     if (underlineRef.current) {
-      const path = underlineRef.current;
-      const length = path.getTotalLength();
-      gsap.set(path, { strokeDasharray: length, strokeDashoffset: length });
       tl.to(
-        path,
+        underlineRef.current,
         { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" },
         0.5
       );
@@ -65,11 +74,11 @@ export default function Hero({ ready }: HeroProps) {
         >
           <source src="/hero.mp4" type="video/mp4" />
         </video>
-        <div ref={overlayRef} className="absolute inset-0 bg-black/8 opacity-0" />
+        <div ref={overlayRef} className="absolute inset-0 bg-black/8" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(2rem,8vw,5.5rem)] leading-[0.9] tracking-tight opacity-0">
+        <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(2rem,8vw,5.5rem)] leading-[0.9] tracking-tight will-change-[transform,opacity]">
           We build websites that bring in{" "}
           <span className="relative inline-block">
             customers.
@@ -92,7 +101,7 @@ export default function Hero({ ready }: HeroProps) {
             </svg>
           </span>
         </h1>
-        <p ref={subtextRef} className="mt-4 md:mt-6 text-base md:text-lg text-white font-semibold tracking-wide opacity-0" style={{ textShadow: "0 0 20px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.9), 0 0 80px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,1)" }}>
+        <p ref={subtextRef} className="mt-4 md:mt-6 text-base md:text-lg text-white font-semibold tracking-wide will-change-[transform,opacity]" style={{ textShadow: "0 2px 4px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8)" }}>
           Most local businesses lose customers before they ever make contact. We build websites that fix that.
         </p>
       </div>

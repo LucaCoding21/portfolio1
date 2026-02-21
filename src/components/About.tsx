@@ -19,10 +19,20 @@ export default function About({ ready }: AboutProps) {
   const videoInnerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const stRefs = useRef<ScrollTrigger[]>([]);
+
   const [playerOpen, setPlayerOpen] = useState(false);
   const [playerRect, setPlayerRect] = useState<DOMRect | null>(null);
   const [playerBorderRadius, setPlayerBorderRadius] = useState("24px");
   const [playerInitialTime, setPlayerInitialTime] = useState(0);
+
+  // Clean up all deferred ScrollTriggers on unmount
+  useEffect(() => {
+    return () => {
+      stRefs.current.forEach((st) => st.kill());
+      stRefs.current = [];
+    };
+  }, []);
 
   // Make section visible immediately (no old fade-in)
   useEffect(() => {
@@ -40,111 +50,125 @@ export default function About({ ready }: AboutProps) {
   }, [ready]);
 
   // Heading: smooth slide-in from the right with blur
+  // Deferred so ScrollTrigger layout measurements don't compete with the hero entrance animation
   useEffect(() => {
     if (!ready || !headingRef.current) return;
 
-    const st = ScrollTrigger.create({
-      trigger: headingRef.current,
-      start: "top 92%",
-      end: "top 45%",
-      scrub: 0.6,
-      animation: gsap.fromTo(
-        headingRef.current,
-        { x: 80, opacity: 0, filter: "blur(12px)" },
-        { x: 0, opacity: 1, filter: "blur(0px)", ease: "none" }
-      ),
+    const id = requestAnimationFrame(() => {
+      if (!headingRef.current) return;
+      const st = ScrollTrigger.create({
+        trigger: headingRef.current,
+        start: "top 92%",
+        end: "top 45%",
+        scrub: 0.6,
+        animation: gsap.fromTo(
+          headingRef.current,
+          { x: 80, opacity: 0, filter: "blur(12px)" },
+          { x: 0, opacity: 1, filter: "blur(0px)", ease: "none" }
+        ),
+      });
+      stRefs.current.push(st);
     });
 
-    return () => st.kill();
+    return () => cancelAnimationFrame(id);
   }, [ready]);
 
-  // Line-by-line blur reveal
+  // Line-by-line blur reveal (deferred to avoid competing with hero entrance)
   useEffect(() => {
     if (!ready || !linesContainerRef.current) return;
 
-    const lines = linesContainerRef.current.querySelectorAll(".reveal-line");
-    const triggers: ScrollTrigger[] = [];
+    const id = requestAnimationFrame(() => {
+      if (!linesContainerRef.current) return;
+      const lines = linesContainerRef.current.querySelectorAll(".reveal-line");
 
-    lines.forEach((line) => {
-      const inner = line.querySelector(".reveal-line-inner") as HTMLElement;
-      if (!inner) return;
+      lines.forEach((line) => {
+        const inner = line.querySelector(".reveal-line-inner") as HTMLElement;
+        if (!inner) return;
 
-      const st = ScrollTrigger.create({
-        trigger: line,
-        start: "top 90%",
-        end: "top 55%",
-        scrub: 0.5,
-        animation: gsap.fromTo(
-          inner,
-          { y: "100%", opacity: 0, filter: "blur(10px)" },
-          { y: "0%", opacity: 1, filter: "blur(0px)", ease: "none" }
-        ),
+        const st = ScrollTrigger.create({
+          trigger: line,
+          start: "top 90%",
+          end: "top 55%",
+          scrub: 0.5,
+          animation: gsap.fromTo(
+            inner,
+            { y: "100%", opacity: 0, filter: "blur(10px)" },
+            { y: "0%", opacity: 1, filter: "blur(0px)", ease: "none" }
+          ),
+        });
+        stRefs.current.push(st);
       });
-      triggers.push(st);
     });
 
-    return () => triggers.forEach((st) => st.kill());
+    return () => cancelAnimationFrame(id);
   }, [ready]);
 
-  // Scroll-driven scale animation for the video
+  // Scroll-driven scale animation for the video (deferred)
   useEffect(() => {
     if (!ready || !videoWrapperRef.current || !videoInnerRef.current) return;
 
     const inner = videoInnerRef.current;
-    const mm = gsap.matchMedia();
+    let mm: gsap.MatchMedia;
 
-    // Desktop: dramatic scale animation
-    mm.add("(min-width: 768px)", () => {
-      const st1 = ScrollTrigger.create({
-        trigger: videoWrapperRef.current,
-        start: "top 95%",
-        end: "top 20%",
-        scrub: 0.6,
-        animation: gsap.fromTo(
-          inner,
-          { scale: 0.8, borderRadius: "24px" },
-          { scale: 0.7, borderRadius: "12px", ease: "none" }
-        ),
+    const id = requestAnimationFrame(() => {
+      mm = gsap.matchMedia();
+
+      // Desktop: dramatic scale animation
+      mm.add("(min-width: 768px)", () => {
+        const st1 = ScrollTrigger.create({
+          trigger: videoWrapperRef.current,
+          start: "top 95%",
+          end: "top 20%",
+          scrub: 0.6,
+          animation: gsap.fromTo(
+            inner,
+            { scale: 0.8, borderRadius: "24px" },
+            { scale: 0.7, borderRadius: "12px", ease: "none" }
+          ),
+        });
+
+        const st2 = ScrollTrigger.create({
+          trigger: videoWrapperRef.current,
+          start: "bottom 80%",
+          end: "bottom 10%",
+          scrub: 0.6,
+          animation: gsap.fromTo(
+            inner,
+            { scale: 0.7, borderRadius: "12px" },
+            { scale: 0.55, borderRadius: "28px", ease: "none" }
+          ),
+        });
+
+        return () => {
+          st1.kill();
+          st2.kill();
+        };
       });
 
-      const st2 = ScrollTrigger.create({
-        trigger: videoWrapperRef.current,
-        start: "bottom 80%",
-        end: "bottom 10%",
-        scrub: 0.6,
-        animation: gsap.fromTo(
-          inner,
-          { scale: 0.7, borderRadius: "12px" },
-          { scale: 0.55, borderRadius: "28px", ease: "none" }
-        ),
-      });
+      // Mobile: subtler scale, stays larger
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(inner, { scale: 1, borderRadius: "16px" });
 
-      return () => {
-        st1.kill();
-        st2.kill();
-      };
+        const st = ScrollTrigger.create({
+          trigger: videoWrapperRef.current,
+          start: "top 90%",
+          end: "top 20%",
+          scrub: 0.6,
+          animation: gsap.fromTo(
+            inner,
+            { scale: 1, borderRadius: "16px" },
+            { scale: 0.95, borderRadius: "12px", ease: "none" }
+          ),
+        });
+
+        return () => st.kill();
+      });
     });
 
-    // Mobile: subtler scale, stays larger
-    mm.add("(max-width: 767px)", () => {
-      gsap.set(inner, { scale: 1, borderRadius: "16px" });
-
-      const st = ScrollTrigger.create({
-        trigger: videoWrapperRef.current,
-        start: "top 90%",
-        end: "top 20%",
-        scrub: 0.6,
-        animation: gsap.fromTo(
-          inner,
-          { scale: 1, borderRadius: "16px" },
-          { scale: 0.95, borderRadius: "12px", ease: "none" }
-        ),
-      });
-
-      return () => st.kill();
-    });
-
-    return () => mm.revert();
+    return () => {
+      cancelAnimationFrame(id);
+      if (mm) mm.revert();
+    };
   }, [ready]);
 
   const handleVideoClick = useCallback(() => {

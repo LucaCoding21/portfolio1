@@ -49,7 +49,7 @@ export default function Header() {
             menuOpen ? "text-black/90" : scrolled ? "text-black/90" : "text-white"
           }`}
         >
-          cloverstudio
+          cloverfield
         </a>
 
         {/* Desktop nav */}

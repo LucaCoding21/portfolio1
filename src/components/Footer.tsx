@@ -1,42 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 
 export default function Footer() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const backRef = useRef<HTMLDivElement>(null);
+  const midRef = useRef<HTMLDivElement>(null);
+  const frontRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+    let rafId: number;
+    let ticking = false;
 
-  const handleScroll = useCallback(() => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+    const update = () => {
+      ticking = false;
+      const container = containerRef.current;
+      if (!container) return;
 
-      if (rect.top < windowHeight && rect.bottom > 0) {
-        const progress = (windowHeight - rect.top) / (windowHeight + rect.height);
-        setScrollY(progress);
+      const rect = container.getBoundingClientRect();
+      const wh = window.innerHeight;
+      if (rect.top >= wh || rect.bottom <= 0) return;
+
+      const progress = (wh - rect.top) / (wh + rect.height);
+      const mobile = window.innerWidth < 768;
+
+      const backSpeed = mobile ? -15 : -40;
+      const midSpeed = mobile ? -60 : -200;
+      const frontSpeed = mobile ? -100 : -350;
+
+      if (backRef.current)
+        backRef.current.style.transform = `translate3d(0,${progress * backSpeed}px,0)`;
+      if (midRef.current)
+        midRef.current.style.transform = `translate3d(0,${progress * midSpeed}px,0)`;
+      if (frontRef.current)
+        frontRef.current.style.transform = `translate3d(0,${progress * frontSpeed}px,0)`;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(update);
       }
-    }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
-
-  // Reduce parallax intensity on mobile
-  const backSpeed = isMobile ? -15 : -40;
-  const midSpeed = isMobile ? -60 : -200;
-  const frontSpeed = isMobile ? -100 : -350;
 
   return (
     <footer
@@ -45,12 +60,8 @@ export default function Footer() {
     >
       {/* Back layer - moves slower */}
       <div
-        className="absolute w-full"
-        style={{
-          top: isMobile ? "-40px" : "-100px",
-          bottom: isMobile ? "-60px" : "-150px",
-          transform: `translateY(${scrollY * backSpeed}px)`,
-        }}
+        ref={backRef}
+        className="absolute w-full will-change-transform top-[-40px] md:top-[-100px] bottom-[-60px] md:bottom-[-150px]"
       >
         <Image
           src="/footer/BackFooter.webp"
@@ -63,10 +74,8 @@ export default function Footer() {
 
       {/* Middle layer - Title */}
       <div
-        className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[40%] md:pt-[10%]"
-        style={{
-          transform: `translateY(${scrollY * midSpeed}px)`,
-        }}
+        ref={midRef}
+        className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[40%] md:pt-[10%] will-change-transform"
       >
         <h2
           className="text-[22vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
@@ -82,12 +91,8 @@ export default function Footer() {
 
       {/* Front layer - moves faster */}
       <div
-        className="absolute w-full z-20 pointer-events-none"
-        style={{
-          top: isMobile ? "30px" : "100px",
-          bottom: isMobile ? "-60px" : "-160px",
-          transform: `translateY(${scrollY * frontSpeed}px)`,
-        }}
+        ref={frontRef}
+        className="absolute w-full z-20 pointer-events-none will-change-transform top-[30px] md:top-[100px] bottom-[-60px] md:bottom-[-160px]"
       >
         <Image
           src="/footer/FrontFooter.webp"

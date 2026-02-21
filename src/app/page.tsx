@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [ready, setReady] = useState(false);
 
   // Ensure page starts at top on refresh (no visible scroll)
   useEffect(() => {
@@ -42,6 +43,15 @@ export default function Home() {
       document.body.style.inset = "";
       document.body.style.width = "";
       window.scrollTo(0, 0);
+
+      // Let the browser paint the layout reflow (body position:fixed → static
+      // + LoadingScreen unmount) before starting hero/about animations.
+      // Double rAF waits for the current frame to commit, then the next.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setReady(true);
+        });
+      });
     }
     return () => {
       document.documentElement.style.overflow = "";
@@ -58,9 +68,9 @@ export default function Home() {
         <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
       )}
       <Header />
-      <Hero ready={!isLoading} />
+      <Hero ready={ready} />
       <div className="relative z-10 bg-white">
-        <About ready={!isLoading} />
+        <About ready={ready} />
         <Work />
         <Contact />
         <Footer />
