@@ -64,16 +64,6 @@ export const projects: Project[] = [
     url: "https://cloverspace.studio/",
   },
   {
-    id: 9,
-    name: "Rivera",
-    description: "Modern real estate solutions for property professionals.",
-    kpis: ["4 qualified buyer leads · first month", "+130% listing engagement"],
-    tags: ["Realtors"],
-    image: "/sophia/sophia-cover1.jpg",
-    hoverImage: "/rivera.webp",
-    url: "https://realtor-mock2.vercel.app/",
-  },
-  {
     id: 8,
     name: "WrapCity",
     description: "Vinyl car wrap shop built to turn heads online and in the streets.",
@@ -83,6 +73,16 @@ export const projects: Project[] = [
     image: "/wrapcity-cover.webp",
     hoverImage: "/wrapcity-mockup.webp",
     url: "https://wrapcity.co/",
+  },
+  {
+    id: 9,
+    name: "Rivera",
+    description: "Modern real estate solutions for property professionals.",
+    kpis: ["Newly launched"],
+    tags: ["Realtors"],
+    image: "/sophia/sophia-cover1.jpg",
+    hoverImage: "/rivera.webp",
+    url: "https://realtor-mock2.vercel.app/",
   },
 ];
 
