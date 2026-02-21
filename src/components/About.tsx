@@ -191,14 +191,14 @@ export default function About({ ready }: AboutProps) {
           ref={headingRef}
           className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight md:w-2/5 shrink-0 opacity-0 will-change-[transform,opacity,filter]"
         >
-          ABOUT US
+          Why us
         </h2>
         {/* Desktop: line-by-line reveal */}
         <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto hidden md:block">
           {[
-            "Based in Vancouver and Surrey, BC, we're a creative studio passionate",
-            "about crafting thoughtful digital experiences. We care deeply about our",
-            "clients, the process, and ensuring every result is nothing short of beautiful.",
+            "Most agencies are good at one thing: making it look great,",
+            "or making it bring in business. Clients usually have to pick",
+            "which one matters more. We don't think that's a fair trade.",
           ].map((line, i) => (
             <div key={i} className="reveal-line overflow-hidden">
               <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
@@ -208,9 +208,8 @@ export default function About({ ready }: AboutProps) {
           ))}
           <div className="mt-4" />
           {[
-            "With experience across product design, brand identity, and full-stack",
-            "development, we help ambitious brands bring their vision to life from",
-            "concept to launch.",
+            "We build websites that win attention and win customers.",
+            "Delivered in under a week.",
           ].map((line, i) => (
             <div key={`b-${i}`} className="reveal-line overflow-hidden">
               <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
@@ -222,10 +221,10 @@ export default function About({ ready }: AboutProps) {
         {/* Mobile: natural paragraph flow */}
         <div className="md:hidden">
           <p className="text-base leading-relaxed text-black/60 font-light">
-            Based in Vancouver and Surrey, BC, we&apos;re a creative studio passionate about crafting thoughtful digital experiences. We care deeply about our clients, the process, and ensuring every result is nothing short of beautiful.
+            Most agencies are good at one thing: making it look great, or making it bring in business. Clients usually have to pick which one matters more. We don't think that's a fair trade.
           </p>
           <p className="text-base leading-relaxed text-black/60 font-light mt-4">
-            With experience across product design, brand identity, and full-stack development, we help ambitious brands bring their vision to life from concept to launch.
+            We build websites that win attention and win customers. Delivered in under a week.
           </p>
         </div>
       </div>

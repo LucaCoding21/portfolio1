@@ -65,6 +65,24 @@ export default function Work() {
         What We've Built
       </h2>
 
+      {/* Aggregate stats bar */}
+      <div className="max-w-[1400px] mx-auto mb-14 md:mb-20 grid grid-cols-3 border-t border-b border-black/10 py-8 md:py-10">
+        {[
+          { stat: "12+", label: "Sites launched" },
+          { stat: "< 7 days", label: "Avg. time to launch" },
+          { stat: "0", label: "Templates used. Ever." },
+        ].map(({ stat, label }) => (
+          <div key={label} className="flex flex-col gap-1 px-4 md:px-8 border-r border-black/10 last:border-r-0 first:pl-0">
+            <p className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.4rem,3.5vw,2.8rem)] tracking-tight leading-none">
+              {stat}
+            </p>
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.18em] text-black/45 mt-1">
+              {label}
+            </p>
+          </div>
+        ))}
+      </div>
+
       {/* Mobile filter pills — horizontal scroll */}
       <div className="md:hidden max-w-[1400px] mx-auto mb-8 -mx-6 px-6 overflow-x-auto scrollbar-hide">
         <div className="flex gap-2 w-max">
@@ -171,16 +189,30 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
             className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03] hidden md:block"
           />
         )}
+
       </div>
 
       <div className="mt-4 border-t border-black/25 pt-3">
-        <p className="text-[10px] uppercase tracking-[0.2em] text-black/60 flex items-center gap-1.5">
-          <span className="inline-block">&#9654;</span>
-          {project.tags.join("  ·  ")}
-        </p>
-        <h3 className="mt-1.5 font-[family-name:var(--font-outfit)] font-normal text-[clamp(1.1rem,2vw,1.5rem)] tracking-tight">
-          {project.name}
-        </h3>
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="font-[family-name:var(--font-outfit)] font-normal text-[clamp(1.1rem,2vw,1.5rem)] tracking-tight">
+            {project.name}
+          </h3>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-black/40 whitespace-nowrap shrink-0">
+            {project.tags.join("  ·  ")}
+          </p>
+        </div>
+        {project.kpis && project.kpis.length > 0 && (
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {project.kpis.map((kpi) => (
+              <span
+                key={kpi}
+                className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full"
+              >
+                {kpi}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
