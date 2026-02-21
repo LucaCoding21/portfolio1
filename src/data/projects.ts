@@ -14,14 +14,13 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 1,
-    name: "Njagih Studios",
-    description:
-      "Crafting visual stories for artists and creatives through bold photography.",
-    kpis: ["+43% booking inquiries"],
+    name: "ACE",
+    description: "Reimagining digital experiences for tomorrow.",
+    kpis: ["200% increase in bookings", "Fully booked 3 months out"],
     tags: ["Photography"],
-    image: "/Njagih/njagih-cover.jpg",
-    hoverImage: "/Njagih/njagih studios.webp",
-    url: "https://njagihstudios.com/",
+    image: "/ACE/ace-cover.jpg",
+    hoverImage: "/ACE/ace.webp",
+    url: "https://acesuasola.com/",
   },
   {
     id: 3,
@@ -34,13 +33,14 @@ export const projects: Project[] = [
   },
   {
     id: 4,
-    name: "ACE",
-    description: "Reimagining digital experiences for tomorrow.",
-    kpis: ["200% increase in bookings", "Fully booked 3 months out"],
+    name: "Njagih Studios",
+    description:
+      "Crafting visual stories for artists and creatives through bold photography.",
+    kpis: ["+43% booking inquiries"],
     tags: ["Photography"],
-    image: "/ACE/ace-cover.jpg",
-    hoverImage: "/ACE/ace.webp",
-    url: "https://acesuasola.com/",
+    image: "/Njagih/njagih-cover.jpg",
+    hoverImage: "/Njagih/njagih studios.webp",
+    url: "https://njagihstudios.com/",
   },
   {
     id: 6,
