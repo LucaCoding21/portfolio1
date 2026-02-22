@@ -215,13 +215,13 @@ export default function About({ ready }: AboutProps) {
           ref={headingRef}
           className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight md:w-2/5 shrink-0 opacity-0 will-change-[transform,opacity,filter]"
         >
-          Why us
+          Why Choose Us
         </h2>
         {/* Desktop: line-by-line reveal */}
         <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto hidden md:block">
           {[
             "Most agencies are good at one thing: making it look great,",
-            "or making it bring in business. Clients usually have to pick",
+            "or making it generate leads. Clients usually have to pick",
             "which one matters more. We don't think that's a fair trade.",
           ].map((line, i) => (
             <div key={i} className="reveal-line overflow-hidden">
@@ -232,7 +232,7 @@ export default function About({ ready }: AboutProps) {
           ))}
           <div className="mt-4" />
           {[
-            "We build websites that win attention and win customers.",
+            "We build custom websites that win attention and win customers.",
             "Delivered in under a week.",
           ].map((line, i) => (
             <div key={`b-${i}`} className="reveal-line overflow-hidden">
@@ -245,10 +245,10 @@ export default function About({ ready }: AboutProps) {
         {/* Mobile: natural paragraph flow */}
         <div className="md:hidden">
           <p className="text-base leading-relaxed text-black/60 font-light">
-            Most agencies are good at one thing: making it look great, or making it bring in business. Clients usually have to pick which one matters more. We don't think that's a fair trade.
+            Most agencies are good at one thing: making it look great, or making it generate leads. Clients usually have to pick which one matters more. We don&apos;t think that&apos;s a fair trade.
           </p>
           <p className="text-base leading-relaxed text-black/60 font-light mt-4">
-            We build websites that win attention and win customers. Delivered in under a week.
+            We build custom websites that win attention and win customers. Delivered in under a week.
           </p>
         </div>
       </div>
@@ -272,6 +272,7 @@ export default function About({ ready }: AboutProps) {
             muted
             loop
             playsInline
+            aria-label="Portfolio showcase of custom web design projects by Cloverfield Studio"
             className="w-full h-auto block"
           >
             <source src="/portfolio-prev2.mp4" type="video/mp4" />

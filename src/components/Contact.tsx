@@ -59,10 +59,10 @@ export default function Contact() {
     >
       <div className="max-w-3xl mx-auto">
         <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.8rem,5vw,3rem)] uppercase tracking-tight text-center mb-3 md:mb-4">
-          Book a Call
+          Book a Free Consultation
         </h2>
         <p className="text-center text-black/50 text-sm md:text-base mb-8 md:mb-12">
-          Have a project in mind? Schedule a free consultation.
+          Ready for a website that generates leads? Let&apos;s talk about your project.
         </p>
 
         <div

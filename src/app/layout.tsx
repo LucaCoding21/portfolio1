@@ -43,38 +43,57 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
+  title: "Web Design Surrey BC | Cloverfield Studio",
   description:
-    "Cloverfield is a creative studio in Vancouver and Surrey, BC specializing in web design, development, and brand identity. We craft beautiful digital experiences for ambitious brands.",
+    "Web design in Surrey BC that generates leads. Custom websites for small businesses — no templates, launched in under a week. Book a free consultation.",
   keywords: [
+    "web design surrey bc",
+    "web design companies in surrey bc",
+    "surrey bc web design",
+    "web design in surrey bc",
+    "small business web design",
+    "custom website design",
+    "lead generating websites",
     "web design Vancouver",
     "web development Surrey BC",
-    "creative studio Vancouver",
-    "digital agency Surrey",
-    "brand identity Vancouver",
-    "website design BC",
-    "product design Vancouver",
-    "web developer Surrey BC",
   ],
+  alternates: {
+    canonical: "https://cloverfield.studio",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
-    description: "Creative studio in Vancouver and Surrey, BC crafting beautiful digital experiences for ambitious brands.",
+    title: "Web Design Surrey BC | Cloverfield Studio",
+    description:
+      "Custom web design in Surrey BC for small businesses. No templates, launched in under a week. Websites that generate leads.",
+    url: "https://cloverfield.studio",
+    siteName: "Cloverfield Studio",
     locale: "en_CA",
     type: "website",
     images: [
       {
-        url: "/og-image.jpeg",
+        url: "https://cloverfield.studio/og-image.jpeg",
         width: 1200,
         height: 630,
-        alt: "Cloverfield Studio",
+        alt: "Cloverfield Studio — Web Design Agency in Surrey BC",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cloverfield Studio | Web Design & Development in Vancouver & Surrey BC",
-    description: "Creative studio in Vancouver and Surrey, BC crafting beautiful digital experiences for ambitious brands.",
-    images: ["/og-image.jpeg"],
+    title: "Web Design Surrey BC | Cloverfield Studio",
+    description:
+      "Custom web design in Surrey BC for small businesses. No templates, launched in under a week. Websites that generate leads.",
+    images: ["https://cloverfield.studio/og-image.jpeg"],
   },
 };
 
@@ -86,6 +105,35 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "LocalBusiness",
+              "name": "Cloverfield Studio",
+              "description":
+                "Web design and development agency in Surrey BC building custom websites that generate leads for small businesses",
+              "url": "https://cloverfield.studio",
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Surrey",
+                "addressRegion": "BC",
+                "addressCountry": "CA",
+              },
+              "areaServed": [
+                "Surrey BC",
+                "Vancouver BC",
+                "Burnaby BC",
+                "Langley BC",
+                "Richmond BC",
+                "Lower Mainland",
+              ],
+              "priceRange": "$",
+              "sameAs": [],
+            }),
+          }}
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-0HNWS9W1ZE"
           strategy="afterInteractive"

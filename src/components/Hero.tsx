@@ -69,6 +69,7 @@ export default function Hero({ ready }: HeroProps) {
           muted
           loop
           playsInline
+          aria-label="Cloverfield Studio web design showcase reel"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: "center 35%" }}
         >
@@ -79,9 +80,9 @@ export default function Hero({ ready }: HeroProps) {
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
         <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(2rem,8vw,5.5rem)] leading-[0.9] tracking-tight will-change-[transform,opacity]">
-          We build websites that bring in{" "}
+          Web Design in Surrey BC That Brings in{" "}
           <span className="relative inline-block">
-            customers.
+            Customers.
             <svg
               className="absolute -bottom-[0.1em] left-0 w-full"
               viewBox="0 0 200 12"
@@ -102,7 +103,7 @@ export default function Hero({ ready }: HeroProps) {
           </span>
         </h1>
         <p ref={subtextRef} className="mt-4 md:mt-6 text-base md:text-lg text-white font-semibold tracking-wide will-change-[transform,opacity]" style={{ textShadow: "0 2px 4px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8)" }}>
-          Most local businesses lose customers before they ever make contact. We build websites that fix that.
+          Most small businesses lose customers before they ever make contact. We build custom websites that fix that.
         </p>
       </div>
     </section>

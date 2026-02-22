@@ -1,0 +1,6 @@
+# Cloverfield Studio — https://cloverfield.studio
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://cloverfield.studio/sitemap.xml

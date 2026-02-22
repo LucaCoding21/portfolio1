@@ -85,7 +85,7 @@ export default function Work() {
       className="pt-20 md:pt-28 px-6 md:px-10 border-t border-black/[0.06]"
     >
       <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight max-w-[1400px] mx-auto mb-6 md:mb-16">
-        What We've Built
+        Websites We&apos;ve Built
       </h2>
 
       {/* Aggregate stats bar */}
@@ -190,14 +190,18 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         {/* Mobile: show hoverImage directly if available, Desktop: show cover with hover swap */}
         <Image
           src={project.hoverImage || project.image}
-          alt={`${project.name} - ${project.description} | Web design project by Cloverfield Studio Vancouver BC`}
+          alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
           fill
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, 50vw"
           className="object-cover md:hidden"
         />
         <Image
           src={project.image}
-          alt={`${project.name} - ${project.description} | Web design project by Cloverfield Studio Vancouver BC`}
+          alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
           fill
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, 50vw"
           className={`object-cover transition-all duration-700 ease-out hidden md:block ${
             project.hoverImage
               ? "group-hover:opacity-0"
@@ -207,8 +211,10 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
         {project.hoverImage && (
           <Image
             src={project.hoverImage}
-            alt={`${project.name} website preview - ${project.tags.join(", ")} project by Cloverfield Studio`}
+            alt={`${project.name} website preview — ${project.tags.join(", ")} project by Cloverfield Studio`}
             fill
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03] hidden md:block"
           />
         )}

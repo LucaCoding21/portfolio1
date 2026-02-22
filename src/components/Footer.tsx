@@ -77,7 +77,8 @@ export default function Footer() {
         ref={midRef}
         className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[40%] md:pt-[10%] will-change-transform"
       >
-        <h2
+        <span
+          aria-hidden="true"
           className="text-[22vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
           style={{
             fontFamily: "var(--font-outfit)",
@@ -86,7 +87,7 @@ export default function Footer() {
           }}
         >
           cloverfield
-        </h2>
+        </span>
       </div>
 
       {/* Front layer - moves faster */}
