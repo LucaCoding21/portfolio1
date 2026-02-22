@@ -80,9 +80,9 @@ export default function Hero({ ready }: HeroProps) {
 
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
         <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(2rem,8vw,5.5rem)] leading-[0.9] tracking-tight will-change-[transform,opacity]">
-          Web Design in Surrey BC That Brings in{" "}
+          We make websites that bring in{" "}
           <span className="relative inline-block">
-            Customers.
+            customers.
             <svg
               className="absolute -bottom-[0.1em] left-0 w-full"
               viewBox="0 0 200 12"
