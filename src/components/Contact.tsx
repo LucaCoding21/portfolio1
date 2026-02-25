@@ -41,6 +41,39 @@ export default function Contact() {
         },
         hideEventTypeDetails: false,
       });
+
+      // Track booking funnel steps in GA4
+      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+
+      cal("on", {
+        action: "eventTypeSelected",
+        callback: () => {
+          gtag?.("event", "cal_event_type_selected", {
+            event_category: "booking",
+            event_label: "Free Consultation",
+          });
+        },
+      });
+
+      cal("on", {
+        action: "timeslotSelected",
+        callback: () => {
+          gtag?.("event", "cal_timeslot_selected", {
+            event_category: "booking",
+            event_label: "Free Consultation",
+          });
+        },
+      });
+
+      cal("on", {
+        action: "bookingSuccessful",
+        callback: () => {
+          gtag?.("event", "booking_confirmed", {
+            event_category: "booking",
+            event_label: "Free Consultation Booked",
+          });
+        },
+      });
     })();
   }, []);
 
