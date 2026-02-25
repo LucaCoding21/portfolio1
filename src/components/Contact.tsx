@@ -42,28 +42,17 @@ export default function Contact() {
         hideEventTypeDetails: false,
       });
 
-      // Track booking funnel steps in GA4
-      const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      // Track booking completion in GA4
+      const fireBookingEvent = () => {
+        const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+        gtag?.("event", "booking_confirmed", {
+          event_category: "booking",
+          event_label: "Free Consultation Booked",
+        });
+      };
 
-      cal("on", {
-        action: "eventTypeSelected",
-        callback: () => {
-          gtag?.("event", "cal_event_type_selected", {
-            event_category: "booking",
-            event_label: "Free Consultation",
-          });
-        },
-      });
-
-      cal("on", {
-        action: "bookingSuccessful",
-        callback: () => {
-          gtag?.("event", "booking_confirmed", {
-            event_category: "booking",
-            event_label: "Free Consultation Booked",
-          });
-        },
-      });
+      cal("on", { action: "bookingSuccessful", callback: fireBookingEvent });
+      cal("on", { action: "bookingSuccessfulV2", callback: fireBookingEvent });
     })();
   }, []);
 
