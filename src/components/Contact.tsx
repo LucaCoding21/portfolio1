@@ -56,16 +56,6 @@ export default function Contact() {
       });
 
       cal("on", {
-        action: "timeslotSelected",
-        callback: () => {
-          gtag?.("event", "cal_timeslot_selected", {
-            event_category: "booking",
-            event_label: "Free Consultation",
-          });
-        },
-      });
-
-      cal("on", {
         action: "bookingSuccessful",
         callback: () => {
           gtag?.("event", "booking_confirmed", {
