@@ -26,7 +26,7 @@ export const projects: Project[] = [
     id: 3,
     name: "League1v1",
     description: "Vancouver's competitive basketball league — built for players, sponsors, and the game.",
-    kpis: ["Newly launched", "$5k in sponsorship revenue"],
+    kpis: ["Built in 5 days", "$8k in sponsorship revenue"],
     tags: ["Sports & Events"],
     image: "/league1v1-cover.webp",
     hoverImage: "/league1v1.webp",
@@ -67,7 +67,7 @@ export const projects: Project[] = [
     id: 8,
     name: "WrapCity",
     description: "Vinyl car wrap shop built to turn heads online and in the streets.",
-    kpis: ["Newly launched"],
+    kpis: ["+23% booking inquiries", "95+ PageSpeed score"],
     tags: ["Local Business"],
     column: "right",
     image: "/wrapcity-cover.webp",
@@ -86,8 +86,13 @@ export const projects: Project[] = [
   },
 ];
 
+export const HOMEPAGE_PROJECT_IDS = [1, 3, 6, 4, 8];
+export const homepageProjects = projects.filter((p) =>
+  HOMEPAGE_PROJECT_IDS.includes(p.id)
+);
+
 export const NAV_ITEMS = [
-  { label: "Work", href: "#work" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+  { label: "Work", href: "/#work" },
+  { label: "About", href: "/#about" },
+  { label: "Contact", href: "/#contact" },
 ];

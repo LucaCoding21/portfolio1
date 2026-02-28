@@ -4,13 +4,20 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { projects } from "@/data/projects";
+import Link from "next/link";
+import { projects, type Project } from "@/data/projects";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ALL_LABEL = "ALL";
 
-export default function Work() {
+interface WorkProps {
+  projectList?: Project[];
+  showFilters?: boolean;
+}
+
+export default function Work({ projectList, showFilters = true }: WorkProps) {
+  const displayProjects = projectList || projects;
   const sectionRef = useRef<HTMLElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
@@ -20,14 +27,14 @@ export default function Work() {
   // Derive unique categories from project tags
   const categories = useMemo(() => {
     const tagSet = new Set<string>();
-    projects.forEach((p) => p.tags.forEach((t) => tagSet.add(t)));
+    displayProjects.forEach((p) => p.tags.forEach((t) => tagSet.add(t)));
     return [ALL_LABEL, ...Array.from(tagSet)];
-  }, []);
+  }, [displayProjects]);
 
   const filtered = useMemo(() => {
-    if (activeFilter === ALL_LABEL) return projects;
-    return projects.filter((p) => p.tags.includes(activeFilter));
-  }, [activeFilter]);
+    if (activeFilter === ALL_LABEL) return displayProjects;
+    return displayProjects.filter((p) => p.tags.includes(activeFilter));
+  }, [activeFilter, displayProjects]);
 
   // Split into two columns — respect explicit column overrides, alternate the rest
   const alternating = filtered.filter((p) => !p.column);
@@ -119,31 +126,33 @@ export default function Work() {
       </div>
 
       {/* Mobile filter pills — horizontal scroll */}
-      <div className="md:hidden max-w-[1400px] mx-auto mb-8 -mx-6 px-6 overflow-x-auto scrollbar-hide">
-        <div className="flex gap-2 w-max">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveFilter(cat)}
-              className={`
-                px-4 py-2 rounded-full text-xs uppercase tracking-[0.15em] whitespace-nowrap
-                font-[family-name:var(--font-geist-sans)] transition-all duration-200 border
-                ${
-                  activeFilter === cat
-                    ? "bg-black text-white border-black"
-                    : "bg-transparent text-black/50 border-black/15 active:bg-black/5"
-                }
-              `}
-            >
-              {cat}
-            </button>
-          ))}
+      {showFilters && (
+        <div className="md:hidden max-w-[1400px] mx-auto mb-8 -mx-6 px-6 overflow-x-auto scrollbar-hide">
+          <div className="flex gap-2 w-max">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveFilter(cat)}
+                className={`
+                  px-4 py-2 rounded-full text-xs uppercase tracking-[0.15em] whitespace-nowrap
+                  font-[family-name:var(--font-geist-sans)] transition-all duration-200 border
+                  ${
+                    activeFilter === cat
+                      ? "bg-black text-white border-black"
+                      : "bg-transparent text-black/50 border-black/15 active:bg-black/5"
+                  }
+                `}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-[1400px] mx-auto flex gap-8 md:gap-12">
         {/* Left sidebar — category filters (desktop) */}
-        <div className="hidden md:block w-[200px] shrink-0 sticky top-[50vh] -translate-y-1/2 self-start mt-40">
+        {showFilters && <div className="hidden md:block w-[200px] shrink-0 sticky top-[50vh] -translate-y-1/2 self-start mt-40">
           <ul className="flex flex-col gap-3">
             {categories.map((cat) => (
               <li key={cat}>
@@ -169,7 +178,7 @@ export default function Work() {
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
 
         {/* Project columns */}
         <div className="flex-1 flex flex-col md:flex-row gap-8 md:gap-16 overflow-hidden">
@@ -191,7 +200,34 @@ export default function Work() {
           </div>
         </div>
       </div>
+
     </section>
+  );
+}
+
+export function ViewAllWork() {
+  return (
+    <div className="relative z-10 flex justify-center py-20 md:py-28 px-6">
+      <Link
+        href="/work"
+        className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-black text-white text-sm uppercase tracking-[0.18em] font-[family-name:var(--font-outfit)] font-medium hover:bg-black/80 transition-all duration-300 cursor-view"
+      >
+        View All Work
+        <svg
+          className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M17 8l4 4m0 0l-4 4m4-4H3"
+          />
+        </svg>
+      </Link>
+    </div>
   );
 }
 

@@ -5,7 +5,8 @@ import LoadingScreen from "@/components/LoadingScreen";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Work from "@/components/Work";
+import Work, { ViewAllWork } from "@/components/Work";
+import { homepageProjects } from "@/data/projects";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -71,7 +72,8 @@ export default function Home() {
       <Hero ready={ready} />
       <div className="relative z-10 bg-white">
         <About ready={ready} />
-        <Work />
+        <Work projectList={homepageProjects} showFilters={false} />
+        <ViewAllWork />
         <Contact />
         <Footer />
       </div>

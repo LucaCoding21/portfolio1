@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from "react";
 import { NAV_ITEMS } from "@/data/projects";
 import MobileMenu from "./MobileMenu";
 
-export default function Header() {
+export default function Header({ solid = false }: { solid?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+
+  const isScrolled = solid || scrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +39,7 @@ export default function Header() {
         className={`relative z-50 flex items-center justify-between w-full max-w-5xl px-8 py-4 rounded-full transition-all duration-500 ${
           menuOpen
             ? "bg-transparent border border-transparent"
-            : scrolled
+            : isScrolled
               ? "bg-white/70 backdrop-blur-xl border border-black/[0.08] shadow-lg shadow-black/[0.03]"
               : "bg-white/10 backdrop-blur-md border border-white/20"
         }`}
@@ -46,7 +48,7 @@ export default function Header() {
         <a
           href="/"
           className={`font-[family-name:var(--font-outfit)] font-semibold text-2xl tracking-tight transition-colors duration-500 ${
-            menuOpen ? "text-black/90" : scrolled ? "text-black/90" : "text-white"
+            menuOpen ? "text-black/90" : isScrolled ? "text-black/90" : "text-white"
           }`}
         >
           cloverfield
@@ -59,7 +61,7 @@ export default function Header() {
               key={item.label}
               href={item.href}
               className={`px-4 py-2 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
-                scrolled
+                isScrolled
                   ? "text-black/70 hover:text-black hover:bg-[#CDFF50]"
                   : "text-white/80 hover:text-black hover:bg-[#CDFF50]"
               }`}
@@ -72,7 +74,7 @@ export default function Header() {
           <a
             href="#contact"
             className={`ml-2 px-6 py-2.5 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
-              scrolled
+              isScrolled
                 ? "bg-black text-white hover:bg-[#CDFF50] hover:text-black"
                 : "bg-white text-black hover:bg-[#CDFF50]"
             }`}
@@ -89,17 +91,17 @@ export default function Header() {
         >
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 ${
-              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              menuOpen ? "bg-black" : scrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
             } ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </button>
