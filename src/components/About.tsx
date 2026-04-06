@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import VideoPlayer from "@/components/VideoPlayer";
+
+const VideoPlayer = dynamic(() => import("@/components/VideoPlayer"), {
+  ssr: false,
+});
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +37,26 @@ export default function About({ ready }: AboutProps) {
       stRefs.current = [];
     };
   }, []);
+
+  // Play video only when it scrolls into view
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play();
+        } else if (!playerOpen) {
+          video.pause();
+        }
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [playerOpen]);
 
   // Make section visible immediately (no old fade-in)
   useEffect(() => {
@@ -268,10 +292,10 @@ export default function About({ ready }: AboutProps) {
         >
           <video
             ref={videoRef}
-            autoPlay
             muted
             loop
             playsInline
+            preload="none"
             aria-label="Portfolio showcase of custom web design projects by Cloverfield Studio"
             className="w-full h-auto block"
           >

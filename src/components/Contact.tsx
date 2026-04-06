@@ -1,11 +1,42 @@
 "use client";
 
-import Cal, { getCalApi } from "@calcom/embed-react";
-import { useEffect, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
+
+const CalEmbed = dynamic(
+  () => import("@calcom/embed-react").then((mod) => mod.default),
+  { ssr: false }
+);
 
 export default function Contact() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  // Only mount Cal.com when the section is near the viewport
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // Configure Cal UI + GA tracking after embed loads
+  useEffect(() => {
+    if (!visible) return;
+
     (async function () {
+      const { getCalApi } = await import("@calcom/embed-react");
       const cal = await getCalApi();
       cal("ui", {
         theme: "light",
@@ -42,7 +73,6 @@ export default function Contact() {
         hideEventTypeDetails: false,
       });
 
-      // Track booking completion in GA4
       const fireBookingEvent = () => {
         const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
         gtag?.("event", "booking_confirmed", {
@@ -54,7 +84,7 @@ export default function Contact() {
       cal("on", { action: "bookingSuccessful", callback: fireBookingEvent });
       cal("on", { action: "bookingSuccessfulV2", callback: fireBookingEvent });
     })();
-  }, []);
+  }, [visible]);
 
   const handleMouseEnter = useCallback(() => {
     window.dispatchEvent(new CustomEvent("cursor:hide"));
@@ -67,6 +97,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      ref={sectionRef}
       className="relative z-10 py-20 md:py-28 pb-20 px-6 md:px-10 border-t border-black/[0.06]"
     >
       <div className="max-w-3xl mx-auto">
@@ -82,11 +113,15 @@ export default function Contact() {
           onMouseLeave={handleMouseLeave}
           className="flex justify-center border border-black/10 rounded-2xl overflow-hidden"
         >
-          <Cal
-            calLink="cloverfield/30min"
-            config={{ layout: "column_view" }}
-            style={{ width: "100%", height: "100%", overflow: "auto" }}
-          />
+          {visible ? (
+            <CalEmbed
+              calLink="cloverfield/30min"
+              config={{ layout: "column_view" }}
+              style={{ width: "100%", height: "100%", overflow: "auto" }}
+            />
+          ) : (
+            <div style={{ width: "100%", minHeight: 400 }} />
+          )}
         </div>
       </div>
     </section>
