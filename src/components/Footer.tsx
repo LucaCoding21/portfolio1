@@ -68,7 +68,7 @@ export default function Footer() {
           alt="Cloverfield Studio Vancouver BC creative agency background landscape"
           fill
           className="object-cover object-center"
-          priority
+          loading="lazy"
         />
       </div>
 
@@ -100,7 +100,7 @@ export default function Footer() {
           alt="Cloverfield Studio footer grass landscape design element"
           fill
           className="object-cover object-bottom"
-          priority
+          loading="lazy"
         />
       </div>
     </footer>
