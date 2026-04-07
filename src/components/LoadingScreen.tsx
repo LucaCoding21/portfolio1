@@ -46,7 +46,7 @@ export default function LoadingScreen({
     // Desktop needs hero.mp4 (video behind the SVG mask).
     // Mobile needs hero-poster.jpg so the hero has an instant LCP image.
     // Below-fold assets are lazy-loaded by their own components.
-    const assets: string[] = mobile ? ["/hero-poster.jpg"] : ["/hero.mp4"];
+    const assets: string[] = mobile ? ["/hero-poster.webp"] : ["/hero.mp4"];
 
     const preloadAsset = (src: string): Promise<void> => {
       return new Promise((resolve) => {
