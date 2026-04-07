@@ -43,10 +43,10 @@ export default function LoadingScreen({
   // Preload assets in background
   useEffect(() => {
     const mobile = window.matchMedia("(max-width: 767px)").matches;
-    // Mobile preloader shows only text animation (no video), so skip all preloading.
-    // Desktop only needs hero.mp4 (the video behind the SVG mask).
-    // Below-fold assets (portfolio-prev2.mp4, hover images) are lazy-loaded by their own components.
-    const assets: string[] = mobile ? [] : ["/hero.mp4"];
+    // Desktop needs hero.mp4 (video behind the SVG mask).
+    // Mobile needs hero-poster.jpg so the hero has an instant LCP image.
+    // Below-fold assets are lazy-loaded by their own components.
+    const assets: string[] = mobile ? ["/hero-poster.jpg"] : ["/hero.mp4"];
 
     const preloadAsset = (src: string): Promise<void> => {
       return new Promise((resolve) => {

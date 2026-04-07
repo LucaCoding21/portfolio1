@@ -69,6 +69,7 @@ export default function Hero({ ready }: HeroProps) {
           muted
           loop
           playsInline
+          poster="/hero-poster.jpg"
           aria-label="Cloverfield Studio web design showcase reel"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ objectPosition: "center 35%" }}

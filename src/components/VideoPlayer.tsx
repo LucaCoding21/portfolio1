@@ -82,7 +82,7 @@ export default function VideoPlayer({
     if (video) {
       video.currentTime = initialTime;
       video.muted = true;
-      video.play();
+      video.play().catch(() => {});
     }
 
     const vw = window.innerWidth;
@@ -132,7 +132,7 @@ export default function VideoPlayer({
     const video = videoRef.current;
     if (!video) return;
     if (video.paused) {
-      video.play();
+      video.play().catch(() => {});
       setIsPlaying(true);
     } else {
       video.pause();

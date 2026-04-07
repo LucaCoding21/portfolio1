@@ -4,13 +4,25 @@ import { useState, useRef, useEffect, useCallback } from "react";
 
 export default function AudioToggle({ isScrolled }: { isScrolled: boolean }) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const animationRef = useRef<number>(0);
   const phaseRef = useRef(0);
 
-  // Initialize audio element once
+  // Detect mobile — skip everything on mobile
   useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsMobile(!mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(!e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  // Initialize audio element only on desktop
+  useEffect(() => {
+    if (isMobile) return;
+
     const audio = new Audio("/audio/music.mp3");
     audio.loop = true;
     audio.volume = 0.5;
@@ -21,7 +33,7 @@ export default function AudioToggle({ isScrolled }: { isScrolled: boolean }) {
       audio.src = "";
       audioRef.current = null;
     };
-  }, []);
+  }, [isMobile]);
 
   const playPromiseRef = useRef<Promise<void> | null>(null);
 
@@ -84,6 +96,8 @@ export default function AudioToggle({ isScrolled }: { isScrolled: boolean }) {
     animate();
     return () => cancelAnimationFrame(animationRef.current);
   }, [isPlaying, generateWavePath]);
+
+  if (isMobile) return null;
 
   const strokeColor = isScrolled
     ? "rgba(0,0,0,0.55)"

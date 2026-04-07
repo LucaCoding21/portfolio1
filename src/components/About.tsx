@@ -46,7 +46,7 @@ export default function About({ ready }: AboutProps) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play();
+          video.play().catch(() => {});
         } else if (!playerOpen) {
           video.pause();
         }
