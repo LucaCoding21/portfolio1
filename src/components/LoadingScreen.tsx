@@ -42,14 +42,11 @@ export default function LoadingScreen({
 
   // Preload assets in background
   useEffect(() => {
-    const assets = [
-      "/hero.mp4",
-      "/portfolio-prev2.mp4",
-      "/Njagih/njagih studios.webp",
-      "/ACE/ace.webp",
-      "/clover/Clover Studio.webp",
-      "/Sophie.webp",
-    ];
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    // Mobile preloader shows only text animation (no video), so skip all preloading.
+    // Desktop only needs hero.mp4 (the video behind the SVG mask).
+    // Below-fold assets (portfolio-prev2.mp4, hover images) are lazy-loaded by their own components.
+    const assets: string[] = mobile ? [] : ["/hero.mp4"];
 
     const preloadAsset = (src: string): Promise<void> => {
       return new Promise((resolve) => {
@@ -79,7 +76,7 @@ export default function LoadingScreen({
 
     const minTimer = setTimeout(() => {
       minTimeElapsedRef.current = true;
-    }, 2000);
+    }, 800);
 
     return () => clearTimeout(minTimer);
   }, []);

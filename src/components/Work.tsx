@@ -23,6 +23,11 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
   const rightColRef = useRef<HTMLDivElement>(null);
 
   const [activeFilter, setActiveFilter] = useState(ALL_LABEL);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia("(max-width: 767px)").matches);
+  }, []);
 
   // Derive unique categories from project tags
   const categories = useMemo(() => {
@@ -185,7 +190,7 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
           {/* Left column */}
           <div ref={leftColRef} className="flex-1 flex flex-col gap-8 md:gap-10">
             {leftProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} isMobile={isMobile} />
             ))}
           </div>
 
@@ -195,7 +200,7 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
             className="flex-1 flex flex-col gap-8 md:gap-10 md:mt-40"
           >
             {rightProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard key={project.id} project={project} isMobile={isMobile} />
             ))}
           </div>
         </div>
@@ -231,42 +236,45 @@ export function ViewAllWork() {
   );
 }
 
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]; isMobile: boolean }) {
   const content = (
     <>
       <div className="relative w-full aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-black/[0.03]">
-        {/* Mobile: show hoverImage directly if available, Desktop: show cover with hover swap */}
-        <Image
-          src={project.hoverImage || project.image}
-          alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
-          fill
-          loading="lazy"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover md:hidden"
-        />
-        <Image
-          src={project.image}
-          alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
-          fill
-          loading="lazy"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className={`object-cover transition-all duration-700 ease-out hidden md:block ${
-            project.hoverImage
-              ? "group-hover:opacity-0"
-              : "group-hover:scale-[1.03]"
-          }`}
-        />
-        {project.hoverImage && (
+        {isMobile ? (
           <Image
-            src={project.hoverImage}
-            alt={`${project.name} website preview — ${project.tags.join(", ")} project by Cloverfield Studio`}
+            src={project.hoverImage || project.image}
+            alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
             fill
             loading="lazy"
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03] hidden md:block"
+            sizes="100vw"
+            className="object-cover"
           />
+        ) : (
+          <>
+            <Image
+              src={project.image}
+              alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
+              fill
+              loading="lazy"
+              sizes="50vw"
+              className={`object-cover transition-all duration-700 ease-out ${
+                project.hoverImage
+                  ? "group-hover:opacity-0"
+                  : "group-hover:scale-[1.03]"
+              }`}
+            />
+            {project.hoverImage && (
+              <Image
+                src={project.hoverImage}
+                alt={`${project.name} website preview — ${project.tags.join(", ")} project by Cloverfield Studio`}
+                fill
+                loading="lazy"
+                sizes="50vw"
+                className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03]"
+              />
+            )}
+          </>
         )}
-
       </div>
 
       <div className="mt-4 border-t border-black/25 pt-3">

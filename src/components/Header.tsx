@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NAV_ITEMS } from "@/data/projects";
 import MobileMenu from "./MobileMenu";
+import AudioToggle from "./AudioToggle";
 
 export default function Header({ solid = false }: { solid?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,6 +70,9 @@ export default function Header({ solid = false }: { solid?: boolean }) {
               {item.label}
             </a>
           ))}
+
+          {/* Audio Toggle */}
+          <AudioToggle isScrolled={isScrolled} />
 
           {/* CTA Button */}
           <a

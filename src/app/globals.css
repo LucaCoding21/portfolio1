@@ -9,9 +9,6 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-serif: var(--font-cormorant);
-  --font-display: var(--font-playfair);
-  --font-brand: var(--font-logo);
 }
 
 /* ================================
@@ -51,30 +48,6 @@ body {
    are cleaner as reusable classes.
    ================================ */
 
-.logo {
-  font-family: var(--font-logo), Georgia, serif;
-  font-size: 28px;
-  font-style: italic;
-  letter-spacing: -0.01em;
-  text-decoration: none;
-  color: rgba(0, 0, 0, 0.8);
-}
-
-.headline {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(3rem, 10vw, 7rem);
-  font-weight: 400;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-}
-
-.section-heading {
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  margin-bottom: 24px;
-}
 
 /* ================================
    PRELOADER

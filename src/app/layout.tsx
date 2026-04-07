@@ -1,39 +1,15 @@
 import type { Metadata } from "next";
 import {
   Geist,
-  Cormorant_Garamond,
-  Playfair_Display,
-  Instrument_Serif,
   Outfit,
 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import CustomCursor from "@/components/CustomCursor";
+import CursorLoader from "@/components/CursorLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-});
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-logo",
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
 });
 
 const outfit = Outfit({
@@ -105,7 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script id="gtm" strategy="afterInteractive">
+        <Script id="gtm" strategy="lazyOnload">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -143,7 +119,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
       </head>
       <body
-        className={`${geistSans.variable} ${cormorant.variable} ${playfair.variable} ${instrumentSerif.variable} ${outfit.variable} antialiased`}
+        className={`${geistSans.variable} ${outfit.variable} antialiased`}
       >
         <noscript>
           <iframe
@@ -153,7 +129,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
-        <CustomCursor />
+        <CursorLoader />
         {children}
       </body>
     </html>
