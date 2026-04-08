@@ -137,35 +137,25 @@ export default function About({ ready }: AboutProps) {
     const id = requestAnimationFrame(() => {
       mm = gsap.matchMedia();
 
-      // Desktop: dramatic scale animation
+      // Desktop: dramatic scale animation — single timeline so it scrubs smoothly end-to-end
       mm.add("(min-width: 768px)", () => {
-        const st1 = ScrollTrigger.create({
+        gsap.set(inner, { scale: 0.8, borderRadius: "24px" });
+
+        const tl = gsap.timeline();
+        tl.to(inner, { scale: 0.7, borderRadius: "12px", ease: "none", duration: 1 })
+          .to(inner, { scale: 0.55, borderRadius: "28px", ease: "none", duration: 1 });
+
+        const st = ScrollTrigger.create({
           trigger: videoWrapperRef.current,
           start: "top 95%",
-          end: "top 20%",
-          scrub: 0.6,
-          animation: gsap.fromTo(
-            inner,
-            { scale: 0.8, borderRadius: "24px" },
-            { scale: 0.7, borderRadius: "12px", ease: "none" }
-          ),
-        });
-
-        const st2 = ScrollTrigger.create({
-          trigger: videoWrapperRef.current,
-          start: "bottom 80%",
           end: "bottom 10%",
           scrub: 0.6,
-          animation: gsap.fromTo(
-            inner,
-            { scale: 0.7, borderRadius: "12px" },
-            { scale: 0.55, borderRadius: "28px", ease: "none" }
-          ),
+          animation: tl,
         });
 
         return () => {
-          st1.kill();
-          st2.kill();
+          st.kill();
+          tl.kill();
         };
       });
 

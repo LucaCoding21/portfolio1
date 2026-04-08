@@ -298,6 +298,36 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
             ))}
           </div>
         )}
+        {project.quote && project.quote.texts.length > 0 && (
+          <div className="mt-4 flex gap-3">
+            <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-black/5 mt-0.5">
+              <Image
+                src={project.quote.avatar}
+                alt={project.quote.author}
+                fill
+                sizes="44px"
+                className="object-cover"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-col gap-1.5">
+                {project.quote.texts.map((text, i) => (
+                  <div
+                    key={i}
+                    className={`bg-black/[0.05] px-4 py-2.5 ${i === 0 ? "rounded-2xl rounded-tl-md" : "rounded-2xl"}`}
+                  >
+                    <p className="text-[13.5px] text-black/75 leading-snug">
+                      {text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-black/45 mt-1.5 ml-2">
+                <span className="font-medium text-black/60">{project.quote.author}</span> · {project.quote.role}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
