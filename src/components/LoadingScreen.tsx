@@ -83,30 +83,42 @@ export default function LoadingScreen({
 
   // Cycle through words — desktop stops on last "Hello", mobile loops
   useEffect(() => {
+    const stepDelay = isMobile ? 280 : 150;
     if (index === words.length - 1) {
       wordsCompleteRef.current = true;
       firstCycleRef.current = false;
       if (isMobile) {
-        const timeout = setTimeout(() => setIndex(0), 150);
+        const timeout = setTimeout(() => setIndex(0), stepDelay);
         return () => clearTimeout(timeout);
       }
       return;
     }
     const timeout = setTimeout(
       () => setIndex(index + 1),
-      index === 0 && firstCycleRef.current ? 1000 : 150
+      index === 0 && firstCycleRef.current ? 1000 : stepDelay
     );
     return () => clearTimeout(timeout);
   }, [index, isMobile]);
 
-  // Fade in text on mount
+  // Desktop: single fade-in on mount. Mobile: animate every word change.
   useEffect(() => {
     if (!mounted) return;
-    const el = isMobile ? mobileTextRef.current : textRef.current;
-    if (el) {
-      gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.2 });
+    if (isMobile) {
+      const el = mobileTextRef.current;
+      if (el) {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+        );
+      }
+    } else {
+      const el = textRef.current;
+      if (el && index === 0) {
+        gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.2 });
+      }
     }
-  }, [mounted, isMobile]);
+  }, [mounted, isMobile, index]);
 
   // Exit animation
   const triggerExit = useCallback(() => {
@@ -206,7 +218,7 @@ export default function LoadingScreen({
         <div className="flex items-center justify-center h-full">
           <span
             ref={mobileTextRef}
-            className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(3rem,15vw,5rem)] uppercase tracking-tight opacity-0"
+            className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(3rem,15vw,5rem)] uppercase tracking-tight will-change-[transform,opacity]"
           >
             {words[index]}
           </span>

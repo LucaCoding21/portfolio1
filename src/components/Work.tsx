@@ -106,9 +106,9 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
           </span>
         </div>
         <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight">
-          Work That Speaks for
+          Work That Speaks
           <br />
-          Itself
+          for Itself
         </h2>
       </div>
 
@@ -287,11 +287,11 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
           </p>
         </div>
         {project.kpis && project.kpis.length > 0 && (
-          <div className="mt-2.5 flex flex-wrap gap-2">
+          <div className="mt-2.5 flex flex-wrap gap-1 md:gap-2">
             {project.kpis.map((kpi) => (
               <span
                 key={kpi}
-                className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full"
+                className="text-[9px] md:text-[11px] font-medium text-emerald-700 bg-emerald-50 px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full whitespace-nowrap"
               >
                 {kpi}
               </span>
