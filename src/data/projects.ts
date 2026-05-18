@@ -6,7 +6,9 @@ export interface Project {
   kpis?: string[];
   tags: string[];
   image: string;
+  imagePosition?: string;
   hoverImage?: string;
+  hoverImagePosition?: string;
   url?: string;
   column?: "left" | "right";
   quote?: {
@@ -18,6 +20,35 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  {
+    id: 9,
+    name: "Transforming Landscapes",
+    description: "Landscape design and build studio shaping outdoor spaces across BC.",
+    tags: ["Local Business"],
+    image: "/transforming/transforming-cover.jpg",
+    hoverImage: "/transforming/transforming.png",
+    url: "https://www.transforminglandscapes.ca/",
+  },
+  {
+    id: 10,
+    name: "Bloomkey",
+    description: "Floral studio crafting bespoke arrangements for weddings and events.",
+    tags: ["Local Business"],
+    image: "/bloomkey/bloomkey-cover.jpeg",
+    imagePosition: "58% center",
+    hoverImage: "/bloomkey/bloomkey.png",
+    hoverImagePosition: "center 75%",
+    url: "https://www.bloomkey.ca/",
+  },
+  {
+    id: 11,
+    name: "Afterparty",
+    description: "Event production company designing unforgettable nights.",
+    tags: ["Sports & Events"],
+    image: "/afterparty/afterparty-cover.jpg",
+    hoverImage: "/afterparty/afterparty.png",
+    url: "https://www.afterparty.space/",
+  },
   {
     id: 1,
     name: "ACE",
@@ -121,7 +152,7 @@ export const projects: Project[] = [
   },
 ];
 
-export const HOMEPAGE_PROJECT_IDS = [1, 3, 6, 4, 8];
+export const HOMEPAGE_PROJECT_IDS = [9, 10, 11, 1, 3, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );

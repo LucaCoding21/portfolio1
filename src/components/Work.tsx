@@ -70,7 +70,7 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
       const parallaxPx = rightCol.offsetHeight * Math.abs(PARALLAX) / 100;
       const sectionH = section.offsetHeight;
       const progress = sectionH / (sectionH + window.innerHeight);
-      section.style.marginBottom = `-${Math.round(parallaxPx * progress - 120)}px`;
+      section.style.marginBottom = `-${Math.round(parallaxPx * progress - 240)}px`;
 
       gsap.to(rightCol, {
         yPercent: PARALLAX,
@@ -247,6 +247,7 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
             loading="lazy"
             sizes="100vw"
             className="object-cover"
+            style={project.hoverImage && project.hoverImagePosition ? { objectPosition: project.hoverImagePosition } : undefined}
           />
         ) : (
           <>
@@ -261,6 +262,7 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
                   ? "group-hover:opacity-0"
                   : "group-hover:scale-[1.03]"
               }`}
+              style={project.imagePosition ? { objectPosition: project.imagePosition } : undefined}
             />
             {project.hoverImage && (
               <Image
@@ -270,6 +272,7 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
                 loading="lazy"
                 sizes="50vw"
                 className="object-cover transition-all duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:scale-[1.03]"
+                style={project.hoverImagePosition ? { objectPosition: project.hoverImagePosition } : undefined}
               />
             )}
           </>
