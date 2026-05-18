@@ -113,11 +113,10 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
       </div>
 
       {/* Aggregate stats bar */}
-      <div className="max-w-[1400px] mx-auto mb-14 md:mb-20 grid grid-cols-3 border-t border-b border-black/10 py-8 md:py-10">
+      <div className="max-w-[1400px] mx-auto mb-14 md:mb-20 grid grid-cols-2 border-t border-b border-black/10 py-10 md:py-14">
         {[
-          { stat: "12+", label: "Sites launched" },
-          { stat: "< 7 days", label: "Avg. time to launch" },
-          { stat: "0", label: "Templates used. Ever." },
+          { stat: "+35%", label: "Avg. conversion lift" },
+          { stat: "15+", label: "Websites shipped" },
         ].map(({ stat, label }) => (
           <div key={label} className="flex flex-col gap-1 px-4 md:px-8 border-r border-black/10 last:border-r-0 first:pl-0">
             <p className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.4rem,3.5vw,2.8rem)] tracking-tight leading-none">
