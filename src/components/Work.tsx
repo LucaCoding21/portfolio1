@@ -98,9 +98,6 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
     >
       <div className="max-w-[1400px] mx-auto mb-6 md:mb-16 text-center">
         <div className="inline-flex items-center gap-2.5 mb-4 md:mb-6">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#15803d">
-            <path d="M12 2c-1.5 0-3 1.5-3 3.5C9 7.5 10 9 12 10c2-1 3-2.5 3-4.5C15 3.5 13.5 2 12 2zM2 12c0-1.5 1.5-3 3.5-3C7.5 9 9 10 10 12c-1 2-2.5 3-4.5 3C3.5 15 2 13.5 2 12zm20 0c0 1.5-1.5 3-3.5 3-2 0-3.5-1-4.5-3 1-2 2.5-3 4.5-3 2 0 3.5 1.5 3.5 3zM12 22c1.5 0 3-1.5 3-3.5 0-2-1-3.5-3-4.5-2 1-3 2.5-3 4.5 0 2 1.5 3.5 3 3.5z" />
-          </svg>
           <span className="text-xs md:text-sm uppercase tracking-[0.2em] font-[family-name:var(--font-geist-sans)] text-black/70 font-semibold">
             Case Studies
           </span>
