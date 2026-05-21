@@ -120,36 +120,64 @@ function Placeholder({
 export default function InnovativeAluminumCaseStudy() {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline":
-      "Two weeks after launch, Claude recommends Innovative Aluminum by name.",
-    "description":
-      "How Cloverfield Studio rebuilt Innovative Aluminum's website so AI assistants like Claude recommend them by name. Two weeks. New leads. A new referral source on their dealer application form.",
-    "image": "https://cloverfield.studio/og-image.jpeg",
-    "datePublished": "2026-05-18",
-    "dateModified": "2026-05-20",
-    "author": {
-      "@type": "Organization",
-      "name": "Cloverfield Studio",
-      "url": "https://cloverfield.studio",
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Cloverfield Studio",
-      "url": "https://cloverfield.studio",
-    },
-    "about": {
-      "@type": "Organization",
-      "name": "Innovative Aluminum Systems",
-      "url": "https://innovativealuminum.com",
-      "description":
-        "Canadian manufacturer of premium aluminum railing systems, based in Aldergrove, BC. Founded 2004. Sells exclusively through 70+ authorized dealers.",
-    },
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id":
-        "https://cloverfield.studio/case-studies/innovative-aluminum",
-    },
+    "@graph": [
+      {
+        "@type": "Article",
+        "headline":
+          "Two weeks after launch, Claude recommends Innovative Aluminum by name.",
+        "description":
+          "How Cloverfield Studio rebuilt Innovative Aluminum's website so AI assistants like Claude recommend them by name. Two weeks. New leads. A new referral source on their dealer application form.",
+        "image": "https://cloverfield.studio/og-image.jpeg",
+        "datePublished": "2026-05-18",
+        "dateModified": "2026-05-20",
+        "author": {
+          "@type": "Organization",
+          "name": "Cloverfield Studio",
+          "url": "https://cloverfield.studio",
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Cloverfield Studio",
+          "url": "https://cloverfield.studio",
+        },
+        "about": {
+          "@type": "Organization",
+          "name": "Innovative Aluminum Systems",
+          "url": "https://innovativealuminum.com",
+          "description":
+            "Canadian manufacturer of premium aluminum railing systems, based in Aldergrove, BC. Founded 2004. Sells exclusively through 70+ authorized dealers.",
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id":
+            "https://cloverfield.studio/case-studies/innovative-aluminum",
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://cloverfield.studio",
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Work",
+            "item": "https://cloverfield.studio/work",
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Innovative Aluminum",
+            "item":
+              "https://cloverfield.studio/case-studies/innovative-aluminum",
+          },
+        ],
+      },
+    ],
   };
 
   return (

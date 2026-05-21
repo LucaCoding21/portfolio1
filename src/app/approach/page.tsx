@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://cloverfield.studio/approach",
   },
+  // Temporarily blocked from indexing while content is in progress (Lorem Ipsum
+  // placeholders below). Remove this `robots` block once real content ships so
+  // Google can index the page.
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 function Eyebrow({ children }: { children: React.ReactNode }) {

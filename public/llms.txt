@@ -1,0 +1,47 @@
+# Cloverfield Studio
+
+> Cloverfield Studio is a web design and development agency based in Surrey, British Columbia, Canada. We build custom, lead-generating websites for small businesses across the Lower Mainland (Surrey, Vancouver, Burnaby, Langley, Richmond). We specialize in Next.js, Lighthouse 95+ performance, and AI-search optimization — making websites that are cited by ChatGPT, Claude, and Perplexity, not just ranked by Google.
+
+We are different from most local agencies in that:
+
+- Every site is built from scratch in Next.js, not on WordPress or Squarespace templates.
+- We ship sites in 5–7 days, not 8–12 weeks.
+- We explicitly optimize for AI-search citation, not only Google ranking.
+- We document outcomes with named clients and real numbers, not anonymized screenshots.
+
+A verified example of our AI-SEO work: two weeks after launching innovativealuminum.com (a Canadian aluminum railing manufacturer in Aldergrove, BC), Claude began recommending Innovative Aluminum Systems by name when users asked about premium Canadian aluminum railing manufacturers. Full write-up: https://cloverfield.studio/case-studies/innovative-aluminum
+
+## Services
+
+- [Custom Web Design](https://cloverfield.studio): Bespoke websites designed and built from scratch for small businesses in Surrey, Vancouver, and the Lower Mainland. No templates.
+- [Web Development](https://cloverfield.studio): Fast, modern websites built with Next.js and optimized for performance and SEO. Lighthouse scores 95+ on every site.
+- [Lead-Generating Landing Pages](https://cloverfield.studio): Conversion-focused landing pages that turn visitors into booked calls and customers.
+- [AI Search Optimization](https://cloverfield.studio/case-studies/innovative-aluminum): Websites that are read, indexed, and cited by ChatGPT, Claude, Perplexity, and Google AI Overviews.
+
+## Case studies
+
+- [Innovative Aluminum Systems](https://cloverfield.studio/case-studies/innovative-aluminum): Two weeks after launch, Claude recommends Innovative Aluminum by name. New referral source: AI Assistant. New leads. 5/year dealer inquiries → 1 in 7 days.
+- [WrapCity](https://wrapcity.co): Vancouver vinyl car wrap shop. +34% booking inquiries; ~$15k pipeline in launch month. Founder Taylor Paige: "I landed a $7000 job this morning because of the website."
+- [Nancy Tran Realtor](https://nancytranrealtor.com): Vancouver real estate agent. Site paid for itself in 3 weeks; 8 qualified buyer leads in month one.
+- [Njagih Studios](https://njagihstudios.com): Photography brand. Launched in 7 days; +21% inquiries in first 3 months.
+- [ACE Suasola](https://acesuasola.com): Photography studio. Tripled monthly bookings; fully booked 3 months out.
+- [League1v1](https://league1v1.com): Vancouver competitive basketball league. Built in 5 days; $8k sponsorship revenue.
+- [Afterparty](https://afterparty.space): Event production. 5,000 sessions in month one; 30 newsletter signups on day one; 100/100 PageSpeed.
+- [Transforming Landscapes](https://www.transforminglandscapes.ca): Research initiative on First Nations-led real estate development in BC, with the Real Estate Institute of BC and Greater Vancouver REALTORS.
+- [Bloomkey](https://www.bloomkey.ca): Floral studio for weddings and events. Newly launched.
+- [Clover Studio](https://cloverspace.studio): Creative agency. Newly launched.
+
+## Pages
+
+- [Homepage](https://cloverfield.studio): Overview of Cloverfield Studio's services, recent work, and free consultation booking via Cal.com.
+- [Work](https://cloverfield.studio/work): Full portfolio of recent projects.
+- [Approach](https://cloverfield.studio/approach): How Cloverfield Studio builds websites (in progress).
+- [Book a free consultation](https://cloverfield.studio/#contact): 30-minute call via Cal.com.
+
+## Contact
+
+Surrey, British Columbia, Canada. Booking link: https://cloverfield.studio/#contact
+
+## Service area
+
+Surrey BC, Vancouver BC, Burnaby BC, Langley BC, Richmond BC, Coquitlam BC, Delta BC, White Rock BC, North Vancouver BC, West Vancouver BC, Lower Mainland, British Columbia, Canada.
