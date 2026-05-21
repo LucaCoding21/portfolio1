@@ -47,7 +47,7 @@ export const projects: Project[] = [
       {
         name: "Greater Vancouver REALTORS",
         src: "/transforming/gvr-logo.png",
-        className: "h-11 md:h-[3.25rem] w-auto object-contain",
+        className: "h-9 md:h-11 w-auto object-contain",
       },
     ],
   },

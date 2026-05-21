@@ -5,17 +5,35 @@ import gsap from "gsap";
 
 type FAQItem = { q: string; a: string };
 
-const LOREM =
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-
 const FAQ_ITEMS: FAQItem[] = [
-  { q: "Lorem ipsum dolor sit amet?", a: LOREM },
-  { q: "Consectetur adipiscing elit?", a: LOREM },
-  { q: "Sed do eiusmod tempor incididunt?", a: LOREM },
-  { q: "Ut labore et dolore magna aliqua?", a: LOREM },
-  { q: "Ut enim ad minim veniam?", a: LOREM },
-  { q: "Quis nostrud exercitation ullamco?", a: LOREM },
-  { q: "Duis aute irure dolor in reprehenderit?", a: LOREM },
+  {
+    q: "How long does a project take?",
+    a: "Most sites launch in 7 to 14 days from kickoff. Larger builds with bigger page counts, custom CMS work, or multi-language take three to four weeks. We'll give you a realistic timeline before any money changes hands.",
+  },
+  {
+    q: "How much does a website cost?",
+    a: "Pricing scales with scope, but every project includes the same baseline: custom design, custom code, Lighthouse 95+, initial SEO, and post-launch support. Book a call and we'll quote against your specific goals. No template tiers, no surprise upcharges.",
+  },
+  {
+    q: "Do you only work with businesses in Surrey BC?",
+    a: "No. We're based in Surrey and a chunk of our work is local, but most of our clients are remote, across Vancouver, the Lower Mainland, Canada, and the US. The process is identical either way.",
+  },
+  {
+    q: "What's included in the monthly retainer?",
+    a: "Performance monitoring, content updates, A/B tests on the sections that matter, and proactive recommendations when we spot something underperforming. The retainer is optional and cancellable any month. It's there because most sites are worth improving, not because we want to lock you in.",
+  },
+  {
+    q: "Why don't you do ongoing SEO?",
+    a: "Because that's a different specialty. We get you ranking at launch for the searches that close: buyer-intent, branded, local. Ongoing content strategy, link building, and topical authority work is best handled by agencies that do nothing else. We'll happily recommend a few.",
+  },
+  {
+    q: "Can we keep our existing branding?",
+    a: "Yes. Most clients come in with branding they want to honour. We extend it into a web language (typography, motion, layout system) rather than reinventing the wheel.",
+  },
+  {
+    q: "Do we own the code at the end?",
+    a: "Yes. Your repo, your hosting account, your domain, your everything. We don't build on a proprietary platform and we don't keep anything hostage. If we ever stop working together, the site keeps running exactly as it is.",
+  },
 ];
 
 function FAQRow({ item, index }: { item: FAQItem; index: number }) {

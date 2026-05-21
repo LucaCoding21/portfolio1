@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "@/components/Header";
 import Work from "@/components/Work";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -8,7 +7,6 @@ import Footer from "@/components/Footer";
 export default function WorkPage() {
   return (
     <div className="min-h-screen bg-white text-black">
-      <Header solid />
       <div className="relative z-10 bg-white">
         <div className="pt-28">
           <Work />

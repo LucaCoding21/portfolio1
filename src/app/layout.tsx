@@ -6,6 +6,7 @@ import {
 import Script from "next/script";
 import "./globals.css";
 import CursorLoader from "@/components/CursorLoader";
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -340,6 +341,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         <CursorLoader />
+        <Header />
         {children}
       </body>
     </html>

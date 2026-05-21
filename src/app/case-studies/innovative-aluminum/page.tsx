@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CaseStudyHeroVideo from "@/components/CaseStudyHeroVideo";
 import CaseStudySidebar from "@/components/CaseStudySidebar";
@@ -186,8 +185,6 @@ export default function InnovativeAluminumCaseStudy() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
-      <Header solid />
 
       {/* Breadcrumb */}
       <section className="pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-10">

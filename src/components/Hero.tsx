@@ -41,10 +41,14 @@ export default function Hero({ ready }: HeroProps) {
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
       onComplete: () => {
-        // Free GPU memory after animation settles
-        gsap.set([headingRef.current, subtextRef.current], {
-          clearProps: "willChange",
-        });
+        // Free GPU memory after animation settles. Guard refs in case
+        // the component unmounted before this fires (e.g., route change).
+        const targets = [headingRef.current, subtextRef.current].filter(
+          (el): el is HTMLElement => el !== null,
+        );
+        if (targets.length) {
+          gsap.set(targets, { clearProps: "willChange" });
+        }
       },
     });
 
@@ -59,6 +63,10 @@ export default function Hero({ ready }: HeroProps) {
         0.5
       );
     }
+
+    return () => {
+      tl.kill();
+    };
   }, [ready]);
 
   return (

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { NAV_ITEMS } from "@/data/projects";
 
@@ -14,6 +16,8 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const navItemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const ctaRef = useRef<HTMLAnchorElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   // Build GSAP timeline once on mount
   useEffect(() => {
@@ -90,13 +94,28 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     };
   }, []);
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // For same-page hash links, smooth-scroll instead of routing
+    const isHomeHash = href.startsWith("/#");
+    const hash = isHomeHash ? href.slice(1) : href.startsWith("#") ? href : null;
+    const onHome = pathname === "/";
+
+    if (hash && onHome) {
+      e.preventDefault();
+      onClose();
+      setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      return;
+    }
+
+    // Cross-page navigation — close menu, then let the router push
+    e.preventDefault();
     onClose();
-    // Small delay so close animation starts before scroll
     setTimeout(() => {
-      const el = document.querySelector(href);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+      router.push(href);
+    }, 200);
   };
 
   return (
@@ -108,35 +127,29 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       {/* Nav items */}
       <nav className="flex flex-col gap-2">
         {NAV_ITEMS.map((item, i) => (
-          <a
+          <Link
             key={item.label}
             ref={(el) => { navItemsRef.current[i] = el; }}
             href={item.href}
-            onClick={(e) => {
-              e.preventDefault();
-              handleNavClick(item.href);
-            }}
+            onClick={(e) => handleNavClick(e, item.href)}
             className="block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] text-black transition-colors duration-300 hover:text-[#CDFF50]"
             style={{ opacity: 0 }}
           >
             {item.label}.
-          </a>
+          </Link>
         ))}
       </nav>
 
       {/* CTA */}
-      <a
+      <Link
         ref={ctaRef}
-        href="#contact"
-        onClick={(e) => {
-          e.preventDefault();
-          handleNavClick("#contact");
-        }}
+        href="/#contact"
+        onClick={(e) => handleNavClick(e, "/#contact")}
         className="mt-12 self-start px-8 py-4 rounded-full bg-black text-white text-lg font-[family-name:var(--font-outfit)] font-medium transition-colors duration-300 hover:bg-[#CDFF50] hover:text-black"
         style={{ opacity: 0 }}
       >
         Get Started
-      </a>
+      </Link>
     </div>
   );
 }

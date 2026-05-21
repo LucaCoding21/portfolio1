@@ -1,17 +1,24 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/data/projects";
 import MobileMenu from "./MobileMenu";
 import AudioToggle from "./AudioToggle";
 
-export default function Header({ solid = false }: { solid?: boolean }) {
+export default function Header({ solid }: { solid?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+  const pathname = usePathname();
 
-  const isScrolled = solid || scrolled;
+  // Homepage stays transparent over its dark hero; every other route is solid.
+  // Explicit `solid` prop still wins if a page wants to override.
+  const isHome = pathname === "/";
+  const effectiveSolid = solid ?? !isHome;
+  const isScrolled = effectiveSolid || scrolled;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +41,17 @@ export default function Header({ solid = false }: { solid?: boolean }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Reset transient state when route changes — prevents a hidden/scrolled header
+  // on the previous page from carrying over. (The first scroll event after this
+  // will repopulate lastScrollY, so no need to touch the ref here.)
+  const [trackedPath, setTrackedPath] = useState(pathname);
+  if (trackedPath !== pathname) {
+    setTrackedPath(pathname);
+    setHidden(false);
+    setScrolled(false);
+    setMenuOpen(false);
+  }
+
   return (
     <header className={`fixed left-0 right-0 z-50 flex justify-center px-4 py-4 transition-all duration-300 ${hidden ? "-top-24" : "top-0"}`}>
       <div
@@ -46,19 +64,19 @@ export default function Header({ solid = false }: { solid?: boolean }) {
         }`}
       >
         {/* Logo */}
-        <a
+        <Link
           href="/"
           className={`font-[family-name:var(--font-outfit)] font-semibold text-2xl tracking-tight transition-colors duration-500 ${
             menuOpen ? "text-black/90" : isScrolled ? "text-black/90" : "text-white"
           }`}
         >
           cloverfield
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-2">
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               className={`px-4 py-2 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
@@ -68,15 +86,15 @@ export default function Header({ solid = false }: { solid?: boolean }) {
               }`}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
 
           {/* Audio Toggle */}
           <AudioToggle isScrolled={isScrolled} />
 
           {/* CTA Button */}
-          <a
-            href="#contact"
+          <Link
+            href="/#contact"
             className={`ml-2 px-6 py-2.5 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
               isScrolled
                 ? "bg-black text-white hover:bg-[#CDFF50] hover:text-black"
@@ -84,7 +102,7 @@ export default function Header({ solid = false }: { solid?: boolean }) {
             }`}
           >
             Get Started
-          </a>
+          </Link>
         </nav>
 
         {/* Hamburger (mobile) */}
