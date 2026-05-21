@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { Fragment, useEffect, useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -52,25 +52,34 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
     ...filtered.filter((p) => p.column === "right"),
   ];
 
-  // Parallax: right column scrolls faster (desktop only)
+  // Parallax: right column scrolls faster (desktop only) — homepage only.
+  // On /work the right column is too tall and the effect creates a visible
+  // imbalance at the bottom (left col alone while right scrolled away).
   useEffect(() => {
-    if (!rightColRef.current || !sectionRef.current) return;
+    if (showFilters) return;
+    if (!rightColRef.current || !leftColRef.current || !sectionRef.current) return;
 
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 768px)", () => {
       const rightCol = rightColRef.current!;
+      const leftCol = leftColRef.current!;
       const section = sectionRef.current!;
       const PARALLAX = -35;
 
       // The parallax translates the right column up (CSS transform),
       // but the DOM still reserves the original height — creating a gap.
-      // Compensate by pulling the section bottom up by the expected shift
-      // at the point the section bottom reaches the viewport bottom.
+      // Pull the next section up to meet the visual bottom, capped so we
+      // never pull above the left column's bottom (which would bleed into Contact).
       const parallaxPx = rightCol.offsetHeight * Math.abs(PARALLAX) / 100;
       const sectionH = section.offsetHeight;
       const progress = sectionH / (sectionH + window.innerHeight);
-      section.style.marginBottom = `-${Math.round(parallaxPx * progress - 240)}px`;
+      const desired = parallaxPx * progress - 240;
+      const rightDomBottom = rightCol.offsetTop + rightCol.offsetHeight;
+      const leftDomBottom = leftCol.offsetTop + leftCol.offsetHeight;
+      const maxPullUp = Math.max(0, rightDomBottom - leftDomBottom - 40);
+      const pullUp = Math.max(0, Math.min(desired, maxPullUp));
+      section.style.marginBottom = `-${Math.round(pullUp)}px`;
 
       gsap.to(rightCol, {
         yPercent: PARALLAX,
@@ -88,7 +97,7 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
       mm.revert();
       if (sectionRef.current) sectionRef.current.style.marginBottom = "";
     };
-  }, [filtered]);
+  }, [filtered, showFilters]);
 
   return (
     <section
@@ -124,6 +133,78 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
             </p>
           </div>
         ))}
+      </div>
+
+      {/* Featured case study card */}
+      <div className="max-w-[1400px] mx-auto mb-14 md:mb-20">
+        <Link
+          href="/case-studies/innovative-aluminum"
+          className="group relative block overflow-hidden rounded-2xl md:rounded-3xl bg-black aspect-[4/3] md:aspect-[21/9] cursor-read"
+        >
+            {/* Looping video background */}
+            <video
+              src="/homepage-hero.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+
+            {/* Gradient overlay for legibility */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/85" />
+
+            {/* Client logo · top-right corner */}
+            <div className="absolute top-6 right-6 md:top-10 md:right-10 lg:top-14 lg:right-14 z-10">
+              <Image
+                src="/ias-newgold.svg"
+                alt="Innovative Aluminum Systems"
+                width={473}
+                height={160}
+                className="h-7 md:h-9 lg:h-11 w-auto"
+                priority
+              />
+            </div>
+
+            {/* Content */}
+            <div className="relative h-full p-6 md:p-10 lg:p-14 flex flex-col">
+              {/* Top: eyebrow + title */}
+              <div className="flex-1">
+                <div className="mb-5 md:mb-8">
+                  <span className="text-[11px] md:text-xs uppercase tracking-[0.22em] text-white font-bold font-[family-name:var(--font-geist-sans)]">
+                    Featured Case Study
+                  </span>
+                </div>
+                <h3 className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(1.6rem,4vw,3.8rem)] tracking-tight leading-[1.05] max-w-[22ch]">
+                  How Innovative Aluminum got a new customer through AI search.
+                </h3>
+              </div>
+
+              {/* Bottom: body + arrow */}
+              <div className="flex items-end justify-between gap-6 md:gap-10">
+                <p className="text-white/80 text-xs md:text-sm lg:text-base max-w-[42ch] leading-relaxed font-[family-name:var(--font-geist-sans)]">
+                  From a slow, generic manufacturer site to a premium digital presence built to be found. Their first two customers arrived organically, seven days after launch.
+                </p>
+
+                <div className="shrink-0 flex items-center justify-center">
+                  <svg
+                    className="h-6 md:h-10 lg:h-14 w-auto text-white transition-transform duration-500 ease-out group-hover:translate-x-3"
+                    viewBox="0 0 50 14"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.75}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M4 7 H44" />
+                    <path d="M36 1 L44 7 L36 13" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+        </Link>
       </div>
 
       {/* Mobile filter pills — horizontal scroll */}
@@ -182,24 +263,33 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
         </div>}
 
         {/* Project columns */}
-        <div className="flex-1 flex flex-col md:flex-row gap-8 md:gap-16 overflow-hidden">
-          {/* Left column */}
-          <div ref={leftColRef} className="flex-1 flex flex-col gap-8 md:gap-10">
-            {leftProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} isMobile={isMobile} />
+        {showFilters ? (
+          // /work: CSS multi-column auto-balances both columns
+          <div className="flex-1 md:columns-2 md:gap-16">
+            {filtered.map((project) => (
+              <div key={project.id} className="mb-8 md:mb-10 break-inside-avoid">
+                <ProjectCard project={project} isMobile={isMobile} />
+              </div>
             ))}
           </div>
-
-          {/* Right column — offset down + parallax (desktop only) */}
-          <div
-            ref={rightColRef}
-            className="flex-1 flex flex-col gap-8 md:gap-10 md:mt-40"
-          >
-            {rightProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} isMobile={isMobile} />
-            ))}
+        ) : (
+          // Homepage: staggered flex columns + parallax
+          <div className="flex-1 flex flex-col md:flex-row gap-8 md:gap-16 overflow-hidden">
+            <div ref={leftColRef} className="flex-1 flex flex-col gap-8 md:gap-10">
+              {leftProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} isMobile={isMobile} />
+              ))}
+            </div>
+            <div
+              ref={rightColRef}
+              className="flex-1 flex flex-col gap-8 md:gap-10 md:mt-40"
+            >
+              {rightProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} isMobile={isMobile} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
     </section>
@@ -285,6 +375,27 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
             {project.tags.join("  ·  ")}
           </p>
         </div>
+        {project.partnerLogos && project.partnerLogos.length > 0 && (
+          <div className="mt-3 flex flex-col gap-2">
+            <p className="text-[10px] uppercase tracking-[0.22em] text-black/40 font-medium">
+              Built for
+            </p>
+            <div className="flex items-center gap-3 md:gap-4 flex-wrap">
+              {project.partnerLogos.map((logo, i) => (
+                <Fragment key={logo.src}>
+                  {i > 0 && (
+                    <span className="text-base text-black/35 font-light">+</span>
+                  )}
+                  <img
+                    src={logo.src}
+                    alt={logo.name}
+                    className={logo.className ?? "h-7 md:h-9 w-auto object-contain"}
+                  />
+                </Fragment>
+              ))}
+            </div>
+          </div>
+        )}
         {project.kpis && project.kpis.length > 0 && (
           <div className="mt-2.5 flex flex-wrap gap-1 md:gap-2">
             {project.kpis.map((kpi) => (

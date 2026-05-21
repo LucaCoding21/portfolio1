@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-type CursorState = "default" | "hover" | "play" | "view";
+type CursorState = "default" | "hover" | "play" | "view" | "read" | "site" | "book";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
@@ -12,6 +12,9 @@ export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const playRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<HTMLDivElement>(null);
+  const readRef = useRef<HTMLDivElement>(null);
+  const siteRef = useRef<HTMLDivElement>(null);
+  const bookRef = useRef<HTMLDivElement>(null);
   const [cursorState, setCursorState] = useState<CursorState>("default");
   const [isVisible, setIsVisible] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -42,6 +45,9 @@ export default function CustomCursor() {
     let currentState: CursorState = "default";
 
     const resolveState = (el: HTMLElement): CursorState => {
+      if (el.classList.contains("cursor-book") || el.closest(".cursor-book")) return "book";
+      if (el.classList.contains("cursor-site") || el.closest(".cursor-site")) return "site";
+      if (el.classList.contains("cursor-read") || el.closest(".cursor-read")) return "read";
       if (el.classList.contains("cursor-play") || el.closest(".cursor-play")) return "play";
       if (el.classList.contains("cursor-view") || el.closest(".cursor-view")) return "view";
       if (
@@ -146,31 +152,70 @@ export default function CustomCursor() {
     const ring = ringRef.current;
     const play = playRef.current;
     const view = viewRef.current;
-    if (!dot || !ring || !play || !view || isTouchDevice) return;
+    const read = readRef.current;
+    const site = siteRef.current;
+    const book = bookRef.current;
+    if (!dot || !ring || !play || !view || !read || !site || !book || isTouchDevice) return;
 
     // Kill any in-flight tweens so a longer "show" can't outlast a shorter "hide"
-    gsap.killTweensOf([dot, ring, play, view]);
+    gsap.killTweensOf([dot, ring, play, view, read, site, book]);
 
     if (cursorState === "play") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(play, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
       gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     } else if (cursorState === "view") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(view, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+    } else if (cursorState === "read") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+    } else if (cursorState === "site") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+    } else if (cursorState === "book") {
+      gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
     } else if (cursorState === "hover") {
       gsap.to(dot, { scale: 0, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 1, opacity: 1, duration: 0.35, ease: "power2.out" });
       gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     } else {
       gsap.to(dot, { scale: 1, opacity: 1, duration: 0.25, ease: "power2.out" });
       gsap.to(ring, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(play, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(view, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(read, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
+      gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     }
   }, [cursorState, isTouchDevice]);
 
@@ -295,6 +340,99 @@ export default function CustomCursor() {
             }}
           >
             View
+          </span>
+        </div>
+        <div
+          ref={readRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 110,
+            height: 110,
+            background: "#ffffff",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#0a0a0a",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Read more
+          </span>
+        </div>
+        <div
+          ref={siteRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 88,
+            height: 88,
+            background: "#ffffff",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "#0a0a0a",
+              whiteSpace: "nowrap",
+            }}
+          >
+            View site
+          </span>
+        </div>
+        <div
+          ref={bookRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.3)",
+            width: 86,
+            height: 86,
+            background: "#ffffff",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: 0,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 9.5,
+              fontWeight: 600,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              color: "#0a0a0a",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Book a call
           </span>
         </div>
       </div>

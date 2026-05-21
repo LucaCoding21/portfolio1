@@ -17,22 +17,45 @@ export interface Project {
     role: string;
     avatar: string;
   };
+  partnerLogos?: {
+    name: string;
+    src: string;
+    className?: string;
+  }[];
 }
 
 export const projects: Project[] = [
   {
     id: 9,
     name: "Transforming Landscapes",
-    description: "Landscape design and build studio shaping outdoor spaces across BC.",
-    tags: ["Local Business"],
+    description: "A research initiative on First Nations-led real estate development in BC.",
+    tags: ["Realtors"],
     image: "/transforming/transforming-cover.jpg",
     hoverImage: "/transforming/transforming.png",
     url: "https://www.transforminglandscapes.ca/",
+    quote: {
+      texts: [
+        "NICE WORK, WILLIAM!",
+        "I love this. It feels fresh and interesting and keeps me scrolling.",
+      ],
+      author: "Christopher Hamade",
+      role: "Executive Director, Real Estate Institute of BC",
+      avatar: "/chris-hamade.jpg",
+    },
+    partnerLogos: [
+      { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.png" },
+      {
+        name: "Greater Vancouver REALTORS",
+        src: "/transforming/gvr-logo.png",
+        className: "h-11 md:h-[3.25rem] w-auto object-contain",
+      },
+    ],
   },
   {
     id: 10,
     name: "Bloomkey",
     description: "Floral studio crafting bespoke arrangements for weddings and events.",
+    kpis: ["Newly launched"],
     tags: ["Local Business"],
     image: "/bloomkey/bloomkey-cover.jpeg",
     imagePosition: "58% center",
@@ -44,7 +67,8 @@ export const projects: Project[] = [
     id: 11,
     name: "Afterparty",
     description: "Event production company designing unforgettable nights.",
-    tags: ["Sports & Events"],
+    kpis: ["5,000 sessions · month one", "30 newsletter signups · day one", "100/100 PageSpeed score"],
+    tags: ["Ecommerce"],
     image: "/afterparty/afterparty-cover.jpg",
     hoverImage: "/afterparty/afterparty.png",
     url: "https://www.afterparty.space/",
@@ -139,7 +163,6 @@ export const projects: Project[] = [
     description: "Vancouver's competitive basketball league — built for players, sponsors, and the game.",
     kpis: ["Built in 5 days", "$8k in sponsorship revenue"],
     tags: ["Sports & Events"],
-    column: "right",
     image: "/league1v1-cover.webp",
     hoverImage: "/league1v1.webp",
     url: "https://league1v1.com/",
@@ -152,13 +175,14 @@ export const projects: Project[] = [
   },
 ];
 
-export const HOMEPAGE_PROJECT_IDS = [9, 10, 11, 1, 3, 4, 8];
+export const HOMEPAGE_PROJECT_IDS = [9, 1, 3, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );
 
 export const NAV_ITEMS = [
-  { label: "Work", href: "/#work" },
+  { label: "Work", href: "/work" },
+  { label: "Approach", href: "/approach" },
   { label: "About", href: "/#about" },
   { label: "Contact", href: "/#contact" },
 ];
