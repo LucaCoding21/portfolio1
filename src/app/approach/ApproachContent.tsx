@@ -674,7 +674,6 @@ export default function ApproachContent() {
       <section className="hero-sticky sticky top-0 z-0 h-screen flex flex-col items-center justify-center px-6 md:px-10 pt-32 md:pt-40 pb-20 overflow-hidden text-white isolate">
         {/* Background video */}
         <video
-          src="/approach-hero.mp4"
           poster="/approach-hero.webp"
           autoPlay
           loop
@@ -683,7 +682,10 @@ export default function ApproachContent() {
           preload="auto"
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-center"
-        />
+        >
+          <source src="/approach-hero.webm" type="video/webm" />
+          <source src="/approach-hero.mp4" type="video/mp4" />
+        </video>
         <div className="relative z-10 max-w-[1280px] mx-auto w-full flex-1 flex flex-col items-center justify-center text-center">
           <h1
             className="hero-title font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.8rem,8vw,7rem)] tracking-tight leading-[0.98] max-w-[16ch] text-white"
