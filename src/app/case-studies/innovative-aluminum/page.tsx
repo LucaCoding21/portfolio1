@@ -225,10 +225,10 @@ export default function InnovativeAluminumCaseStudy() {
 
           <div className="md:col-span-8 order-2 md:order-3">
             <p className="text-base md:text-lg text-black/65 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[58ch] mb-4">
-              Innovative Aluminum Systems is a 20-year-old Canadian manufacturer of premium aluminum railings. They sell through 70+ authorized dealers and have never sold direct to a homeowner. Their old website did not make any of that clear.
+              Innovative Aluminum Systems is a well-established Canadian manufacturer with 20 years of experience specializing in premium aluminum railings. They distribute through over 70 authorized dealers across North America, who sell to homeowners and companies participating in the construction market, something their previous website failed to clearly communicate.
             </p>
             <p className="text-base md:text-lg text-black/65 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[58ch]">
-              We rebuilt the site end to end. Two weeks after launch, <ClaudeMention /> started recommending them by name when people asked about Canadian aluminum railing manufacturers.
+              We completely rebuilt their website from the ground up. Just two weeks after the new site launched, <ClaudeMention /> began recommending Innovative Aluminum Systems by name whenever people inquired about Canadian aluminum railing manufacturers.
             </p>
           </div>
 
