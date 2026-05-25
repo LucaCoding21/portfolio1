@@ -44,7 +44,7 @@ export default function Hero({ ready }: HeroProps) {
         // Free GPU memory after animation settles. Guard refs in case
         // the component unmounted before this fires (e.g., route change).
         const targets = [headingRef.current, subtextRef.current].filter(
-          (el): el is HTMLElement => el !== null,
+          (el): el is NonNullable<typeof el> => el !== null,
         );
         if (targets.length) {
           gsap.set(targets, { clearProps: "willChange" });
