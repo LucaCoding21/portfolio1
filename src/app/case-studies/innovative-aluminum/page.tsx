@@ -333,7 +333,7 @@ export default function InnovativeAluminumCaseStudy() {
                   Their best sales tool wasn&apos;t on the website.
                 </h2>
                 <p className="text-base md:text-lg text-black/70 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[62ch] mb-10">
-                  The Designer Tool lets dealers draw railings on a customer&apos;s blueprint and quote on the spot. It&apos;s their strongest closing asset. It wasn&apos;t on the old website. We treated it like a product: a dedicated landing page, demo videos, and a path to book a walkthrough. Now dealers send the link mid-conversation instead of explaining what the tool is.
+                  The Designer Tool lets dealers draw railings on a customer&apos;s blueprint and quote on the spot. It&apos;s their strongest closing asset. It wasn&apos;t on the old website. We treated it like a product: a dedicated landing page, demo videos, and a path to book a walkthrough.
                 </p>
                 <div className="w-full overflow-hidden rounded-xl border border-black/10 bg-black">
                   <video
