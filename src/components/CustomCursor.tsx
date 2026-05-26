@@ -17,20 +17,10 @@ export default function CustomCursor() {
   const bookRef = useRef<HTMLDivElement>(null);
   const [cursorState, setCursorState] = useState<CursorState>("default");
   const [isVisible, setIsVisible] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
-    // Check for touch device
-    const checkTouch = () => {
-      setIsTouchDevice(
-        "ontouchstart" in window ||
-        navigator.maxTouchPoints > 0
-      );
-    };
-    checkTouch();
-
-    if (isTouchDevice) return;
-
+    // Whether to render at all is decided by CursorLoader (which gates on a
+    // fine pointer being available), so no touch check is needed here.
     const cursor = cursorRef.current;
     const playCursor = playCursorRef.current;
     if (!cursor || !playCursor) return;
@@ -144,7 +134,7 @@ export default function CustomCursor() {
       document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
       document.documentElement.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [isTouchDevice, isVisible]);
+  }, [isVisible]);
 
   // Animate cursor state changes
   useEffect(() => {
@@ -155,7 +145,7 @@ export default function CustomCursor() {
     const read = readRef.current;
     const site = siteRef.current;
     const book = bookRef.current;
-    if (!dot || !ring || !play || !view || !read || !site || !book || isTouchDevice) return;
+    if (!dot || !ring || !play || !view || !read || !site || !book) return;
 
     // Kill any in-flight tweens so a longer "show" can't outlast a shorter "hide"
     gsap.killTweensOf([dot, ring, play, view, read, site, book]);
@@ -217,9 +207,7 @@ export default function CustomCursor() {
       gsap.to(site, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
       gsap.to(book, { scale: 0.3, opacity: 0, duration: 0.25, ease: "power2.out" });
     }
-  }, [cursorState, isTouchDevice]);
-
-  if (isTouchDevice) return null;
+  }, [cursorState]);
 
   return (
     <>

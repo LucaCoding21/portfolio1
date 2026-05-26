@@ -13,18 +13,15 @@
 
 /* ================================
    CUSTOM CURSOR
-   Hide native cursor on non-touch devices.
-   Restore on touch devices.
+   Hide the native cursor ONLY while the JS-driven custom cursor is
+   actually mounted (class toggled by CursorLoader). If the custom cursor
+   can't mount — e.g. Firefox on a touchscreen laptop reports touch as the
+   primary pointer — the native cursor is left intact, so the page is never
+   left with no cursor at all.
    ================================ */
 
-* {
+html.custom-cursor-active * {
   cursor: none !important;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  * {
-    cursor: auto !important;
-  }
 }
 
 /* ================================
