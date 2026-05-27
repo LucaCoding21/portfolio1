@@ -112,7 +112,7 @@ export default function Hero({ ready }: HeroProps) {
           </span>
         </h1>
         <p ref={subtextRef} className="mt-4 md:mt-6 text-base md:text-lg text-white font-semibold tracking-wide will-change-[transform,opacity]" style={{ textShadow: "0 2px 4px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8)" }}>
-          Most small businesses lose customers before they ever make contact. We build custom websites that fix that.
+          Most established businesses lose customers before they ever make contact. We build custom websites that fix that.
         </p>
       </div>
     </section>

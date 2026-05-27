@@ -4,7 +4,7 @@ import { projects } from "@/data/projects";
 export const metadata: Metadata = {
   title: "Our Work | Cloverfield Studio — Web Design Surrey BC",
   description:
-    "Browse our portfolio of custom web design projects for small businesses in Surrey BC, Vancouver, and across the Lower Mainland. Realtors, photographers, local businesses, manufacturers.",
+    "Browse our portfolio of custom web design projects for established businesses in Surrey BC, Vancouver, and across the Lower Mainland. Realtors, photographers, local businesses, manufacturers.",
   alternates: {
     canonical: "https://cloverfield.studio/work",
   },

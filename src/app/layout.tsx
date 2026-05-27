@@ -22,7 +22,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Web Design Surrey BC | Cloverfield Studio",
   description:
-    "Web design in Surrey BC that generates leads. Custom websites for small businesses — no templates, launched in under a week. Book a free consultation.",
+    "Web design in Surrey BC that generates leads. Custom websites for established businesses — no templates, launched in under a week. Book a free consultation.",
   keywords: [
     "web design surrey bc",
     "web design companies in surrey bc",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Web Design Surrey BC | Cloverfield Studio",
     description:
-      "Custom web design in Surrey BC for small businesses. No templates, launched in under a week. Websites that generate leads.",
+      "Custom web design in Surrey BC for established businesses. No templates, launched in under a week. Websites that generate leads.",
     url: "https://cloverfield.studio",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Web Design Surrey BC | Cloverfield Studio",
     description:
-      "Custom web design in Surrey BC for small businesses. No templates, launched in under a week. Websites that generate leads.",
+      "Custom web design in Surrey BC for established businesses. No templates, launched in under a week. Websites that generate leads.",
     images: ["https://cloverfield.studio/og-image.jpeg"],
   },
 };
@@ -101,7 +101,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   "name": "Cloverfield Studio",
                   "alternateName": "Cloverfield",
                   "description":
-                    "Web design and development agency in Surrey BC building custom, lead-generating websites for small businesses. No templates, launched in under a week. AI-search optimized.",
+                    "Web design and development agency in Surrey BC building custom, lead-generating websites for established businesses. No templates, launched in under a week. AI-search optimized.",
                   "url": "https://cloverfield.studio",
                   "logo": "https://cloverfield.studio/og-image.jpeg",
                   "image": "https://cloverfield.studio/og-image.jpeg",
@@ -153,7 +153,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                           "@type": "Service",
                           "name": "Custom Web Design",
                           "description":
-                            "Bespoke websites designed and built from scratch for small businesses in Surrey, Vancouver, and the Lower Mainland.",
+                            "Bespoke websites designed and built from scratch for established businesses in Surrey, Vancouver, and the Lower Mainland.",
                         },
                       },
                       {
