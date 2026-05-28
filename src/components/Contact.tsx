@@ -31,7 +31,7 @@ export default function Contact() {
     return () => observer.disconnect();
   }, []);
 
-  // Configure Cal UI + GA tracking after embed loads
+  // Configure Cal UI after embed loads
   useEffect(() => {
     if (!visible) return;
 
@@ -72,17 +72,6 @@ export default function Contact() {
         },
         hideEventTypeDetails: false,
       });
-
-      const fireBookingEvent = () => {
-        const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
-        gtag?.("event", "booking_confirmed", {
-          event_category: "booking",
-          event_label: "Free Consultation Booked",
-        });
-      };
-
-      cal("on", { action: "bookingSuccessful", callback: fireBookingEvent });
-      cal("on", { action: "bookingSuccessfulV2", callback: fireBookingEvent });
     })();
   }, [visible]);
 
