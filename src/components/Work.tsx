@@ -52,50 +52,57 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
     ...filtered.filter((p) => p.column === "right"),
   ];
 
-  // Parallax: right column scrolls faster (desktop only) — homepage only.
-  // On /work the right column is too tall and the effect creates a visible
-  // imbalance at the bottom (left col alone while right scrolled away).
+  // Parallax (desktop, homepage only).
+  //
+  // The two columns rest with their bottoms aligned: the right column's
+  // `md:mt-40` offset compensates for it being one card shorter, so both end on
+  // the same line. The parallax must PRESERVE that aligned finish — a constant
+  // speed difference (the old `yPercent: -35`) drags the right column far above
+  // the left and leaves a large void beside it at the end of the section.
+  //
+  // Instead, the right column starts slightly lower (extending its stagger) and
+  // rises to its resting, aligned position as you scroll — the movement resolves
+  // to zero exactly as the section bottom enters view, so the columns are
+  // aligned for the entire time the bottom is on screen. Because the resting
+  // state has no transform, the next section flows naturally below it — no
+  // negative-margin compensation needed.
   useEffect(() => {
     if (showFilters) return;
-    if (!rightColRef.current || !leftColRef.current || !sectionRef.current) return;
+    if (!rightColRef.current || !sectionRef.current) return;
 
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 768px)", () => {
       const rightCol = rightColRef.current!;
-      const leftCol = leftColRef.current!;
       const section = sectionRef.current!;
-      const PARALLAX = -35;
 
-      // The parallax translates the right column up (CSS transform),
-      // but the DOM still reserves the original height — creating a gap.
-      // Pull the next section up to meet the visual bottom, capped so we
-      // never pull above the left column's bottom (which would bleed into Contact).
-      const parallaxPx = rightCol.offsetHeight * Math.abs(PARALLAX) / 100;
-      const sectionH = section.offsetHeight;
-      const progress = sectionH / (sectionH + window.innerHeight);
-      const desired = parallaxPx * progress - 240;
-      const rightDomBottom = rightCol.offsetTop + rightCol.offsetHeight;
-      const leftDomBottom = leftCol.offsetTop + leftCol.offsetHeight;
-      const maxPullUp = Math.max(0, rightDomBottom - leftDomBottom - 40);
-      const pullUp = Math.max(0, Math.min(desired, maxPullUp));
-      section.style.marginBottom = `-${Math.round(pullUp)}px`;
+      // Extra lead applied to the right column at the top of the scroll, given
+      // back by the time its bottom is in view. Proportional to the column
+      // height so the effect scales with content.
+      const lead = () => Math.round(rightCol.offsetHeight * 0.16);
 
-      gsap.to(rightCol, {
-        yPercent: PARALLAX,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.4,
-        },
-      });
+      gsap.fromTo(
+        rightCol,
+        { y: () => lead() },
+        {
+          y: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            // Resolve to the aligned resting position exactly as the section
+            // bottom reaches the viewport bottom (first frame the lowest cards
+            // are fully visible).
+            end: "bottom bottom",
+            scrub: 0.4,
+            invalidateOnRefresh: true,
+          },
+        }
+      );
     });
 
     return () => {
       mm.revert();
-      if (sectionRef.current) sectionRef.current.style.marginBottom = "";
     };
   }, [filtered, showFilters]);
 
@@ -137,9 +144,10 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
 
       {/* Featured case study card */}
       <div className="max-w-[1400px] mx-auto mb-14 md:mb-20">
+        {/* Desktop — cinematic overlay card */}
         <Link
           href="/case-studies/innovative-aluminum"
-          className="group relative block overflow-hidden rounded-2xl md:rounded-3xl bg-black aspect-[4/3] md:aspect-[21/9] cursor-read"
+          className="hidden md:block group relative overflow-hidden rounded-3xl bg-black aspect-[21/9] cursor-read"
         >
             {/* Looping video background */}
             <video
@@ -184,7 +192,7 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
 
               {/* Bottom: body + arrow */}
               <div className="flex items-end justify-between gap-6 md:gap-10">
-                <p className="text-white/80 text-xs md:text-sm lg:text-base max-w-[42ch] leading-relaxed font-[family-name:var(--font-geist-sans)]">
+                <p className="text-white/80 text-sm lg:text-base max-w-[42ch] leading-relaxed font-[family-name:var(--font-geist-sans)]">
                   From a slow, generic manufacturer site to a premium digital presence built to be found. Their first two customers arrived organically, seven days after launch.
                 </p>
 
@@ -204,6 +212,71 @@ export default function Work({ projectList, showFilters = true }: WorkProps) {
                 </div>
               </div>
             </div>
+        </Link>
+
+        {/* Mobile — vertical full-bleed video card */}
+        <Link
+          href="/case-studies/innovative-aluminum"
+          className="md:hidden group relative block overflow-hidden rounded-2xl bg-black aspect-[4/5] cursor-read"
+        >
+          {/* Full-height video background */}
+          <video
+            src="/homepage-hero.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          {/* Gradient overlay for legibility — top + bottom */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-black/95" />
+
+          {/* Client logo · top-right */}
+          <div className="absolute top-6 right-6 z-10">
+            <Image
+              src="/ias-newgold.svg"
+              alt="Innovative Aluminum Systems"
+              width={473}
+              height={160}
+              className="h-6 w-auto"
+              priority
+            />
+          </div>
+
+          {/* Content overlaid on the video */}
+          <div className="relative h-full p-6 flex flex-col">
+            {/* Top: eyebrow + headline */}
+            <div>
+              <span className="block mb-3 text-[10px] uppercase tracking-[0.22em] text-white/90 font-bold font-[family-name:var(--font-geist-sans)]">
+                Featured Case Study
+              </span>
+              <h3 className="font-[family-name:var(--font-outfit)] font-bold text-white text-[2rem] leading-[1.05] tracking-tight max-w-[16ch]">
+                How Innovative Aluminum got a new customer through AI search.
+              </h3>
+            </div>
+
+            {/* Bottom: subtext + arrow */}
+            <div className="mt-auto flex items-end justify-between gap-5">
+              <p className="text-white/80 text-sm leading-relaxed max-w-[34ch] font-[family-name:var(--font-geist-sans)]">
+                From a slow, generic manufacturer site to a premium digital presence built to be found. Their first two customers arrived organically, seven days after launch.
+              </p>
+
+              <svg
+                className="shrink-0 h-6 w-auto text-white transition-transform duration-500 ease-out group-hover:translate-x-3"
+                viewBox="0 0 50 14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 7 H44" />
+                <path d="M36 1 L44 7 L36 13" />
+              </svg>
+            </div>
+          </div>
         </Link>
       </div>
 
