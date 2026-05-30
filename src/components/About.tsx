@@ -234,9 +234,9 @@ export default function About({ ready }: AboutProps) {
         {/* Desktop: line-by-line reveal */}
         <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto hidden md:block">
           {[
-            "Most agencies are good at one thing: making it look great,",
-            "or making it generate leads. Clients usually have to pick",
-            "which one matters more. We don't think that's a fair trade.",
+            "Most agencies are good at one thing: making it look",
+            "beautiful, or making it sell. So you're forced to",
+            "choose which matters more.",
           ].map((line, i) => (
             <div key={i} className="reveal-line overflow-hidden">
               <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
@@ -246,8 +246,8 @@ export default function About({ ready }: AboutProps) {
           ))}
           <div className="mt-4" />
           {[
-            "We build custom websites that win attention and win customers.",
-            "Delivered in under a week.",
+            "We don't think that's a fair trade. We build custom",
+            "sites that look the part, and do the work.",
           ].map((line, i) => (
             <div key={`b-${i}`} className="reveal-line overflow-hidden">
               <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
@@ -259,10 +259,10 @@ export default function About({ ready }: AboutProps) {
         {/* Mobile: natural paragraph flow */}
         <div className="md:hidden">
           <p className="text-base leading-relaxed text-black/60 font-light">
-            Most agencies are good at one thing: making it look great, or making it generate leads. Clients usually have to pick which one matters more. We don&apos;t think that&apos;s a fair trade.
+            Most agencies are good at one thing: making it look beautiful, or making it sell. So you&apos;re forced to choose which matters more.
           </p>
           <p className="text-base leading-relaxed text-black/60 font-light mt-4">
-            We build custom websites that win attention and win customers. Delivered in under a week.
+            We don&apos;t think that&apos;s a fair trade. We build custom sites that look the part, and do the work.
           </p>
         </div>
       </div>
