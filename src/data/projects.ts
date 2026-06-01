@@ -142,22 +142,6 @@ export const projects: Project[] = [
     },
   },
   {
-    id: 7,
-    name: "Clover Studio",
-    description: "Building intelligent interfaces that inspire.",
-    kpis: ["Newly launched"],
-    tags: ["Creative Agency"],
-    image: "/clover/clover-cover.jpg",
-    hoverImage: "/clover/cloverspace.webp",
-    url: "https://cloverspace.studio/",
-    quote: {
-      texts: ["They actually get design. Best agency I've worked with."],
-      author: "Alex",
-      role: "Founder, Clover Studio",
-      avatar: "/ACE/ace-headshot-v5.webp",
-    },
-  },
-  {
     id: 3,
     name: "League1v1",
     description: "Vancouver's competitive basketball league — built for players, sponsors, and the game.",

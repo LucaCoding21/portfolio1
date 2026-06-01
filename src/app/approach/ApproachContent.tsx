@@ -8,38 +8,98 @@ import FAQ from "./FAQ";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const PHASES = [
+type Phase = {
+  num: string;
+  name: string;
+  summary: string;
+  body: string;
+  proof?: {
+    quote: string;
+    kpi: string;
+    author: string;
+    role: string;
+    avatar: string;
+    url: string;
+  };
+};
+
+const PHASES: Phase[] = [
   {
     num: "01",
-    name: "Audit",
-    summary: "We study your category before we open Figma.",
-    body: "Which competitors are actually winning customers, and how their websites support, or quietly hurt, that business. If you have an existing site, we read it the same way. The site we ship for you compounds what already works, instead of guessing at it.",
+    name: "Research",
+    summary: "We study your market before we design anything.",
+    body: "We do the competitor research ourselves: who's actually winning customers in your industry, what's working on their sites, and what's supporting or hurting yours. The design starts from what we find, not a guess.",
   },
   {
     num: "02",
     name: "Kickoff",
-    summary: "Brand direction and outcomes, aligned in one call.",
-    body: "References, voice, the business outcomes you need the site to drive. Two non-negotiables come out of this conversation: it has to convert, and you have to be proud to share the link.",
+    summary: "One call to lock how it looks and what it has to do.",
+    body: "We bring what we found in the research, you bring your brand, voice, and goals, and in one call we lock the direction. From there the site has one job we both agreed on, and it has to look like something you're proud to send people to.",
+    proof: {
+      quote: "I landed a $7000 job this morning because of the website. I didn't even advertise it.",
+      kpi: "~$40k pipeline in 3 months",
+      author: "Taylor Paige",
+      role: "Founder, WrapCity",
+      avatar: "/wrapcity-headshot-v3.webp",
+      url: "https://wrapcity.co/",
+    },
   },
   {
     num: "03",
     name: "Design",
     summary: "Every section earns the next scroll.",
-    body: "Our lead designer's UI/UX background means every block on the page is doing one of two things: keeping you reading, or moving you toward the lead. People leave websites for predictable reasons. We design around the inverse.",
+    body: "Our lead designer comes from UI/UX, and she pressure-tests every decision: where it sits, how it moves, and what the page actually gains from it. Most local and established businesses get template work. We bring them the kind of design that usually only big companies get.",
+    proof: {
+      quote: "Best designers I've worked with, no exaggeration.",
+      kpi: "+21% inquiries in 3 months",
+      author: "Israel Njagih",
+      role: "Owner, Njagih Studios",
+      avatar: "/Njagih/njagih-headshot-v2.webp",
+      url: "https://njagihstudios.com/",
+    },
   },
   {
     num: "04",
     name: "Build & launch",
-    summary: "Custom-coded in Next.js + GSAP. 95+ Lighthouse as a floor.",
-    body: "We ship every site with a 95+ performance score and a 100 SEO score on launch day, not as a goal. Initial SEO setup is included, enough to start pulling qualified leads from search the moment you go live.",
+    summary: "Built in Next.js and GSAP. A 95+ speed score on nearly every site, never below 90.",
+    body: "We handle all the technical SEO, so you show up when someone searches your name or your niche locally. And the switch, the part most owners worry about, is painless: no downtime, nothing breaks for your customers, and we handle the whole cutover while you do nothing. We're on call all of launch day if anything needs a fix.",
+    proof: {
+      quote: "After 5 years in real estate, this is the first website I'm actually proud to share with clients.",
+      kpi: "Paid for itself in 3 weeks",
+      author: "Nancy Tran",
+      role: "Realtor, Grand Central Realty",
+      avatar: "/nancy-headshot.webp",
+      url: "https://nancytranrealtor.com/",
+    },
   },
   {
     num: "05",
-    name: "Retainer",
-    summary: "Post-launch, we keep tuning what's working.",
-    body: "A website isn't done at launch. We watch what's converting and what isn't, and propose targeted changes when the data calls for them. Monthly retainer, no surprises, cancel anytime.",
+    name: "Post-launch support",
+    summary: "Once you're live, the whole site is on us.",
+    body: "We don't disappear after launch. We watch the site in the background, no reminders to manage on your end, and we only reach out when there's an update actually worth making. If it's ever not pulling its weight, we audit it together and figure out the fix.",
   },
 ];
+
+// Claude reference styled to match the case study (colored + icon).
+function ClaudeMention() {
+  return (
+    <a
+      href="https://claude.ai"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Claude by Anthropic"
+      className="inline-flex items-center gap-1.5 text-[#cc785c] font-medium align-[-0.05em] whitespace-nowrap"
+    >
+      <img
+        src="/claude123.svg"
+        alt=""
+        aria-hidden="true"
+        className="h-[0.95em] w-[0.95em]"
+      />
+      Claude
+    </a>
+  );
+}
 
 // ---------- Page ----------
 
@@ -74,6 +134,22 @@ export default function ApproachContent() {
         ease: "power3.out",
         delay: 0.5,
       });
+
+      // Hand-drawn underline draws itself in, matching the homepage hero
+      const underline = root.querySelector<SVGPathElement>(".hero-underline");
+      if (underline) {
+        const length = underline.getTotalLength();
+        gsap.set(underline, {
+          strokeDasharray: length,
+          strokeDashoffset: length,
+        });
+        gsap.to(underline, {
+          strokeDashoffset: 0,
+          duration: 0.8,
+          ease: "power2.inOut",
+          delay: 0.5,
+        });
+      }
 
       // Continuous gentle bob on the scroll cue
       gsap.to(".hero-scroll svg", {
@@ -134,9 +210,22 @@ export default function ApproachContent() {
         const body = row.querySelector(".phase-body");
         const text = [name, summary, body];
 
+        // Number + text animate in once and stay put.
         const tl = gsap.timeline({
           scrollTrigger: { trigger: row, start: "top 82%", once: true },
         });
+
+        // Only the SVG diagram loops: play, hold 3s, replay.
+        const makeVisualLoop = (breathe = 3) =>
+          gsap.timeline({
+            repeat: -1,
+            repeatDelay: breathe,
+            scrollTrigger: {
+              trigger: row,
+              start: "top 82%",
+              toggleActions: "play pause resume pause",
+            },
+          });
 
         switch (i) {
           case 0: {
@@ -166,8 +255,9 @@ export default function ApproachContent() {
               const marks =
                 visual.querySelectorAll<SVGPathElement>(".audit-mark");
               const note = visual.querySelector(".audit-note");
+              const vtl = makeVisualLoop(8);
 
-              tl.from(
+              vtl.from(
                 frameParts,
                 {
                   opacity: 0,
@@ -175,7 +265,6 @@ export default function ApproachContent() {
                   ease: "power2.out",
                   stagger: 0.04,
                 },
-                "-=0.9",
               ).from(
                 blocks,
                 {
@@ -196,7 +285,7 @@ export default function ApproachContent() {
                 });
               });
 
-              tl.to(
+              vtl.to(
                 marks,
                 {
                   strokeDashoffset: 0,
@@ -208,7 +297,7 @@ export default function ApproachContent() {
               );
 
               if (note) {
-                tl.from(
+                vtl.from(
                   note,
                   {
                     opacity: 0,
@@ -252,8 +341,9 @@ export default function ApproachContent() {
                 visual.querySelectorAll(".kickoff-checklist > .kickoff-row");
               const marks =
                 visual.querySelectorAll<SVGPathElement>(".kickoff-mark");
+              const vtl = makeVisualLoop(10);
 
-              tl.from(
+              vtl.from(
                 frameParts,
                 {
                   opacity: 0,
@@ -261,11 +351,10 @@ export default function ApproachContent() {
                   ease: "power2.out",
                   stagger: 0.04,
                 },
-                "-=0.9",
               );
 
               // Reference cards pop in with a slight scale (rotation preserved by outer <g>)
-              tl.from(
+              vtl.from(
                 refs,
                 {
                   opacity: 0,
@@ -282,7 +371,7 @@ export default function ApproachContent() {
               // Kickoff call bubble pops in like a sticker being pinned on
               const call = visual.querySelector(".kickoff-call");
               if (call) {
-                tl.from(
+                vtl.from(
                   call,
                   {
                     opacity: 0,
@@ -296,7 +385,7 @@ export default function ApproachContent() {
                 );
               }
 
-              tl.from(
+              vtl.from(
                 checkRows,
                 {
                   opacity: 0,
@@ -315,7 +404,7 @@ export default function ApproachContent() {
                   strokeDashoffset: length,
                 });
               });
-              tl.to(
+              vtl.to(
                 marks,
                 {
                   strokeDashoffset: 0,
@@ -386,16 +475,20 @@ export default function ApproachContent() {
               const dropX = 17;
               const dropY = 7;
 
-              gsap.set(card, { x: startX, y: startY });
-              gsap.set(handles, { opacity: 0, scale: 0.6, transformOrigin: "center center" });
-              gsap.set(ghost, { opacity: 0 });
-              if (cursor) gsap.set(cursor, { x: grabX - 50, y: grabY - 40, opacity: 0 });
+              const vtl = makeVisualLoop();
 
-              tl.from(
-                frameParts,
-                { opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.04 },
-                "-=0.9",
-              )
+              // Reset to the pre-drag state at the top of every loop so the
+              // grab-and-drag replays cleanly.
+              vtl.set(card, { x: startX, y: startY, scale: 1 })
+                .set(handles, { opacity: 0, scale: 0.6, transformOrigin: "center center" })
+                .set(ghost, { opacity: 0 })
+                .set(cursor, { x: grabX - 50, y: grabY - 40, opacity: 0 });
+
+              vtl
+                .from(
+                  frameParts,
+                  { opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.04 },
+                )
                 .from(
                   layoutBlocks,
                   { opacity: 0, y: 6, duration: 0.4, ease: "power3.out", stagger: 0.05 },
@@ -432,28 +525,6 @@ export default function ApproachContent() {
                   { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.04 },
                   "-=0.05",
                 );
-
-              // After the entrance lands the card, the cursor's wandering is
-              // driven by scroll position — not an autoplay loop.
-              if (cursor) {
-                gsap.to(cursor, {
-                  keyframes: [
-                    { x: 50, y: -40 },
-                    { x: -20, y: -60 },
-                    { x: -90, y: -30 },
-                    { x: -110, y: 20 },
-                    { x: -40, y: 50 },
-                    { x: 17, y: 7 },
-                  ],
-                  ease: "none",
-                  scrollTrigger: {
-                    trigger: row,
-                    start: "top 40%",
-                    end: "bottom 20%",
-                    scrub: 0.6,
-                  },
-                });
-              }
             }
             break;
           }
@@ -486,11 +557,11 @@ export default function ApproachContent() {
               const gaugeLabel = visual.querySelector(".build-gauge-label");
               const score = visual.querySelector<HTMLElement>(".build-score");
               const badge = visual.querySelector(".build-badge");
+              const vtl = makeVisualLoop(10);
 
-              tl.from(
+              vtl.from(
                 frameParts,
                 { opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.04 },
-                "-=0.9",
               ).from(
                 codeLines,
                 { opacity: 0, x: -10, duration: 0.35, ease: "power2.out", stagger: 0.09 },
@@ -503,7 +574,7 @@ export default function ApproachContent() {
                   strokeDasharray: length,
                   strokeDashoffset: length,
                 });
-                tl.from(
+                vtl.from(
                   [gaugeTrack, gaugeLabel],
                   { opacity: 0, duration: 0.4, ease: "power2.out", stagger: 0.06 },
                   "-=0.5",
@@ -516,7 +587,7 @@ export default function ApproachContent() {
 
               if (score) {
                 const counter = { v: 0 };
-                tl.to(
+                vtl.to(
                   counter,
                   {
                     v: 100,
@@ -531,7 +602,7 @@ export default function ApproachContent() {
               }
 
               if (badge) {
-                tl.from(
+                vtl.from(
                   badge,
                   {
                     opacity: 0,
@@ -578,11 +649,11 @@ export default function ApproachContent() {
               const dots = visual.querySelectorAll(".retainer-dots > *");
               const callout = visual.querySelector(".retainer-callout");
               const arrows = visual.querySelectorAll<SVGPathElement>(".retainer-arrow");
+              const vtl = makeVisualLoop();
 
-              tl.from(
+              vtl.from(
                 frameParts,
                 { opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.04 },
-                "-=1.0",
               ).from(
                 grid,
                 { opacity: 0, duration: 0.3, ease: "power2.out", stagger: 0.05 },
@@ -595,7 +666,7 @@ export default function ApproachContent() {
                   strokeDasharray: length,
                   strokeDashoffset: length,
                 });
-                tl.to(
+                vtl.to(
                   line,
                   { strokeDashoffset: 0, duration: 1.3, ease: "power2.out" },
                   "-=0.3",
@@ -603,14 +674,14 @@ export default function ApproachContent() {
               }
 
               if (fill) {
-                tl.from(
+                vtl.from(
                   fill,
                   { opacity: 0, duration: 0.7, ease: "power2.out" },
                   "-=0.7",
                 );
               }
 
-              tl.from(
+              vtl.from(
                 dots,
                 {
                   opacity: 0,
@@ -631,7 +702,7 @@ export default function ApproachContent() {
                     strokeDashoffset: length,
                   });
                 });
-                tl.to(
+                vtl.to(
                   arrows,
                   {
                     strokeDashoffset: 0,
@@ -644,7 +715,7 @@ export default function ApproachContent() {
               }
 
               if (callout) {
-                tl.from(
+                vtl.from(
                   callout,
                   {
                     opacity: 0,
@@ -683,29 +754,40 @@ export default function ApproachContent() {
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover object-center"
         >
-          <source src="/approach-hero.webm" type="video/webm" />
-          <source src="/approach-hero.mp4" type="video/mp4" />
+          <source src="/approach-hero-v2.mp4" type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-black/8" />
         <div className="relative z-10 max-w-[1280px] mx-auto w-full flex-1 flex flex-col items-center justify-center text-center">
-          <h1
-            className="hero-title font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.8rem,8vw,7rem)] tracking-tight leading-[0.98] max-w-[16ch] text-white"
-            style={{ textShadow: "0 2px 30px rgba(0,0,0,0.35)" }}
-          >
-            How we build sites that
-            {" "}
-            <span className="italic font-[family-name:var(--font-cormorant)] font-medium">
-              actually
+          <h1 className="hero-title font-[family-name:var(--font-outfit)] font-bold text-[clamp(2rem,8vw,5.5rem)] tracking-tight leading-[0.9] max-w-[16ch] text-white">
+            How do we{" "}
+            <span className="relative inline-block">
+              do it?
+              <svg
+                className="absolute -bottom-[0.1em] left-0 w-full"
+                viewBox="0 0 200 12"
+                fill="none"
+                preserveAspectRatio="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ height: "0.18em", overflow: "visible" }}
+              >
+                <path
+                  className="hero-underline"
+                  d="M2 8 C40 2, 80 2, 100 6 S160 12, 198 4"
+                  stroke="white"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </svg>
             </span>
-            {" "}
-            convert.
           </h1>
 
           <p
-            className="hero-lede mt-10 md:mt-12 text-lg md:text-xl text-white/90 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[52ch]"
-            style={{ textShadow: "0 1px 16px rgba(0,0,0,0.4)" }}
+            className="hero-lede mt-4 md:mt-6 text-base md:text-lg text-white font-semibold tracking-wide font-[family-name:var(--font-geist-sans)] max-w-[52ch]"
+            style={{ textShadow: "0 2px 4px rgba(0,0,0,1), 0 0 30px rgba(0,0,0,0.8)" }}
           >
-            The full process. From the first competitor audit to the
-            months after launch. Written out so you know what you&apos;re paying for.
+            The exact steps we take, from the first competitor audit to the
+            months after launch.
           </p>
         </div>
 
@@ -749,12 +831,12 @@ export default function ApproachContent() {
               </span>
             </span>
             <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2rem,4.5vw,3.4rem)] tracking-tight leading-[1.05] max-w-[32ch]">
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden pb-[0.12em]">
                 <span className="process-line block">
-                  Five phases, written out so you know
+                  This is how we do it, so you know
                 </span>
               </span>
-              <span className="block overflow-hidden">
+              <span className="block overflow-hidden pb-[0.12em]">
                 <span className="process-line block">
                   <span className="italic font-[family-name:var(--font-cormorant)] font-medium">
                     exactly
@@ -786,6 +868,65 @@ export default function ApproachContent() {
                   <p className="phase-body text-base text-black/55 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[60ch]">
                     {phase.body}
                   </p>
+                  {phase.proof && (
+                    <figure className="reveal mt-8 max-w-[46ch]">
+                      <div className="flex gap-3">
+                        <img
+                          src={phase.proof.avatar}
+                          alt={phase.proof.author}
+                          className="w-11 h-11 rounded-full object-cover shrink-0 mt-0.5 bg-black/5"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <blockquote className="bg-black/[0.05] px-4 py-2.5 rounded-2xl rounded-tl-md">
+                            <p className="text-[13.5px] text-black/75 leading-snug font-[family-name:var(--font-geist-sans)]">
+                              {phase.proof.quote}
+                            </p>
+                          </blockquote>
+                          <figcaption className="mt-1.5 ml-2 text-[11px] leading-snug text-black/45 font-[family-name:var(--font-geist-sans)]">
+                            <span className="font-medium text-black/60">
+                              {phase.proof.author}
+                            </span>{" "}
+                            · {phase.proof.role}
+                          </figcaption>
+                        </div>
+                      </div>
+
+                      {/* The outcome — kept in the homepage's neutral palette,
+                          but weighted so it reads clearly. */}
+                      <div className="mt-4 ml-14">
+                        <p className="flex items-center gap-2 text-[15px] font-[family-name:var(--font-outfit)] font-bold text-black tracking-tight">
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-4 h-4 text-black/45 shrink-0"
+                            aria-hidden="true"
+                          >
+                            <polyline points="3 17 9 11 13 15 21 7" />
+                            <polyline points="15 7 21 7 21 13" />
+                          </svg>
+                          {phase.proof.kpi}
+                        </p>
+                        <a
+                          href={phase.proof.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="cursor-view group mt-4 inline-flex items-center gap-2 rounded-full bg-black px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] font-[family-name:var(--font-outfit)] font-medium text-white hover:bg-black/80 transition-colors"
+                        >
+                          View their site
+                          <span
+                            aria-hidden="true"
+                            className="transition-transform duration-300 group-hover:translate-x-0.5"
+                          >
+                            &rarr;
+                          </span>
+                        </a>
+                      </div>
+                    </figure>
+                  )}
                 </div>
                 {i === 0 && (
                   <div className="phase-visual col-span-12 md:col-span-5 flex items-start justify-center md:-mt-4">
@@ -1431,6 +1572,37 @@ export default function ApproachContent() {
                 )}
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ AI SEARCH ============ */}
+      <section className="relative z-10 bg-white px-6 md:px-10 py-20 md:py-32 border-t border-black/[0.06]">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-start">
+          <div className="md:col-span-5">
+            <p className="reveal text-[11px] md:text-xs uppercase tracking-[0.26em] text-black/45 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
+              AI search
+            </p>
+            <h2 className="reveal font-[family-name:var(--font-outfit)] font-bold text-[clamp(2rem,4.5vw,3.4rem)] tracking-tight leading-[1.05] max-w-[20ch]">
+              We build sites that <ClaudeMention /> recommends by name.
+            </h2>
+          </div>
+          <div className="md:col-span-6 md:col-start-7">
+            <p className="reveal text-lg md:text-xl text-black/70 leading-relaxed font-[family-name:var(--font-geist-sans)] mb-6 max-w-[50ch]">
+              More buyers now start in <ClaudeMention /> and ChatGPT than Google.
+              They only recommend sites they can actually read, so we build every
+              page to be read, understood, and recommended.
+            </p>
+            <p className="reveal text-base text-black/55 leading-relaxed font-[family-name:var(--font-geist-sans)] mb-8 max-w-[50ch]">
+              We rebuilt Innovative Aluminum this way. Two weeks after launch,{" "}
+              <ClaudeMention /> was recommending them by name.
+            </p>
+            <Link
+              href="/case-studies/innovative-aluminum"
+              className="reveal cursor-view inline-flex items-center gap-2 text-sm uppercase tracking-[0.18em] font-[family-name:var(--font-outfit)] font-medium text-black hover:text-[#cc785c] transition-colors"
+            >
+              Read the case study &rarr;
+            </Link>
           </div>
         </div>
       </section>
