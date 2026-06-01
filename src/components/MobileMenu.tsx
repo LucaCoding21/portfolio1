@@ -135,7 +135,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             className="block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] text-black transition-colors duration-300 hover:text-[#CDFF50]"
             style={{ opacity: 0 }}
           >
-            {item.label}.
+            {item.label}
           </Link>
         ))}
       </nav>
