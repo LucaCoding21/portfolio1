@@ -198,7 +198,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                     "@type": "AggregateRating",
                     "ratingValue": "5",
                     "bestRating": "5",
-                    "worstRating": "5",
+                    "worstRating": "1",
                     "ratingCount": "7",
                     "reviewCount": "7",
                   },
