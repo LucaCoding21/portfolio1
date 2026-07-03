@@ -15,7 +15,7 @@ export interface Project {
     texts: string[];
     author: string;
     role: string;
-    avatar: string;
+    avatar?: string;
   };
   partnerLogos?: {
     name: string;
@@ -40,7 +40,6 @@ export const projects: Project[] = [
       ],
       author: "Christopher Hamade",
       role: "Executive Director, Real Estate Institute of BC",
-      avatar: "/chris-hamade.jpg",
     },
     partnerLogos: [
       { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.png" },

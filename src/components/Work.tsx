@@ -483,15 +483,17 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
         )}
         {project.quote && project.quote.texts.length > 0 && (
           <div className="mt-4 flex gap-3">
-            <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-black/5 mt-0.5">
-              <Image
-                src={project.quote.avatar}
-                alt={project.quote.author}
-                fill
-                sizes="44px"
-                className="object-cover"
-              />
-            </div>
+            {project.quote.avatar && (
+              <div className="relative w-11 h-11 rounded-full overflow-hidden shrink-0 bg-black/5 mt-0.5">
+                <Image
+                  src={project.quote.avatar}
+                  alt={project.quote.author}
+                  fill
+                  sizes="44px"
+                  className="object-cover"
+                />
+              </div>
+            )}
             <div className="min-w-0 flex-1">
               <div className="flex flex-col gap-1.5">
                 {project.quote.texts.map((text, i) => (
