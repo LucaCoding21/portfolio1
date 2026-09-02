@@ -1,0 +1,191 @@
+/* ================================
+   SIGHT — brand tokens & primitives
+   Scoped to .sight-root so nothing
+   leaks into the rest of the site.
+   ================================ */
+
+.sight-root {
+  --bg: #ffffff;
+  --ink: #202124;
+  --ink-soft: #5f6368;
+  --ink-faint: #9aa0a6;
+  --surface: #f4f5f7;
+  --surface-2: #fafbfc;
+  --line: #e8eaed;
+  --blue: #3b7cf6;
+  --blue-deep: #2563eb;
+  --amber-bg: rgba(245, 158, 11, 0.12);
+  --amber-ink: #b45309;
+  --green: #188038;
+
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
+}
+
+.sight-root :focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.sight-root ::selection {
+  background: rgba(59, 124, 246, 0.18);
+  color: var(--ink);
+}
+
+/* Blinking caret in the fake chat input */
+@keyframes sight-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.sight-caret {
+  animation: sight-caret 0.9s step-end infinite;
+}
+
+/* AI "thinking" state: a shimmer sweeping across the word itself */
+.sight-thinking {
+  background: linear-gradient(
+    90deg,
+    var(--ink-faint) 35%,
+    var(--ink) 50%,
+    var(--ink-faint) 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sight-shimmer 1.3s linear infinite;
+}
+
+/* Marketing-copy highlight: a light band sweeping through blue words */
+.sight-shimmer-blue {
+  background: linear-gradient(
+    90deg,
+    var(--blue-deep) 35%,
+    #8ab4ff 50%,
+    var(--blue-deep) 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sight-shimmer 2.6s linear infinite;
+}
+
+/* Gentle pulse for live dots (chart point, newest alert, footer status) */
+@keyframes sight-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.55;
+  }
+}
+.sight-pulse {
+  animation: sight-pulse 2.2s ease-in-out infinite;
+}
+
+/* Soft blue ring pulse: the "live" question chip announcing itself */
+@keyframes sight-ring {
+  from {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35);
+  }
+  to {
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+}
+.sight-ring {
+  animation: sight-ring 0.8s ease-out 2;
+}
+
+/* Opacity-only pulse for the founding-spots dot (no scale: quieter) */
+@keyframes sight-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.sight-dot {
+  animation: sight-dot 2s ease-in-out infinite;
+}
+
+/* Skeleton shimmer for the Monday-report demo */
+@keyframes sight-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.sight-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--line) 25%,
+    #f1f3f4 50%,
+    var(--line) 75%
+  );
+  background-size: 200% 100%;
+  animation: sight-shimmer 1.4s linear infinite;
+}
+
+/* ================================
+   The product itself (hero app card).
+   Tokens and type match the real
+   Command Center app 1:1 — Inter with
+   cv11/ss01, frost canvas, blue primary.
+   ================================ */
+.sight-app {
+  font-family: var(--font-inter-sight), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* AI thinking state, product spec: the shimmer band lives inside the letters */
+.sight-app-thinking {
+  background: linear-gradient(
+    90deg,
+    hsl(220 9% 64%) 35%,
+    hsl(222 20% 28%) 50%,
+    hsl(220 9% 64%) 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sight-shimmer 2.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sight-root .sight-caret,
+  .sight-root .sight-pulse,
+  .sight-root .sight-ring,
+  .sight-root .sight-dot,
+  .sight-root .sight-shimmer {
+    animation: none;
+  }
+  .sight-root .sight-thinking,
+  .sight-root .sight-app-thinking {
+    animation: none;
+    background: none;
+    color: var(--ink-faint);
+  }
+  .sight-root .sight-shimmer-blue {
+    animation: none;
+    background: none;
+    color: var(--blue);
+  }
+}

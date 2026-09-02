@@ -165,6 +165,7 @@ export const homepageProjects = projects.filter((p) =>
 
 export const NAV_ITEMS = [
   { label: "Work", href: "/work" },
+  { label: "Sight", href: "/sight" },
   { label: "Approach", href: "/approach" },
   { label: "About", href: "/#about" },
   { label: "Contact", href: "/#contact" },

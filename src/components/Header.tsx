@@ -80,9 +80,11 @@ export default function Header({ solid }: { solid?: boolean }) {
               key={item.label}
               href={item.href}
               className={`px-4 py-2 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
-                isScrolled
-                  ? "text-black/70 hover:text-black hover:bg-[#CDFF50]"
-                  : "text-white/80 hover:text-black hover:bg-[#CDFF50]"
+                item.href === "/sight"
+                  ? "sight-nav-link" // background-clip:text — a hover bg would get clipped to the letters
+                  : isScrolled
+                    ? "text-black/70 hover:text-black hover:bg-[#CDFF50]"
+                    : "text-white/80 hover:text-black hover:bg-[#CDFF50]"
               }`}
             >
               {item.label}

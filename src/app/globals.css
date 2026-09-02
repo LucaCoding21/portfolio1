@@ -122,3 +122,40 @@ body {
   display: none;
 }
 
+/* ================================
+   SIGHT NAV LINK
+   Blue shimmer sweeping across the
+   "Sight" item in the site nav.
+   ================================ */
+
+@keyframes sight-nav-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.sight-nav-link {
+  background-image: linear-gradient(
+    90deg,
+    #3b7cf6 35%,
+    #a5c2fa 50%,
+    #3b7cf6 65%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  animation: sight-nav-shimmer 2.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sight-nav-link {
+    animation: none;
+    background: none;
+    color: #3b7cf6 !important;
+  }
+}
+
