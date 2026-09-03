@@ -21,20 +21,10 @@ export default function About({ ready }: AboutProps) {
   const videoInnerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const stRefs = useRef<ScrollTrigger[]>([]);
-
   const [playerOpen, setPlayerOpen] = useState(false);
   const [playerRect, setPlayerRect] = useState<DOMRect | null>(null);
   const [playerBorderRadius, setPlayerBorderRadius] = useState("24px");
   const [playerInitialTime, setPlayerInitialTime] = useState(0);
-
-  // Clean up all deferred ScrollTriggers on unmount
-  useEffect(() => {
-    return () => {
-      stRefs.current.forEach((st) => st.kill());
-      stRefs.current = [];
-    };
-  }, []);
 
   // Play video only when it scrolls into view
   useEffect(() => {
