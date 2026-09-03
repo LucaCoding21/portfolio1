@@ -17,8 +17,6 @@ interface AboutProps {
 
 export default function About({ ready }: AboutProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const linesContainerRef = useRef<HTMLDivElement>(null);
   const videoWrapperRef = useRef<HTMLDivElement>(null);
   const videoInnerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -63,120 +61,59 @@ export default function About({ ready }: AboutProps) {
     if (ready && sectionRef.current) {
       gsap.set(sectionRef.current, { opacity: 1 });
     }
-    // Set initial video scale per breakpoint
+    // Start the reel as a small centred window; scroll opens it outward.
     if (ready && videoInnerRef.current) {
       const isDesktop = window.matchMedia("(min-width: 768px)").matches;
       gsap.set(videoInnerRef.current, {
-        scale: isDesktop ? 0.8 : 1,
-        borderRadius: isDesktop ? "24px" : "16px",
+        clipPath: isDesktop
+          ? "inset(44% 44% 44% 44% round 20px)"
+          : "inset(38% 30% 38% 30% round 16px)",
       });
     }
   }, [ready]);
 
-  // Heading: smooth slide-in from the right with blur
-  // Deferred so ScrollTrigger layout measurements don't compete with the hero entrance animation
-  useEffect(() => {
-    if (!ready || !headingRef.current) return;
-
-    const id = requestAnimationFrame(() => {
-      if (!headingRef.current) return;
-      const st = ScrollTrigger.create({
-        trigger: headingRef.current,
-        start: "top 92%",
-        end: "top 45%",
-        scrub: 0.6,
-        animation: gsap.fromTo(
-          headingRef.current,
-          { x: 80, opacity: 0, filter: "blur(12px)" },
-          { x: 0, opacity: 1, filter: "blur(0px)", ease: "none" }
-        ),
-      });
-      stRefs.current.push(st);
-    });
-
-    return () => cancelAnimationFrame(id);
-  }, [ready]);
-
-  // Line-by-line blur reveal (deferred to avoid competing with hero entrance)
-  useEffect(() => {
-    if (!ready || !linesContainerRef.current) return;
-
-    const id = requestAnimationFrame(() => {
-      if (!linesContainerRef.current) return;
-      const lines = linesContainerRef.current.querySelectorAll(".reveal-line");
-
-      lines.forEach((line) => {
-        const inner = line.querySelector(".reveal-line-inner") as HTMLElement;
-        if (!inner) return;
-
-        const st = ScrollTrigger.create({
-          trigger: line,
-          start: "top 90%",
-          end: "top 55%",
-          scrub: 0.5,
-          animation: gsap.fromTo(
-            inner,
-            { y: "100%", opacity: 0, filter: "blur(10px)" },
-            { y: "0%", opacity: 1, filter: "blur(0px)", ease: "none" }
-          ),
-        });
-        stRefs.current.push(st);
-      });
-    });
-
-    return () => cancelAnimationFrame(id);
-  }, [ready]);
-
-  // Scroll-driven scale animation for the video (deferred)
+  // Scroll-driven reveal: the reel opens outward from the centre. Animating
+  // clip-path (rather than scale) means the video plays at full size the whole
+  // time and the window into it grows, instead of the picture being enlarged.
   useEffect(() => {
     if (!ready || !videoWrapperRef.current || !videoInnerRef.current) return;
 
     const inner = videoInnerRef.current;
+    const wrapper = videoWrapperRef.current;
     let mm: gsap.MatchMedia;
 
     const id = requestAnimationFrame(() => {
       mm = gsap.matchMedia();
 
-      // Desktop: dramatic scale animation — single timeline so it scrubs smoothly end-to-end
-      mm.add("(min-width: 768px)", () => {
-        gsap.set(inner, { scale: 0.8, borderRadius: "24px" });
-
-        const tl = gsap.timeline();
-        tl.to(inner, { scale: 0.7, borderRadius: "12px", ease: "none", duration: 1 })
-          .to(inner, { scale: 0.55, borderRadius: "28px", ease: "none", duration: 1 });
-
+      const open = (from: string, to: string, start: string, end: string) => {
+        gsap.set(inner, { clipPath: from });
         const st = ScrollTrigger.create({
-          trigger: videoWrapperRef.current,
-          start: "top 95%",
-          end: "bottom 10%",
+          trigger: wrapper,
+          start,
+          end,
           scrub: 0.6,
-          animation: tl,
+          animation: gsap.to(inner, { clipPath: to, ease: "none" }),
         });
-
-        return () => {
-          st.kill();
-          tl.kill();
-        };
-      });
-
-      // Mobile: subtler scale, stays larger
-      mm.add("(max-width: 767px)", () => {
-        gsap.set(inner, { scale: 1, borderRadius: "16px" });
-
-        const st = ScrollTrigger.create({
-          trigger: videoWrapperRef.current,
-          start: "top 90%",
-          end: "top 20%",
-          scrub: 0.6,
-          animation: gsap.fromTo(
-            inner,
-            { scale: 1, borderRadius: "16px" },
-            { scale: 0.95, borderRadius: "12px", ease: "none" }
-          ),
-        });
-
         return () => st.kill();
-      });
+      };
+
+      mm.add("(min-width: 768px)", () =>
+        open(
+          "inset(44% 44% 44% 44% round 20px)",
+          "inset(0% 0% 0% 0% round 20px)",
+          "top 88%",
+          "top 22%",
+        ),
+      );
+
+      mm.add("(max-width: 767px)", () =>
+        open(
+          "inset(38% 30% 38% 30% round 16px)",
+          "inset(0% 0% 0% 0% round 16px)",
+          "top 92%",
+          "top 35%",
+        ),
+      );
     });
 
     return () => {
@@ -222,51 +159,8 @@ export default function About({ ready }: AboutProps) {
     <section
       id="about"
       ref={sectionRef}
-      className="py-20 md:py-28 px-6 md:px-10 border-t border-black/[0.06] opacity-0 overflow-x-hidden"
+      className="bg-[var(--charcoal)] py-24 md:py-36 px-6 md:px-10 opacity-0 overflow-x-hidden"
     >
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:gap-24 gap-6">
-        <h2
-          ref={headingRef}
-          className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2.2rem,7vw,5rem)] uppercase tracking-tight md:w-2/5 shrink-0 opacity-0 will-change-[transform,opacity,filter]"
-        >
-          Why Choose Us
-        </h2>
-        {/* Desktop: line-by-line reveal */}
-        <div ref={linesContainerRef} className="md:w-3/5 md:ml-auto hidden md:block">
-          {[
-            "Most agencies are good at one thing: making it look",
-            "beautiful, or making it sell. So you're forced to",
-            "choose which matters more.",
-          ].map((line, i) => (
-            <div key={i} className="reveal-line overflow-hidden">
-              <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
-                {line}
-              </p>
-            </div>
-          ))}
-          <div className="mt-4" />
-          {[
-            "We don't think that's a fair trade. We build custom",
-            "sites that look the part, and do the work.",
-          ].map((line, i) => (
-            <div key={`b-${i}`} className="reveal-line overflow-hidden">
-              <p className="reveal-line-inner text-lg leading-relaxed text-black/65 font-light will-change-[transform,opacity,filter]">
-                {line}
-              </p>
-            </div>
-          ))}
-        </div>
-        {/* Mobile: natural paragraph flow */}
-        <div className="md:hidden">
-          <p className="text-base leading-relaxed text-black/60 font-light">
-            Most agencies are good at one thing: making it look beautiful, or making it sell. So you&apos;re forced to choose which matters more.
-          </p>
-          <p className="text-base leading-relaxed text-black/60 font-light mt-4">
-            We don&apos;t think that&apos;s a fair trade. We build custom sites that look the part, and do the work.
-          </p>
-        </div>
-      </div>
-
       {/* Video reel */}
       <div
         ref={videoWrapperRef}
@@ -275,7 +169,7 @@ export default function About({ ready }: AboutProps) {
         <div
           ref={videoInnerRef}
           onClick={handleVideoClick}
-          className="cursor-play relative overflow-hidden will-change-transform"
+          className="cursor-play relative overflow-hidden will-change-[clip-path]"
           style={{
             borderRadius: "16px",
           }}

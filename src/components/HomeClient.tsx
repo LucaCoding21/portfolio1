@@ -4,6 +4,7 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import Hero from "@/components/Hero";
+import PixelTransition from "@/components/PixelTransition";
 import { homepageProjects } from "@/data/projects";
 
 const LOADED_FLAG = "cf-loader-seen";
@@ -102,6 +103,9 @@ export default function HomeClient() {
       )}
       <Hero ready={ready} />
       <div className="relative z-10 bg-white">
+        {/* Pixelated leading edge: overhangs upward so the hand-off from the
+            pinned hero to this block dissolves in blocks instead of a line. */}
+        <PixelTransition />
         <About ready={ready} />
         <Work projectList={homepageProjects} showFilters={false} />
         <ViewAllWork />

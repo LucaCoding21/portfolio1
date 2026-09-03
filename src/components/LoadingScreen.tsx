@@ -43,10 +43,10 @@ export default function LoadingScreen({
   // Preload assets in background
   useEffect(() => {
     const mobile = window.matchMedia("(max-width: 767px)").matches;
-    // Desktop needs hero.mp4 (video behind the SVG mask).
-    // Mobile needs hero-poster.jpg so the hero has an instant LCP image.
+    // Desktop needs hero-v2.mp4 (video behind the SVG mask).
+    // Mobile needs hero-v2-poster.webp so the hero has an instant LCP image.
     // Below-fold assets are lazy-loaded by their own components.
-    const assets: string[] = mobile ? ["/hero-poster.webp"] : ["/hero.mp4"];
+    const assets: string[] = mobile ? ["/hero-v2-poster.webp"] : ["/hero-v2.mp4"];
 
     const preloadAsset = (src: string): Promise<void> => {
       return new Promise((resolve) => {
@@ -177,7 +177,7 @@ export default function LoadingScreen({
       {mounted && !isMobile && (
         <>
           <video autoPlay muted loop playsInline className="preloader-video">
-            <source src="/hero.mp4" type="video/mp4" />
+            <source src="/hero-v2.mp4" type="video/mp4" />
           </video>
 
           <svg

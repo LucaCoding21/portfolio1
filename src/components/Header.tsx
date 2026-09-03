@@ -55,19 +55,21 @@ export default function Header({ solid }: { solid?: boolean }) {
   return (
     <header className={`fixed left-0 right-0 z-50 flex justify-center px-4 py-4 transition-all duration-300 ${hidden ? "-top-24" : "top-0"}`}>
       <div
-        className={`relative z-50 flex items-center justify-between w-full max-w-5xl px-8 py-4 rounded-full transition-all duration-500 ${
+        className={`relative z-50 flex items-center justify-between w-full max-w-5xl px-8 py-4 rounded-2xl transition-all duration-500 ${
           menuOpen
             ? "bg-transparent border border-transparent"
             : isScrolled
-              ? "bg-white/70 backdrop-blur-xl border border-black/[0.08] shadow-lg shadow-black/[0.03]"
-              : "bg-white/10 backdrop-blur-md border border-white/20"
+              ? "bg-[rgba(10,10,12,0.38)] backdrop-blur-xl backdrop-saturate-[1.8] backdrop-brightness-[0.84] border border-white/[0.10] shadow-[0_6px_20px_rgba(0,0,0,0.14),inset_0_1px_0_rgba(255,255,255,0.08)]"
+              : "bg-[rgba(10,10,12,0.28)] backdrop-blur-xl backdrop-saturate-[1.7] backdrop-brightness-[0.82] border border-white/[0.14] shadow-[0_4px_16px_rgba(0,0,0,0.10),inset_0_1px_0_rgba(255,255,255,0.10)]"
         }`}
       >
         {/* Logo */}
         <Link
           href="/"
           className={`font-[family-name:var(--font-outfit)] font-semibold text-2xl tracking-tight transition-colors duration-500 ${
-            menuOpen ? "text-black/90" : isScrolled ? "text-black/90" : "text-white"
+            menuOpen
+              ? "text-black/90"
+              : "text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)]"
           }`}
         >
           cloverfield
@@ -79,12 +81,10 @@ export default function Header({ solid }: { solid?: boolean }) {
             <Link
               key={item.label}
               href={item.href}
-              className={`px-4 py-2 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
+              className={`px-4 py-2 rounded-lg text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
                 item.href === "/sight"
                   ? "sight-nav-link" // background-clip:text — a hover bg would get clipped to the letters
-                  : isScrolled
-                    ? "text-black/70 hover:text-black hover:bg-[#CDFF50]"
-                    : "text-white/80 hover:text-black hover:bg-[#CDFF50]"
+                  : "text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.45)] hover:text-black hover:bg-[#CDFF50] hover:[text-shadow:none]"
               }`}
             >
               {item.label}
@@ -92,16 +92,12 @@ export default function Header({ solid }: { solid?: boolean }) {
           ))}
 
           {/* Audio Toggle */}
-          <AudioToggle isScrolled={isScrolled} />
+          <AudioToggle />
 
           {/* CTA Button */}
           <Link
             href="/#contact"
-            className={`ml-2 px-6 py-2.5 rounded-full text-base font-[family-name:var(--font-outfit)] font-medium transition-all duration-300 ${
-              isScrolled
-                ? "bg-black text-white hover:bg-[#CDFF50] hover:text-black"
-                : "bg-white text-black hover:bg-[#CDFF50]"
-            }`}
+            className="ml-2 px-6 py-2.5 rounded-lg text-base font-[family-name:var(--font-outfit)] font-medium bg-white text-black hover:bg-[#CDFF50] transition-all duration-300"
           >
             Get Started
           </Link>
@@ -115,17 +111,17 @@ export default function Header({ solid }: { solid?: boolean }) {
         >
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : "bg-white/85"
             } ${menuOpen ? "translate-y-[7px] rotate-45" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 ${
-              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : "bg-white/85"
             } ${menuOpen ? "opacity-0" : ""}`}
           />
           <span
             className={`block w-full h-[2px] rounded-sm transition-all duration-300 origin-center ${
-              menuOpen ? "bg-black" : isScrolled ? "bg-black/80" : "bg-white/80"
+              menuOpen ? "bg-black" : "bg-white/85"
             } ${menuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </button>

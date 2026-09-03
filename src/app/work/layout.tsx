@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Our Work | Cloverfield Studio",
     description:
-      "Custom web design portfolio. Realtors, photographers, local businesses, manufacturers — websites that generate leads in Surrey BC and Vancouver.",
+      "Custom web design portfolio. Realtors, photographers, local businesses, manufacturers. Websites that generate leads in Surrey BC and Vancouver.",
     url: "https://cloverfield.studio/work",
     siteName: "Cloverfield Studio",
     locale: "en_CA",

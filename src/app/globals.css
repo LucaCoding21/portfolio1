@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
+  /* Dark charcoal for the section below the hero — deliberately off-black. */
+  --charcoal: #1c1c1e;
 }
 
 @theme inline {

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Geist,
   Outfit,
+  Caveat,
 } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -19,10 +20,17 @@ const outfit = Outfit({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
+// Handwriting accent used for the two highlighted words in the hero headline.
+// Variable font (wght 400-700), so no `weight` — the spans pick from the axis.
+const script = Caveat({
+  variable: "--font-script",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Web Design Surrey BC | Cloverfield Studio",
   description:
-    "Web design in Surrey BC that generates leads. Custom websites for established businesses — no templates, launched in under a week. Book a free consultation.",
+    "Web design in Surrey BC that generates leads. Custom websites for established businesses. No templates, launched in under a week. Book a free consultation.",
   keywords: [
     "web design surrey bc",
     "web design companies in surrey bc",
@@ -333,7 +341,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
         />
       </head>
       <body
-        className={`${geistSans.variable} ${outfit.variable} antialiased`}
+        className={`${geistSans.variable} ${outfit.variable} ${script.variable} antialiased`}
       >
         <CursorLoader />
         <Header />
