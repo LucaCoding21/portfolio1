@@ -189,3 +189,759 @@
     color: var(--blue);
   }
 }
+
+/* Question pills drifting past in the questions wall */
+@keyframes sight-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.sight-marquee {
+  animation: sight-marquee var(--marquee-seconds, 80s) linear infinite;
+  will-change: transform;
+}
+.sight-marquee[data-reverse] {
+  animation-direction: reverse;
+}
+.sight-marquee-band {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.45) 12%,
+    #000 30%,
+    #000 70%,
+    rgba(0, 0, 0, 0.45) 88%,
+    transparent
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .sight-marquee {
+    animation: none;
+  }
+}
+
+/* Question pill hover: a small lift, blue edge, and the send button fills */
+.sight-pill {
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.sight-pill .sight-pill-send {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sight-pill:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  box-shadow:
+    0 6px 16px -8px rgba(20, 24, 33, 0.18),
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+.sight-pill:hover .sight-pill-send {
+  background-color: #2563eb !important;
+  color: #fff !important;
+  transform: scale(1.06);
+}
+
+/* On hover the question slides out and the "before" line slides in */
+.sight-pill-q,
+.sight-pill-before {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sight-pill-before {
+  opacity: 0;
+  transform: translateY(7px);
+}
+.sight-pill:hover .sight-pill-q {
+  opacity: 0;
+  transform: translateY(-7px);
+}
+.sight-pill:hover .sight-pill-before {
+  opacity: 1;
+  transform: none;
+}
+
+/* Client marks in the trust row, shown in their own colours */
+.sight-logo {
+  transition: opacity 0.3s ease;
+}
+.sight-logo.brightness-0 {
+  filter: brightness(0);
+}
+
+/* ================================
+   HOW IT WORKS — stacked feature cards
+   Layout, spacing and motion measured
+   1:1 from clay.com (section_home-features)
+   at 1440; colours and radii are ours.
+   Breakpoints match Clay's: 991 / 767.
+   ================================ */
+
+.hiw {
+  padding: 64px 0 48px;
+}
+
+.hiw-container {
+  width: 95%;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Section heading above the stack; scrolls away as the cards pin. */
+.hiw-head {
+  max-width: 48rem;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.hiw-list {
+  display: block;
+}
+
+/* Each card is sticky. Negative bottom margin lets the next card
+   ride up over this one; the card's own bottom padding is what gets
+   covered. No transforms, no fades. */
+.hiw-theme {
+  position: sticky;
+  top: 72px;
+  margin-bottom: -48px;
+}
+.hiw-theme:first-child {
+  border-radius: 2rem 2rem 0 0;
+}
+.hiw-theme:last-child {
+  margin-bottom: 0;
+  overflow: hidden;
+  border-radius: 0 0 2rem 2rem;
+}
+/* Alternate the two site surfaces so the stack still reads card by card. */
+.hiw-theme:nth-child(even) .hiw-item {
+  --hiw-bg: #eeeff2;
+}
+
+.hiw-item {
+  --hiw-bg: var(--surface);
+  --hiw-accent: var(--blue);
+  --hiw-accent-deep: var(--blue-deep);
+  --hiw-soft: rgba(59, 124, 246, 0.16);
+  --hiw-ink: var(--ink);
+  --hiw-ink-soft: var(--ink-soft);
+
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0 0 48px;
+  margin: 0 0 -48px;
+  background: var(--hiw-bg);
+  border-radius: 2rem 2rem 0 0;
+  color: var(--hiw-ink);
+}
+
+/* ---------- left column ---------- */
+
+.hiw-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 48px 0 64px 48px;
+}
+
+.hiw-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hiw-stack-rg {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Tag: one labelled pill in front, three blank pills peeking out
+   behind it in 15px steps. */
+.hiw-tag {
+  display: grid;
+  grid-template-columns: repeat(4, 15px);
+  grid-template-rows: 32px;
+  width: 60px;
+}
+.hiw-pill {
+  grid-row: 1;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--hiw-bg);
+  border-radius: 1600px;
+  background: var(--hiw-soft);
+  width: 68px;
+}
+.hiw-pill:nth-child(1) {
+  grid-column: 1;
+  z-index: 10;
+}
+.hiw-pill:nth-child(2) {
+  grid-column: 4;
+}
+.hiw-pill:nth-child(3) {
+  grid-column: 3;
+}
+.hiw-pill:nth-child(4) {
+  grid-column: 2;
+}
+.hiw-pill.is-active {
+  background: var(--hiw-accent);
+  color: #fff;
+  width: max-content;
+}
+.hiw-eyebrow {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hiw-title {
+  margin: 0;
+  font-size: 48px;
+  line-height: 48px;
+  font-weight: 500;
+  letter-spacing: -1.92px;
+  text-wrap: balance;
+  color: var(--hiw-ink);
+}
+.hiw-title span {
+  color: var(--hiw-accent-deep);
+}
+
+.hiw-desc {
+  max-width: 448px;
+}
+.hiw-desc p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  text-wrap: balance;
+  color: var(--hiw-ink-soft);
+}
+
+.hiw-btm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+/* ---------- call-out: rotating logos + stat ---------- */
+
+.hiw-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 400px;
+  max-width: 100%;
+}
+.hiw-callout-label {
+  margin: 0 0 -2px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--hiw-ink-soft);
+}
+.hiw-callout-top {
+  position: relative;
+  height: 43px;
+}
+.hiw-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px var(--hiw-bg);
+  will-change: transform;
+}
+.hiw-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+.hiw-callout-quote {
+  display: grid;
+  gap: 16px;
+}
+.hiw-callout-item {
+  grid-area: 1 / 1;
+  transform-origin: 50% 50%;
+}
+.hiw-callout-item p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 400;
+  text-wrap: balance;
+  color: var(--hiw-ink-soft);
+}
+.hiw-callout-item strong {
+  font-weight: 700;
+  color: var(--hiw-ink);
+}
+
+/* ---------- buttons ---------- */
+
+.hiw-buttons {
+  display: flex;
+  gap: 10px;
+}
+.hiw-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  letter-spacing: -0.16px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1),
+    border-color 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+/* Same treatment as the site's Pill component. */
+.hiw-btn--dark {
+  background: var(--hiw-accent);
+  color: #fff;
+}
+.hiw-btn--dark:hover {
+  background: var(--hiw-accent-deep);
+}
+.hiw-btn--light {
+  background: #fff;
+  border-color: var(--line);
+  color: var(--hiw-ink);
+}
+.hiw-btn--light:hover {
+  border-color: #dadce0;
+  background: var(--surface-2);
+}
+
+/* Arrow slides down and out on hover while a second one drops in
+   from above. Track is 16px tall with overflow hidden. */
+.hiw-icon-track {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+}
+.hiw-icon {
+  display: block;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-16px);
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+.hiw-icon--abs {
+  position: absolute;
+  top: 16px;
+  left: 0;
+}
+.hiw-btn:hover .hiw-icon {
+  transform: translateY(0);
+}
+
+/* ---------- right column / media ---------- */
+
+.hiw-right {
+  padding: 24px;
+}
+.hiw-media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 568px; /* sets the card height: 24 + 568 + 24 = 616 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.hiw-media-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ---------- tablet (Clay: max-width 991) ---------- */
+
+@media screen and (max-width: 991px) {
+  .hiw {
+    padding: 48px 0 32px;
+  }
+  .hiw-head {
+    margin-bottom: 36px;
+  }
+  .hiw-theme {
+    position: relative;
+    top: 0;
+  }
+  .hiw-theme:first-child {
+    border-radius: 1.75rem 1.75rem 0 0;
+  }
+  .hiw-theme:last-child {
+    border-radius: 0 0 1.75rem 1.75rem;
+  }
+  .hiw-item {
+    grid-template-columns: 1fr;
+    border-radius: 1.75rem 1.75rem 0 0;
+  }
+  .hiw-left {
+    gap: 64px;
+    padding: 40px 40px 56px;
+  }
+  .hiw-title {
+    font-size: 36px;
+    line-height: 36px;
+    letter-spacing: -1.44px;
+  }
+  .hiw-desc p {
+    line-height: 1.4;
+  }
+  .hiw-right {
+    padding: 0 20px 20px;
+  }
+  .hiw-media {
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 10 / 9;
+    border-radius: 0.875rem;
+  }
+}
+
+/* ---------- mobile (Clay: max-width 767) ---------- */
+
+@media screen and (max-width: 767px) {
+  .hiw {
+    padding: 40px 0 32px;
+  }
+  .hiw-theme:first-child {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  .hiw-theme:last-child {
+    border-radius: 0 0 1.5rem 1.5rem;
+  }
+  .hiw-item {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  .hiw-left {
+    gap: 48px;
+    padding: 20px 20px 44px;
+  }
+  .hiw-title {
+    font-size: 32px;
+    line-height: 32px;
+    letter-spacing: -1.28px;
+  }
+  .hiw-media {
+    border-radius: 0.75rem;
+  }
+  .hiw-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- founders' note (the paper on the "we build it" card) ---------- */
+
+/* The sheet. Warm off-white with a faint gradient so it reads as lit from
+   the top left, a paper-fibre grain laid over it, a hairline edge and a
+   tight contact shadow under the whole sheet. */
+.fnote-paper {
+  position: relative;
+  border-radius: 2px;
+  color: #202124;
+  background:
+    linear-gradient(
+      158deg,
+      #fffef9 0%,
+      #fcf9f0 42%,
+      #f6f1e3 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 0 0 1px rgba(110, 90, 50, 0.07),
+    0 0.5px 1px rgba(20, 24, 33, 0.18),
+    0 2px 3px -1px rgba(20, 24, 33, 0.14),
+    0 10px 14px -8px rgba(20, 24, 33, 0.22);
+}
+
+/* Paper fibre grain: an SVG noise tile multiplied over the sheet. */
+.fnote-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.40 0 0 0 0 0.30 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+}
+
+/* A soft fold crease across the middle, and a touch more shade along the
+   right edge where the sheet lifts off the photo. */
+.fnote-paper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 54%,
+      rgba(60, 45, 20, 0.035) 58.4%,
+      rgba(60, 45, 20, 0.06) 59.1%,
+      rgba(255, 255, 255, 0.45) 59.7%,
+      rgba(255, 255, 255, 0.18) 61%,
+      transparent 65%
+    ),
+    linear-gradient(to left, rgba(60, 45, 20, 0.06), transparent 14%);
+}
+
+/* Lifted corners. Two skewed shadows under the bottom corners make the
+   sheet look like it's curling off the photo rather than printed on it. */
+.fnote-lift {
+  position: absolute;
+  z-index: -1;
+  bottom: 10px;
+  width: 46%;
+  height: 32%;
+  pointer-events: none;
+  box-shadow: 0 16px 14px rgba(20, 24, 33, 0.42);
+}
+.fnote-lift-l {
+  left: 10px;
+  transform: rotate(-3deg) skewX(-4deg);
+}
+.fnote-lift-r {
+  right: 10px;
+  transform: rotate(3.5deg) skewX(4deg);
+}
+
+/* Tape holding the note to the photo. Translucent, slightly frosted,
+   torn on both ends, with the faint sheen tape gets under light. */
+.fnote-tape {
+  position: absolute;
+  z-index: 2;
+  top: -13px;
+  left: 50%;
+  width: 104px;
+  height: 28px;
+  pointer-events: none;
+  transform: translateX(-50%) rotate(-3.5deg);
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.55) 38%,
+      rgba(255, 255, 255, 0.3) 62%,
+      rgba(255, 255, 255, 0.5) 100%
+    ),
+    rgba(232, 226, 205, 0.42);
+  backdrop-filter: blur(0.6px) saturate(1.05);
+  -webkit-backdrop-filter: blur(0.6px) saturate(1.05);
+  box-shadow:
+    0 1px 1px rgba(20, 24, 33, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  clip-path: polygon(
+    0% 8%, 3% 0%, 5% 12%, 8% 2%, 10% 10%, 100% 10%,
+    98% 22%, 100% 38%, 97% 55%, 100% 72%, 98% 90%, 100% 100%,
+    9% 100%, 6% 88%, 4% 100%, 1% 90%, 0% 100%
+  );
+}
+
+/* Ink. Blue-black ballpoint: multiplied into the paper so the grain shows
+   through the strokes, a hair of extra stroke weight where the pen pressed,
+   and a faint bleed halo so it sits in the fibres instead of on top. */
+.fnote-ink {
+  color: #16224c;
+  mix-blend-mode: multiply;
+  -webkit-text-stroke: 0.22px rgba(22, 34, 76, 0.55);
+  text-shadow:
+    0 0 0.3px rgba(22, 34, 76, 0.9),
+    0.35px 0.45px 0.5px rgba(22, 34, 76, 0.5),
+    0 0 1.4px rgba(30, 44, 96, 0.22);
+}
+
+/* ---------- questions wall: trade chips and the trade swap ---------- */
+
+/* The chip row: one line, never wraps. Auto margins on the ends centre it
+   when it fits and let it scroll from the left edge when it doesn't. */
+.sight-chips {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.sight-chips::-webkit-scrollbar {
+  display: none;
+}
+.sight-chips-track {
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  gap: 8px;
+  padding: 4px 24px;
+  box-sizing: border-box;
+}
+.sight-chips-track > :first-child {
+  margin-left: auto;
+}
+.sight-chips-track > :last-child {
+  margin-right: auto;
+}
+.sight-chip {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  height: 38px;
+  padding: 0 15px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sight-chip:hover {
+  color: var(--ink);
+  border-color: rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+.sight-chip[data-active] {
+  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+/* The catch-all chip sits a step back from the named trades. */
+.sight-chip[data-quiet]:not([data-active]) {
+  border-style: dashed;
+  color: var(--ink-faint);
+}
+.sight-chip[data-quiet]:not([data-active]):hover {
+  color: var(--ink-soft);
+}
+/* The subline swaps with the trade; a short fade covers the change. */
+.sight-wall-sub {
+  display: inline-block;
+  animation: sight-sub-in 0.35s ease both;
+}
+@keyframes sight-sub-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* While the wall is rotating on its own, a faint sweep crosses the active
+   chip over one hold, so the reader can see it's about to move on. */
+.sight-chip-sweep {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: rgba(255, 255, 255, 0.14);
+  animation: sight-chip-sweep linear forwards;
+}
+@keyframes sight-chip-sweep {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* The rows crossfade when the trade changes. Duration matches FADE in
+   QuestionsWall.tsx. */
+.sight-wall-rows {
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease;
+}
+.sight-wall-rows[data-fading] {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* The trade in the heading rises in as it changes. */
+.sight-wall-noun {
+  display: inline-block;
+  color: var(--blue);
+  animation: sight-noun-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes sight-noun-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sight-chip-sweep,
+  .sight-wall-noun,
+  .sight-wall-sub {
+    animation: none;
+  }
+  .sight-wall-rows {
+    transition: opacity 0.24s ease;
+  }
+  .sight-wall-rows[data-fading] {
+    transform: none;
+  }
+}

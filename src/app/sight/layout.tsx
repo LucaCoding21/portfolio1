@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import { DM_Sans, Inter } from "next/font/google";
+import { Caveat, DM_Sans, Inter } from "next/font/google";
 import "./sight.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
 });
 
 // The product UI snippets render in Inter, same as the real app.
 const inter = Inter({
   variable: "--font-inter-sight",
   subsets: ["latin"],
+});
+
+// The founders' signatures on the "we build it" note.
+const hand = Caveat({
+  variable: "--font-hand",
+  subsets: ["latin"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +43,7 @@ export default function SightLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className={`sight-root ${dmSans.variable} ${inter.variable}`}>
+    <div className={`sight-root ${dmSans.variable} ${inter.variable} ${hand.variable}`}>
       {children}
     </div>
   );
