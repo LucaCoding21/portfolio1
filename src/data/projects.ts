@@ -4,6 +4,13 @@ export interface Project {
   description: string;
   result?: string;
   kpis?: string[];
+  /**
+   * The same claims as `kpis`, split into the headline figure and what it
+   * measures, so they can be set as scannable stat tiles rather than a line of
+   * prose. Nothing new is asserted here — if you change a `kpis` entry, change
+   * its `metrics` twin directly below it.
+   */
+  metrics?: { value: string; label: string }[];
   tags: string[];
   image: string;
   imagePosition?: string;
@@ -77,6 +84,10 @@ export const projects: Project[] = [
     name: "ACE",
     description: "Reimagining digital experiences for tomorrow.",
     kpis: ["Tripled monthly bookings", "Fully booked 3 months out"],
+    metrics: [
+      { value: "Tripled", label: "Monthly bookings" },
+      { value: "Fully booked", label: "3 months out" },
+    ],
     tags: ["Photography"],
     image: "/ACE/ace-cover.jpg",
     hoverImage: "/ACE/ace.webp",
@@ -93,6 +104,10 @@ export const projects: Project[] = [
     name: "WrapCity",
     description: "Vinyl car wrap shop built to turn heads online and in the streets.",
     kpis: ["+34% booking inquiries", "~$40k pipeline in 3 months"],
+    metrics: [
+      { value: "+34%", label: "Booking inquiries" },
+      { value: "~$40k", label: "Pipeline in 3 months" },
+    ],
     tags: ["Local Business"],
     image: "/wrapcity-cover.webp",
     hoverImage: "/wrapcity-mockup.webp",
@@ -143,8 +158,12 @@ export const projects: Project[] = [
   {
     id: 3,
     name: "League1v1",
-    description: "Vancouver's competitive basketball league — built for players, sponsors, and the game.",
+    description: "Vancouver's competitive basketball league, built for players, sponsors, and the game.",
     kpis: ["Built in 5 days", "$12k in sponsorship revenue"],
+    metrics: [
+      { value: "5 days", label: "Build time" },
+      { value: "$12k", label: "Sponsorship revenue" },
+    ],
     tags: ["Sports & Events"],
     image: "/league1v1-cover.webp",
     hoverImage: "/league1v1.webp",
@@ -161,6 +180,15 @@ export const projects: Project[] = [
 export const HOMEPAGE_PROJECT_IDS = [9, 1, 3, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
+);
+
+/**
+ * The pinned "Selected Work" showcase on the homepage, in the order they play.
+ * Keep it short — each project adds more than a viewport of pinned scroll.
+ */
+export const SELECTED_WORK_IDS = [8, 1, 3, 4];
+export const selectedWorks = SELECTED_WORK_IDS.map(
+  (id) => projects.find((p) => p.id === id)!
 );
 
 export const NAV_ITEMS = [

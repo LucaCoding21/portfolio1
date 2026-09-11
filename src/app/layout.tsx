@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Geist,
-  Outfit,
-  Caveat,
-} from "next/font/google";
+import { Geist, Outfit, Caveat, Sometype_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import CursorLoader from "@/components/CursorLoader";
@@ -20,10 +16,19 @@ const outfit = Outfit({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
-// Handwriting accent used for the two highlighted words in the hero headline.
-// Variable font (wght 400-700), so no `weight` — the spans pick from the axis.
+// Handwriting accent used for the highlighted word in the hero headline and
+// the figures in About. Variable font (wght 400-700), so no `weight` — the
+// spans pick from the axis.
 const script = Caveat({
   variable: "--font-script",
+  subsets: ["latin"],
+});
+
+// Monospace face, used for the small uppercase labels and CTAs in the sections
+// below the fold — they read as measurements rather than as more marketing copy.
+// Variable (wght 400-700), so no `weight`; consumers pick off the axis.
+const sometype = Sometype_Mono({
+  variable: "--font-sometype",
   subsets: ["latin"],
 });
 
@@ -341,7 +346,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
         />
       </head>
       <body
-        className={`${geistSans.variable} ${outfit.variable} ${script.variable} antialiased`}
+        className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} antialiased`}
       >
         <CursorLoader />
         <Header />

@@ -3,16 +3,15 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { CLIENT_LOGOS } from "@/data/clientLogos";
 
 gsap.registerPlugin(ScrollTrigger);
 
 /**
  * How long the hero stays pinned before it releases and scrolls away, and the
- * slice of that distance the copy-out / logos-in sequence is scrubbed across.
+ * slice of that distance the copy-out / note-in sequence is scrubbed across.
  * Both in viewport heights; the sequence must finish inside the pin.
  */
-const PINNED_SCROLL_VH = 140;
+const PINNED_SCROLL_VH = 180;
 const SEQUENCE_SCROLL_VH = 90;
 
 interface HeroProps {
@@ -87,8 +86,7 @@ export default function Hero({ ready }: HeroProps) {
   }, [ready]);
 
   // Scroll-driven sequence over the pinned stretch: the copy rides up and out
-  // while the logos and the right-hand note rise into the spot it vacates.
-  // Both act on wrapper
+  // while the note below rises into the spot it vacates. Both act on wrapper
   // elements so they never fight the entry animation above, which owns
   // `y`/`opacity` on the h1 and p themselves.
   useEffect(() => {
@@ -114,7 +112,7 @@ export default function Hero({ ready }: HeroProps) {
       tl.to(revealRef.current, { y: 0, opacity: 1, duration: 0.45 }, 0.5);
     });
 
-    // The spacer adds ~140vh of document height, so every trigger positioned
+    // The spacer adds ~180vh of document height, so every trigger positioned
     // further down the page (About, Work) was measured against a shorter
     // document and needs re-measuring once this layout is in.
     ScrollTrigger.refresh();
@@ -125,7 +123,7 @@ export default function Hero({ ready }: HeroProps) {
   return (
     // Pin container. `sticky` only holds while this box is on screen, so the
     // hero releases once the spacer below is used up — i.e. right after the
-    // copy-out / logos-in sequence finishes — and then scrolls away normally.
+    // copy-out / note-in sequence finishes — and then scrolls away normally.
     <div className="relative w-full">
     <section className="sticky top-0 h-screen w-full overflow-hidden -z-0">
       <div className="absolute inset-0 overflow-hidden">
@@ -144,7 +142,7 @@ export default function Hero({ ready }: HeroProps) {
         <div ref={overlayRef} className="absolute inset-0 bg-black/8" />
       </div>
 
-      <div className="relative z-10 flex flex-col items-start justify-end h-full text-left px-6 md:px-12 pb-16 md:pb-20">
+      <div className="relative z-10 flex flex-col items-start justify-end h-full text-left px-6 md:px-12 pb-16 md:pb-24">
         <div ref={copyRef} className="will-change-[transform,opacity]">
         {/* Headline and subline are both `whitespace-nowrap` and sized in vw so
             each stays on a single line from ~320px up to ultra-wide. */}
@@ -180,32 +178,19 @@ export default function Hero({ ready }: HeroProps) {
         </p>
         </div>
 
-        {/* Rides in with the logos. Anchored to the same bottom edge the copy
-            occupies, so the pair lands where the description was. Starts offset
+        {/* Rides in as the copy leaves. Anchored to the same bottom edge the
+            copy occupies, so it lands where the description was. Starts offset
             and transparent — the section's `overflow-hidden` keeps it out of
-            the first fold. Stacks on phones; note left, logos right from md. */}
+            the first fold. */}
         <div
           ref={revealRef}
-          className="absolute left-6 right-6 md:left-12 md:right-12 bottom-16 md:bottom-20 flex flex-col items-start gap-6 md:flex-row md:items-end md:justify-between md:gap-10 will-change-[transform,opacity]"
+          className="absolute left-6 right-6 md:left-12 md:right-12 bottom-16 md:bottom-24 will-change-[transform,opacity]"
         >
           {/* PLACEHOLDER — swap for real copy. `line-clamp-2` holds it to two
               lines whatever gets pasted in. */}
-          <p className="max-w-[28ch] shrink-0 text-left text-[clamp(0.875rem,1.65vw,1.375rem)] leading-snug text-white font-semibold tracking-wide line-clamp-2">
+          <p className="max-w-[52ch] text-left text-[clamp(0.875rem,1.65vw,1.375rem)] leading-snug text-white font-semibold tracking-wide line-clamp-2">
             Placeholder text for this slot. Two lines max, replace when ready.
           </p>
-
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-4 md:justify-end md:gap-x-10">
-            {CLIENT_LOGOS.map((logo) => (
-              <img
-                key={logo.src}
-                src={logo.src}
-                alt={logo.name}
-                className={`${logo.className} w-auto object-contain opacity-90 ${
-                  logo.invert ? "brightness-0 invert" : ""
-                }`}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </section>
