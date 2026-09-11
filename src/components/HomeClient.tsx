@@ -16,6 +16,9 @@ const Work = dynamic(() =>
 const ViewAllWork = dynamic(() =>
   import("@/components/Work").then((m) => ({ default: m.ViewAllWork }))
 );
+const SelectedWork = dynamic(() => import("@/components/SelectedWork"));
+const WhyCloverfield = dynamic(() => import("@/components/WhyCloverfield"));
+const ClientProof = dynamic(() => import("@/components/ClientProof"));
 const Contact = dynamic(() => import("@/components/Contact"));
 const Footer = dynamic(() => import("@/components/Footer"));
 
@@ -103,10 +106,17 @@ export default function HomeClient() {
       )}
       <Hero ready={ready} />
       <div className="relative z-10 bg-white">
-        {/* Pixelated leading edge: overhangs upward so the hand-off from the
-            pinned hero to this block dissolves in blocks instead of a line. */}
-        <PixelTransition />
-        <About ready={ready} />
+        {/* Charcoal block. It owns the dark background AND the pixel band, so
+            the band always dissolves into the colour directly beneath it. */}
+        <div className="relative bg-[#111113]">
+          {/* Pixelated leading edge: overhangs upward out of this block so the
+              hand-off from the hero dissolves in blocks, not along a line. */}
+          <PixelTransition />
+          <About ready={ready} />
+          <SelectedWork ready={ready} />
+          <WhyCloverfield />
+          <ClientProof />
+        </div>
         <Work projectList={homepageProjects} showFilters={false} />
         <ViewAllWork />
         <Contact />

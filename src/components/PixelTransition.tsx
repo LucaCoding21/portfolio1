@@ -29,7 +29,7 @@ function noise(i: number) {
  * jitter, so the solid colour appears to eat upward in pixels.
  */
 export default function PixelTransition({
-  color = "var(--charcoal)",
+  color = "#111113",
 }: {
   /** Colour of the tiles — must match the section this sits on top of. */
   color?: string;
@@ -70,7 +70,14 @@ export default function PixelTransition({
       );
     }, grid);
 
-    return () => ctx.revert();
+    // The sections below this are dynamically imported and land after first
+    // paint, so the document grows underneath an already-placed trigger.
+    const refresh = requestAnimationFrame(() => ScrollTrigger.refresh());
+
+    return () => {
+      cancelAnimationFrame(refresh);
+      ctx.revert();
+    };
   }, []);
 
   return (

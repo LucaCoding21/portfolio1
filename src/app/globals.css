@@ -3,8 +3,6 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  /* Dark charcoal for the section below the hero — deliberately off-black. */
-  --charcoal: #1c1c1e;
 }
 
 @theme inline {
@@ -12,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
 }
+
 
 /* ================================
    CUSTOM CURSOR
@@ -158,6 +157,149 @@ body {
     animation: none;
     background: none;
     color: #3b7cf6 !important;
+  }
+}
+
+
+/* ================================
+   LOGO MARQUEE
+   Two client-logo strips under the
+   About stats, running in opposite
+   directions.
+   ================================ */
+
+/* Each track holds two byte-identical halves, so translating exactly -50%
+   lands on the start of the second half — the wrap is invisible. */
+@keyframes marquee-left {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Glitch-in word reveal (GlitchText). The line it's tuned for: a short
+   sentence around 20–30px, where the 2–3px smears and the dot read at the
+   right scale. Bigger type needs bigger figures, not this class. */
+.glitch-text {
+  max-width: 600px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-sometype), monospace;
+  font-size: clamp(17px, 1.65vw, 22px);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Each word is a box that keeps its real
+   width while hidden — only transform, clip-path, opacity and filter move, so
+   the line never reflows. The steps are written as custom properties from
+   the component; these rules just read them. */
+.glitch-word {
+  --copy-opacity: 0;
+  --dot-opacity: 0;
+  --dot-scale: 0.78;
+  --origin-x: 0%;
+  --dot-x: 0%;
+  --step-scale: 0.18;
+  --shift: 0px;
+  --pixel-jitter: 0px;
+  --pixel-contrast: 0px;
+  --clip-left: 0%;
+  --clip-right: 100%;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.glitch-word[data-origin="right"] {
+  --origin-x: 100%;
+  --dot-x: 100%;
+}
+
+/* The dot the word grows out of, sitting on its origin edge. */
+.glitch-word::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--dot-x);
+  z-index: 2;
+  width: clamp(6px, 0.5vw, 9px);
+  height: clamp(6px, 0.5vw, 9px);
+  border-radius: 999px;
+  background: currentColor;
+  opacity: var(--dot-opacity);
+  transform: translate3d(-50%, -50%, 0) scale(var(--dot-scale));
+  pointer-events: none;
+}
+
+.glitch-word__copy {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  margin: -0.05em -0.01em -0.08em;
+  padding: 0.05em 0.01em 0.08em;
+  opacity: var(--copy-opacity);
+  clip-path: inset(0 var(--clip-right) 0 var(--clip-left));
+  transform: translate3d(var(--shift), 0, 0) scale(var(--step-scale));
+  transform-origin: var(--origin-x) 50%;
+}
+
+/* Doubled shadows smear the glyphs into blocky, pixel-looking shapes. */
+.glitch-word.is-pixelating {
+  filter: drop-shadow(var(--pixel-jitter) 0 0 currentColor)
+    drop-shadow(calc(var(--pixel-jitter) * -1) 0 0 currentColor);
+}
+
+.glitch-word.is-pixelating .glitch-word__copy {
+  text-shadow:
+    var(--pixel-contrast) 0 0 currentColor,
+    calc(var(--pixel-contrast) * -1) 0 0 currentColor;
+}
+
+/* Resting state once a word has landed — and the whole state under reduced
+   motion, where the words simply show. */
+.glitch-word.is-done {
+  --copy-opacity: 1;
+  --step-scale: 1;
+  --clip-right: 0%;
+  --clip-left: 0%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-word {
+    --copy-opacity: 1;
+    --step-scale: 1;
+    --clip-right: 0%;
+    --clip-left: 0%;
   }
 }
 
