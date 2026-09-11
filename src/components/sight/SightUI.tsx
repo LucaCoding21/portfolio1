@@ -311,7 +311,8 @@ export function AlertRow({
   tone: Tone;
   title: string;
   detail: string;
-  category: string;
+  /** Omit to drop the chip, e.g. in a narrow window where the title needs the room. */
+  category?: string;
 }) {
   return (
     <div
@@ -336,12 +337,14 @@ export function AlertRow({
           {detail}
         </span>
       </span>
-      <span
-        className="shrink-0 self-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
-        style={{ backgroundColor: T.WELL, color: T.MUTED }}
-      >
-        {category}
-      </span>
+      {category && (
+        <span
+          className="shrink-0 self-center rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
+          style={{ backgroundColor: T.WELL, color: T.MUTED }}
+        >
+          {category}
+        </span>
+      )}
     </div>
   );
 }

@@ -15,6 +15,8 @@ export default function Reveal({
   stagger = 0.08,
   as: Tag = "div",
   id,
+  onMouseEnter,
+  onMouseLeave,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -23,6 +25,8 @@ export default function Reveal({
   stagger?: number;
   as?: "div" | "section" | "li" | "footer";
   id?: string;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }) {
   const scope = useSightGsap((root, reduced) => {
     const targets: Element | Element[] = selector
@@ -44,8 +48,14 @@ export default function Reveal({
   });
 
   return (
-    // @ts-expect-error — ref type narrows per tag; all render HTMLElements
-    <Tag ref={scope} id={id} className={className}>
+    <Tag
+      // @ts-expect-error — ref type narrows per tag; all render HTMLElements
+      ref={scope}
+      id={id}
+      className={className}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {children}
     </Tag>
   );
