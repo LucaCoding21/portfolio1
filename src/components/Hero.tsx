@@ -2,17 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
-
-/**
- * How long the hero stays pinned before it releases and scrolls away, and the
- * slice of that distance the copy-out / note-in sequence is scrubbed across.
- * Both in viewport heights; the sequence must finish inside the pin.
- */
-const PINNED_SCROLL_VH = 180;
-const SEQUENCE_SCROLL_VH = 90;
 
 interface HeroProps {
   ready: boolean;
@@ -20,9 +9,6 @@ interface HeroProps {
 
 export default function Hero({ ready }: HeroProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const copyRef = useRef<HTMLDivElement>(null);
-  const revealRef = useRef<HTMLDivElement>(null);
-  const spacerRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const circleRef = useRef<SVGPathElement>(null);
@@ -38,7 +24,6 @@ export default function Hero({ ready }: HeroProps) {
       opacity: 0, y: 20, force3D: true,
     });
     gsap.set(overlayRef.current, { opacity: 0 });
-    gsap.set(revealRef.current, { opacity: 0, y: 110, force3D: true });
 
     // getTotalLength() is in viewBox user units, so this is independent of
     // font loading and of the non-uniform preserveAspectRatio scaling.
@@ -85,47 +70,8 @@ export default function Hero({ ready }: HeroProps) {
     };
   }, [ready]);
 
-  // Scroll-driven sequence over the pinned stretch: the copy rides up and out
-  // while the note below rises into the spot it vacates. Both act on wrapper
-  // elements so they never fight the entry animation above, which owns
-  // `y`/`opacity` on the h1 and p themselves.
-  useEffect(() => {
-    if (!ready) return;
-
-    const ctx = gsap.context(() => {
-      gsap.set(revealRef.current, { opacity: 0, y: 110, force3D: true });
-
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: spacerRef.current,
-          // The spacer starts exactly one viewport down, so "top bottom" is
-          // scroll position 0 — the sequence begins on the very first scroll.
-          start: "top bottom",
-          end: () => `+=${window.innerHeight * (SEQUENCE_SCROLL_VH / 100)}`,
-          scrub: 0.5,
-          invalidateOnRefresh: true,
-        },
-      });
-
-      tl.to(copyRef.current, { y: -160, opacity: 0, duration: 0.55 }, 0);
-      tl.to(revealRef.current, { y: 0, opacity: 1, duration: 0.45 }, 0.5);
-    });
-
-    // The spacer adds ~180vh of document height, so every trigger positioned
-    // further down the page (About, Work) was measured against a shorter
-    // document and needs re-measuring once this layout is in.
-    ScrollTrigger.refresh();
-
-    return () => ctx.revert();
-  }, [ready]);
-
   return (
-    // Pin container. `sticky` only holds while this box is on screen, so the
-    // hero releases once the spacer below is used up — i.e. right after the
-    // copy-out / note-in sequence finishes — and then scrolls away normally.
-    <div className="relative w-full">
-    <section className="sticky top-0 h-screen w-full overflow-hidden -z-0">
+    <section className="relative h-screen w-full overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">
         <video
           autoPlay
@@ -140,10 +86,17 @@ export default function Hero({ ready }: HeroProps) {
           <source src="/hero-v2.mp4" type="video/mp4" />
         </video>
         <div ref={overlayRef} className="absolute inset-0 bg-black/8" />
+        {/* Soft dark fade from the top so the nav's white type always sits on
+            something, whatever frame the video is on. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-40 md:h-44"
+          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0) 100%)" }}
+        />
       </div>
 
       <div className="relative z-10 flex flex-col items-start justify-end h-full text-left px-6 md:px-12 pb-16 md:pb-24">
-        <div ref={copyRef} className="will-change-[transform,opacity]">
+        <div>
         {/* Headline and subline are both `whitespace-nowrap` and sized in vw so
             each stays on a single line from ~320px up to ultra-wide. */}
         <h1 ref={headingRef} className="font-[family-name:var(--font-outfit)] font-bold text-white text-[clamp(0.9rem,4.7vw,4.5rem)] lg:text-[clamp(2rem,5vw,5rem)] leading-[1.15] tracking-tight whitespace-nowrap will-change-[transform,opacity]">
@@ -177,32 +130,7 @@ export default function Hero({ ready }: HeroProps) {
           Custom, lead-generating websites for established businesses.
         </p>
         </div>
-
-        {/* Rides in as the copy leaves. Anchored to the same bottom edge the
-            copy occupies, so it lands where the description was. Starts offset
-            and transparent — the section's `overflow-hidden` keeps it out of
-            the first fold. */}
-        <div
-          ref={revealRef}
-          className="absolute left-6 right-6 md:left-12 md:right-12 bottom-16 md:bottom-24 will-change-[transform,opacity]"
-        >
-          {/* PLACEHOLDER — swap for real copy. `line-clamp-2` holds it to two
-              lines whatever gets pasted in. */}
-          <p className="max-w-[52ch] text-left text-[clamp(0.875rem,1.65vw,1.375rem)] leading-snug text-white font-semibold tracking-wide line-clamp-2">
-            Placeholder text for this slot. Two lines max, replace when ready.
-          </p>
-        </div>
       </div>
     </section>
-
-    {/* Consumed by the sticky travel above: it sets how long the hero stays
-        pinned before it releases. Purely a scroll-length spacer. */}
-    <div
-      ref={spacerRef}
-      aria-hidden
-      className="w-full"
-      style={{ height: `${PINNED_SCROLL_VH}vh` }}
-    />
-    </div>
   );
 }

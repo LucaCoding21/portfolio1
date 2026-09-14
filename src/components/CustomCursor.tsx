@@ -214,6 +214,7 @@ export default function CustomCursor() {
       {/* Default cursor — mix-blend-mode: difference */}
       <div
         ref={cursorRef}
+        className="cf-cursor"
         style={{
           position: "fixed",
           top: 0,

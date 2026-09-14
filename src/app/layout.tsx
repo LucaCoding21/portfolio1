@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Outfit, Caveat, Sometype_Mono } from "next/font/google";
+import { Geist, Outfit, Caveat, Sometype_Mono, Reenie_Beanie, DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import CursorLoader from "@/components/CursorLoader";
-import Header from "@/components/Header";
+import LassieNav from "@/components/LassieNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +30,27 @@ const script = Caveat({
 const sometype = Sometype_Mono({
   variable: "--font-sometype",
   subsets: ["latin"],
+});
+
+// Lassie clone faces (homepage hero, features, nav): DM Sans is theirs;
+// Cormorant Garamond stands in for their licensed ABC Marist.
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
+  subsets: ["latin"],
+});
+
+const marist = Cormorant_Garamond({
+  variable: "--font-marist",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+});
+
+// Handwritten face for the partner labels and names in Why Cloverfield.
+const reenie = Reenie_Beanie({
+  variable: "--font-reenie",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -346,10 +367,10 @@ gtag('config', 'G-KHS5MBDWV5');`}
         />
       </head>
       <body
-        className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} antialiased`}
+        className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} antialiased`}
       >
         <CursorLoader />
-        <Header />
+        <LassieNav />
         {children}
       </body>
     </html>

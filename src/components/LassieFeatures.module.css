@@ -1,0 +1,352 @@
+/*
+  Lassie "AI that runs the doctor's office" intro + pinned feature cards.
+  Reference root is 10px; rem values are written as px. Breakpoints: tablet
+  1024, desktop 1280, desktopLarge 1440.
+*/
+
+.section {
+  --ink: #1a1613;
+  --muted: #666;
+  --paper: #f9f8f5;
+  padding-top: 100px;
+  margin-bottom: 100px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding-top: 150px;
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section {
+    padding-top: 270px;
+  }
+}
+
+/* ---------- intro ---------- */
+
+.intro {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 80px;
+}
+
+@media (min-width: 1024px) {
+  .intro {
+    margin-bottom: 60px;
+  }
+}
+
+/* text-heading-lg */
+.title {
+  margin: 0;
+  font-family: var(--font-marist), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(36px, 9.13vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--ink);
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: clamp(56px, 5.46vw, 66px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .title {
+    font-size: clamp(51.8px, 4.05vw, 70px);
+  }
+}
+
+/* ---------- pinned carousel ---------- */
+
+.carousel {
+  position: relative;
+  width: 100vw;
+  height: 100vw;
+}
+
+@media (min-width: 1024px) {
+  .carousel {
+    height: 75svh;
+    max-height: 700px;
+    margin-bottom: 200px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .carousel {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 2050px;
+    height: 36vw;
+    max-height: 500px;
+    margin-bottom: 100px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .carousel {
+    height: 40vw;
+    max-height: 750px;
+  }
+}
+
+.card {
+  position: absolute;
+  top: 25vw;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+@media (min-width: 1024px) {
+  .card {
+    top: 30px;
+    right: auto;
+    height: 100%;
+    max-width: none;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .card {
+    top: 0;
+  }
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 362 / 346;
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    top: 40px;
+    width: auto;
+    height: 90%;
+    aspect-ratio: 975 / 614;
+  }
+}
+
+@media (min-width: 1280px) {
+  .inner {
+    top: 20px;
+    aspect-ratio: 1100 / 693;
+  }
+}
+
+/* description sits above the card until desktop, then beside it */
+.description {
+  position: absolute;
+  top: -25px;
+  max-width: 90%;
+  transform: translateY(-100%);
+}
+
+.description.isRight {
+  top: -24px;
+  width: auto;
+}
+
+@media (min-width: 1024px) {
+  .description,
+  .description.isRight {
+    top: -20px;
+    max-width: 500px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .description,
+  .description.isRight {
+    top: calc(50% + 45px);
+    max-width: 257px;
+    transform: translateX(calc(-100% - 28px)) translateY(-100%);
+  }
+  .description.isRight {
+    right: 0;
+    transform: translateX(calc(100% + 30px)) translateY(-100%);
+  }
+}
+
+@media (min-width: 1440px) {
+  .description.isRight {
+    transform: translateX(calc(100% + 31px)) translateY(-100%);
+  }
+}
+
+.descriptionAnim {
+  position: relative;
+  opacity: 0;
+}
+
+/* text-heading-sm */
+.cardTitle {
+  margin: 0 0 12px;
+  font-family: var(--font-marist), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(21px, 5.33vw, 28px);
+  line-height: 1.1;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+@media (min-width: 1024px) {
+  .cardTitle {
+    font-size: clamp(28px, 2.73vw, 30px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .cardTitle {
+    max-width: 100%;
+    font-size: clamp(22.2px, 1.73vw, 30px);
+  }
+}
+
+/* text-body-sm */
+.cardBody {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .cardBody {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .cardBody {
+    font-size: 15px;
+  }
+}
+
+/* the plate their UI video lived in; ours holds a project cover and reel */
+.plate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #f9f8f5;
+  pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+  .plate {
+    border-radius: 56px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .plate {
+    border-radius: 64px;
+  }
+}
+
+/* cover image (their <video>): scales 1.2 -> 1.05 -> 1 as the card comes up */
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.media img {
+  object-fit: cover;
+}
+
+/* ---- the Success Stories hover reel, popping up on its own ---- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgb(17 17 19 / 0.8);
+  opacity: 0;
+  transition:
+    opacity 0.2s cubic-bezier(0.25, 0, 0.25, 1),
+    backdrop-filter 0.85s cubic-bezier(0.2, 1, 0.36, 1);
+}
+
+.reelSlot {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8%;
+}
+
+.reel {
+  position: relative;
+  width: 100%;
+  max-width: 84%;
+  border-radius: 0.15rem;
+  overflow: clip;
+  opacity: 0;
+  transform-style: preserve-3d;
+  transform: scale(0.95) perspective(600px) translateY(75%) perspective(500px)
+    rotateX(18deg) rotateY(0) rotate(0);
+  transition:
+    opacity 0.15s cubic-bezier(0.25, 0, 0.25, 1),
+    transform 0.85s cubic-bezier(0.2, 1, 0.36, 1);
+}
+
+.reelVideo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+.reelVideo video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card.isLive .reel {
+  transform: translateY(0%) rotateX(0deg) scale(1);
+  opacity: 1;
+}
+
+.card.isLive .overlay {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+}

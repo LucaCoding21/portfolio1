@@ -135,7 +135,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             className={`block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] transition-colors duration-300 ${
               item.href === "/sight"
                 ? "sight-nav-link"
-                : "text-black hover:text-[#CDFF50]"
+                : "text-[#111113] hover:text-[#111113]/60"
             }`}
             style={{ opacity: 0 }}
           >
@@ -149,10 +149,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         ref={ctaRef}
         href="/#contact"
         onClick={(e) => handleNavClick(e, "/#contact")}
-        className="mt-12 self-start px-8 py-4 rounded-full bg-black text-white text-lg font-[family-name:var(--font-outfit)] font-medium transition-colors duration-300 hover:bg-[#CDFF50] hover:text-black"
+        className="mt-12 self-start px-8 py-4 rounded-full bg-[#111113] text-white text-lg font-[family-name:var(--font-outfit)] font-medium transition-colors duration-300 hover:bg-[#111113]/85"
         style={{ opacity: 0 }}
       >
-        Get Started
+        Book a call &rarr;
       </Link>
     </div>
   );

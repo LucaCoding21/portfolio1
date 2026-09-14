@@ -3,22 +3,17 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
-import Hero from "@/components/Hero";
-import PixelTransition from "@/components/PixelTransition";
-import { homepageProjects } from "@/data/projects";
+import LassieHero from "@/components/LassieHero";
+import LassieFeatures from "@/components/LassieFeatures";
 
 const LOADED_FLAG = "cf-loader-seen";
 
-const About = dynamic(() => import("@/components/About"));
-const Work = dynamic(() =>
-  import("@/components/Work").then((m) => ({ default: m.default }))
-);
-const ViewAllWork = dynamic(() =>
-  import("@/components/Work").then((m) => ({ default: m.ViewAllWork }))
-);
-const SelectedWork = dynamic(() => import("@/components/SelectedWork"));
+const GridNumbers = dynamic(() => import("@/components/GridNumbers"));
+const LogoStrip = dynamic(() => import("@/components/LogoStrip"));
+const SuccessStories = dynamic(() => import("@/components/SuccessStories"));
 const WhyCloverfield = dynamic(() => import("@/components/WhyCloverfield"));
-const ClientProof = dynamic(() => import("@/components/ClientProof"));
+const Philosophy = dynamic(() => import("@/components/Philosophy"));
+const Blackboard = dynamic(() => import("@/components/Blackboard"));
 const Contact = dynamic(() => import("@/components/Contact"));
 const Footer = dynamic(() => import("@/components/Footer"));
 
@@ -100,25 +95,22 @@ export default function HomeClient() {
   }, [isLoading, skipped]);
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-[#f9f8f5] text-[#1a1613]">
       {isLoading && (
         <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
       )}
-      <Hero ready={ready} />
+      <LassieHero ready={ready} />
+      <LassieFeatures ready={ready} />
       <div className="relative z-10 bg-white">
-        {/* Charcoal block. It owns the dark background AND the pixel band, so
-            the band always dissolves into the colour directly beneath it. */}
+        <LogoStrip />
+        <GridNumbers ready={ready} />
+        {/* Charcoal block behind the light sections below the hero. */}
         <div className="relative bg-[#111113]">
-          {/* Pixelated leading edge: overhangs upward out of this block so the
-              hand-off from the hero dissolves in blocks, not along a line. */}
-          <PixelTransition />
-          <About ready={ready} />
-          <SelectedWork ready={ready} />
+          <SuccessStories ready={ready} />
           <WhyCloverfield />
-          <ClientProof />
+          <Philosophy />
+          <Blackboard />
         </div>
-        <Work projectList={homepageProjects} showFilters={false} />
-        <ViewAllWork />
         <Contact />
         <Footer />
       </div>

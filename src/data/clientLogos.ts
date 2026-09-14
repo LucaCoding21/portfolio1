@@ -1,47 +1,28 @@
+/**
+ * Client marks for the homepage logo strip. Same art the Sight page's Trust
+ * section uses; heights are tuned for a single low strip on white.
+ */
 export interface ClientLogo {
   name: string;
   src: string;
-  /** Tailwind height classes; widths are always auto so aspect is preserved. */
-  className: string;
-  /**
-   * Run the source art through `brightness-0 invert` to flatten it to white.
-   * Only works on art with a real alpha channel, and only on single-tone art —
-   * a two-tone mark fuses into one solid block. Marks that need more than that
-   * have a pre-made white cut checked in instead (see `src` comments).
-   */
-  invert?: boolean;
+  /** Relative height in px, before the trust bar scales and caps it. */
+  height: number;
+  /** White art that needs flattening to black to show on a light pill. */
+  dark?: boolean;
 }
 
-/**
- * White-on-dark client marks. Not currently rendered anywhere — kept here so
- * they can be dropped into a section without redoing the white treatment.
- */
 export const CLIENT_LOGOS: ClientLogo[] = [
-  {
-    name: "Innovative Aluminum Systems",
-    // White cut of /ias-newgold.svg: the gold frame and white inner panel are
-    // dropped so the wordmark stays legible instead of flattening to a block.
-    src: "/ias-white.svg",
-    className: "h-7 md:h-12",
-  },
-  {
-    name: "Real Estate Institute of British Columbia",
-    src: "/transforming/reibc-logo.png",
-    className: "h-7 md:h-12",
-    invert: true,
-  },
-  {
-    name: "Greater Vancouver REALTORS",
-    // White cut of /transforming/gvr-logo.png: the mark is two-tone, so a flat
-    // invert fuses the deep-green square and the lime figure. This version
-    // whitens the green and knocks the lime shape out so the icon still reads.
-    src: "/gvr-white.png",
-    className: "h-10 md:h-[4.5rem]",
-  },
-  {
-    name: "Transforming Landscapes",
-    src: "/transforming-landscapes.svg",
-    className: "h-9 md:h-16",
-    invert: true,
-  },
+  { name: "Innovative Aluminum Systems", src: "/ias-newgold.svg", height: 40 },
+  { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.png", height: 34 },
+  { name: "Greater Vancouver REALTORS", src: "/transforming/gvr-logo.png", height: 40 },
+  { name: "Ondek", src: "/sight/clients/ondek.png", height: 40 },
+  { name: "Transforming Landscapes", src: "/transforming-landscapes.svg", height: 40 },
+  { name: "Northwest Railing", src: "/sight/clients/northwest-railing.png", height: 56 },
+  // White art: flattened to black so it shows on the light pill.
+  { name: "Venues Quarterly", src: "/sight/clients/venues-quarterly.png", height: 31, dark: true },
+  { name: "Caddie Companion", src: "/sight/clients/caddie-companion.png", height: 34 },
+  { name: "WrapCity", src: "/sight/clients/wrapcity.png", height: 34 },
+  { name: "League1v1", src: "/sight/clients/league1v1.webp", height: 45 },
+  { name: "Real Estate 360", src: "/sight/clients/real-estate-360-v2.webp", height: 40 },
+  { name: "Venue Series", src: "/sight/clients/venue-series-2.png", height: 45 },
 ];

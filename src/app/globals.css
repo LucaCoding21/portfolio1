@@ -161,47 +161,6 @@ body {
 }
 
 
-/* ================================
-   LOGO MARQUEE
-   Two client-logo strips under the
-   About stats, running in opposite
-   directions.
-   ================================ */
-
-/* Each track holds two byte-identical halves, so translating exactly -50%
-   lands on the start of the second half — the wrap is invisible. */
-@keyframes marquee-left {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes marquee-right {
-  from {
-    transform: translate3d(-50%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
-}
-
 /* Glitch-in word reveal (GlitchText). The line it's tuned for: a short
    sentence around 20–30px, where the 2–3px smears and the dot read at the
    right scale. Bigger type needs bigger figures, not this class. */

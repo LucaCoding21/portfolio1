@@ -1,0 +1,373 @@
+/*
+ * Success Stories. Every dimension below is the reference section's fluid
+ * token resolved to plain clamp() maths: the source scales linearly between a
+ * 320px and a 1600px viewport, so each value is `min` at 320 and `max` at
+ * 1600 (1rem = 16px). Comments give the source token and its min→max range.
+ */
+.wrap {
+  /* site margin .75→1.75rem, gutter fixed 1rem */
+  --margin: clamp(0.75rem, 0.5rem + 1.25vw, 1.75rem);
+  --gutter: 1rem;
+  /* spacing scale */
+  --space-1: clamp(0.375rem, 0.34375rem + 0.15625vw, 0.5rem); /* .375→.5 */
+  --space-2: clamp(0.625rem, 0.59375rem + 0.15625vw, 0.75rem); /* .625→.75 */
+  --space-4: clamp(1.25rem, 1.1875rem + 0.3125vw, 1.5rem); /* 1.25→1.5 */
+  --space-5: clamp(1.75rem, 1.6875rem + 0.3125vw, 2rem); /* 1.75→2 */
+  --space-6: clamp(2rem, 1.875rem + 0.625vw, 2.5rem); /* 2→2.5 */
+  --section-small: clamp(3rem, 2.5rem + 2.5vw, 5rem); /* 3→5 */
+  --section-main: clamp(4rem, 3.25rem + 3.75vw, 7rem); /* 4→7 */
+  --section-large: clamp(5.5rem, 4.375rem + 5.625vw, 10rem); /* 5.5→10 */
+  --section-page-top: clamp(7rem, 5.25rem + 8.75vw, 14rem); /* 7→14 */
+  /* type scale */
+  --text-main: clamp(1rem, 0.96875rem + 0.15625vw, 1.125rem); /* 1→1.125 */
+  --text-large: clamp(1.125rem, 1.09375rem + 0.15625vw, 1.25rem); /* 1.125→1.25 */
+  --text-h5: clamp(1.375rem, 1.34375rem + 0.15625vw, 1.5rem); /* 1.375→1.5 */
+  /* Cloverfield palette: white ground, charcoal ink, warm-grey secondary */
+  --ground: #ffffff;
+  --ink: #111113;
+  --muted: #6a665e;
+  --rule: rgb(17 17 19 / 0.1);
+  --radius-card: 0.15rem;
+  --radius-reel: 0.15rem;
+  --radius-section: 0.15rem;
+  --font-display: var(--font-outfit), sans-serif;
+  --font-body: var(--font-geist-sans), Arial, sans-serif;
+  /* the two curves the hover uses */
+  --ease-expo-out: cubic-bezier(0.2, 1, 0.36, 1);
+  --ease-fade: cubic-bezier(0.25, 0, 0.25, 1);
+  /* 12-column widths, gutter included between spanned columns */
+  --col-2: calc((100% - 11 * var(--gutter)) / 12 * 2 + var(--gutter));
+  --col-10: calc((100% - 11 * var(--gutter)) / 12 * 10 + 9 * var(--gutter));
+
+  position: relative;
+  z-index: 2;
+  /* Overlap the section above by a pixel so the charcoal block behind never
+     shows as a hairline where fractional heights meet. */
+  margin-top: -1px;
+  display: flex;
+  flex-flow: column;
+  min-height: 100svh;
+  padding: var(--section-large) var(--margin) 0;
+  border-radius: var(--radius-section);
+  background-color: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-main);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.contain {
+  display: flex;
+  column-gap: var(--gutter);
+  padding-bottom: var(--space-4);
+}
+
+.left {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  width: var(--col-2);
+  height: fit-content;
+}
+
+/* Eyebrow. Hidden until the intro timeline reveals it, like the source. */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  column-gap: var(--space-2);
+  visibility: hidden;
+  opacity: 0;
+}
+
+.eyebrowCircle {
+  flex: none;
+  align-self: center;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 100vw;
+  background-color: var(--muted);
+}
+
+.eyebrowText {
+  display: flow-root;
+  font-family: var(--font-body);
+  font-size: var(--text-large);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.eyebrowWord {
+  position: relative;
+  display: inline-block;
+}
+
+.collection {
+  width: var(--col-10);
+}
+
+.list {
+  display: flex;
+  flex-flow: column;
+  row-gap: var(--space-5);
+}
+
+.item {
+  position: relative;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--rule);
+}
+
+.item:last-child {
+  border: 0;
+  padding-bottom: 0;
+}
+
+.link {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: var(--gutter);
+  place-items: start;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Cover: 7 of 12 columns, 3:2, padded so the reel sits inset. */
+.cover {
+  grid-column: span 7 / span 7;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 3 / 2;
+  padding: var(--section-small);
+  border-radius: var(--radius-card);
+  overflow: clip;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  transform: scale(1.15);
+  will-change: transform;
+}
+
+.image img {
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background-color: rgb(17 17 19 / 0.8);
+  opacity: 0;
+  transition:
+    opacity 0.2s var(--ease-fade),
+    backdrop-filter 0.85s var(--ease-expo-out);
+}
+
+/* The reel: starts tilted back, low, and slightly small; hover stands it up. */
+.reel {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-reel);
+  overflow: clip;
+  opacity: 0;
+  transform-style: preserve-3d;
+  transform: scale(0.95) perspective(600px) translateY(75%) perspective(500px)
+    rotateX(18deg) rotateY(0) rotate(0);
+  transition:
+    opacity 0.15s var(--ease-fade),
+    transform 0.85s var(--ease-expo-out);
+}
+
+.reelVideo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .item:hover .reel {
+    transform: translateY(0%) rotateX(0deg) scale(1);
+    opacity: 1;
+  }
+  .item:hover .overlay {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .item.isActive .reel {
+    transform: translateY(0%) rotateX(0deg) scale(1);
+    opacity: 1;
+  }
+  .item.isActive .overlay {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+  }
+}
+
+/* Content: the remaining 5 columns. */
+.content {
+  grid-column: span 5 / span 5;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: 39ch;
+  height: 100%;
+  padding-bottom: var(--space-2);
+}
+
+.title {
+  display: flex;
+  flex-flow: column;
+  row-gap: var(--space-4);
+}
+
+.heading {
+  display: flow-root;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.description {
+  display: flow-root;
+  margin: 0;
+  font-family: var(--font-display);
+  color: var(--muted);
+  font-size: var(--text-main);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.result {
+  display: flex;
+  flex-flow: column;
+  margin-top: var(--section-small);
+}
+
+/* The figure: bold Outfit, the same voice as the Work page stats bar. */
+.resultValue {
+  display: flow-root;
+  width: fit-content;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 1.75vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.resultLabel {
+  display: flow-root;
+  max-width: 24ch;
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+@media screen and (min-width: 1920px) {
+  .cover {
+    padding: var(--section-main);
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .wrap {
+    padding-top: var(--section-page-top);
+  }
+  .contain {
+    flex-flow: column;
+  }
+  .collection {
+    width: 100%;
+  }
+  .left {
+    position: static;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding-bottom: var(--space-6);
+    gap: var(--section-main);
+  }
+  .cover {
+    height: 100%;
+    aspect-ratio: 1;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .wrap {
+    min-height: auto;
+  }
+  .left {
+    padding-bottom: var(--space-4);
+    row-gap: var(--section-main);
+  }
+  .eyebrow {
+    column-gap: var(--space-2);
+  }
+  .eyebrowCircle {
+    width: 0.65rem;
+    height: 0.65rem;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .list {
+    row-gap: var(--space-4);
+  }
+  .item {
+    padding-bottom: 0;
+    border-bottom-style: none;
+  }
+  .link {
+    display: flex;
+    flex-flow: column;
+  }
+}

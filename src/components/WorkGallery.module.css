@@ -1,0 +1,660 @@
+/*
+  Revelatio /work clone, colours inverted (white ground, black type).
+  Every length is in em off the section font-size, which is the reference's
+  fluid body size: .833vw desktop, 1.615vw ≤991, 2.086vw ≤767, 3.738vw ≤479.
+  Reference viewport for the numbers in comments: 1470px (1em = 12.245px).
+*/
+
+.section {
+  --ink: #000;
+  --paper: #fff;
+  --line: rgba(0, 0, 0, 0.08);        /* neutral-200 */
+  --chip-bg: rgba(0, 0, 0, 0.04);     /* neutral-100 */
+  --chip-ink: rgba(0, 0, 0, 0.64);    /* neutral-500 */
+  --filter-border: rgba(0, 0, 0, 0.32); /* neutral-400 */
+
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 0.833vw;
+  line-height: 1.5;
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.paddingGlobal {
+  padding-left: 2.5em;
+  padding-right: 2.5em;
+}
+
+.container {
+  width: 100%;
+  max-width: 114.979em;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 8em;
+  padding-bottom: 8em;
+}
+
+.component {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: 5.75em;
+}
+
+.header {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2.5em;
+  width: 100%;
+}
+
+.headlineWrap {
+  max-width: 65em;
+}
+
+.headline {
+  margin: 0;
+  font-size: 3em;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* load-in: starts hidden, GSAP brings it up */
+.loadIn {
+  opacity: 0;
+  transform: translateY(0.75em);
+}
+
+.projectComponent {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: 2.5em;
+  width: 100%;
+}
+
+/* ---------- filter chips ---------- */
+
+.filterWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.filterList {
+  display: flex;
+  align-items: center;
+  gap: 0.667em;
+  flex-wrap: wrap;
+}
+
+.filterItem {
+  font: inherit;
+  border: 1px solid var(--filter-border);
+  border-radius: 0.25em;
+  padding: 0.625em 1.25em;
+  font-size: 0.875em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  background: transparent;
+  opacity: 0.4;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filterItem:hover {
+  opacity: 0.8;
+}
+
+.filterItem.isActive {
+  opacity: 1;
+  background-color: var(--chip-bg);
+  border-color: transparent;
+}
+
+/* ---------- tabs ---------- */
+
+/* the reference keeps an empty embed as the first flex child, so the tabs
+   start one flex gap (2.5em) below the absolutely positioned filter */
+.tabs {
+  width: 100%;
+  padding-top: 2.5em;
+}
+
+.tabsMenu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.688em;
+  margin-bottom: 2.5em;
+}
+
+.tabLink {
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0.32;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabLink.isCurrent {
+  opacity: 1;
+}
+
+.tabLink svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.tabsContent {
+  position: relative;
+  overflow: visible;
+}
+
+.tabPane {
+  display: none;
+  position: relative;
+}
+
+.tabPane.isActive {
+  display: block;
+}
+
+/* ---------- grid view ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: auto;
+  column-gap: 2em;
+  row-gap: 5em;
+  width: 100%;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  gap: 1em;
+}
+
+.cardImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.cardPoster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the reel sits over the poster; this is the element the hover scales */
+.caseImg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.caseImg video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: 0.5em;
+  width: 100%;
+  text-wrap: balance;
+}
+
+.cardRow {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.cardTitle {
+  font-size: 1.25em;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.tagList {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: baseline;
+  width: auto;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 0.875em;
+  background-color: var(--chip-bg);
+  color: var(--chip-ink);
+}
+
+.cardDesc {
+  opacity: 0.6;
+}
+
+.cardDescText {
+  width: 100%;
+  max-width: 32rem;
+  font-size: 0.875em;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+/* ---------- list view ---------- */
+
+.previewContainer {
+  width: 100%;
+}
+
+.previewComponent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.follower {
+  position: sticky;
+  top: 5em;
+  left: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 27.25em;
+  height: 30em;
+  aspect-ratio: 1 / 1.25;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.followerInner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* clones of .visual dropped into the follower fill it */
+.followerInner .visual {
+  display: block;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  border-radius: 0 !important;
+}
+
+.collection {
+  width: 100%;
+  max-width: 85.75em;
+}
+
+.list {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  gap: 0.5em;
+  width: 100%;
+}
+
+.item {
+  width: 100%;
+  transition: opacity 0.2s;
+}
+
+@media (hover: hover) and (min-width: 992px) {
+  .list:has(.item:hover) .item:not(:hover) {
+    opacity: 0.5;
+  }
+}
+
+.itemInner {
+  position: relative;
+  width: 100%;
+  border-top: 1px solid var(--line);
+  padding-top: 1.25em;
+  padding-bottom: 1.25em;
+  text-decoration: none;
+}
+
+.itemRow {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2em;
+  width: 100%;
+}
+
+.col {
+  flex: 1;
+  max-width: 27.25em;
+}
+
+.colRight {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.itemHeading {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.itemText {
+  margin: 0;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.serviceList {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.service {
+  font-size: 1em;
+  letter-spacing: -0.019em;
+  color: var(--ink);
+}
+
+.visual {
+  position: absolute;
+  display: none;
+  width: 20em;
+  aspect-ratio: 1 / 1.25;
+  overflow: hidden;
+}
+
+.visualImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.visualVideo {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itemLink {
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- cursor label ---------- */
+
+/* While the label is up, tuck the site's dot/ring cursor away (the reference
+   shrinks its circle to 2%) so there is one cursor, not two. */
+:global(html.cursor-label-active .cf-cursor) {
+  opacity: 0 !important;
+  transition: opacity 0.18s ease;
+}
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100000;
+  padding: 1em 1em 0 0.5em;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursorLabel {
+  display: inline-block;
+  padding: 0 0.75em;
+  border-radius: 0.25em;
+  background-color: rgba(255, 255, 255, 0.72);
+  color: var(--ink);
+  font-size: 0.875em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* ---------- breakpoints (mirroring the reference) ---------- */
+
+@media screen and (max-width: 991px) {
+  .section {
+    font-size: 1.615vw;
+  }
+  .headline {
+    font-size: 3.25em;
+  }
+  .header {
+    flex-flow: column;
+    align-items: flex-start;
+  }
+  .cardTitle {
+    font-size: 1.125em;
+  }
+
+  .previewComponent {
+    position: relative;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .follower {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10em;
+    height: 12.5em;
+    margin: 0;
+  }
+  .list {
+    gap: 1em;
+  }
+  .item {
+    border-top: 1px solid var(--line);
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+  .item.isInactive {
+    opacity: 0.35;
+  }
+  .item.isActive {
+    opacity: 1;
+  }
+  .itemInner {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .itemRow {
+    flex-flow: row;
+    gap: 0;
+  }
+  .colLarge {
+    flex: 1;
+    order: -1;
+    width: 100%;
+    max-width: none;
+  }
+  .colSmall {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    text-align: right;
+  }
+  .visual {
+    order: -1;
+    width: 10em;
+    height: 12.5em;
+    border-radius: 0.75em;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .section {
+    font-size: 2.086vw;
+  }
+  .headline {
+    font-size: 2.25em;
+  }
+  .container {
+    padding-top: 5em;
+    padding-bottom: 5em;
+  }
+  .paddingGlobal {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .itemInner {
+    gap: 1em;
+  }
+  .colSmall {
+    flex: 1;
+    width: 100%;
+    max-width: none;
+  }
+  .itemText {
+    text-align: left;
+  }
+  .previewContainer {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .tagList {
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .section {
+    font-size: 3.738vw;
+  }
+  .component {
+    gap: 3em;
+    padding-top: 1em;
+  }
+  .grid {
+    display: flex;
+    flex-flow: column;
+    gap: 1.5em;
+  }
+  .cardImage {
+    aspect-ratio: auto;
+    height: 15em;
+  }
+  .tabs {
+    padding-top: 6.2em; /* 2.5em gap + 3.7em */
+  }
+  .tabsMenu {
+    justify-content: flex-start;
+  }
+  .hideMobile {
+    display: none !important;
+  }
+  .itemHeading {
+    font-size: 0.875em;
+  }
+  .itemText {
+    font-size: 0.875em;
+  }
+  .collection {
+    position: relative;
+  }
+  .list {
+    gap: 0.5em;
+    justify-content: center;
+    align-items: center;
+  }
+  .colSmall {
+    flex: 0 auto;
+    width: auto;
+    text-align: left;
+  }
+  .colSmall.colRight {
+    justify-content: flex-end;
+  }
+  .itemRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 2em;
+    column-gap: 0;
+    align-items: center;
+  }
+  .visual {
+    order: 0;
+    width: 10em;
+    height: 12.5em;
+  }
+  .previewContainer {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

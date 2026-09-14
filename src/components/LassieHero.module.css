@@ -1,0 +1,275 @@
+/*
+  Lassie hero clone. Reference root is 10px; rem values are written as px.
+  Type scales are the reference's clamp() formulas with rem converted to px.
+  Breakpoints: tablet 1024, desktop 1280, desktopLarge 1440.
+*/
+
+.hero {
+  --ink: #1a1613;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100svh;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+/* the media plate: shrinks in from the edges once you have scrolled 100px */
+.media {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  clip-path: inset(0);
+  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
+  /* promote the plate up front so the first clip does not pay for a new
+     compositor layer mid-scroll */
+  will-change: clip-path;
+  transform: translateZ(0);
+}
+
+.media.isZoomed {
+  clip-path: inset(16px round 24px);
+}
+
+@media screen and (min-width: 1280px) {
+  .media.isZoomed {
+    clip-path: inset(32px round 64px);
+  }
+}
+
+.poster,
+.video {
+  contain: layout paint;
+  will-change: clip-path;
+  display: inline-block;
+  overflow: hidden;
+  transform: translateZ(0);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  z-index: -10;
+}
+
+.video {
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* text-heading-xl */
+.headline {
+  margin: 0 0 40px;
+  font-family: var(--font-marist), Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(50px, 12.69vw, 64px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #fff;
+}
+
+@media (min-width: 1024px) {
+  .headline {
+    font-size: clamp(74px, 7.22vw, 76.9px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .headline {
+    font-size: clamp(76.9px, 6.01vw, 104px);
+  }
+}
+
+.italic {
+  font-style: italic;
+}
+
+/* text-body-md */
+.bodyMd {
+  margin: 0;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+
+@media (min-width: 1024px) {
+  .bodyMd {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .bodyMd {
+    line-height: 24px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .bodyMd {
+    font-size: 17px;
+  }
+}
+
+.sub {
+  margin-bottom: 8px;
+  text-align: center;
+  color: #fff;
+}
+
+/* rotating task line */
+.tasks {
+  position: relative;
+  width: 100%;
+  height: 30px;
+  overflow: hidden;
+}
+
+.task {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.taskText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #fff;
+  opacity: 0.7;
+}
+
+.taskIcon {
+  display: inline-flex;
+  margin-right: 3px;
+}
+
+/* sign-up form pinned to the bottom edge */
+.formWrap {
+  position: absolute;
+  bottom: 16px;
+  transform: translateY(0);
+  transition: transform 0.5s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.formWrap.isZoomed {
+  transform: translateY(-50px);
+}
+
+.form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 275px;
+  height: 56px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(227, 221, 207, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: width 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+@media (min-width: 1024px) {
+  .form:focus-within {
+    width: 360px;
+  }
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 16px;
+  color: #fff;
+}
+
+.input::placeholder {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (min-width: 1024px) {
+  .input {
+    padding: 0 16px;
+  }
+}
+
+.button {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  isolation: isolate;
+}
+
+.buttonInner {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  letter-spacing: 0.005em;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.button:hover .buttonInner {
+  background: #f8f6f2;
+}
+
+.button:active .buttonInner {
+  background: #473d37;
+  color: #fff;
+}
+
+@media (min-width: 1024px) {
+  .buttonInner {
+    height: 42px;
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .buttonInner {
+    font-size: 15px;
+  }
+}

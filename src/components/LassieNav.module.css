@@ -1,0 +1,164 @@
+/*
+  Lassie nav clone. Reference root is 10px, so their rem values are written
+  here as px. Breakpoint "desktop" = 1280px.
+*/
+
+.nav {
+  --ink: #1a1613;
+  position: fixed;
+  left: 50%;
+  top: 16px;
+  z-index: 50;
+  display: flex;
+  width: max-content;
+  padding: 0;
+  transform: translateX(-50%);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  color: #000;
+}
+
+/* frosted ring behind the pills */
+.ring {
+  position: absolute;
+  pointer-events: none;
+  top: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: 52px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(227, 221, 207, 0.4);
+  backdrop-filter: blur(13px);
+  -webkit-backdrop-filter: blur(13px);
+}
+
+@media (min-width: 1280px) {
+  .ring {
+    top: -6px;
+    left: -6px;
+    width: calc(100% + 12px);
+    height: 56px;
+  }
+}
+
+/* the one white pill that slides under the hovered item */
+.pill {
+  position: absolute;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 44px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.item {
+  position: relative;
+  display: block;
+  height: 44px;
+  text-decoration: none;
+  outline: none;
+  color: inherit;
+}
+
+.itemBg {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border-radius: 12px;
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+/* at rest every item sits on its own white pill */
+.nav:not(.isHovered) .item:not(.isCta) .itemBg {
+  background: #fff;
+}
+
+/* the call to action keeps a translucent pill, tinted by the theme */
+.item.isCta .itemBg {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.nav.dark:not(.isHovered) .item.isCta .itemBg {
+  background: rgba(229, 229, 229, 0.3);
+}
+.nav.light:not(.isHovered) .item.isCta .itemBg {
+  background: rgba(227, 221, 207, 0.4);
+}
+
+.item:active .itemBg {
+  background: #473d37;
+}
+
+.label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 14px;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+/* labels stay dark in every state (the reference flips them white over the
+   hero on hover; dropped by request). The call to action follows the theme. */
+.nav.isHovered .label {
+  color: var(--ink);
+}
+.nav.dark .item.isCta .label {
+  color: #fff;
+}
+.nav.light .item.isCta .label {
+  color: var(--ink);
+}
+.item:hover .label {
+  color: var(--ink);
+}
+.item:active .label {
+  color: #fff;
+}
+
+/* logo: the mark stays, the wordmark collapses after 400px of scroll */
+.mark {
+  display: inline-block;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.wordmark {
+  display: inline-block;
+  width: auto;
+  overflow: hidden;
+  box-sizing: border-box;
+  white-space: nowrap;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.menuButton {
+  display: none;
+  font: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .desktopOnly {
+    display: none;
+  }
+  .menuButton {
+    display: block;
+  }
+}

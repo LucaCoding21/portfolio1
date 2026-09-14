@@ -182,15 +182,6 @@ export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );
 
-/**
- * The pinned "Selected Work" showcase on the homepage, in the order they play.
- * Keep it short — each project adds more than a viewport of pinned scroll.
- */
-export const SELECTED_WORK_IDS = [8, 1, 3, 4];
-export const selectedWorks = SELECTED_WORK_IDS.map(
-  (id) => projects.find((p) => p.id === id)!
-);
-
 export const NAV_ITEMS = [
   { label: "Work", href: "/work" },
   { label: "Sight", href: "/sight" },

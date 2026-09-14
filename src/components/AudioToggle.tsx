@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 
-export default function AudioToggle() {
+export default function AudioToggle({ tone = "light" }: { tone?: "light" | "dark" }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -99,19 +99,19 @@ export default function AudioToggle() {
 
   if (isMobile) return null;
 
-  // The header bar is dark frosted glass in every scroll state.
-  const strokeColor = "rgba(255,255,255,0.75)";
-  const textColor = "text-white/80";
+  // Follows the header: light type over the hero, charcoal on the glass pill.
+  const strokeColor = tone === "dark" ? "rgba(17,17,19,0.7)" : "rgba(255,255,255,0.75)";
+  const textColor = tone === "dark" ? "text-[#111113]/70" : "text-white/80";
 
   return (
     <button
       onClick={toggle}
-      className="flex flex-col items-center gap-0.5 bg-transparent border-none outline-none"
+      className="flex flex-col items-center gap-0.5 bg-transparent border-none outline-none px-2"
       aria-label={isPlaying ? "Turn audio off" : "Turn audio on"}
     >
       <svg
-        width="56"
-        height="28"
+        width="44"
+        height="22"
         viewBox="0 0 56 28"
         className="overflow-visible"
       >

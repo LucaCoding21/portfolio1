@@ -1,0 +1,121 @@
+/*
+ * Trust bar under the hero. Label left, logos in a clipped window right,
+ * looping on a slow keyframe. Pills equalise twelve very different marks.
+ */
+.wrap {
+  --ink: #111113;
+  --muted: #6a665e;
+  --pill: rgb(84 82 82 / 0.06);
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 28px 2.5rem;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.label {
+  flex: none;
+  width: 300px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+/* The window the marquee runs inside. Clips hard at its edges. Capped so
+   only five or six pills show at once, as in the reference. */
+.marquee {
+  flex: 1;
+  min-width: 0;
+  max-width: 55vw;
+  margin-left: auto;
+  overflow: hidden;
+  /* Soft edges: the pills fade in on the right and out on the left, leaving
+     clear white between the label and the first mark. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: strip-slide 45s linear infinite;
+  will-change: transform;
+}
+
+.row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 20px;
+  margin: 0;
+  padding: 0 20px 0 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 68px;
+  min-width: 120px;
+  padding: 14px 26px;
+  border-radius: 8px;
+  background: var(--pill);
+}
+
+/* Full colour. Multiply drops any white backgrounds on opaque art, and on
+   transparent art it changes nothing, so every mark sits on the pill. */
+.logo {
+  display: block;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* White art (Venues Quarterly) needs flattening to show on a light pill. */
+.onLight {
+  filter: brightness(0);
+  mix-blend-mode: normal;
+}
+
+@keyframes strip-slide {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px 1.5rem;
+  }
+  .label {
+    width: auto;
+  }
+  .marquee {
+    width: 100%;
+    max-width: none;
+  }
+  .item {
+    height: 56px;
+    min-width: 100px;
+    padding: 12px 20px;
+  }
+}
