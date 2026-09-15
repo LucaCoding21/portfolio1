@@ -4,10 +4,10 @@ import styles from "./LogoStrip.module.css";
 
 /**
  * Logo heights come from the data, tuned so wide wordmarks and square marks
- * read at the same visual weight, then capped to fit the 68px pill.
+ * read at the same visual weight, then capped so nothing towers over the row.
  */
-const MAX_LOGO_HEIGHT = 40;
-const logoHeight = (h: number) => Math.min(Math.round(h * 0.85), MAX_LOGO_HEIGHT);
+const MAX_LOGO_HEIGHT = 52;
+const logoHeight = (h: number) => Math.min(h, MAX_LOGO_HEIGHT);
 
 function Row({ logos, hidden }: { logos: ClientLogo[]; hidden?: boolean }) {
   return (
@@ -20,6 +20,8 @@ function Row({ logos, hidden }: { logos: ClientLogo[]; hidden?: boolean }) {
             width={logoHeight(height) * 3}
             height={logoHeight(height)}
             style={{ height: logoHeight(height) }}
+            /* The loop carries marks in from off screen; lazy loading would pop them in late. */
+            loading="eager"
             className={`${styles.logo} ${dark ? styles.onLight : ""}`}
           />
         </li>
@@ -29,18 +31,14 @@ function Row({ logos, hidden }: { logos: ClientLogo[]; hidden?: boolean }) {
 }
 
 /**
- * Trust bar straight under the hero: a label on the left and the client marks
- * looping slowly in a clipped window on the right. Two identical rows make the
- * loop seamless; the keyframe travels exactly one row.
+ * Full-bleed logo marquee straight under the hero: a small eyebrow, then the
+ * client marks looping edge to edge. Two identical rows make the loop
+ * seamless; the keyframe travels exactly one row. Hovering pauses it.
  */
 export default function LogoStrip() {
   return (
-    <section className={styles.wrap} aria-label="Clients">
-      <p className={styles.label}>
-        The businesses we built for,
-        <br />
-        the numbers below are theirs.
-      </p>
+    <section className={styles.wrap} aria-label="Businesses we have worked with">
+      <p className={styles.label}>Businesses we have worked with</p>
       <div className={styles.marquee}>
         <div className={styles.track}>
           <Row logos={CLIENT_LOGOS} />

@@ -6,6 +6,7 @@ import { Icon, P } from "./SightUI";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, useSightGsap } from "./motion";
 import { BOOK_URL } from "./constants";
+import Cinematic, { Words } from "./Cinematic";
 import { useTrade } from "./trades";
 
 /**
@@ -146,14 +147,16 @@ export default function FinalCta() {
       <div className="relative flex min-h-[92vh] items-center justify-center px-6 py-28 md:py-40">
         <div
           data-cta-card
-          className="w-full max-w-[640px] rounded-[2rem] bg-white p-8 text-center shadow-[0_30px_90px_-24px_rgba(20,24,33,0.5)] md:p-14"
+          className="w-full max-w-[640px] rounded-[2rem] bg-white p-8 text-center shadow-[0_24px_70px_-24px_rgba(20,24,33,0.32)] md:p-14"
         >
-          <h2
-            className="font-medium leading-[1.1] tracking-[-0.025em] text-[var(--ink)]"
-            style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.7rem)" }}
-          >
-            Bring three questions you can&apos;t easily answer.
-          </h2>
+          <Cinematic start="top 85%">
+            <Words
+              className="font-semibold leading-[1.1] tracking-[-0.025em] text-[var(--ink)]"
+              style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.7rem)" }}
+            >
+              Bring three questions you can&apos;t easily answer.
+            </Words>
+          </Cinematic>
 
           {/* the ask bar, with the reader's questions typing themselves in */}
           <div
@@ -175,10 +178,15 @@ export default function FinalCta() {
             </span>
           </div>
 
-          <p className="mx-auto mt-7 max-w-[26rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]">
-            Fifteen minutes. We&apos;ll show you Sight answering them about a
-            business like yours, in seconds, not Thursday.
-          </p>
+          <Cinematic start="top 90%" delay={0.2}>
+            <p
+              data-blur
+              className="mx-auto mt-7 max-w-[26rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
+            >
+              Fifteen minutes. We&apos;ll show you Sight answering them about a
+              business like yours, in seconds, not Thursday.
+            </p>
+          </Cinematic>
 
           <div className="mt-8">
             <Pill href={BOOK_URL} variant="primary">

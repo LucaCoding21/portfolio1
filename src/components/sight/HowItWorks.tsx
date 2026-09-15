@@ -9,6 +9,7 @@ import AskWindow from "./AskWindow";
 import FoundersNote from "./FoundersNote";
 import { Icon, P, T } from "./SightUI";
 import { useTrade } from "./trades";
+import Cinematic, { Words } from "./Cinematic";
 
 /**
  * "How it works": four stacked feature cards. Layout, spacing, type
@@ -87,7 +88,7 @@ const CARDS: Card[] = [
     photo: "/sight/shepherd-field.webp",
   },
   {
-    tag: "Cross-check",
+    tag: "Cross check",
     title: "Checks every number",
     highlight: "against every other one",
     body: "Quotes against bookings, invoices against payments, hours against what was quoted. Sight reads the lot and lines it all up, so it knows a job finished but never got billed without anyone telling it to look.",
@@ -299,21 +300,24 @@ export default function HowItWorks() {
   return (
     <section ref={scope} className="hiw" aria-labelledby="hiw-heading">
       <div className="hiw-container">
-        <div className="hiw-head">
-          <h2
+        <Cinematic className="hiw-head">
+          <Words
             id="hiw-heading"
-            className="font-medium leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
+            className="font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
             style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
           >
             How it works
-          </h2>
-          <p className="mx-auto mt-5 max-w-[36rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]">
+          </Words>
+          <p
+            data-blur
+            className="mx-auto mt-5 max-w-[36rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
+          >
             Four steps, from the tools you already use to answers that come
             to you.
           </p>
-        </div>
+        </Cinematic>
         <div className="hiw-list">
-          {CARDS.map((card) => {
+          {CARDS.map((card, index) => {
             const quotes =
               card.tag === "Ask"
                 ? card.quotes.map((q, i) => ({ ...q, ...trade.ask[i] }))
@@ -323,13 +327,11 @@ export default function HowItWorks() {
               <article className="hiw-item">
                 <div className="hiw-left">
                   <div className="hiw-stack">
-                    <div className="hiw-tag" aria-label={card.tag}>
-                      <div className="hiw-pill is-active">
-                        <span className="hiw-eyebrow">{card.tag}</span>
-                      </div>
-                      <div className="hiw-pill" aria-hidden="true" />
-                      <div className="hiw-pill" aria-hidden="true" />
-                      <div className="hiw-pill" aria-hidden="true" />
+                    <div className="hiw-tag">
+                      <span className="hiw-step">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="hiw-eyebrow">{card.tag}</span>
                     </div>
                     <div className="hiw-stack-rg">
                       <h3 className="hiw-title">
@@ -344,21 +346,21 @@ export default function HowItWorks() {
                   <div className="hiw-btm">
                     <div className="hiw-callout" data-callout>
                       <p className="hiw-callout-label">{card.label}</p>
-                      <div className="hiw-callout-top">
-                        {quotes.map((q, i) => (
-                          <div key={i} className="hiw-logo" data-logo>
-                            <Mark icon={q.icon} tone={q.tone} />
-                          </div>
-                        ))}
-                      </div>
-                      <div className="hiw-callout-quote">
-                        {quotes.map((q, i) => (
-                          <div key={i} className="hiw-callout-item" data-quote>
-                            <p>
-                              <strong>{q.q}</strong> {q.a}
-                            </p>
-                          </div>
-                        ))}
+                      <div className="hiw-callout-row">
+                        <div className="hiw-callout-top">
+                          {quotes.map((q, i) => (
+                            <div key={i} className="hiw-logo" data-logo>
+                              <Mark icon={q.icon} tone={q.tone} />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="hiw-callout-quote">
+                          {quotes.map((q, i) => (
+                            <div key={i} className="hiw-callout-item" data-quote>
+                              <p>{q.q}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
 

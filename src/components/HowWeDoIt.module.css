@@ -1,0 +1,174 @@
+/*
+ * How we do it. Sticky under the rounded card above until it has cleared,
+ * then a normal scrolling section: the question top left, the journey rows
+ * below it.
+ *
+ * A sticky child only holds inside its parent's content box, so the stage
+ * starts one viewport early (behind the card) and adds a trailing viewport
+ * of content: the section, once it lets go, slides down over that run and
+ * ends flush with the stage, so the next block follows right after it.
+ */
+.stage {
+  position: relative;
+  z-index: 0;
+  margin-top: -100svh;
+}
+
+.stage::after {
+  content: "";
+  display: block;
+  height: 100svh;
+}
+
+.wrap {
+  --ink: #111113;
+  --muted: #6a665e;
+  --cream: #faf7f3;
+  --rule: 1;
+  --rule-color: rgb(17 17 19 / 0.3);
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  padding: clamp(8rem, 20vh, 13rem) clamp(1.25rem, 3vw, 3rem) clamp(5rem, 10vh, 8rem);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+/* The question: top left, bold grotesque, sized to its own column. */
+.headline {
+  max-width: 54vw;
+  margin: 0 0 clamp(4rem, 10vh, 7rem);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: clamp(2.5rem, 6.8vw, 7.5rem);
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+/* One block per line; the shorter lines sit flush left ... */
+.line {
+  display: block;
+}
+
+/* ... and the first is spread so its words meet both edges of the column. */
+.spread {
+  display: flex;
+  justify-content: space-between;
+}
+
+.word {
+  display: inline-block;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* name | body | reel, a hairline drawn along the top of each row */
+.row {
+  --rule: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(8rem, 13vw, 12rem) minmax(0, 1fr) clamp(360px, 50vw, 840px);
+  column-gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+  padding: clamp(2rem, 3.5vw, 3.5rem) 0;
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule-color);
+  transform: scaleX(var(--rule));
+  transform-origin: left center;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.index {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(1.375rem, 1.8vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.body {
+  max-width: 34ch;
+  margin: 0;
+  padding-top: 1.6rem;
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+
+/* The reel: the same corner as the plates in Selected Works, clipped so the
+   entrance scale stays inside. */
+.reel {
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  border-radius: 24px;
+  background: #ece7e0;
+}
+
+.reel video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 1023px) {
+  .headline {
+    max-width: 72vw;
+  }
+  .row {
+    grid-template-columns: clamp(7rem, 20vw, 10rem) minmax(0, 1fr);
+    row-gap: 1.5rem;
+  }
+  .reel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    padding: 6.5rem 1.5rem 4rem;
+  }
+  .headline {
+    max-width: none;
+    font-size: 13vw;
+  }
+  .row {
+    grid-template-columns: 1fr;
+    row-gap: 1rem;
+    padding: 1.75rem 0;
+  }
+  .body {
+    padding-top: 0;
+  }
+  .reel {
+    border-radius: 16px;
+  }
+}

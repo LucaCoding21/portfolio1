@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { AppPanel, Icon, P, T } from "./SightUI";
+import { AppPanel, Icon, P, StatusPill, T } from "./SightUI";
 import { gsap, useSightGsap } from "./motion";
 import { M, type LogoMark } from "./logos";
 
@@ -124,17 +124,13 @@ function JobCard({ job, index }: { job: Job; index: number }) {
             {job.ref}
           </span>
         </span>
-        <span
+        <StatusPill
           data-flag
-          className="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-medium tabular-nums"
-          style={
-            job.ok
-              ? { backgroundColor: `${T.GREEN}14`, color: T.GREEN }
-              : { backgroundColor: `${T.AMBER}14`, color: T.AMBER }
-          }
+          tone={job.ok ? T.GREEN : T.AMBER}
+          className="shrink-0 tabular-nums"
         >
           {job.flag}
-        </span>
+        </StatusPill>
       </div>
 
       <div className="mt-2">
@@ -162,18 +158,14 @@ function JobCard({ job, index }: { job: Job; index: number }) {
               {line.value}
             </span>
             {line.warn ? (
-              <span
-                data-mark
-                className="flex h-4 w-4 items-center justify-center rounded-full"
-                style={{ backgroundColor: `${T.AMBER}1a` }}
-              >
-                <span className="block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: T.AMBER }} />
+              <span data-mark className="flex h-4 w-4 items-center justify-center">
+                <span className="block h-2 w-2 rounded-full" style={{ backgroundColor: T.AMBER }} />
               </span>
             ) : (
               <span
                 data-mark
-                className="flex h-4 w-4 items-center justify-center rounded-full"
-                style={{ backgroundColor: `${T.GREEN}1a`, color: T.GREEN }}
+                className="flex h-4 w-4 items-center justify-center rounded-full text-white"
+                style={{ backgroundColor: T.GREEN }}
               >
                 <Icon d={P.check} className="h-2.5 w-2.5" strokeWidth={3} />
               </span>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Reveal from "./Reveal";
+import Cinematic, { Words } from "./Cinematic";
 import Button from "./Pill";
 import { T, P, Icon, Spark } from "./SightUI";
 import { BOOK_URL } from "./constants";
@@ -26,7 +27,7 @@ import { TRADES, setTrade, nextTrade, useTradeState, type Q } from "./trades";
  */
 
 /* Seconds per marquee loop. Slow enough to read a pill, fast enough to feel alive. */
-const SPEEDS = [84, 92, 78];
+const SPEEDS = [150, 165, 140];
 /* Seconds a trade holds before the wall moves to the next one. */
 const ROTATE = 5.6;
 /* Crossfade when the trade changes (ms). Matches .sight-wall-rows in CSS. */
@@ -126,13 +127,9 @@ export default function QuestionsWall() {
 
   return (
     <section ref={sectionRef} id="questions" className="scroll-mt-24 pb-14 pt-28 md:pb-20 md:pt-40">
-      <Reveal
-        selector="[data-reveal]"
-        className="mx-auto max-w-[52rem] px-6 text-center md:px-10"
-      >
-        <h2
-          data-reveal
-          className="font-medium leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
+      <Cinematic className="mx-auto max-w-[52rem] px-6 text-center md:px-10">
+        <Words
+          className="font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
           style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
         >
           What{" "}
@@ -140,9 +137,9 @@ export default function QuestionsWall() {
             {trade.noun}
           </span>{" "}
           asks.
-        </h2>
+        </Words>
         <p
-          data-reveal
+          data-blur
           className="mx-auto mt-5 max-w-[42rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
         >
           <span key={trade.tagline ?? "default"} className="sight-wall-sub">
@@ -150,8 +147,7 @@ export default function QuestionsWall() {
               "Every one of these used to be a phone call, three exports and a spreadsheet. Now it's one line and five seconds."}
           </span>
         </p>
-
-      </Reveal>
+      </Cinematic>
 
       {/* One line of chips, wider than the copy above. Centred when it fits,
           scrolls sideways when it doesn't (phones). */}

@@ -1,20 +1,21 @@
 "use client";
 
 /**
- * Lassie's "AI that runs the doctor's office" intro and the pinned feature
- * cards beneath it, cloned from their FeaturesCarousel. The card plates carry
+ * "Cloverfield selected works" intro and the pinned feature cards beneath
+ * it, cloned from Lassie's FeaturesCarousel. The card plates carry
  * our Success Stories covers, and the story reel that normally stands up on
  * hover stands up on its own while a card is the live one.
  *
- * Motion is their scroll timeline verbatim: the section pins for 2.2 viewport
- * heights on desktop (3 on tablet, 2.5 on mobile) and a scrubbed timeline of
- * three parallel tracks runs across 3 viewport heights. Track 0 brings the
- * first card in and out, track 1 holds the second card back (scale .85, 12%
- * down) then brings it in and out, track 2 holds the third card two steps
- * back (scale .7, 24% down), one step back, then in.
+ * Motion is their scroll timeline, generalised to any number of cards: the
+ * section pins for 2.2 viewport heights on desktop (3 on tablet, 2.5 on
+ * mobile) plus one per card beyond three, and a scrubbed timeline of parallel
+ * tracks runs across 3 (+1 per extra card) viewport heights. Track 0 brings
+ * the first card in and out, track 1 holds the second card back (scale .85,
+ * 12% down) then brings it in and out, track 2 holds the third two steps back
+ * (scale .7, 24% down), one step back, then in, and so on.
  *
- * PLACEHOLDER: intro headline and the three card titles and bodies are the
- * reference's copy, kept verbatim for the first pass. Their Lottie flower above
+ * Card copy is the project's title, blurb and headline result from
+ * `successStories` (still placeholder there for all but the first). Their Lottie flower above
  * the headline is left out by request.
  */
 
@@ -29,27 +30,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 const BP = { mobile: 394, tablet: 1024, desktop: 1280, desktopLarge: 1440 };
 
-/* Shown in sequence; the last in the DOM is the first one up. */
-const CARDS = [
-  {
-    title: "Lassie does your paperwork",
-    body: "Handling enrollments, converting payments to EFTs, and posting them automatically, without delay.",
-    align: "left" as const,
-    story: SUCCESS_STORIES[0],
-  },
-  {
-    title: "Keeps you in the loop",
-    body: "Watch Lassie complete your paperwork, asking for your input when needed on the most complex issues.",
-    align: "right" as const,
-    story: SUCCESS_STORIES[1],
-  },
-  {
-    title: "And answers your questions",
-    body: "Got a question about a claim? Want to see how your week is tracking? Lassie is always ready to help.",
-    align: "left" as const,
-    story: SUCCESS_STORIES[2],
-  },
-];
+/* Shown in sequence; the last in the DOM is the first one up. Title, blurb
+   and the headline result all come from the story. Copy alternates sides. */
+const CARDS = SUCCESS_STORIES.map((story, i) => ({
+  align: i % 2 ? ("right" as const) : ("left" as const),
+  story,
+}));
+
+/* Viewport heights the section stays pinned for: the reference's 2.2 / 3 /
+   2.5 for three cards, plus one per extra card. */
+const EXTRA = CARDS.length - 3;
 
 const play = (v: HTMLVideoElement | null) => {
   if (v && v.paused) {
@@ -75,7 +65,7 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
   useEffect(() => {
     const carousel = carouselRef.current;
     // sequence order: index 0 = DOM last
-    const els = [cardRefs.current[2], cardRefs.current[1], cardRefs.current[0]];
+    const els = [...cardRefs.current].reverse();
     if (!carousel || els.some((e) => !e)) return;
     const elements = els as HTMLDivElement[];
 
@@ -195,23 +185,14 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       return tl;
     };
 
+    /* card i waits i steps back, one step per card ahead of it, then comes
+       up; every card but the last lifts off afterwards */
     const next = (i: number) => {
       const tl = gsap.timeline({ defaults: { ease: "none" } });
       const el = elements[i];
-      if (i === 0) {
-        tl.add(enter(el), 0);
-        tl.add(leave(el));
-      }
-      if (i === 1) {
-        tl.add(back(el, 1, 0), 0);
-        tl.add(enter(el));
-        tl.add(leave(el));
-      }
-      if (i === 2) {
-        tl.add(back(el, 2, 0), 0);
-        tl.add(back(el, 2, 1));
-        tl.add(enter(el));
-      }
+      for (let k = 0; k < i; k++) tl.add(back(el, i, k), k === 0 ? 0 : undefined);
+      tl.add(enter(el), i === 0 ? 0 : undefined);
+      if (i < elements.length - 1) tl.add(leave(el));
       return tl;
     };
 
@@ -223,10 +204,10 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         start: "center center",
         end: () =>
           w() >= BP.desktop
-            ? `+=${2.2 * vh()}`
+            ? `+=${(2.2 + EXTRA) * vh()}`
             : w() >= BP.tablet
-              ? `+=${3 * vh()}`
-              : `+=${2.5 * vh()}`,
+              ? `+=${(3 + EXTRA) * vh()}`
+              : `+=${(2.5 + EXTRA) * vh()}`,
         pin: true,
         invalidateOnRefresh: true,
       });
@@ -236,15 +217,13 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         scrollTrigger: {
           trigger: carousel,
           start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
-          end: () => `+=${3 * vh()}`,
+          end: () => `+=${(3 + EXTRA) * vh()}`,
           scrub: 0.25,
           invalidateOnRefresh: true,
         },
       });
       master.add(initial, 0);
-      master.add(next(0), 0);
-      master.add(next(1), 0);
-      master.add(next(2), 0);
+      elements.forEach((_, i) => master.add(next(i), 0));
     }, carousel);
 
     return () => ctx.revert();
@@ -254,9 +233,9 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     <section className={s.section}>
       <section className={s.intro}>
         <h2 className={s.title}>
-          AI that runs the
+          Cloverfield
           <br />
-          doctor’s office
+          selected works
         </h2>
       </section>
 
@@ -264,7 +243,7 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         {/* DOM order is reversed so the first card up sits on top of the stack */}
         {[...CARDS].reverse().map((card, domIndex) => (
           <div
-            key={card.title}
+            key={card.story.title}
             ref={(el) => {
               cardRefs.current[domIndex] = el;
             }}
@@ -274,8 +253,12 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
             <div className={s.inner}>
               <article className={`${s.description} ${card.align === "right" ? s.isRight : ""}`}>
                 <div className={s.descriptionAnim}>
-                  <h3 className={s.cardTitle}>{card.title}</h3>
-                  <p className={s.cardBody}>{card.body}</p>
+                  <h3 className={s.cardTitle}>{card.story.title}</h3>
+                  <p className={s.cardBody}>{card.story.description}</p>
+                  <p className={s.cardResult}>
+                    <span className={s.resultValue}>{card.story.resultValue}</span>
+                    <span className={s.resultLabel}>{card.story.resultLabel}</span>
+                  </p>
                 </div>
               </article>
 

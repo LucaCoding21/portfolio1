@@ -1,0 +1,174 @@
+/*
+ * Bridge from the featured works to the full list. Two rows of big type
+ * through the middle of the paper, a fanned deck of covers over them, then
+ * air, one line and the button.
+ */
+.wrap {
+  --ink: #1a1613;
+  --muted: #6a665e;
+  --paper: #f9f8f5;
+  position: relative;
+  /* Above the pinned question behind it; at least a viewport tall so the
+     question is tucked entirely under this card until it slides off. */
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: clamp(5rem, 12vh, 9rem) 0 clamp(6rem, 12vh, 9rem);
+  border-radius: 0 0 clamp(2rem, 5vw, 4.5rem) clamp(2rem, 5vw, 4.5rem);
+  /* A soft shadow under the card's edge, seen on the section it uncovers. */
+  box-shadow: 0 16px 48px -28px rgb(26 22 19 / 0.14);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+/* The rows and the deck share this box; the deck is centred on it. */
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding: clamp(3rem, 8vh, 6rem) 0;
+  font-size: clamp(2.5rem, 5.6vw, 5.75rem);
+}
+
+.row {
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 1.05;
+  /* Fade the type out at the edges so it dissolves rather than clips. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.track {
+  display: inline-flex;
+  will-change: transform;
+}
+
+.word {
+  flex: none;
+  padding-right: 0.6em;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* The second row is set a tone lighter so the two read as one texture with
+   two depths, not two headlines. */
+.rowLight .word {
+  color: #b9b4aa;
+}
+
+/* The deck sits over the rows. Its width sets the fan's spread. */
+.deck {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: clamp(360px, 46vw, 760px);
+  aspect-ratio: 3 / 1;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  pointer-events: none;
+}
+
+.card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30%;
+  margin: -12% 0 0 -15%;
+  aspect-ratio: 4 / 3;
+  will-change: transform;
+}
+
+/* Bare prints: square corners, no frame, one soft shadow to lift them off
+   the paper. */
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 18px 40px -16px rgb(26 22 19 / 0.28);
+}
+
+.cardImg {
+  object-fit: cover;
+}
+
+/* The hand note, tucked under the deck's right end, in the handwriting face.
+   Kept below the rows so it never runs under the floating nav. */
+.note {
+  position: absolute;
+  right: -4%;
+  bottom: -38%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  transform: rotate(-5deg);
+  font-family: var(--font-reenie), cursive;
+  font-size: clamp(1.5rem, 2.2vw, 2.25rem);
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.noteArrow {
+  order: -1;
+  width: 2em;
+  height: auto;
+  margin: 0 0 0.1em 1.2em;
+}
+
+/* Air, then the line and the button. */
+.foot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-top: clamp(5rem, 14vh, 10rem);
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.copy {
+  max-width: 34ch;
+  margin: 0;
+  font-size: clamp(1.125rem, 1.4vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    padding: 4rem 0 5rem;
+  }
+  .stage {
+    padding: 2.5rem 0;
+    font-size: 2.125rem;
+  }
+  .deck {
+    width: 92vw;
+  }
+  .card {
+    width: 34%;
+    margin-left: -17%;
+  }
+  .note {
+    right: 0;
+    bottom: -46%;
+    font-size: 1.4rem;
+  }
+  .foot {
+    margin-top: 3.5rem;
+  }
+}

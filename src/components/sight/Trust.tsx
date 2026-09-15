@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import Reveal from "./Reveal";
+import Cinematic, { Words } from "./Cinematic";
 import { counterTween, gsap, ScrollTrigger, useSightGsap } from "./motion";
 
 /**
  * Trust: the answer to "who are these people, and would I hand them my
  * books?" Left: the claim and who built it. Right: a
  * landscape with the founders' photo floating over it; on scroll the
- * landscape settles out of a zoom while the card un-tucks from its edge,
- * then both drift so the stack reads as depth. Below: the studio's real
- * client marks.
+ * landscape settles out of a zoom while the photo wipes open and its
+ * image settles, then both drift so the stack reads as depth. Below: the
+ * studio's real client marks.
  */
 
 const LOGOS = [
@@ -71,13 +72,35 @@ export default function Trust() {
     if (reduced) return;
     const bg = root.querySelector("[data-layer-bg]");
     const photo = root.querySelector("[data-layer-photo]");
-    if (!bg || !photo) return;
+    const mask = root.querySelector("[data-photo-mask]");
+    const img = root.querySelector("[data-photo-img]");
+    const caption = root.querySelectorAll("[data-photo-caption] > *");
+    if (!bg || !photo || !mask || !img) return;
+
+    // One-shot entrance for the founders' photo, fired as it comes into
+    // view: the frame wipes open from the bottom while the image inside
+    // settles out of a zoom, then the names rise in under it. The card
+    // itself keeps its resting shadow so it lands with weight.
+    gsap.set(mask, { clipPath: "inset(100% 0% 0% 0%)" });
+    gsap.set(img, { scale: 1.3, transformOrigin: "center 60%" });
+    gsap.set(caption, { autoAlpha: 0, y: 16 });
+
+    gsap
+      .timeline({
+        scrollTrigger: { trigger: photo, start: "top 78%", once: true },
+      })
+      .to(mask, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "expo.out" }, 0)
+      .to(img, { scale: 1, duration: 1.6, ease: "power3.out" }, 0)
+      .to(
+        caption,
+        { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.08, ease: "power3.out" },
+        0.55
+      );
 
     // Scrubbed over the section's whole pass through the viewport. The
-    // first 40% is the "settle": the landscape eases out of a slight zoom
-    // and the founder card un-tucks from under its edge, the inverse of
-    // the hero's tuck. The rest is a slow drift so the stack keeps
-    // breathing while the text is read.
+    // first 40% settles the landscape out of a slight zoom; the rest is a
+    // slow drift on both layers so the stack reads as depth while the
+    // text is read.
     const tl = gsap.timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
@@ -95,12 +118,6 @@ export default function Trust() {
       0
     )
       .to(bg, { yPercent: -5, duration: 0.6 }, 0.4)
-      .fromTo(
-        photo,
-        { xPercent: 42, yPercent: 14, scale: 0.84, transformOrigin: "right bottom" },
-        { xPercent: 0, yPercent: 0, scale: 1, duration: 0.4 },
-        0
-      )
       .to(photo, { yPercent: -10, duration: 0.6 }, 0.4);
   });
 
@@ -113,16 +130,15 @@ export default function Trust() {
       <div className="mx-auto max-w-[1440px] px-6 md:px-12">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.1fr] lg:gap-24">
           {/* Claim */}
-          <Reveal selector="[data-reveal]">
-            <h2
-              data-reveal
-              className="font-medium leading-[1.06] tracking-[-0.025em] text-[var(--ink)]"
+          <Cinematic>
+            <Words
+              className="font-semibold leading-[1.06] tracking-[-0.025em] text-[var(--ink)]"
               style={{ fontSize: "clamp(2.3rem, 4.6vw, 3.9rem)" }}
             >
               Built after seeing the same mess, up close
-            </h2>
+            </Words>
             <p
-              data-reveal
+              data-blur
               className="mt-7 max-w-[34rem] text-[1.1rem] leading-[1.6] text-[var(--ink-soft)]"
             >
               Sight is built by Cloverfield, a Vancouver studio with{" "}
@@ -138,18 +154,18 @@ export default function Trust() {
               projects shipped for real businesses. Same team, same standard,
               now pointed at your numbers.
             </p>
-          </Reveal>
+          </Cinematic>
 
           {/* Stack */}
           <Reveal className="relative mx-auto w-full max-w-[560px] lg:max-w-none">
-            <div className="relative aspect-[1.06] w-full">
+            <div className="relative aspect-[0.9] w-full">
               <div
                 data-layer-bg
                 className="absolute inset-y-0 right-0 w-[84%] overflow-hidden rounded-md bg-[var(--surface)]"
               >
                 <Image
-                  src="/sight/cloud-trees.webp"
-                  alt=""
+                  src="/sight/blue-rippled-water-surface.webp"
+                  alt="Rippled blue water surface seen from above"
                   fill
                   sizes="(min-width: 1024px) 560px, 90vw"
                   className="object-cover object-[50%_45%]"
@@ -158,24 +174,35 @@ export default function Trust() {
 
               <div
                 data-layer-photo
-                className="absolute bottom-[8%] left-0 aspect-[1086/1014] w-[50%] overflow-hidden rounded-md bg-[var(--surface)] shadow-[0_24px_60px_-20px_rgba(32,33,36,0.45)]"
+                className="absolute bottom-[8%] left-0 aspect-[4/5] w-[50%] rounded-md shadow-[0_12px_32px_-16px_rgba(32,33,36,0.22)]"
               >
-                <Image
-                  src="/sight/founders-crop.webp"
-                  alt="William and Irish, founder and co-founder of Cloverfield"
-                  fill
-                  sizes="(min-width: 1024px) 320px, 50vw"
-                  className="object-cover"
-                />
+                {/* Mask wipes open on scroll; the image inside counter-zooms. */}
                 <div
-                  className="absolute inset-x-0 bottom-0 h-[28%]"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.42), rgba(0,0,0,0))",
-                  }}
-                  aria-hidden="true"
-                />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-white md:p-6">
+                  data-photo-mask
+                  className="absolute inset-0 overflow-hidden rounded-md bg-[var(--surface)]"
+                >
+                  <div data-photo-img className="absolute inset-0">
+                    <Image
+                      src="/sight/founders-crop.webp"
+                      alt="William and Irish, founder and co-founder of Cloverfield"
+                      fill
+                      sizes="(min-width: 1024px) 320px, 50vw"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-[28%]"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.26), rgba(0,0,0,0))",
+                    }}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div
+                  data-photo-caption
+                  className="absolute inset-x-0 bottom-0 p-5 text-white md:p-6"
+                >
                   <p className="text-[1.15rem] font-medium leading-tight md:text-[1.3rem]">
                     William &amp; Irish
                   </p>
@@ -191,7 +218,7 @@ export default function Trust() {
       </div>
 
       {/* Client marks */}
-      <Reveal className="mt-14 md:mt-16">
+      <Reveal className="mt-20 md:mt-28">
         <div className="mx-auto flex max-w-[1440px] items-center gap-6 px-6 md:px-12">
           <span className="h-px flex-1 bg-[var(--line)]" aria-hidden="true" />
           <p className="shrink-0 text-center text-[0.68rem] font-medium uppercase tracking-[0.22em] text-[var(--ink-faint)]">

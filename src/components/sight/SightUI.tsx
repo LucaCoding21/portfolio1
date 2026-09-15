@@ -86,6 +86,11 @@ export const P = {
   layers:
     "m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z|M2 12.18a1 1 0 0 0 .6.9l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 .58-.91|M2 17.18a1 1 0 0 0 .6.9l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 .58-.91",
   check: "M20 6 9 17l-5-5",
+  plus: "M12 5v14|M5 12h14",
+  minus: "M5 12h14",
+  lock: "M7 11V7a5 5 0 0 1 10 0v4|M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z",
+  wrench:
+    "M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z",
 };
 
 export function Spark({ className = "" }: { className?: string }) {
@@ -111,14 +116,21 @@ export function AppPanel({
   children,
   className = "",
   pad = true,
+  shadow = "deep",
 }: {
   children: ReactNode;
   className?: string;
   pad?: boolean;
+  /** "soft" for panels sitting on busy imagery, where the deep drop reads heavy */
+  shadow?: "deep" | "soft";
 }) {
+  const shadowClass =
+    shadow === "soft"
+      ? "shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_10px_28px_-16px_rgba(20,24,33,0.16)]"
+      : "shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_24px_60px_-24px_rgba(20,24,33,0.28)]";
   return (
     <div
-      className={`sight-app overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_24px_60px_-24px_rgba(20,24,33,0.28)] ${
+      className={`sight-app overflow-hidden rounded-2xl border bg-white ${shadowClass} ${
         pad ? "p-4 md:p-5" : ""
       } ${className}`}
       style={{ borderColor: `${T.LINE}b3` }}
@@ -349,22 +361,30 @@ export function AlertRow({
   );
 }
 
-/* ---------- status pill ---------- */
+/* ---------- status tag ---------- */
 
+/**
+ * A status, the same everywhere in the demos: a soft rounded rectangle
+ * tinted with the tone, the word in the tone, nothing else. No dot, no
+ * border. Pass a Tone name or a hex.
+ */
 export function StatusPill({
   tone,
+  className = "",
   children,
+  ...rest
 }: {
-  tone: Tone;
+  tone: Tone | string;
+  className?: string;
   children: ReactNode;
-}) {
-  const hex = TONE_HEX[tone];
+} & Omit<React.HTMLAttributes<HTMLSpanElement>, "className" | "children" | "style">) {
+  const hex = tone in TONE_HEX ? TONE_HEX[tone as Tone] : tone;
   return (
     <span
-      className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium"
-      style={{ borderColor: `${hex}4d`, backgroundColor: `${hex}1a`, color: hex }}
+      {...rest}
+      className={`inline-flex items-center whitespace-nowrap rounded-[5px] px-2.5 py-1 text-[11px] font-medium leading-none ${className}`}
+      style={{ backgroundColor: `${hex}1f`, color: hex }}
     >
-      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: hex }} />
       {children}
     </span>
   );

@@ -1,0 +1,123 @@
+/*
+ * Closing call. A rounded video plate inset from the edges on paper, copy
+ * and the button dead centre.
+ */
+.wrap {
+  --paper: #f9f8f5;
+  --edge: clamp(1rem, 2.5vw, 2.5rem);
+  padding: 0 var(--edge) var(--edge);
+  background: #fff;
+}
+
+.plate {
+  position: relative;
+  overflow: hidden;
+  height: clamp(480px, 82svh, 820px);
+  border-radius: 30px;
+  background: #1a1613;
+  transform-origin: center;
+  isolation: isolate;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Just enough to keep the line legible over any footage. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 0.1);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  height: 100%;
+  /* The pair sits along the bottom of the plate. */
+  padding: 2rem 2rem clamp(4rem, 13svh, 8rem);
+  text-align: center;
+}
+
+/* The line, in the sections' sans, big and tight, in paper on the footage. */
+.line {
+  margin: 0;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* The hero's white plate button, with the arrow in an ink disc. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 56px;
+  padding: 0 8px 0 24px;
+  border-radius: 16px;
+  background: #fff;
+  color: #1a1613;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.button:hover {
+  background: #f8f6f2;
+  transform: translateY(-2px);
+}
+
+.buttonLabel {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.button:hover .buttonLabel {
+  transform: translateX(3px);
+}
+
+.buttonDisc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #1a1613;
+  color: #fff;
+  overflow: hidden;
+}
+
+.buttonDisc svg {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.button:hover .buttonDisc svg {
+  transform: translateX(3px);
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    --edge: 0.75rem;
+  }
+  .plate {
+    height: 70svh;
+    border-radius: 22px;
+  }
+}

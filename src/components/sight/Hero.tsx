@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Reveal from "./Reveal";
+import Cinematic, { Words } from "./Cinematic";
 import Pill from "./Pill";
 import SightAppCard from "./SightAppCard";
 import { gsap, ScrollTrigger, useSightGsap } from "./motion";
@@ -286,6 +287,22 @@ export default function Hero() {
       .to(left, { autoAlpha: 0, duration: 0.06 }, 0.63)
       .to(right, { autoAlpha: 0, duration: 0.06 }, 0.63);
 
+    // Once the panels are tucked and the card sits on plain white next to
+    // the story, the deep hero shadow reads too heavy — soften it.
+    const shell = root.querySelector("[data-card-shell]");
+    if (shell) {
+      tl.to(
+        shell,
+        {
+          boxShadow:
+            "0 1px 2px 0 rgba(20,24,33,0.05), 0 10px 28px -16px rgba(20,24,33,0.14)",
+          duration: 0.21,
+          ease: "none",
+        },
+        0.44
+      );
+    }
+
     // Bottom panel slides UP into the card, same creep-then-tuck rhythm.
     if (bottom) {
       tl.fromTo(
@@ -311,20 +328,20 @@ export default function Hero() {
         <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-x-14 lg:gap-x-20">
           {/* Hero copy — first viewport, left */}
           <div className="flex flex-col justify-center pt-32 md:col-start-1 md:row-start-1 md:min-h-screen md:pt-0 md:-ml-16 lg:-ml-28">
-            <Reveal selector="[data-reveal]">
-              <h1
-                data-reveal
-                className="font-medium leading-[1.1] tracking-[-0.02em] text-[var(--ink)]"
+            <Cinematic>
+              <Words
+                as="h1"
+                className="font-semibold leading-[1.1] tracking-[-0.02em] text-[var(--ink)]"
                 style={{ fontSize: "clamp(2.15rem, 3.2vw, 3.05rem)" }}
               >
                 Ask your business anything.
                 <br />
                 Get the answer in 5 seconds.
-              </h1>
+              </Words>
 
               <p
-                data-reveal
-                className="mt-6 max-w-[30rem] text-[1rem] leading-[1.6] text-[var(--ink-soft)] md:text-[1.0625rem]"
+                data-blur
+                className="mt-6 max-w-[37rem] text-[1rem] leading-[1.6] text-[var(--ink-soft)] md:text-[1.0625rem]"
               >
                 Who owes me money right now? How much cash is stuck in
                 inventory? Today that&apos;s a call to the bookkeeper and
@@ -333,16 +350,16 @@ export default function Hero() {
                 connects the tools you already use and just answers.
               </p>
 
-              <div data-reveal className="mt-8 flex flex-wrap items-center gap-3">
+              <div data-slide className="mt-8 flex flex-wrap items-center gap-3">
                 <Pill href={BOOK_URL} variant="primary">
                   Book a demo
                 </Pill>
               </div>
 
-              <p data-reveal className="mt-5 text-[0.875rem] text-[var(--ink-faint)]">
-                Built by Cloverfield · Live in 45 days or you don&apos;t pay
+              <p data-slide className="mt-5 text-[0.875rem] text-[var(--ink-faint)]">
+                Built by Cloverfield
               </p>
-            </Reveal>
+            </Cinematic>
           </div>
 
           {/* The app card — sticky through the whole story */}
@@ -365,13 +382,13 @@ export default function Hero() {
                 </div>
                 <div
                   data-tuck-right
-                  className="absolute -right-[8.5rem] -top-[7%] z-0 hidden h-[106%] w-[332px] overflow-hidden rounded-md shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)] md:block"
+                  className="absolute -right-[8.5rem] -top-[7%] z-0 hidden h-[106%] w-[372px] overflow-hidden rounded-md shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)] md:block"
                 >
                   <Image
-                    src="/sight/mountain.jpg"
-                    alt=""
+                    src="/sight/abstract-blue-oil-painting.webp"
+                    alt="Abstract oil painting with blue, white and yellow brushstrokes on canvas"
                     fill
-                    sizes="332px"
+                    sizes="372px"
                     className="object-cover"
                     priority
                   />
@@ -381,8 +398,8 @@ export default function Hero() {
                   className="absolute -left-20 -bottom-[6%] z-0 hidden h-[94%] w-[288px] overflow-hidden rounded-md shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)] md:block"
                 >
                   <Image
-                    src="/sight/cloud1.jpg"
-                    alt=""
+                    src="/sight/blue-sky-cumulus-clouds.webp"
+                    alt="White cumulus clouds building against a deep blue sky"
                     fill
                     sizes="288px"
                     className="object-cover"
@@ -399,14 +416,14 @@ export default function Hero() {
 
           {/* Story — one screen next to the pinned card */}
           <div className="pb-24 pt-24 md:col-start-1 md:row-start-2 md:-ml-16 md:flex md:min-h-screen md:flex-col md:justify-center md:translate-y-[10vh] md:pb-[8vh] md:pt-0 lg:-ml-28">
-            <Reveal>
-              <h2
-                className="font-medium leading-[1.15] tracking-[-0.02em] text-[var(--ink)]"
+            <Cinematic>
+              <Words
+                className="font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]"
                 style={{ fontSize: "clamp(1.9rem, 2.8vw, 2.6rem)" }}
               >
                 Turn the tools you already use into answers.
-              </h2>
-            </Reveal>
+              </Words>
+            </Cinematic>
 
             <Reveal selector="[data-reveal]" className="mt-10 md:mt-12">
               <div className="divide-y divide-[var(--line)] border-y border-[var(--line)]">

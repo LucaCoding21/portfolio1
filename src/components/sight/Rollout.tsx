@@ -231,10 +231,9 @@ export default function Rollout() {
                     </span>
                     <span
                       data-live
-                      className="absolute inset-y-0 right-0 flex items-center gap-1.5 whitespace-nowrap rounded-full px-2 text-[11px] font-medium"
-                      style={{ backgroundColor: `${T.GREEN}14`, color: T.GREEN }}
+                      className="absolute inset-y-0 right-0 flex items-center whitespace-nowrap rounded-[5px] px-2.5 text-[11px] font-medium"
+                      style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN }}
                     >
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: T.GREEN }} />
                       Live
                     </span>
                   </span>

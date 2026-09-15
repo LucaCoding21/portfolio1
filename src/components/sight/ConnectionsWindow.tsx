@@ -95,8 +95,8 @@ function StackRows({ rows, index }: { rows: Row[]; index: number }) {
             >
               <span
                 data-check
-                className="flex h-4 w-4 items-center justify-center rounded-full"
-                style={{ backgroundColor: `${T.GREEN}1a`, color: T.GREEN }}
+                className="flex h-4 w-4 items-center justify-center rounded-full text-white"
+                style={{ backgroundColor: T.GREEN }}
               >
                 <Icon d={P.check} className="h-2.5 w-2.5" strokeWidth={3} />
               </span>

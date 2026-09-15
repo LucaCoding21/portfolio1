@@ -5,15 +5,15 @@ import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import LassieHero from "@/components/LassieHero";
 import LassieFeatures from "@/components/LassieFeatures";
+import LogoStrip from "@/components/LogoStrip";
+import TeamIntro from "@/components/TeamIntro";
+import MoreWork from "@/components/MoreWork";
 
 const LOADED_FLAG = "cf-loader-seen";
 
-const GridNumbers = dynamic(() => import("@/components/GridNumbers"));
-const LogoStrip = dynamic(() => import("@/components/LogoStrip"));
-const SuccessStories = dynamic(() => import("@/components/SuccessStories"));
-const WhyCloverfield = dynamic(() => import("@/components/WhyCloverfield"));
-const Philosophy = dynamic(() => import("@/components/Philosophy"));
-const Blackboard = dynamic(() => import("@/components/Blackboard"));
+const HowWeDoIt = dynamic(() => import("@/components/HowWeDoIt"));
+const Testimonials = dynamic(() => import("@/components/Testimonials"));
+const VideoCta = dynamic(() => import("@/components/VideoCta"));
 const Contact = dynamic(() => import("@/components/Contact"));
 const Footer = dynamic(() => import("@/components/Footer"));
 
@@ -100,17 +100,16 @@ export default function HomeClient() {
         <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
       )}
       <LassieHero ready={ready} />
+      <LogoStrip />
+      <TeamIntro />
       <LassieFeatures ready={ready} />
+      <MoreWork />
+      {/* More Work is the card that scrolls off to uncover How We Do It,
+          which holds until the card has cleared, then scrolls on. */}
+      <HowWeDoIt />
       <div className="relative z-10 bg-white">
-        <LogoStrip />
-        <GridNumbers ready={ready} />
-        {/* Charcoal block behind the light sections below the hero. */}
-        <div className="relative bg-[#111113]">
-          <SuccessStories ready={ready} />
-          <WhyCloverfield />
-          <Philosophy />
-          <Blackboard />
-        </div>
+        <Testimonials />
+        <VideoCta />
         <Contact />
         <Footer />
       </div>

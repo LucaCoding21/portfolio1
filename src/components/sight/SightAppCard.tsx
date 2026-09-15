@@ -79,12 +79,8 @@ function StatusChip({
   const color = tone === "red" ? RED : AMBER;
   return (
     <span
-      className="inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-medium"
-      style={{
-        borderColor: `${color}4d`,
-        backgroundColor: `${color}1a`,
-        color,
-      }}
+      className="inline-flex items-center whitespace-nowrap text-[11px] font-medium tabular-nums"
+      style={{ color }}
     >
       {children}
     </span>
@@ -95,7 +91,7 @@ function Thinking() {
   return (
     <div
       data-thinking
-      className="items-center gap-2 text-[#2563eb]"
+      className="mt-2.5 items-center gap-2 text-[#2563eb]"
       style={{ display: "none" }}
     >
       <span
@@ -319,7 +315,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
         { i: 0 },
         {
           i: question.length,
-          duration: question.length * 0.042,
+          duration: question.length * 0.03,
           ease: "none",
           onUpdate: () => {
             typed.textContent = question.slice(0, Math.round(proxy.i));
@@ -329,17 +325,23 @@ export default function SightAppCard({ className = "" }: { className?: string })
       // Hold on the fully-typed question for a beat before sending.
       tl.to({}, { duration: 1 });
 
-      // 3. Send: input clears and the thinking shimmer runs alone,
-      // "Thinking…" first, then a working status ("Pulling invoices…") —
-      // nothing else shows until Sight has "worked it out".
+      // 3. Send: the input clears and the question lands as a bold heading
+      // right away, so the reader keeps the context, with the thinking
+      // shimmer under it: "Thinking…" first, then a working status
+      // ("Pulling invoices…"). Nothing else until Sight has "worked it out".
       tl.call(() => {
         typed.textContent = "";
         if (thinkingLabel) thinkingLabel.textContent = "Thinking…";
       });
       tl.set(placeholder, { autoAlpha: 1 });
       tl.set(ex, { autoAlpha: 1 });
-      tl.set(thinking, { display: "flex" });
-      tl.fromTo(thinking, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 });
+      tl.fromTo(
+        qEcho,
+        { autoAlpha: 0, y: 8 },
+        { autoAlpha: 1, y: 0, duration: 0.35 }
+      );
+      tl.set(thinking, { display: "flex" }, "-=0.15");
+      tl.fromTo(thinking, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 }, "<");
       tl.to({}, { duration: 0.8 });
       tl.to(thinking, { autoAlpha: 0, duration: 0.15 });
       tl.call(() => {
@@ -348,16 +350,11 @@ export default function SightAppCard({ className = "" }: { className?: string })
       tl.to(thinking, { autoAlpha: 1, duration: 0.15 });
       tl.to({}, { duration: 1.0 });
 
-      // 4. The shimmer gives way: the question lands as a bold heading,
-      // the reply streams in word by word, then the data panel rises in —
-      // rows stagger, bars draw, counters run.
+      // 4. The shimmer gives way under the question: the reply streams in
+      // word by word, then the data panel rises in — rows stagger, bars
+      // draw, counters run.
       tl.to(thinking, { autoAlpha: 0, duration: 0.2 });
       tl.set(thinking, { display: "none" });
-      tl.fromTo(
-        qEcho,
-        { autoAlpha: 0, y: 8 },
-        { autoAlpha: 1, y: 0, duration: 0.35 }
-      );
       tl.set(reply, { autoAlpha: 1, y: 0 }, "+=0.1");
       tl.to(replyWords, {
         opacity: 1,
@@ -413,6 +410,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
       {/* White content panel — min-h locks the hero footprint the scroll
           choreography was tuned against. */}
       <div
+        data-card-shell
         className="flex min-h-[640px] flex-col rounded-2xl border bg-white p-4 shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_24px_60px_-24px_rgba(20,24,33,0.28)]"
         style={{ borderColor: `${LINE}b3` }}
       >
@@ -451,7 +449,6 @@ export default function SightAppCard({ className = "" }: { className?: string })
             data-thinking2="Pulling invoices from QuickBooks…"
             className="col-start-1 row-start-1 flex min-h-0 flex-col opacity-0"
           >
-            <Thinking />
             <p
               data-q-echo
               className="text-[15px] font-semibold tracking-tight"
@@ -459,6 +456,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
             >
               Who owes us money past 45 days?
             </p>
+            <Thinking />
             <p
               data-reply
               className="mt-2.5 text-[13px] leading-relaxed"
@@ -506,7 +504,6 @@ export default function SightAppCard({ className = "" }: { className?: string })
             data-thinking2="Comparing each dealer's pace to their history…"
             className="col-start-1 row-start-1 flex min-h-0 flex-col opacity-0"
           >
-            <Thinking />
             <p
               data-q-echo
               className="text-[15px] font-semibold tracking-tight"
@@ -514,6 +511,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
             >
               Which dealers are going quiet?
             </p>
+            <Thinking />
             <p
               data-reply
               className="mt-2.5 text-[13px] leading-relaxed"

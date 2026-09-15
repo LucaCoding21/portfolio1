@@ -8,7 +8,7 @@
   --ink: #1a1613;
   --muted: #666;
   --paper: #f9f8f5;
-  padding-top: 100px;
+  padding-top: 40px;
   margin-bottom: 100px;
   background: var(--paper);
   color: var(--ink);
@@ -17,14 +17,14 @@
 
 @media (min-width: 1024px) {
   .section {
-    padding-top: 150px;
+    padding-top: 60px;
     margin-bottom: 0;
   }
 }
 
 @media (min-width: 1280px) {
   .section {
-    padding-top: 270px;
+    padding-top: 80px;
   }
 }
 
@@ -48,11 +48,11 @@
 /* text-heading-lg */
 .title {
   margin: 0;
-  font-family: var(--font-marist), Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 600;
   font-size: clamp(36px, 9.13vw, 40px);
   line-height: 1.05;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   text-align: center;
   color: var(--ink);
 }
@@ -206,11 +206,11 @@
 /* text-heading-sm */
 .cardTitle {
   margin: 0 0 12px;
-  font-family: var(--font-marist), Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 600;
   font-size: clamp(21px, 5.33vw, 28px);
   line-height: 1.1;
-  letter-spacing: -0.2px;
+  letter-spacing: -0.02em;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -244,8 +244,53 @@
   }
 }
 
+/* The headline result, set off from the blurb by a hairline: the figure sits
+   in a soft green chip, and the label under it matches the blurb's style. */
+.cardResult {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid rgb(26 22 19 / 0.12);
+}
+
+.resultValue {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: #dcebd9;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Same face as .cardBody at every breakpoint. */
+.resultLabel {
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  color: var(--muted);
+}
+
+@media (min-width: 1024px) {
+  .resultValue {
+    font-size: 19px;
+  }
+  .resultLabel {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
 @media (min-width: 1280px) {
-  .cardBody {
+  .cardBody,
+  .resultLabel {
     font-size: 15px;
   }
 }
@@ -263,13 +308,7 @@
 
 @media (min-width: 1024px) {
   .plate {
-    border-radius: 56px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .plate {
-    border-radius: 64px;
+    border-radius: 40px;
   }
 }
 

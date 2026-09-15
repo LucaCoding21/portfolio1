@@ -111,11 +111,12 @@ function SceneView({ scene, index }: { scene: Scene; index: number }) {
   return (
     <div data-scene={index} className="absolute inset-0">
       <div data-notice>
+        {/* a small bell and the word, in the tone: a notice, not a status */}
         <span
-          className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium"
-          style={{ backgroundColor: `${hex}14`, color: hex }}
+          className="inline-flex items-center gap-1.5 text-[12px] font-medium"
+          style={{ color: hex }}
         >
-          <Spark className="h-3 w-3" />
+          <Icon d={P.bell} className="h-3.5 w-3.5" strokeWidth={2} />
           Noticed
         </span>
         <p className="mt-3 text-[14px] font-semibold leading-snug" style={{ color: T.INK }}>
@@ -268,8 +269,11 @@ export default function AskWindow() {
             <span data-busy className="col-start-1 row-start-1">
               <span className="sight-thinking">Working</span>
             </span>
-            <span data-idle className="col-start-1 row-start-1 flex items-center gap-1.5" style={{ color: T.MUTED }}>
-              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: T.GREEN }} />
+            <span
+              data-idle
+              className="col-start-1 row-start-1 rounded-[5px] px-2.5 py-1 leading-none"
+              style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN }}
+            >
               Up to date
             </span>
           </span>

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Reveal from "./Reveal";
+import Cinematic, { Words } from "./Cinematic";
 import { T, P, AppPanel, Icon, Spark } from "./SightUI";
 import { gsap, useSightGsap } from "./motion";
 
@@ -28,11 +29,14 @@ import { gsap, useSightGsap } from "./motion";
 function WindowHeader({
   icon,
   title,
+  count,
   aside,
   tone = T.BLUE,
 }: {
   icon: React.ReactNode;
   title: string;
+  /** a small count right after the title, like CardHeader's */
+  count?: React.ReactNode;
   aside?: React.ReactNode;
   tone?: string;
 }) {
@@ -46,6 +50,7 @@ function WindowHeader({
         <span className="text-[13px] font-semibold" style={{ color: T.INK }}>
           {title}
         </span>
+        {count}
       </span>
       {aside}
     </div>
@@ -78,7 +83,7 @@ const OVERNIGHT: { tone: string; title: string; when: string }[] = [
 
 function OvernightWindow() {
   return (
-    <AppPanel pad={false}>
+    <AppPanel pad={false} shadow="soft">
       <WindowHeader
         icon={<Icon d={P.alertTriangle} className="h-4 w-4" />}
         tone={T.AMBER}
@@ -120,7 +125,7 @@ const WEEK: { tone: string; text: string }[] = [
 
 function MondayWindow() {
   return (
-    <AppPanel pad={false}>
+    <AppPanel pad={false} shadow="soft">
       <WindowHeader
         icon={<Icon d={P.mail} className="h-4 w-4" />}
         title="Monday report"
@@ -163,7 +168,7 @@ const FOUND: { icon: string; tone: string; title: string; value: string }[] = [
 
 function FoundWindow() {
   return (
-    <AppPanel pad={false}>
+    <AppPanel pad={false} shadow="soft">
       <WindowHeader
         icon={<Spark className="h-3.5 w-3.5" />}
         title="Found this week"
@@ -204,7 +209,7 @@ const MOMENTS: {
 }[] = [
   {
     title: "Flagged while it's still small.",
-    src: "/sight/mountain.jpg",
+    src: "/sight/abstract-teal-orange-film-texture.webp",
     caption:
       "A short list of what's slipped and how long each one has been going on.",
     window: <OvernightWindow />,
@@ -218,7 +223,7 @@ const MOMENTS: {
   },
   {
     title: "It comes to you.",
-    src: "/sight/cloud1.jpg",
+    src: "/sight/weathered-blue-painted-wall.webp",
     caption:
       "Nothing to log into or check, it lands in your inbox when it matters.",
     window: <MondayWindow />,
@@ -270,16 +275,15 @@ export default function ComesToYou() {
       </p>
 
       <div className="mx-auto max-w-[1200px] px-6 md:px-10">
-        <Reveal selector="[data-reveal]" className="mx-auto max-w-[48rem] text-center">
-          <h2
-            data-reveal
-            className="font-medium leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
+        <Cinematic className="mx-auto max-w-[48rem] text-center">
+          <Words
+            className="font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
             style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
           >
             Notices what you&apos;d catch, if you had the time.
-          </h2>
+          </Words>
           <p
-            data-reveal
+            data-blur
             className="mx-auto mt-5 max-w-[40rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
           >
             Small things slip when you&apos;re busy, like a job that never got
@@ -287,7 +291,7 @@ export default function ComesToYou() {
             crept up. Sight keeps an eye on all of it and tells you the week
             it happens.
           </p>
-        </Reveal>
+        </Cinematic>
 
         <Reveal
           selector="[data-moment]"

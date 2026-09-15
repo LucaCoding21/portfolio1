@@ -1,87 +1,93 @@
 /*
- * Trust bar under the hero. Label left, logos in a clipped window right,
- * looping on a slow keyframe. Pills equalise twelve very different marks.
+ * Full-bleed logo marquee under the hero. Eyebrow centred, then the client
+ * marks looping edge to edge on a slow keyframe, greyed until hovered.
  */
 .wrap {
-  --ink: #111113;
-  --muted: #6a665e;
-  --pill: rgb(84 82 82 / 0.06);
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  padding: 28px 2.5rem;
-  background: #fff;
+  --ink: #1a1613;
+  --muted: #7a756d;
+  --paper: #f9f8f5;
+  padding: 56px 0 40px;
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-outfit), sans-serif;
 }
 
 .label {
-  flex: none;
-  width: 300px;
-  margin: 0;
+  margin: 0 0 32px;
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.75rem;
   font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
-/* The window the marquee runs inside. Clips hard at its edges. Capped so
-   only five or six pills show at once, as in the reference. */
+/* The window the marquee runs inside. Fades out at both edges so marks
+   dissolve into the paper rather than clipping hard. */
 .marquee {
-  flex: 1;
-  min-width: 0;
-  max-width: 55vw;
-  margin-left: auto;
   overflow: hidden;
-  /* Soft edges: the pills fade in on the right and out on the left, leaving
-     clear white between the label and the first mark. */
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
 .track {
   display: flex;
   width: max-content;
   align-items: center;
-  animation: strip-slide 45s linear infinite;
+  animation: strip-slide 48s linear infinite;
   will-change: transform;
+}
+
+.marquee:hover .track {
+  animation-play-state: paused;
 }
 
 .row {
   display: flex;
   flex: none;
   align-items: center;
-  gap: 20px;
+  gap: 88px;
   margin: 0;
-  padding: 0 20px 0 0;
+  padding: 0 88px 0 0;
   list-style: none;
 }
 
 .item {
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: center;
-  height: 68px;
-  min-width: 120px;
-  padding: 14px 26px;
-  border-radius: 8px;
-  background: var(--pill);
+  height: 60px;
 }
 
-/* Full colour. Multiply drops any white backgrounds on opaque art, and on
-   transparent art it changes nothing, so every mark sits on the pill. */
+/* Greyed to sit quietly under the hero; full colour when the mark is
+   hovered. Multiply drops any white backgrounds on opaque art, and on
+   transparent art it changes nothing, so every mark sits on the paper. */
 .logo {
   display: block;
   width: auto;
   object-fit: contain;
   mix-blend-mode: multiply;
+  filter: grayscale(1);
+  opacity: 0.6;
+  transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
-/* White art (Venues Quarterly) needs flattening to show on a light pill. */
+.item:hover .logo {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+/* White or pale art (Venues Quarterly, Venue Series) is flattened to ink. */
 .onLight {
   filter: brightness(0);
   mix-blend-mode: normal;
+}
+
+.item:hover .onLight {
+  filter: brightness(0);
 }
 
 @keyframes strip-slide {
@@ -97,25 +103,29 @@
   .track {
     animation: none;
   }
+  .marquee {
+    overflow-x: auto;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
 }
 
 @media (max-width: 767px) {
   .wrap {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 24px 1.5rem;
+    padding: 40px 0 32px;
   }
   .label {
-    width: auto;
+    margin-bottom: 24px;
   }
-  .marquee {
-    width: 100%;
-    max-width: none;
+  .row {
+    gap: 56px;
+    padding-right: 56px;
   }
   .item {
-    height: 56px;
-    min-width: 100px;
-    padding: 12px 20px;
+    height: 44px;
+  }
+  .logo {
+    transform: scale(0.8);
+    transform-origin: center;
   }
 }

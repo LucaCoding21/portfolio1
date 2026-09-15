@@ -1,8 +1,8 @@
 /**
- * Homepage "Success Stories" list. Copy and figures are lifted verbatim from
- * the reference section; the image and reel are the two sample assets that
- * every entry shares for now. Swap `image` / `video` per project when the real
- * assets land.
+ * Homepage "Success Stories" list. Each project has a storyboarded reel in
+ * /public/success (1620x1080, 60fps, 12-13s): held hero, slow pans across the
+ * sections worth seeing, a second page, dissolves between. The first entry's
+ * copy is still the reference's placeholder.
  */
 export interface SuccessStory {
   title: string;
@@ -13,9 +13,6 @@ export interface SuccessStory {
   video: string;
   href: string;
 }
-
-const SAMPLE_IMAGE = "/success/oh-architecture.avif";
-const SAMPLE_VIDEO = "/success/oh-architecture.webm";
 
 export const SUCCESS_STORIES: SuccessStory[] = [
   {
@@ -29,33 +26,35 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     href: "/work",
   },
   {
-    title: "Supersolid",
+    title: "Transforming Landscapes",
     description:
-      "Website for a 100% creative-owned Sydney agency built to merge commercial value with cultural impact.",
-    resultValue: "58%",
-    resultLabel: "Increase in average session duration",
-    image: SAMPLE_IMAGE,
-    video: SAMPLE_VIDEO,
+      "A research initiative on First Nations-led real estate development in BC.",
+    // PLACEHOLDER: no outcome figure on file for this one yet.
+    resultValue: "2026",
+    resultLabel: "Report launched with the Real Estate Institute of BC and Greater Vancouver REALTORS",
+    image: "/success/transforming-landscapes.webp",
+    video: "/success/transforming-landscapes.mp4",
     href: "/work",
   },
   {
-    title: "Mammoth Murals",
+    title: "ACE",
     description:
-      "Brand strategy, identity and website for an established mural agency with a decade of large-scale public art behind it.",
-    resultValue: "$100K+",
-    resultLabel: "In new work within 30 days of launch",
-    image: SAMPLE_IMAGE,
-    video: SAMPLE_VIDEO,
+      "Portfolio for a Vancouver concert and wedding photographer, built to feel like the work.",
+    resultValue: "3x",
+    resultLabel: "Monthly bookings, now fully booked three months out",
+    image: "/success/ace.webp",
+    video: "/success/ace.mp4",
     href: "/work",
   },
   {
-    title: "HISS (University of Sydney)",
+    title: "Caddie Companion",
     description:
-      "Brand identity and website for a University of Sydney initiative challenging the norms of queer education on a global stage.",
-    resultValue: "15+",
-    resultLabel: "Global universities united on a single platform",
-    image: SAMPLE_IMAGE,
-    video: SAMPLE_VIDEO,
+      "Direct-to-golfer store for a six-in-one multi-tool, from exploded view to checkout.",
+    // PLACEHOLDER: no outcome figure on file for this one yet.
+    resultValue: "6-in-1",
+    resultLabel: "Every tool a golfer carries, sold from one page",
+    image: "/success/caddie-companion.webp",
+    video: "/success/caddie-companion.mp4",
     href: "/work",
   },
 ];

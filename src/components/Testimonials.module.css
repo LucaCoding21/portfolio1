@@ -1,0 +1,172 @@
+/*
+ * Video testimonials. Copy on the left; on the right three portrait reels
+ * side by side, all playing, none hidden behind another.
+ */
+.wrap {
+  --ink: #1a1613;
+  --muted: #6a665e;
+  --paper: #f9f8f5;
+  overflow: hidden;
+  padding: clamp(5rem, 12vh, 9rem) 2.5rem clamp(6rem, 12vh, 9rem);
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto;
+  column-gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: center;
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+.copy {
+  max-width: 30rem;
+}
+
+.eyebrow {
+  margin: 0 0 1.5rem;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.title {
+  margin: 0 0 1.5rem;
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  max-width: 40ch;
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+
+/* Three reels, each a 9:16 portrait, sized so the row clears the copy. */
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, clamp(180px, 18vw, 300px));
+  gap: clamp(1.25rem, 1.8vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #ece7e0;
+  will-change: transform;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark foot so the name reads over any footage. */
+.scrim {
+  position: absolute;
+  inset: auto 0 0;
+  height: 45%;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent);
+  pointer-events: none;
+}
+
+.sound {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--ink);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.sound:hover {
+  background: #fff;
+  transform: scale(1.06);
+}
+
+.meta {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  color: #fff;
+  pointer-events: none;
+}
+
+.metaName {
+  margin: 0 0 0.15rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.metaRole {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  opacity: 0.8;
+}
+
+@media (max-width: 1023px) {
+  .inner {
+    grid-template-columns: 1fr;
+    row-gap: 3rem;
+  }
+  .copy {
+    max-width: 36rem;
+  }
+  .row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    padding: 4rem 1.5rem 5rem;
+  }
+  /* One row you can swipe through, each card most of the screen wide. */
+  .row {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .row::-webkit-scrollbar {
+    display: none;
+  }
+  .card {
+    flex: 0 0 72vw;
+    scroll-snap-align: start;
+    border-radius: 14px;
+  }
+}
