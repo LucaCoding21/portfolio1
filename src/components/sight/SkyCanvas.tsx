@@ -85,46 +85,62 @@ export default function SkyCanvas({ className = "" }: { className?: string }) {
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
-    const gl = canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power" });
-    if (!gl) return;
-
-    const compile = (type: number, src: string) => {
-      const sh = gl.createShader(type);
-      if (!sh) return null;
-      gl.shaderSource(sh, src);
-      gl.compileShader(sh);
-      if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-        gl.deleteShader(sh);
-        return null;
-      }
-      return sh;
-    };
-    const vs = compile(gl.VERTEX_SHADER, VERT);
-    const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    const prog = gl.createProgram();
-    if (!vs || !fs || !prog) return;
-    gl.attachShader(prog, vs);
-    gl.attachShader(prog, fs);
-    gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
-    gl.useProgram(prog);
-
-    const buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-    const a = gl.getAttribLocation(prog, "a");
-    gl.enableVertexAttribArray(a);
-    gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
-    const uRes = gl.getUniformLocation(prog, "u_res");
-    const uTime = gl.getUniformLocation(prog, "u_time");
 
     const still = reducedMotion();
+    let gl: WebGLRenderingContext | null = null;
+    let uRes: WebGLUniformLocation | null = null;
+    let uTime: WebGLUniformLocation | null = null;
+    let ready = false;
     let raf = 0;
     let visible = false;
-    let sized = false;
     const t0 = performance.now();
 
+    /* Builds the program on the canvas's context. Can run more than once:
+       on a cold start the GPU process may not hand out a context yet, and a
+       context that gets lost comes back empty, so both retry through here. */
+    const init = (): boolean => {
+      gl =
+        gl ??
+        canvas.getContext("webgl", { antialias: false, alpha: false, powerPreference: "low-power" });
+      if (!gl || gl.isContextLost()) return false;
+      const g = gl;
+
+      const compile = (type: number, src: string) => {
+        const sh = g.createShader(type);
+        if (!sh) return null;
+        g.shaderSource(sh, src);
+        g.compileShader(sh);
+        if (!g.getShaderParameter(sh, g.COMPILE_STATUS)) {
+          g.deleteShader(sh);
+          return null;
+        }
+        return sh;
+      };
+      const vs = compile(g.VERTEX_SHADER, VERT);
+      const fs = compile(g.FRAGMENT_SHADER, FRAG);
+      const prog = g.createProgram();
+      if (!vs || !fs || !prog) return false;
+      g.attachShader(prog, vs);
+      g.attachShader(prog, fs);
+      g.linkProgram(prog);
+      if (!g.getProgramParameter(prog, g.LINK_STATUS)) return false;
+      g.useProgram(prog);
+
+      const buf = g.createBuffer();
+      g.bindBuffer(g.ARRAY_BUFFER, buf);
+      g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), g.STATIC_DRAW);
+      const a = g.getAttribLocation(prog, "a");
+      g.enableVertexAttribArray(a);
+      g.vertexAttribPointer(a, 2, g.FLOAT, false, 0, 0);
+      uRes = g.getUniformLocation(prog, "u_res");
+      uTime = g.getUniformLocation(prog, "u_time");
+      // a fresh program has no viewport or resolution yet
+      canvas.width = 0;
+      return true;
+    };
+
     const resize = () => {
+      if (!gl) return;
       // half resolution: clouds don't need the pixels, phones need the battery
       const scale = 0.5 * Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.max(1, Math.round(canvas.clientWidth * scale));
@@ -135,11 +151,12 @@ export default function SkyCanvas({ className = "" }: { className?: string }) {
         gl.viewport(0, 0, w, h);
         gl.uniform2f(uRes, w, h);
       }
-      sized = true;
     };
 
     const draw = (now: number) => {
-      if (!sized) resize();
+      if (!ready || !gl || gl.isContextLost()) return;
+      // setting the size wipes the buffer, so size and draw always go together
+      resize();
       // start a little way in so the first frame already has clouds
       gl.uniform1f(uTime, 40 + (now - t0) / 1000);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -150,7 +167,7 @@ export default function SkyCanvas({ className = "" }: { className?: string }) {
       raf = requestAnimationFrame(loop);
     };
     const start = () => {
-      if (raf || still) return;
+      if (raf || still || !ready) return;
       raf = requestAnimationFrame(loop);
     };
     const stop = () => {
@@ -158,37 +175,55 @@ export default function SkyCanvas({ className = "" }: { className?: string }) {
       raf = 0;
     };
 
+    /* One frame now, then keep going if the reader wants motion. Every
+       path that could leave the canvas blank ends up here. */
+    const show = () => {
+      if (!ready) ready = init();
+      if (!ready) return;
+      draw(performance.now());
+      start();
+    };
+
     // one frame straight away, so there's never a blank canvas
-    resize();
-    draw(performance.now());
+    ready = init();
+    if (ready) draw(performance.now());
 
     const io = new IntersectionObserver(
       ([e]) => {
         visible = e.isIntersecting;
-        if (visible) {
-          if (still) draw(performance.now());
-          else start();
-        } else stop();
+        if (visible) show();
+        else stop();
       },
       { rootMargin: "10% 0px" }
     );
     io.observe(canvas);
 
-    const ro = new ResizeObserver(() => {
-      resize();
-      if (still && visible) draw(performance.now());
-    });
+    // a resize clears the buffer; redraw whether or not the loop is running
+    const ro = new ResizeObserver(() => draw(performance.now()));
     ro.observe(canvas);
 
-    const onVis = () => (document.hidden ? stop() : visible && start());
+    const onVis = () => (document.hidden ? stop() : visible && show());
     document.addEventListener("visibilitychange", onVis);
+
+    const onLost = (e: Event) => {
+      e.preventDefault();
+      stop();
+      ready = false;
+    };
+    const onRestored = () => {
+      if (visible) show();
+    };
+    canvas.addEventListener("webglcontextlost", onLost);
+    canvas.addEventListener("webglcontextrestored", onRestored);
 
     return () => {
       stop();
       io.disconnect();
       ro.disconnect();
       document.removeEventListener("visibilitychange", onVis);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      canvas.removeEventListener("webglcontextlost", onLost);
+      canvas.removeEventListener("webglcontextrestored", onRestored);
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, []);
 

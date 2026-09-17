@@ -242,7 +242,7 @@ export default function ComesToYou() {
       gsap.set(win, { autoAlpha: 0, y: 26, scale: 0.95 });
       gsap.set(rows, { autoAlpha: 0, y: 10 });
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: moment, start: "top 72%", once: true },
+        scrollTrigger: { trigger: moment, start: "top 72%" },
       });
       tl.to(win, {
         autoAlpha: 1,

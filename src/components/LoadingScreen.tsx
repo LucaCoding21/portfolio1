@@ -1,229 +1,173 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+/**
+ * Intro loader: the plate bloom. About 1.3s from first paint to the hero.
+ *
+ * 1. "Cloverfield" rises in on the paper, then parts in the middle.
+ * 2. The hero reel appears in the gap as a small rounded plate, already
+ *    playing.
+ * 3. The same plate goes fixed, blooms to fill the viewport while the two
+ *    halves of the word slide off, and the paper fades out onto the real
+ *    hero underneath. Just before the fade the hero is told the reel's
+ *    current time (see LassieHero), so its own video picks up on the same
+ *    frame and the swap is invisible.
+ *
+ * The bloom waits for the reel to be playable (or 2s, whichever is first)
+ * so the plate never grows onto an empty frame; the poster sits behind the
+ * video as a fallback. Reduced motion: a short fade. HomeClient only
+ * mounts this once per session.
+ */
+
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import s from "./LoadingScreen.module.css";
+
+const POSTER = "/lassie-hero-poster.jpg";
+const REEL = "/lassie-hero.mp4";
+export const LOADER_HANDOFF_EVENT = "lassie:loader-video";
+const MEDIA_TIMEOUT_MS = 2000;
+const WORD_IN = 0.4;
+const GAP_AT = 0.25;
+const GAP_IN = 0.35;
+const BLOOM_AT = 0.6;
+const BLOOM = 0.75;
+const EASE_IN_OUT = "expo.inOut";
+const EASE_OUT = "expo.out";
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
 }
 
-const words = [
-  "Hello",
-  "Bonjour",
-  "Ciao",
-  "Olà",
-  "やあ",
-  "Kumusta",
-  "Xin chào",
-  "Guten tag",
-  "Hello",
-];
-
-export default function LoadingScreen({
-  onLoadingComplete,
-}: LoadingScreenProps) {
-  const [index, setIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const textRef = useRef<SVGTextElement>(null);
-  const mobileTextRef = useRef<HTMLSpanElement>(null);
-  const assetsLoadedRef = useRef(false);
-  const minTimeElapsedRef = useRef(false);
-  const wordsCompleteRef = useRef(false);
-  const isExitingRef = useRef(false);
-  const firstCycleRef = useRef(true);
+export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLSpanElement>(null);
+  const rightRef = useRef<HTMLSpanElement>(null);
+  const gapRef = useRef<HTMLSpanElement>(null);
+  const plateRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const doneRef = useRef(onLoadingComplete);
 
   useEffect(() => {
-    setIsMobile(window.matchMedia("(max-width: 767px)").matches);
-    setMounted(true);
-  }, []);
+    doneRef.current = onLoadingComplete;
+  }, [onLoadingComplete]);
 
-  // Preload assets in background
   useEffect(() => {
-    const mobile = window.matchMedia("(max-width: 767px)").matches;
-    // Desktop needs hero-v2.mp4 (video behind the SVG mask).
-    // Mobile needs hero-v2-poster.webp so the hero has an instant LCP image.
-    // Below-fold assets are lazy-loaded by their own components.
-    const assets: string[] = mobile ? ["/hero-v2-poster.webp"] : ["/hero-v2.mp4"];
+    const root = rootRef.current;
+    const left = leftRef.current;
+    const right = rightRef.current;
+    const gap = gapRef.current;
+    const plate = plateRef.current;
+    const video = videoRef.current;
+    if (!root || !left || !right || !gap || !plate || !video) return;
 
-    const preloadAsset = (src: string): Promise<void> => {
-      return new Promise((resolve) => {
-        if (src.endsWith(".mp4")) {
-          const video = document.createElement("video");
-          video.preload = "auto";
-          video.oncanplaythrough = () => resolve();
-          video.onerror = () => resolve();
-          video.src = src;
-          video.load();
-          // Mobile browsers may never fire oncanplaythrough for
-          // programmatic videos — don't let preloading hang forever
-          setTimeout(() => resolve(), 3000);
-        } else {
-          const img = new window.Image();
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-          img.src = src;
-          setTimeout(() => resolve(), 3000);
-        }
-      });
+    let disposed = false;
+    const finish = () => {
+      if (!disposed) doneRef.current();
     };
 
-    Promise.all(assets.map(preloadAsset)).then(() => {
-      assetsLoadedRef.current = true;
+    // The reel can start; the hero's own <video> shares the cache entry.
+    const mediaReady = new Promise<void>((resolve) => {
+      if (video.readyState >= 3) return resolve();
+      video.addEventListener("canplay", () => resolve(), { once: true });
+      video.addEventListener("error", () => resolve(), { once: true });
+      window.setTimeout(resolve, MEDIA_TIMEOUT_MS);
+    });
+    video.play().catch(() => {});
+
+    // Tell the hero where the reel is so its video continues on the same frame.
+    const handoff = () => {
+      window.dispatchEvent(new CustomEvent(LOADER_HANDOFF_EVENT, { detail: { time: video.currentTime } }));
+    };
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      gsap.set([left, right], { autoAlpha: 1 });
+      mediaReady.then(() => {
+        if (disposed) return;
+        handoff();
+        gsap.to(root, { autoAlpha: 0, duration: 0.4, ease: "power2.out", delay: 0.3, onComplete: finish });
+      });
+      return () => {
+        disposed = true;
+      };
+    }
+
+    const vw = () => root.clientWidth;
+    const gapWidth = () => Math.min(vw() * 0.14, 260);
+
+    gsap.set([left, right], { autoAlpha: 0, y: 12 });
+    gsap.set(gap, { width: 0 });
+
+    // Part one runs at once: the word rises and opens.
+    const intro = gsap.timeline();
+    intro
+      .to([left, right], { autoAlpha: 1, y: 0, duration: WORD_IN, ease: EASE_OUT }, 0)
+      .to(gap, { width: gapWidth, duration: GAP_IN, ease: EASE_OUT }, GAP_AT);
+
+    // Part two waits for the poster and for the word to have opened.
+    const openAt = new Promise<void>((resolve) => {
+      window.setTimeout(resolve, BLOOM_AT * 1000);
+    });
+    let bloom: gsap.core.Timeline | null = null;
+
+    Promise.all([mediaReady, openAt]).then(() => {
+      if (disposed) return;
+      const R = root.getBoundingClientRect();
+      const P = plate.getBoundingClientRect();
+      // Same element, so the reel keeps playing: pin it where it sits, then grow.
+      gsap.set(plate, {
+        position: "fixed",
+        left: P.left - R.left,
+        top: P.top - R.top,
+        width: P.width,
+        height: P.height,
+        borderRadius: getComputedStyle(plate).borderRadius,
+        zIndex: 2,
+      });
+
+      bloom = gsap.timeline({ onComplete: finish });
+      bloom
+        .to(plate, { left: 0, top: 0, width: R.width, height: R.height, borderRadius: 0, duration: BLOOM, ease: EASE_IN_OUT }, 0)
+        .to(left, { x: -vw() * 0.6, autoAlpha: 0, duration: BLOOM * 0.8, ease: EASE_IN_OUT }, 0)
+        .to(right, { x: vw() * 0.6, autoAlpha: 0, duration: BLOOM * 0.8, ease: EASE_IN_OUT }, 0)
+        .to(root, { backgroundColor: "rgba(249, 248, 245, 0)", duration: 0.3, ease: "power1.out" }, BLOOM * 0.6)
+        .call(handoff, [], BLOOM - 0.2)
+        .to(root, { autoAlpha: 0, duration: 0.3, ease: "power1.out" }, BLOOM - 0.05);
     });
 
-    const minTimer = setTimeout(() => {
-      minTimeElapsedRef.current = true;
-    }, 800);
-
-    return () => clearTimeout(minTimer);
+    return () => {
+      disposed = true;
+      intro.kill();
+      bloom?.kill();
+    };
   }, []);
 
-  // Cycle through words — desktop stops on last "Hello", mobile loops
-  useEffect(() => {
-    const stepDelay = isMobile ? 280 : 150;
-    if (index === words.length - 1) {
-      wordsCompleteRef.current = true;
-      firstCycleRef.current = false;
-      if (isMobile) {
-        const timeout = setTimeout(() => setIndex(0), stepDelay);
-        return () => clearTimeout(timeout);
-      }
-      return;
-    }
-    const timeout = setTimeout(
-      () => setIndex(index + 1),
-      index === 0 && firstCycleRef.current ? 1000 : stepDelay
-    );
-    return () => clearTimeout(timeout);
-  }, [index, isMobile]);
-
-  // Desktop: single fade-in on mount. Mobile: animate every word change.
-  useEffect(() => {
-    if (!mounted) return;
-    if (isMobile) {
-      const el = mobileTextRef.current;
-      if (el) {
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 10 },
-          { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
-        );
-      }
-    } else {
-      const el = textRef.current;
-      if (el && index === 0) {
-        gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.2 });
-      }
-    }
-  }, [mounted, isMobile, index]);
-
-  // Exit animation
-  const triggerExit = useCallback(() => {
-    if (isExitingRef.current) return;
-    isExitingRef.current = true;
-
-    if (isMobile) {
-      // Simple fade out
-      gsap.to(containerRef.current, {
-        autoAlpha: 0,
-        duration: 0.5,
-        ease: "power2.out",
-        onComplete: onLoadingComplete,
-      });
-    } else {
-      // Desktop: scale the SVG mask then crossfade to hero
-      const tl = gsap.timeline({ onComplete: onLoadingComplete });
-
-      tl.to(
-        svgRef.current,
-        { scale: 15, duration: 1.4, ease: "power3.inOut" },
-        0
-      );
-
-      tl.to(
-        svgRef.current,
-        { autoAlpha: 0, duration: 0.6, ease: "power2.out" },
-        0.8
-      );
-
-      tl.to(
-        containerRef.current,
-        { autoAlpha: 0, duration: 0.4, ease: "none" },
-        1.2
-      );
-    }
-  }, [onLoadingComplete, isMobile]);
-
-  // Poll for all conditions to trigger exit
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (
-        wordsCompleteRef.current &&
-        assetsLoadedRef.current &&
-        minTimeElapsedRef.current
-      ) {
-        clearInterval(interval);
-        triggerExit();
-      }
-    }, 100);
-    return () => clearInterval(interval);
-  }, [triggerExit]);
-
   return (
-    <div ref={containerRef} className="preloader">
-      {mounted && !isMobile && (
-        <>
-          <video autoPlay muted loop playsInline className="preloader-video">
-            <source src="/hero-v2.mp4" type="video/mp4" />
-          </video>
-
-          <svg
-            ref={svgRef}
-            className="preloader-svg"
-            viewBox="0 0 1920 1080"
-            preserveAspectRatio="xMidYMid slice"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <mask id="text-mask">
-                <rect width="1920" height="1080" fill="white" />
-                <text
-                  ref={textRef}
-                  x="960"
-                  y="560"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  className="preloader-svg-text"
-                  fill="black"
-                >
-                  {words[index]}
-                </text>
-              </mask>
-            </defs>
-
-            <rect
-              width="1920"
-              height="1080"
-              fill="white"
-              mask="url(#text-mask)"
+    <div ref={rootRef} className={s.root} aria-hidden="true">
+      <div className={s.word}>
+        <span ref={leftRef} className={s.half}>
+          Clover
+        </span>
+        <span ref={gapRef} className={s.gap}>
+          <span ref={plateRef} className={s.plate}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={POSTER} alt="" className={s.media} decoding="async" />
+            <video
+              ref={videoRef}
+              src={REEL}
+              muted
+              loop
+              playsInline
+              autoPlay
+              preload="auto"
+              className={`${s.media} ${s.video}`}
             />
-          </svg>
-        </>
-      )}
-
-      {mounted && isMobile && (
-        <div className="flex items-center justify-center h-full">
-          <span
-            ref={mobileTextRef}
-            className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(3rem,15vw,5rem)] uppercase tracking-tight will-change-[transform,opacity]"
-          >
-            {words[index]}
           </span>
-        </div>
-      )}
+        </span>
+        <span ref={rightRef} className={s.half}>
+          field
+        </span>
+      </div>
     </div>
   );
 }

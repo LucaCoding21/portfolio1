@@ -1,11 +1,12 @@
 "use client";
 
 /**
- * Nav cloned from lassie.ai: a centred pill row inside a frosted ring. At rest
- * every item sits on its own white pill; on hover those drop away and one
- * white pill slides under the pointer (0.3s expo.out). Over the hero the nav
- * runs a "dark" theme (white type), after it a "light" one. Past 400px of
- * scroll the wordmark folds away and only the mark stays (0.6s power4.out).
+ * Nav cloned from lassie.ai: a centred row of items on one sheet of glass.
+ * Items are plain text at rest; on hover one white pill slides under the
+ * pointer (0.3s expo.out). The call to action is the only solid (black) pill.
+ * Over the hero the nav runs a "dark" theme (slightly more opaque bar), after
+ * it a "light" one. Past 400px of scroll the wordmark folds away and only the
+ * mark stays (0.6s power4.out).
  *
  * Their flower + "Lassie" wordmark becomes our "c" mark + "loverfield".
  * The sound toggle is gone by request.
@@ -160,7 +161,16 @@ export default function LassieNav() {
             onFocus={onItemEnter}
           >
             <span className={s.itemBg} />
-            <span className={s.label}>{item.label}</span>
+            {/* "Sight" shimmers blue once the nav is off the dark hero (and
+                always on pages without one). The class clips a moving
+                gradient to the letters, so it goes on the text, not the pill. */}
+            <span
+              className={`${s.label} ${
+                item.href === "/sight" && effectiveTheme === "light" ? "sight-nav-link" : ""
+              }`}
+            >
+              {item.label}
+            </span>
           </Link>
         ))}
 
@@ -171,7 +181,16 @@ export default function LassieNav() {
           onFocus={onItemEnter}
         >
           <span className={s.itemBg} />
-          <span className={s.label}>Book a call</span>
+          <span className={s.label}>
+            {/* Two stacked copies in a clipped box: hover slides the stack up
+                one row, so the label flips out the top and back in from below. */}
+            <span className={s.flip}>
+              <span className={s.flipRow}>Start a Project</span>
+              <span className={s.flipRow} aria-hidden>
+                Start a Project
+              </span>
+            </span>
+          </span>
         </Link>
 
         <button

@@ -1,35 +1,54 @@
 /*
-  Lassie nav clone. Reference root is 10px, so their rem values are written
-  here as px. Breakpoint "desktop" = 1280px.
+  Nav restyle (Sep 2026). Geometry and motion still follow the Lassie clone
+  (44px items, sliding pill, collapsing wordmark) but the surfaces changed:
+  the items no longer sit on their own white pills, which read as "everything
+  selected". Instead the whole row lives on one warm-gray frosted bar, the
+  labels are plain text, one white pill slides under the hovered item and
+  only the call to action gets a solid black pill.
+
+  Reference root is 10px, so their rem values are written here as px.
+  Breakpoint "desktop" = 1280px.
 */
 
 .nav {
   --ink: #1a1613;
+  --ink-soft: #55504a;
+  --bar: rgba(233, 231, 226, 0.55);
+  --hover-pill: #fff;
   position: fixed;
   left: 50%;
   top: 16px;
   z-index: 50;
   display: flex;
+  gap: 2px;
   width: max-content;
   padding: 0;
   transform: translateX(-50%);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
-  color: #000;
+  color: var(--ink);
 }
 
-/* frosted ring behind the pills */
+/* over the hero video the bar goes a touch more opaque so it holds up */
+.nav.dark {
+  --bar: rgba(236, 234, 229, 0.62);
+}
+
+/* one frosted gray bar behind the whole row */
 .ring {
   position: absolute;
   pointer-events: none;
-  top: -4px;
-  left: -4px;
-  width: calc(100% + 8px);
-  height: 52px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(227, 221, 207, 0.4);
-  backdrop-filter: blur(13px);
-  -webkit-backdrop-filter: blur(13px);
+  top: -5px;
+  left: -5px;
+  width: calc(100% + 10px);
+  height: 54px;
+  border-radius: 17px;
+  border: 1px solid rgba(26, 22, 19, 0.06);
+  background: var(--bar);
+  box-shadow:
+    0 1px 2px rgba(26, 22, 19, 0.04),
+    0 6px 20px -12px rgba(26, 22, 19, 0.1);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
 }
 
 @media (min-width: 1280px) {
@@ -50,7 +69,8 @@
   width: 0;
   height: 44px;
   border-radius: 12px;
-  background: #fff;
+  background: var(--hover-pill);
+  box-shadow: 0 1px 2px rgba(26, 22, 19, 0.06);
 }
 
 .item {
@@ -71,25 +91,20 @@
   transition: background-color 0.3s ease;
 }
 
-/* at rest every item sits on its own white pill */
-.nav:not(.isHovered) .item:not(.isCta) .itemBg {
-  background: #fff;
-}
-
-/* the call to action keeps a translucent pill, tinted by the theme */
+/* the call to action is the only solid pill in the row */
 .item.isCta .itemBg {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--ink);
 }
-.nav.dark:not(.isHovered) .item.isCta .itemBg {
-  background: rgba(229, 229, 229, 0.3);
-}
-.nav.light:not(.isHovered) .item.isCta .itemBg {
-  background: rgba(227, 221, 207, 0.4);
+.item.isCta:hover .itemBg {
+  background: #2c2723;
 }
 
+/* press feedback */
 .item:active .itemBg {
-  background: #473d37;
+  background: rgba(26, 22, 19, 0.14);
+}
+.item.isCta:active .itemBg {
+  background: #000;
 }
 
 .label {
@@ -101,26 +116,60 @@
   height: 100%;
   padding: 0 14px;
   font-size: 14px;
+  font-weight: 500;
   line-height: 1;
+  color: var(--ink-soft);
   transition: color 0.3s ease;
 }
 
-/* labels stay dark in every state (the reference flips them white over the
-   hero on hover; dropped by request). The call to action follows the theme. */
-.nav.isHovered .label {
+/* plain links: muted at rest, full ink under the pointer or on the current page */
+.item:hover .label,
+.item[data-hover="1"] .label,
+.item[aria-current="page"] .label {
   color: var(--ink);
 }
-.nav.dark .item.isCta .label {
+
+/* the wordmark always reads at full strength */
+.item:first-child .label {
+  color: var(--ink);
+}
+
+/* white type on the black call to action, in every state */
+.item.isCta .label,
+.item.isCta:hover .label,
+.item.isCta[data-hover="1"] .label {
   color: #fff;
+  padding: 0 16px;
 }
-.nav.light .item.isCta .label {
-  color: var(--ink);
+
+.item:focus-visible .itemBg {
+  box-shadow: 0 0 0 2px rgba(26, 22, 19, 0.35);
 }
-.item:hover .label {
-  color: var(--ink);
+
+/* call to action hover: vertical text flip. The row height leaves room for
+   descenders so nothing clips at rest. */
+.flip {
+  display: block;
+  height: 1.3em;
+  overflow: hidden;
 }
-.item:active .label {
-  color: #fff;
+
+.flipRow {
+  display: block;
+  height: 1.3em;
+  line-height: 1.3em;
+  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.item.isCta:hover .flipRow,
+.item.isCta:focus-visible .flipRow {
+  transform: translateY(-1.3em);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flipRow {
+    transition: none;
+  }
 }
 
 /* logo: the mark stays, the wordmark collapses after 400px of scroll */

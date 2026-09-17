@@ -1,0 +1,64 @@
+/*
+  Intro loader, the plate bloom. Paper under the wordmark, the reel poster in
+  a small plate that grows to the viewport. See LoadingScreen.tsx for timing.
+*/
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: #f9f8f5;
+  color: #1a1613;
+  touch-action: none;
+}
+
+.word {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-outfit), sans-serif;
+  font-weight: 600;
+  font-size: clamp(44px, 9vw, 128px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+
+.half {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* the gap the plate opens in; width is animated from 0 */
+.gap {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 0;
+  height: 0.72em;
+}
+
+.plate {
+  position: absolute;
+  inset: 0 0.08em;
+  overflow: hidden;
+  border-radius: clamp(10px, 1.2vw, 18px);
+  background: #1a1613;
+}
+
+/* the same plate is pinned (position: fixed) and grown by JS at bloom time */
+
+.media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video {
+  z-index: 1;
+}

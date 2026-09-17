@@ -448,13 +448,6 @@
 
 /* ---------- cursor label ---------- */
 
-/* While the label is up, tuck the site's dot/ring cursor away (the reference
-   shrinks its circle to 2%) so there is one cursor, not two. */
-:global(html.cursor-label-active .cf-cursor) {
-  opacity: 0 !important;
-  transition: opacity 0.18s ease;
-}
-
 .cursor {
   position: fixed;
   top: 0;

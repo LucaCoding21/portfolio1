@@ -53,11 +53,15 @@ export default function FoundersNote() {
       at += 1.05;
     });
 
+    let fired = false;
     ScrollTrigger.create({
       trigger: root,
       start: "top 78%",
-      once: true,
-      onEnter: () => tl.play(),
+      onEnter: () => {
+        if (fired) return;
+        fired = true;
+        tl.play();
+      },
     });
   });
 

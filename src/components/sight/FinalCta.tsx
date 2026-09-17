@@ -70,7 +70,7 @@ export default function FinalCta() {
       y: 40,
       duration: 0.9,
       ease: "power3.out",
-      scrollTrigger: { trigger: root, start: "top 60%", once: true },
+      scrollTrigger: { trigger: root, start: "top 60%" },
     });
 
     // questions type themselves into the ask bar, one at a time. Each

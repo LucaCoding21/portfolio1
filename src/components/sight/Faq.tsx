@@ -35,28 +35,28 @@ const HEADLINE: [string, boolean][] = [
 
 const ITEMS: [string, string][] = [
   [
-    "What if our data is a mess?",
-    "It always is. Sorting it out is part of the build, not an extra. We connect the tools, find where the numbers disagree, and clean it up with you before anything goes live.",
+    "Will it connect to the tools we already use?",
+    "Yes. If it has a login or an export, it connects. QuickBooks, Jobber, a Google Sheet with the price list in it, whatever you run the business on today. You keep using those tools exactly as you do now.",
   ],
   [
-    "What if it gets a number wrong?",
-    "The numbers aren't guessed. They're computed straight from your records, and every answer shows which tool it came from so you can check it yourself. The AI writes the sentence, the math is fixed.",
+    "Can I trust the numbers?",
+    "Every number is computed from your own records, not estimated. The AI only writes the sentence around it. If something ever looks off, tell us and we trace it back to the record it came from.",
   ],
   [
-    "Which tools do you support?",
-    "Anything cloud-based with an export or a connection: QuickBooks Online, Xero, Jobber, Housecall Pro, Google Calendar and Sheets, HubSpot, Shopify, Stripe and most trade tools. We confirm yours connect before the build starts.",
+    "Do we have to change how we work?",
+    "No. Nothing gets re-entered and nobody learns a new system. Sight reads what your tools already hold and keeps it current on its own, so the business runs the way it always has.",
   ],
   [
-    "How much of my time does it take?",
-    "A few hours across the 45 days. One call to walk us through how the business runs, one to agree which checks matter for your trade, and a short session to train whoever runs the books and the schedule.",
+    "How much of my time does this take?",
+    "About an hour. You give us access to your tools and walk us through how the business runs, and we do the connecting ourselves. You see it again when it is ready to use.",
   ],
   [
-    "Who can see our numbers?",
-    "You, and whoever you add. Your data sits on its own, never mixed with another business, and nobody at Cloverfield looks at it unless you ask us to while we're building.",
+    "Where is our data, and who can see it?",
+    "It is stored in Canada, and only you and the people you choose can see it. Your business sits on its own, never mixed with anyone else's.",
   ],
   [
-    "Our own tech person could build this. Why you?",
-    "They probably could build a version, and then own it forever. We build the plumbing and keep it alive: monitoring, fixes when a vendor changes something, and new checks as the business changes. Your team gets to use it instead of maintaining it.",
+    "What if it doesn't work out?",
+    "Then you don't pay. If Sight isn't live and answering questions about your business within 45 days, there is no bill. That is the promise, and it is why we only take on businesses we are sure we can do this for.",
   ],
 ];
 
@@ -122,14 +122,14 @@ export default function Faq() {
       gsap.from(win, {
         opacity: 0,
         duration: 0.7,
-        scrollTrigger: { trigger: band, start: "top 78%", once: true },
+        scrollTrigger: { trigger: band, start: "top 78%" },
       });
       return;
     }
 
     const tl = gsap.timeline({
       defaults: { ease: "power3.out" },
-      scrollTrigger: { trigger: band, start: "top 72%", once: true },
+      scrollTrigger: { trigger: band, start: "top 72%" },
     });
     tl.fromTo(
       band,

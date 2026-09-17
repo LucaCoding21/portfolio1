@@ -12,57 +12,55 @@
   align-items: center;
   width: 100vw;
   height: 100svh;
+  overflow: hidden;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
-/* the media plate: shrinks in from the edges once you have scrolled 100px */
-.media {
+/* the media plate: an oversized rounded frame that scales down once you have
+   scrolled 100px. --o (overhang), --sx/--sy (scale) and --rx/--ry (radius,
+   pre-divided by the scale) are set from JS per viewport. Only transform
+   animates, so the zoom runs on the compositor. */
+.plate {
   position: absolute;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
+  top: calc(-1 * var(--o, 96px));
+  right: calc(-1 * var(--o, 96px));
+  bottom: calc(-1 * var(--o, 96px));
+  left: calc(-1 * var(--o, 96px));
+  overflow: hidden;
+  border-radius: var(--rx, 72px) / var(--ry, 80px);
   background: #fff;
-  clip-path: inset(0);
-  transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
-  /* promote the plate up front so the first clip does not pay for a new
-     compositor layer mid-scroll */
-  will-change: clip-path;
-  transform: translateZ(0);
+  transform: scale(1);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
-.media.isZoomed {
-  clip-path: inset(16px round 24px);
+.plate.isZoomed {
+  transform: scale(var(--sx, 0.9), var(--sy, 0.8));
 }
 
-@media screen and (min-width: 1280px) {
-  .media.isZoomed {
-    clip-path: inset(32px round 64px);
-  }
+/* the media, counter-scaled so the picture stays put while the frame shrinks */
+.inner {
+  position: absolute;
+  inset: var(--o, 96px);
+  transform: scale(1);
+  transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.plate.isZoomed .inner {
+  transform: scale(calc(1 / var(--sx, 0.9)), calc(1 / var(--sy, 0.8)));
 }
 
 .poster,
 .video {
-  contain: layout paint;
-  will-change: clip-path;
-  display: inline-block;
-  overflow: hidden;
-  transform: translateZ(0);
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.poster {
-  position: absolute;
-  inset: 0;
-  z-index: -10;
-}
-
 .video {
-  position: relative;
   z-index: 1;
 }
 
@@ -166,110 +164,4 @@
 .taskIcon {
   display: inline-flex;
   margin-right: 3px;
-}
-
-/* sign-up form pinned to the bottom edge */
-.formWrap {
-  position: absolute;
-  bottom: 16px;
-  transform: translateY(0);
-  transition: transform 0.5s cubic-bezier(0, 0, 0.2, 1);
-}
-
-.formWrap.isZoomed {
-  transform: translateY(-50px);
-}
-
-.form {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 275px;
-  height: 56px;
-  padding: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  background: rgba(227, 221, 207, 0.2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: width 0.3s cubic-bezier(0, 0, 0.2, 1);
-}
-
-@media (min-width: 1024px) {
-  .form:focus-within {
-    width: 360px;
-  }
-}
-
-.input {
-  flex: 1;
-  min-width: 0;
-  width: 100%;
-  padding: 0 8px;
-  box-sizing: border-box;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font: inherit;
-  font-size: 16px;
-  color: #fff;
-}
-
-.input::placeholder {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-@media (min-width: 1024px) {
-  .input {
-    padding: 0 16px;
-  }
-}
-
-.button {
-  position: relative;
-  display: inline-flex;
-  flex-shrink: 0;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-  isolation: isolate;
-}
-
-.buttonInner {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 12px;
-  background: #fff;
-  color: var(--ink);
-  font-size: 13px;
-  letter-spacing: 0.005em;
-  transition: background-color 0.15s, color 0.15s;
-}
-
-.button:hover .buttonInner {
-  background: #f8f6f2;
-}
-
-.button:active .buttonInner {
-  background: #473d37;
-  color: #fff;
-}
-
-@media (min-width: 1024px) {
-  .buttonInner {
-    height: 42px;
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .buttonInner {
-    font-size: 15px;
-  }
 }

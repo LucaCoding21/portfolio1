@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { CustomEase } from "gsap/dist/CustomEase";
 import { SUCCESS_STORIES } from "@/data/successStories";
+import StoryDescription from "./StoryDescription";
 import styles from "./SuccessStories.module.css";
 
 gsap.registerPlugin(ScrollTrigger, CustomEase);
@@ -206,7 +207,9 @@ export default function SuccessStories({ ready }: SuccessStoriesProps) {
                   <div className={styles.content}>
                     <div className={styles.title}>
                       <h2 className={styles.heading}>{story.title}</h2>
-                      <p className={styles.description}>{story.description}</p>
+                      <p className={styles.description}>
+                        <StoryDescription description={story.description} />
+                      </p>
                     </div>
                     <div className={styles.result}>
                       <h3 className={styles.resultValue}>{story.resultValue}</h3>

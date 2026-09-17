@@ -1,40 +1,54 @@
 /**
  * Homepage "Success Stories" list. Each project has a storyboarded reel in
  * /public/success (1620x1080, 60fps, 12-13s): held hero, slow pans across the
- * sections worth seeing, a second page, dissolves between. The first entry's
- * copy is still the reference's placeholder.
+ * sections worth seeing, a second page, dissolves between.
  */
+/** A named partner shown inline in a description with its mark as a small round avatar. */
+export interface StoryPartner {
+  name: string;
+  mark: string;
+}
+
 export interface SuccessStory {
   title: string;
-  description: string;
+  /** Plain text, or text interleaved with partners rendered as name + mark. */
+  description: string | Array<string | StoryPartner>;
   resultValue: string;
   resultLabel: string;
   image: string;
   video: string;
   href: string;
+  /** The live site the cover and reel open in a new tab. */
+  site: string;
 }
 
 export const SUCCESS_STORIES: SuccessStory[] = [
   {
     title: "Innovative Aluminum",
     description:
-      "Brand refresh and website for a practice with a decade of crafting high-end homes for Australian families.",
-    resultValue: "21%",
-    resultLabel: "Increase in conversions with projects starting from $2M+",
+      "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
+    resultValue: "$5M+",
+    resultLabel: "Lifetime value of dealer accounts signed in the first 90 days",
     image: "/success/innovative-aluminum.webp",
     video: "/success/innovative-aluminum.mp4",
     href: "/work",
+    site: "https://www.innovativealuminum.com/",
   },
   {
     title: "Transforming Landscapes",
-    description:
-      "A research initiative on First Nations-led real estate development in BC.",
-    // PLACEHOLDER: no outcome figure on file for this one yet.
-    resultValue: "2026",
-    resultLabel: "Report launched with the Real Estate Institute of BC and Greater Vancouver REALTORS",
+    description: [
+      "Research site on First Nations-led development, for ",
+      { name: "Real Estate Institute of BC", mark: "/success/reibc-mark.webp" },
+      " and ",
+      { name: "Greater Vancouver REALTORS", mark: "/success/gvr-mark.webp" },
+      ".",
+    ],
+    resultValue: "12 studies",
+    resultLabel: "With First Nations leaders across BC, on one platform",
     image: "/success/transforming-landscapes.webp",
     video: "/success/transforming-landscapes.mp4",
     href: "/work",
+    site: "https://www.transforminglandscapes.ca/",
   },
   {
     title: "ACE",
@@ -45,16 +59,17 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     image: "/success/ace.webp",
     video: "/success/ace.mp4",
     href: "/work",
+    site: "https://acesuasola.com/",
   },
   {
     title: "Caddie Companion",
     description:
-      "Direct-to-golfer store for a six-in-one multi-tool, from exploded view to checkout.",
-    // PLACEHOLDER: no outcome figure on file for this one yet.
-    resultValue: "6-in-1",
-    resultLabel: "Every tool a golfer carries, sold from one page",
+      "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+    resultValue: "+21%",
+    resultLabel: "More visitors turned into buyers than the old store",
     image: "/success/caddie-companion.webp",
     video: "/success/caddie-companion.mp4",
     href: "/work",
+    site: "https://www.caddiecompanion.com/",
   },
 ];

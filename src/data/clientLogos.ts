@@ -26,4 +26,18 @@ export const CLIENT_LOGOS: ClientLogo[] = [
   { name: "Real Estate 360", src: "/sight/clients/real-estate-360-v2.webp", height: 40 },
   // Pale gold art: greys out to nothing, so it is flattened to ink as well.
   { name: "Venue Series", src: "/sight/clients/venue-series-2.png", height: 45, dark: true },
+  // The site's own nav mark (Space Grotesk "ACE" in a hairline box), captured
+  // white on transparent from acesuasola.com and flattened to ink here.
+  { name: "Ace Suasola", src: "/sight/clients/ace.png", height: 40, dark: true },
+  // Text wordmark from njagihstudios.com (Source Sans 3 bold, uppercase),
+  // rendered white on transparent and flattened to ink here.
+  { name: "Njagih Studios", src: "/sight/clients/njagih-studios.png", height: 18, dark: true },
+  // The dog drawing with the Fraunces wordmark set under it, composited white
+  // on transparent at the site's proportions and flattened to ink here.
+  { name: "Shoobydoo", src: "/sight/clients/shoobydoo.png", height: 48, dark: true },
+  // Black hedgehog mark with the wordmark under it; already ink on transparent.
+  { name: "Afterparty", src: "/sight/clients/afterparty.png", height: 48 },
+  { name: "Bloomkey", src: "/sight/clients/bloomkey.png", height: 40 },
+  { name: "Southbound Sips", src: "/sight/clients/southbound-sips.png", height: 48 },
+  { name: "Dreamhouse Printing", src: "/sight/clients/dreamhouse-printing.png", height: 38 },
 ];

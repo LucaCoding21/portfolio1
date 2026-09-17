@@ -2,17 +2,20 @@
 
 /**
  * Hero cloned from lassie.ai, running on our hero reel. Once you scroll 100px
- * the media plate clips in from the edges (inset 32px, 64px corners on
- * desktop; 16px / 24px below) over 1s on their ease-out-quint, and the sign-up
- * form lifts 50px. While the hero is on screen the nav runs dark.
+ * the media plate shrinks in from the edges (inset 32px, 64px corners on
+ * desktop; 16px / 24px below) over 1s on their ease-out-quint. The reference
+ * animates clip-path; we animate transform only (see the zoom effect) so the
+ * move is compositor-driven and stays smooth on a cold load. While the hero
+ * is on screen the nav runs dark.
  *
- * PLACEHOLDER: headline, subline, task lines and the email form are the
- * reference's copy and UI, kept verbatim for the first pass.
+ * Copy is Cloverfield's: headline, subline, rotating wins. The reference's
+ * bottom email form was removed; the nav carries "Book a call".
  */
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { LOADER_HANDOFF_EVENT } from "./LoadingScreen";
 import s from "./LassieHero.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -22,14 +25,14 @@ const EASE_OUT = "expo.out";
 const TASK_INTERVAL_MS = 2500;
 
 const TASKS = [
-  "Confirmed 42 appointments",
-  "Posted $12,430 in payments",
-  "Booked 8 hygiene recalls",
-  "Confirmed 42 appointments",
-  "Rescheduled 3 appointments",
-  "Called Cigna for claim status",
-  "Completed Humana enrollment",
-  "Closed the books for March",
+  "New quote request from Surrey",
+  "Booking confirmed for Thursday",
+  "Someone just called from your site",
+  "3 new leads came in overnight",
+  "Estimate request from Langley",
+  "Consultation booked from Google",
+  "New customer from White Rock",
+  "New inquiry from Delta",
 ];
 
 function CalendarIcon() {
@@ -52,23 +55,95 @@ export default function LassieHero({ ready }: { ready: boolean }) {
   const heroRef = useRef<HTMLElement>(null);
   const tasksRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLDivElement>(null);
 
-  /* nav theme + zoom trigger */
+  /* nav theme, plate zoom, video gating */
   useEffect(() => {
     const hero = heroRef.current;
-    if (!hero) return;
+    const plate = mediaRef.current;
+    if (!hero || !plate) return;
+    const video = hero.querySelector("video");
     const setTheme = (t: "dark" | "light") =>
       window.dispatchEvent(new CustomEvent("lassie:nav-theme", { detail: t }));
 
-    let cleanupArm = () => {};
+    // The plate is an oversized rounded frame that scales down, with the
+    // media inside counter-scaled so the picture never moves. Only transform
+    // animates, so the whole zoom runs on the compositor: no clip-path mask
+    // to rasterize each frame, and a busy main thread cannot drop frames.
+    // The frame overhangs the hero by enough that its rounded corners sit
+    // outside the viewport at rest, and the radius is pre-divided by the
+    // scale so it lands on the reference's 64px (24px below desktop).
+    const setVars = () => {
+      const W = hero.clientWidth;
+      const H = hero.clientHeight;
+      const desktop = W >= 1280;
+      const pad = desktop ? 32 : 16;
+      const rad = desktop ? 64 : 24;
+      const need = (L: number) => {
+        const d = L - 2 * pad - 2 * rad;
+        return d > 0 ? (rad * L) / d : 128;
+      };
+      const o = Math.ceil(Math.max(need(W), need(H), rad)) + 8;
+      const sx = (W - 2 * pad) / (W + 2 * o);
+      const sy = (H - 2 * pad) / (H + 2 * o);
+      hero.style.setProperty("--o", `${o}px`);
+      hero.style.setProperty("--sx", String(sx));
+      hero.style.setProperty("--sy", String(sy));
+      hero.style.setProperty("--rx", `${rad / sx}px`);
+      hero.style.setProperty("--ry", `${rad / sy}px`);
+    };
+    setVars();
+    window.addEventListener("resize", setVars);
+
+    // Play only once the video can run and no zoom is in flight, so the first
+    // decoded frames never land mid-transition on a cold load. The poster
+    // covers until then. Fallback timer for browsers that only buffer on play().
+    let inHero = false;
+    let zooming = false;
+    let videoOk = !!video && video.readyState >= 3;
+    const tryPlay = () => {
+      if (video && videoOk && inHero && !zooming) video.play().catch(() => {});
+    };
+    const onCanPlay = () => {
+      videoOk = true;
+      tryPlay();
+    };
+    video?.addEventListener("canplay", onCanPlay, { once: true });
+    const fallback = window.setTimeout(onCanPlay, 3000);
+    const onTrStart = (e: TransitionEvent) => {
+      if (e.target === plate && e.propertyName === "transform") zooming = true;
+    };
+    const onTrDone = (e: TransitionEvent) => {
+      if (e.target === plate && e.propertyName === "transform") {
+        zooming = false;
+        tryPlay();
+      }
+    };
+    plate.addEventListener("transitionstart", onTrStart);
+    plate.addEventListener("transitionend", onTrDone);
+    plate.addEventListener("transitioncancel", onTrDone);
+
+    // The loader's reel hands over its timestamp just before it fades, so
+    // this video continues on the same frame instead of restarting.
+    const onHandoff = (e: Event) => {
+      const time = (e as CustomEvent<{ time: number }>).detail?.time;
+      if (!video || typeof time !== "number") return;
+      videoOk = true;
+      try {
+        video.currentTime = time;
+      } catch {}
+      video.play().catch(() => {});
+    };
+    window.addEventListener(LOADER_HANDOFF_EVENT, onHandoff);
+
     const ctx = gsap.context(() => {
       const enter = () => {
-        hero.querySelector("video")?.play().catch(() => {});
+        inHero = true;
+        tryPlay();
         setTheme("dark");
       };
       const leave = () => {
-        hero.querySelector("video")?.pause();
+        inHero = false;
+        video?.pause();
         setTheme("light");
       };
       const st = ScrollTrigger.create({
@@ -84,26 +159,9 @@ export default function LassieHero({ ready }: { ready: boolean }) {
       if (y >= st.start && y < st.end) enter();
       else leave();
 
-      // Toggle classes straight on the DOM: a React re-render of the hero in
-      // the same frame the clip starts moving showed up as a dropped frame.
-      //
-      // The clip is armed only once the page has settled (fonts in, first
-      // video frames decoded, two calm frames in a row). On a cold load a
-      // scroll in the first second used to start the 1s clip on top of
-      // hydration and decode work and stutter; now it waits for the calm
-      // moment and then plays clean. Falls back to arming at 2.5s regardless.
-      const media = mediaRef.current;
-      const formWrap = formRef.current;
-      let armed = false;
-      let want = false;
-      const apply = () => {
-        media?.classList.toggle(s.isZoomed, want);
-        formWrap?.classList.toggle(s.isZoomed, want);
-      };
-      const zoom = (on: boolean) => {
-        want = on;
-        if (armed) apply();
-      };
+      // Toggle the class straight on the DOM: a React re-render in the same
+      // frame the zoom starts showed up as a dropped frame.
+      const zoom = (on: boolean) => plate.classList.toggle(s.isZoomed, on);
       ScrollTrigger.create({
         start: 100,
         invalidateOnRefresh: true,
@@ -112,40 +170,15 @@ export default function LassieHero({ ready }: { ready: boolean }) {
         onLeave: () => zoom(false),
         onLeaveBack: () => zoom(false),
       });
-
-      let cancelled = false;
-      const arm = () => {
-        if (armed || cancelled) return;
-        armed = true;
-        apply();
-      };
-      const calmFrames = () =>
-        new Promise<void>((resolve) => {
-          let last = performance.now();
-          let calm = 0;
-          const tick = (t: number) => {
-            if (cancelled) return;
-            calm = t - last < 20 ? calm + 1 : 0;
-            last = t;
-            if (calm >= 2) resolve();
-            else requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        });
-      const video = hero.querySelector("video");
-      const videoReady = new Promise<void>((resolve) => {
-        if (!video || video.readyState >= 3) return resolve();
-        video.addEventListener("canplay", () => resolve(), { once: true });
-      });
-      const fontsReady = "fonts" in document ? document.fonts.ready.then(() => undefined) : Promise.resolve();
-      const timeout = new Promise<void>((resolve) => setTimeout(resolve, 2500));
-      Promise.race([Promise.all([videoReady, fontsReady]).then(calmFrames), timeout]).then(arm);
-      cleanupArm = () => {
-        cancelled = true;
-      };
     });
     return () => {
-      cleanupArm();
+      window.removeEventListener("resize", setVars);
+      window.removeEventListener(LOADER_HANDOFF_EVENT, onHandoff);
+      window.clearTimeout(fallback);
+      video?.removeEventListener("canplay", onCanPlay);
+      plate.removeEventListener("transitionstart", onTrStart);
+      plate.removeEventListener("transitionend", onTrDone);
+      plate.removeEventListener("transitioncancel", onTrDone);
       ctx.revert();
     };
   }, []);
@@ -204,28 +237,34 @@ export default function LassieHero({ ready }: { ready: boolean }) {
 
   return (
     <section ref={heroRef} aria-label="Hero section" className={s.hero} data-nav-theme="dark">
-      <div ref={mediaRef} className={s.media}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/lassie-hero-poster.jpg" alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
-        <video
-          src="/lassie-hero.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/lassie-hero-poster.jpg"
-          aria-label="Cloverfield Studio web design showcase reel"
-          className={s.video}
-        />
+      <div ref={mediaRef} className={s.plate}>
+        <div className={s.inner}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/lassie-hero-poster.jpg" alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
+          <video
+            src="/lassie-hero.mp4"
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster="/lassie-hero-poster.jpg"
+            aria-label="Cloverfield Studio web design showcase reel"
+            className={s.video}
+          />
+        </div>
       </div>
 
       <div className={s.content}>
         <h1 className={s.headline}>
-          You’re a doctor.
+          We make websites
           <br />
-          <span className={s.italic}>Not a machine.</span>
+          <span className={s.italic}>that bring in customers.</span>
         </h1>
-        <p className={`${s.bodyMd} ${s.sub}`}>Let Lassie do your admin</p>
+        <p className={`${s.bodyMd} ${s.sub}`}>
+          Our work has generated more than 5,000 inquiries for local businesses.
+          <br />
+          We design every site to make you more money.
+        </p>
         <div ref={tasksRef} className={s.tasks} aria-live="polite">
           {TASKS.map((label, i) => (
             <div key={`${label}-${i}`} data-task-item="" className={s.task}>
@@ -240,20 +279,6 @@ export default function LassieHero({ ready }: { ready: boolean }) {
         </div>
       </div>
 
-      <div ref={formRef} className={s.formWrap}>
-        <form className={s.form} onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="email"
-            name="email"
-            autoComplete="email"
-            placeholder="Your email"
-            className={s.input}
-          />
-          <button type="submit" className={s.button}>
-            <span className={s.buttonInner}>Get started</span>
-          </button>
-        </form>
-      </div>
     </section>
   );
 }

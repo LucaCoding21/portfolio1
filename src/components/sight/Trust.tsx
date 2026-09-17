@@ -61,11 +61,15 @@ export default function Trust() {
     const count = root.querySelector<HTMLElement>("[data-count]");
     if (count) {
       const tween = counterTween(count, 1.4).pause();
+      let fired = false;
       ScrollTrigger.create({
         trigger: count,
         start: "top 85%",
-        once: true,
-        onEnter: () => tween.play(),
+        onEnter: () => {
+          if (fired) return;
+          fired = true;
+          tween.play();
+        },
       });
     }
 
@@ -87,7 +91,7 @@ export default function Trust() {
 
     gsap
       .timeline({
-        scrollTrigger: { trigger: photo, start: "top 78%", once: true },
+        scrollTrigger: { trigger: photo, start: "top 78%" },
       })
       .to(mask, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.1, ease: "expo.out" }, 0)
       .to(img, { scale: 1, duration: 1.6, ease: "power3.out" }, 0)

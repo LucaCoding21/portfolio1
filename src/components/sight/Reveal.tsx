@@ -42,7 +42,6 @@ export default function Reveal({
       scrollTrigger: {
         trigger: root,
         start: "top 82%",
-        once: true,
       },
     });
   });

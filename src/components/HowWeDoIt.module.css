@@ -123,6 +123,18 @@
   color: var(--muted);
 }
 
+/* Microcopy under a step's title, a size down and a tone lighter. Pulled up
+   a little against the head column's gap so it reads with the title. */
+.note {
+  display: block;
+  margin-top: -0.25rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  opacity: 0.75;
+}
+
 /* The reel: the same corner as the plates in Selected Works, clipped so the
    entrance scale stays inside. */
 .reel {

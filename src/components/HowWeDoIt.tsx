@@ -33,36 +33,35 @@ const LINES = [
   ["do", "it?"],
 ];
 
-const PHASES = [
-  {
-    name: "Research",
-    body: "We study your market, your competitors and the people you want to reach before we design anything, so every decision has a reason behind it.",
-    video: "/success/transforming-landscapes.mp4",
-    poster: "/success/transforming-landscapes.webp",
-  },
+/** `note` is microcopy under the title; an array stacks one line per entry. */
+const PHASES: { name: string; body: string; note?: string | string[]; video: string; poster: string }[] = [
   {
     name: "Kickoff",
-    body: "One call to lock how it looks and what it has to do. You leave with a direction, a scope and a date.",
+    body: "We start with one focused call to understand your business, your customers, and what the new site needs to do. From there, we take the lead.",
+    // Small line under the body: the owner's time cost, stated up front.
+    note: "About 45 minutes of your time.",
     video: "/success/ace.mp4",
     poster: "/success/ace.webp",
   },
   {
+    name: "Research",
+    body: "We get deep into your industry before we touch the design. We study your competitors, your customers, and what actually influences someone to choose you, so every decision has a reason behind it.",
+    video: "/success/transforming-landscapes.mp4",
+    poster: "/success/transforming-landscapes.webp",
+  },
+  {
     name: "Design",
-    body: "Drawn from scratch around your business. Every section earns the next scroll, and you see it move before we build it.",
+    body: "We turn the strategy into the site. With the direction clear, we design the full website around what your customers need to understand, trust and act on. You see exactly how it looks and works before we build anything.",
+    note: "Full design ready for review in ~1–2 weeks",
     video: "/success/caddie-companion.mp4",
     poster: "/success/caddie-companion.webp",
   },
   {
-    name: "Build and launch",
-    body: "Built in Next.js and GSAP, tested on real phones, and launched with a 95+ speed score on nearly every site.",
+    name: "Build & Launch",
+    body: "Once the design is approved, we take it from there. We build the full site, test everything across devices, handle the technical details, and get it live. You review the finished site, give us the green light, and we handle the rest.",
+    note: "Usually live in ~2–3 weeks",
     video: "/success/innovative-aluminum.mp4",
     poster: "/success/innovative-aluminum.webp",
-  },
-  {
-    name: "Post-launch support",
-    body: "Once you're live the whole site is on us: hosting, updates, fixes and the small changes that come up in the first months.",
-    video: "/success/transforming-landscapes.mp4",
-    poster: "/success/transforming-landscapes.webp",
   },
 ];
 
@@ -140,6 +139,18 @@ export default function HowWeDoIt() {
                 <h3 className={s.name} data-rise>
                   {phase.name}
                 </h3>
+                {/* Microcopy under the title, inside the head column so the
+                    row's three-column grid is untouched. */}
+                {phase.note && (
+                  <span className={s.note} data-rise>
+                    {(Array.isArray(phase.note) ? phase.note : [phase.note]).map((line, j) => (
+                      <span key={line}>
+                        {j > 0 && <br />}
+                        {line}
+                      </span>
+                    ))}
+                  </span>
+                )}
               </div>
               <p className={s.body} data-rise>
                 {phase.body}

@@ -10,6 +10,18 @@ if (typeof window !== "undefined") {
 
 export { gsap, ScrollTrigger };
 
+/*
+ * Do not use `once: true` on ScrollTriggers in this folder. A once-trigger
+ * kills itself the moment a refresh finds it already scrolled past, and a
+ * tween's trigger refreshes synchronously at creation, force-initialising
+ * every earlier trigger. Mount this page while the browser is still scrolled
+ * down (a reload with restored scroll, or a client-side navigation from a
+ * scrolled page) and that chain removes several triggers from GSAP's list
+ * mid-loop, which throws "Cannot read properties of undefined (reading
+ * 'end')". The default toggleActions already play once on enter and never
+ * reverse, so plain triggers give the same result; callbacks use a flag.
+ */
+
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 

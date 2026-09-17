@@ -15,7 +15,7 @@
  * (scale .7, 24% down), one step back, then in, and so on.
  *
  * Card copy is the project's title, blurb and headline result from
- * `successStories` (still placeholder there for all but the first). Their Lottie flower above
+ * `successStories`. Their Lottie flower above
  * the headline is left out by request.
  */
 
@@ -24,6 +24,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SUCCESS_STORIES } from "@/data/successStories";
+import StoryDescription from "./StoryDescription";
 import s from "./LassieFeatures.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -254,7 +255,9 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
               <article className={`${s.description} ${card.align === "right" ? s.isRight : ""}`}>
                 <div className={s.descriptionAnim}>
                   <h3 className={s.cardTitle}>{card.story.title}</h3>
-                  <p className={s.cardBody}>{card.story.description}</p>
+                  <p className={s.cardBody}>
+                    <StoryDescription description={card.story.description} />
+                  </p>
                   <p className={s.cardResult}>
                     <span className={s.resultValue}>{card.story.resultValue}</span>
                     <span className={s.resultLabel}>{card.story.resultLabel}</span>
@@ -279,6 +282,14 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
                     </div>
                   </div>
                 </div>
+                {/* The whole plate opens the live site; only the card in front takes the click. */}
+                <a
+                  href={card.story.site}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open the ${card.story.title} website in a new tab`}
+                  className={s.plateLink}
+                />
               </div>
             </div>
           </div>

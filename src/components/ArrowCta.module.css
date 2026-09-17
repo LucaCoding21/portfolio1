@@ -1,0 +1,161 @@
+/*
+ * Arrow call to action. Ink pill with a paper chip at the right end; on hover
+ * the chip swells to fill the pill and the arrow turns up-right. The label is
+ * paper blended with `difference`, so it flips to ink under the chip.
+ */
+
+.block {
+  --ink: #111113;
+  --paper: #f9f8f5;
+  --muted: #6a665e;
+  --live: #3fae5a;
+  --chip: 36px;
+  --h: 52px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: var(--h);
+  /* right pad = chip inset, so the chip hugs the end of the pill */
+  padding: 0 calc((var(--h) - var(--chip)) / 2 - 1px) 0 22px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  transition: transform 0.18s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* The chip. GSAP scales it from here; it must own no other transform. */
+.fill {
+  position: absolute;
+  top: calc(50% - var(--chip) / 2);
+  right: calc((var(--h) - var(--chip)) / 2 - 1px);
+  width: var(--chip);
+  height: var(--chip);
+  border-radius: 50%;
+  background: var(--paper);
+  transform-origin: center;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* Paper on ink reads as paper; paper on the paper chip reads as ink. */
+.content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--paper);
+  mix-blend-mode: difference;
+}
+
+/* Leaves room for the dot, which sits outside the blend layer. */
+.dotSlot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin-right: -4px;
+}
+
+.label {
+  display: block;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Same box as the chip, so the arrow sits centred on it. */
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--chip);
+  height: var(--chip);
+  flex: none;
+  will-change: transform;
+}
+
+.arrow > svg {
+  display: block;
+}
+
+/* Availability dot with a slow breathing ring. */
+.dot {
+  position: absolute;
+  z-index: 2;
+  left: 22px;
+  top: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--live);
+  pointer-events: none;
+}
+
+.dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1.5px solid var(--live);
+  opacity: 0;
+  animation: ctaPulse 2.4s ease-out infinite;
+}
+
+@keyframes ctaPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  70% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Small Outfit line under the button. */
+.note {
+  display: block;
+  margin: 0.65rem 0 0 0.25rem;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+/* No fine pointer or reduced motion: the JS never binds, so the same end
+   state runs on plain CSS. */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: transform 0.5s ease;
+  }
+  .btn:hover .fill,
+  .btn:active .fill {
+    transform: scale(14);
+  }
+  .dot::after {
+    animation: none;
+  }
+}

@@ -325,6 +325,20 @@
   object-fit: cover;
 }
 
+/* the plate opens the live site: an overlay that rides the plate's transform,
+   clickable only while the card is the live one */
+.plateLink {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  cursor: pointer;
+  pointer-events: none;
+}
+
+.isLive .plateLink {
+  pointer-events: auto;
+}
+
 /* ---- the Success Stories hover reel, popping up on its own ---- */
 
 .overlay {
@@ -369,7 +383,8 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  aspect-ratio: 3 / 2;
+  /* Screen recordings are exported at 1976 x 1080; match it so nothing is cropped. */
+  aspect-ratio: 1976 / 1080;
   overflow: hidden;
 }
 

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import LassieHero from "@/components/LassieHero";
 import LassieFeatures from "@/components/LassieFeatures";
-import LogoStrip from "@/components/LogoStrip";
+import ClientWall from "@/components/ClientWall";
 import TeamIntro from "@/components/TeamIntro";
 import MoreWork from "@/components/MoreWork";
 
@@ -100,7 +100,7 @@ export default function HomeClient() {
         <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
       )}
       <LassieHero ready={ready} />
-      <LogoStrip />
+      <ClientWall />
       <TeamIntro />
       <LassieFeatures ready={ready} />
       <MoreWork />

@@ -34,7 +34,7 @@ export default function Cinematic({
     const words = gsap.utils.toArray<HTMLElement>("[data-word]", root);
     const blurs = gsap.utils.toArray<HTMLElement>("[data-blur]", root);
     const slides = gsap.utils.toArray<HTMLElement>("[data-slide]", root);
-    const trigger = { trigger: root, start, once: true };
+    const trigger = { trigger: root, start };
 
     if (reduced) {
       gsap.from(root, { opacity: 0, duration: 0.7, delay, scrollTrigger: trigger });

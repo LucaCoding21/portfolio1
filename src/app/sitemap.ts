@@ -48,12 +48,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    {
-      url: `${SITE}/approach`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
   ];
 
   const caseStudyEntries: MetadataRoute.Sitemap = CASE_STUDY_SLUGS.map(

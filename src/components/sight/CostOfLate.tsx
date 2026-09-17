@@ -50,7 +50,7 @@ export default function CostOfLate() {
   const scope = useSightGsap<HTMLDivElement>((root, reduced) => {
     gsap.utils.toArray<HTMLElement>("[data-vignette]", root).forEach((block) => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: block, start: "top 75%", once: true },
+        scrollTrigger: { trigger: block, start: "top 75%" },
       });
       tl.from(block, {
         autoAlpha: 0,

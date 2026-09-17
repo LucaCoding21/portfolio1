@@ -251,7 +251,7 @@ export default function Security() {
       duration: 0.7,
       ease: "power3.out",
       stagger: 0.07,
-      scrollTrigger: { trigger: row, start: "top 85%", once: true },
+      scrollTrigger: { trigger: row, start: "top 85%" },
     });
     if (reduced) return;
 
@@ -299,7 +299,7 @@ export default function Security() {
       repeat: -1,
       repeatDelay: 3,
       delay: 1.2,
-      scrollTrigger: { trigger: row, start: "top 60%", once: true },
+      scrollTrigger: { trigger: row, start: "top 60%" },
     });
     perGlyph.forEach((blocks, i) => {
       const at = i * 3.6;
@@ -325,7 +325,7 @@ export default function Security() {
       repeat: 1,
       delay: 2,
       stagger: { each: 0.5, from: "random", repeat: -1, repeatDelay: 2 },
-      scrollTrigger: { trigger: row, start: "top 60%", once: true },
+      scrollTrigger: { trigger: row, start: "top 60%" },
     });
   });
 

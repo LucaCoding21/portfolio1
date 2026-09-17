@@ -1,0 +1,17 @@
+/* A partner named inline in a story blurb: small round mark, then the name. */
+.partner {
+  display: inline;
+  white-space: nowrap;
+  font-weight: 500;
+  color: inherit;
+}
+
+.mark {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.3em;
+  border-radius: 50%;
+  vertical-align: -0.2em;
+  object-fit: cover;
+}

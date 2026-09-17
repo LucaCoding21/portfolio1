@@ -3,13 +3,13 @@
 /**
  * The bridge from the four featured works to the full list, above How Do We
  * Do It. Two rows of big type run through the middle in opposite directions,
- * every project's name in ink on top and what we do a tone lighter
- * underneath, and they take their
+ * every project's name in ink on top and the industries we have built for a
+ * tone lighter underneath, and they take their
  * speed from the scroll: coast at rest, rush when you scroll, reverse when
  * you scroll back. Over the rows, a loose deck of the other project covers
  * fans out from a stack as the section arrives, drifts on its own, and tilts
  * toward the cursor. A hand note points at it. Then breathing room, one line
- * of copy, and the magnetic button to the work page.
+ * of copy, and the arrow button to the work page.
  *
  * Reduced motion: the rows sit still, the deck is laid out fanned.
  */
@@ -20,17 +20,23 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { projects } from "@/data/projects";
 import { SUCCESS_STORIES } from "@/data/successStories";
-import MagneticCta from "@/components/MagneticCta";
+import ArrowCta from "@/components/ArrowCta";
 import s from "./MoreWork.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const NAMES = projects.map((p) => p.name);
+/* Industries we have shipped for, in the owner's words. Each one maps to a
+   business on the client wall, so the row reads as a track record. */
 const CRAFT = [
-  "Web design",
-  "Development",
-  "Branding",
-  ...Array.from(new Set(projects.flatMap((p) => p.tags))),
+  "Railings",
+  "Landscaping",
+  "Manufacturing",
+  "Realtors",
+  "Photographers",
+  "Events",
+  "Vehicle wraps",
+  "Apps",
 ];
 
 /* Covers of the projects that are not already on a card above. */
@@ -229,10 +235,10 @@ export default function MoreWork() {
 
       <div className={s.foot}>
         <p className={s.copy}>
-          Four is a taste. Every project here was drawn from scratch for the
-          business behind it, and they all live on one page.
+          A few of our favourites. There&rsquo;s plenty more where these came
+          from.
         </p>
-        <MagneticCta href="/work">See all projects</MagneticCta>
+        <ArrowCta href="/work">See all projects</ArrowCta>
       </div>
     </section>
   );

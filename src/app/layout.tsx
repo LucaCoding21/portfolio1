@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Outfit, Caveat, Sometype_Mono, Reenie_Beanie, DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import CursorLoader from "@/components/CursorLoader";
 import LassieNav from "@/components/LassieNav";
 
 const geistSans = Geist({
@@ -369,7 +368,6 @@ gtag('config', 'G-KHS5MBDWV5');`}
       <body
         className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} antialiased`}
       >
-        <CursorLoader />
         <LassieNav />
         {children}
       </body>

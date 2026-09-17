@@ -2,14 +2,11 @@
 
 /**
  * Sits straight under the logo strip: headline, a line of studio copy, a row
- * of stats and the magnetic "Book a call" on the left; the two of us on the
+ * of stats and the "See what we'd fix" button on the left; the two of us on the
  * right with the hand labels landing on the arrows already drawn in the photo.
  *
  * Text rises in on scroll and the stat figures count up from zero; the labels
  * write themselves in through HandLabel's own trigger.
- *
- * PLACEHOLDER: headline is lorem from the mockup and the four stats are the
- * mockup's figures. Swap for real ones.
  */
 
 import { useEffect, useRef } from "react";
@@ -17,18 +14,23 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
-import MagneticCta from "@/components/MagneticCta";
+import ArrowCta from "@/components/ArrowCta";
 import s from "./TeamIntro.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** `value` counts up from zero on scroll; `suffix` is printed after it. */
+/**
+ * `value` counts up from zero on scroll, with thousands separators; `prefix`
+ * and `suffix` are printed around it.
+ */
 const STATS = [
-  { value: 500, suffix: "+", label: "Global Campaigns Delivered" },
-  { value: 30, suffix: "+", label: "Global Filming Locations" },
-  { value: 10, suffix: "M+", label: "Audience Views Generated" },
-  { value: 100, suffix: "+", label: "Agencies Partnered With" },
+  { value: 5000, prefix: "", suffix: "+", label: "Customer inquiries generated" },
+  { value: 35, prefix: "+", suffix: "%", label: "Conversion lift" },
+  { value: 30, prefix: "", suffix: "+", label: "Websites launched" },
+  { value: 40, prefix: "+", suffix: "%", label: "More inquiries" },
 ];
+
+const formatCount = (n: number) => Math.round(n).toLocaleString("en-CA");
 
 /**
  * Same artwork and pairing as WhyCloverfield: the developer label sits above
@@ -86,7 +88,7 @@ export default function TeamIntro() {
           ease: "power3.out",
           delay: 0.25 + i * 0.1,
           onUpdate: () => {
-            el.textContent = Math.round(counter.n).toString();
+            el.textContent = formatCount(counter.n);
           },
           scrollTrigger: { trigger: el, start: "top 85%", once: true },
         });
@@ -101,13 +103,13 @@ export default function TeamIntro() {
       <div className={s.inner}>
         <div className={s.copy}>
           <h2 className={s.title} data-rise>
-            Lorem ipsum dolor sit amet consectetur. Semper enim quam ipsum.
+            Your business has outgrown the website that got you here.
           </h2>
 
           <p className={s.body} data-rise>
-            We build the site we would want for our own business. No templates,
-            no waiting, nothing that only looks good. Every project is drawn
-            from scratch, built around
+            We make your business look as established online as it is in real
+            life. Then we make it easier for the right customers to understand
+            why you&rsquo;re worth choosing.
           </p>
 
           <dl className={s.stats} data-rise>
@@ -117,7 +119,8 @@ export default function TeamIntro() {
                 <dd className={s.statValue}>
                   {/* The resting markup holds the final figure, so it reads
                       without JS; the tween overwrites it from zero. */}
-                  <span data-count={stat.value}>{stat.value}</span>
+                  {stat.prefix}
+                  <span data-count={stat.value}>{formatCount(stat.value)}</span>
                   {stat.suffix}
                 </dd>
               </div>
@@ -125,7 +128,9 @@ export default function TeamIntro() {
           </dl>
 
           <div data-rise>
-            <MagneticCta href="/#contact">Book a call</MagneticCta>
+            <ArrowCta href="/#contact" note="Free review of your current website.">
+              See what we&apos;d fix
+            </ArrowCta>
           </div>
         </div>
 
