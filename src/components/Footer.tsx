@@ -56,7 +56,7 @@ export default function Footer() {
   return (
     <footer
       ref={containerRef}
-      className="relative z-0 w-full h-[50vh] md:h-[80vh] overflow-hidden -mt-20 md:-mt-40"
+      className="relative z-0 w-full h-[36vh] md:h-[80vh] overflow-hidden -mt-20 md:-mt-40"
     >
       {/* Back layer - moves slower */}
       <div
@@ -75,11 +75,11 @@ export default function Footer() {
       {/* Middle layer - Title */}
       <div
         ref={midRef}
-        className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[40%] md:pt-[10%] will-change-transform"
+        className="absolute inset-0 flex items-center md:items-start justify-center z-10 pt-[34%] md:pt-[10%] will-change-transform"
       >
         <span
           aria-hidden="true"
-          className="text-[22vw] md:text-[22vw] lg:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
+          className="text-[22vw] md:text-[20vw] font-extrabold tracking-tighter md:tracking-tight whitespace-nowrap"
           style={{
             fontFamily: "var(--font-outfit)",
             fontWeight: 800,

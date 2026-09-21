@@ -9,23 +9,31 @@
  * The stage starts one viewport early, tucked behind the card, and carries a
  * trailing viewport of run (a sticky child only holds inside its parent's
  * content box) that the section itself ends up covering once it lets go.
+ * On phones the question rides the card's edge instead of waiting under it:
+ * a copy of it sits in an absolutely placed box anchored at the card's
+ * bottom edge and is sticky within it, so it comes up with the card, lands
+ * at the top of the pinned section and from then on travels with it (the
+ * section's own headline is an invisible spacer there). Pure layout, no
+ * scroll listener, so it tracks the card to the pixel on any phone.
  *
  * Top left, the question in oversized grotesque, its first line spread edge
  * to edge of its own column and the shorter lines flush left. Under it the
  * journey: one row per phase with a hairline above, the phase name on the
  * left, what happens in the middle, and a reel on the right. Rows rise in as
- * they arrive; reels only play while on screen.
+ * they arrive, the body copy line by line out of a mask (SplitText, re-split
+ * on resize and once fonts land); reels only play while on screen.
  *
- * PLACEHOLDER: the reels are the project reels standing in until each phase
- * has its own footage.
+ * Each phase has its own reel in public/ (approach-<phase>.mp4 with a jpg
+ * poster).
  */
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { SplitText } from "gsap/dist/SplitText";
 import s from "./HowWeDoIt.module.css";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const LINES = [
   ["How", "do", "we"],
@@ -40,30 +48,49 @@ const PHASES: { name: string; body: string; note?: string | string[]; video: str
     body: "We start with one focused call to understand your business, your customers, and what the new site needs to do. From there, we take the lead.",
     // Small line under the body: the owner's time cost, stated up front.
     note: "About 45 minutes of your time.",
-    video: "/success/ace.mp4",
-    poster: "/success/ace.webp",
+    video: "/approach-kickoff.mp4",
+    poster: "/approach-kickoff-poster.jpg",
   },
   {
     name: "Research",
     body: "We get deep into your industry before we touch the design. We study your competitors, your customers, and what actually influences someone to choose you, so every decision has a reason behind it.",
-    video: "/success/transforming-landscapes.mp4",
-    poster: "/success/transforming-landscapes.webp",
+    video: "/approach-research.mp4",
+    poster: "/approach-research-poster.jpg",
   },
   {
     name: "Design",
     body: "We turn the strategy into the site. With the direction clear, we design the full website around what your customers need to understand, trust and act on. You see exactly how it looks and works before we build anything.",
     note: "Full design ready for review in ~1–2 weeks",
-    video: "/success/caddie-companion.mp4",
-    poster: "/success/caddie-companion.webp",
+    video: "/approach-design.mp4",
+    poster: "/approach-design-poster.jpg",
   },
   {
     name: "Build & Launch",
     body: "Once the design is approved, we take it from there. We build the full site, test everything across devices, handle the technical details, and get it live. You review the finished site, give us the green light, and we handle the rest.",
     note: "Usually live in ~2–3 weeks",
-    video: "/success/innovative-aluminum.mp4",
-    poster: "/success/innovative-aluminum.webp",
+    video: "/approach-build.mp4",
+    poster: "/approach-build-poster.jpg",
   },
 ];
+
+function Headline({ className }: { className?: string }) {
+  return (
+    <h2 className={`${s.headline} ${className ?? ""}`}>
+      {LINES.map((words, i) => (
+        <span key={i} className={`${s.line} ${i === 0 ? s.spread : ""}`}>
+          {words.map((word, j) => (
+            <span key={j} className={s.word}>
+              {word}
+              {/* Real spaces so the text reads as a sentence when copied or read aloud. */}
+              {j < words.length - 1 ? " " : ""}
+            </span>
+          ))}
+          {i < LINES.length - 1 ? " " : ""}
+        </span>
+      ))}
+    </h2>
+  );
+}
 
 export default function HowWeDoIt() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -102,6 +129,26 @@ export default function HowWeDoIt() {
           0.1
         );
         tl.from(row.querySelector("[data-reel]"), { scale: 1.06, duration: 1.4, ease: "power3.out" }, 0);
+
+        // The body: each line rises out of its own mask, one after the
+        // other. autoSplit re-splits when the fonts land or the width
+        // changes, and the tween returned from onSplit is rebuilt with it.
+        const body = row.querySelector<HTMLElement>("[data-lines]");
+        if (body) {
+          SplitText.create(body, {
+            type: "lines",
+            mask: "lines",
+            autoSplit: true,
+            onSplit: (self) =>
+              gsap.from(self.lines, {
+                yPercent: 110,
+                duration: 0.9,
+                ease: "power3.out",
+                stagger: 0.07,
+                scrollTrigger: { trigger: row, start: "top 85%", once: true },
+              }),
+          });
+        }
       });
     }, section);
 
@@ -114,20 +161,7 @@ export default function HowWeDoIt() {
   return (
     <div className={s.stage}>
       <section ref={sectionRef} id="how-we-do-it" className={s.wrap} aria-label="How we do it">
-        <h2 className={s.headline}>
-          {LINES.map((words, i) => (
-            <span key={i} className={`${s.line} ${i === 0 ? s.spread : ""}`}>
-              {words.map((word, j) => (
-                <span key={j} className={s.word}>
-                  {word}
-                  {/* Real spaces so the text reads as a sentence when copied or read aloud. */}
-                  {j < words.length - 1 ? " " : ""}
-                </span>
-              ))}
-              {i < LINES.length - 1 ? " " : ""}
-            </span>
-          ))}
-        </h2>
+        <Headline />
 
         <ol className={s.rows} aria-label="Project journey">
           {PHASES.map((phase, i) => (
@@ -152,7 +186,7 @@ export default function HowWeDoIt() {
                   </span>
                 )}
               </div>
-              <p className={s.body} data-rise>
+              <p className={s.body} data-lines>
                 {phase.body}
               </p>
               <div className={s.reel}>
@@ -171,6 +205,10 @@ export default function HowWeDoIt() {
           ))}
         </ol>
       </section>
+      {/* Phones only: the copy of the question that rides the card's edge. */}
+      <div className={s.ride} aria-hidden="true">
+        <Headline className={s.rideHeadline} />
+      </div>
     </div>
   );
 }

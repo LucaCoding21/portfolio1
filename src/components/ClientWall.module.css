@@ -9,6 +9,13 @@
   --ink: #1a1613;
   --muted: #7a756d;
   --paper: #f9f8f5;
+  /* Uniform scale for the whole grid: tracks, rows, padding, type and logo
+     heights all multiply by it, so phones fit more cells across without
+     changing any card's proportions. */
+  --k: 1;
+  /* Type has its own factor, so phones can keep the words readable while
+     the cards shrink. */
+  --kt: var(--k);
   position: relative;
   z-index: 3;
   padding: 56px 0 40px;
@@ -42,16 +49,16 @@
   display: grid;
   /* fixed tracks, so a spanning card takes exactly N cells and the logos
      beneath it stay single width (auto tracks stretched to the widest card) */
-  --track: 160.8px;
-  grid-template-rows: repeat(2, 80px);
+  --track: calc(160.8px * var(--k));
+  grid-template-rows: repeat(2, calc(80px * var(--k)));
   grid-template-columns: repeat(var(--cols, 8), var(--track));
   grid-auto-columns: var(--track);
   grid-auto-flow: column dense;
-  gap: 12px;
+  gap: calc(12px * var(--k));
   align-items: stretch;
   justify-content: start;
   flex: none;
-  padding-left: 12px;
+  padding-left: calc(12px * var(--k));
 }
 
 .card {
@@ -60,11 +67,11 @@
   flex-flow: column;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 16px;
-  padding: 16px 20px;
+  gap: calc(16px * var(--k));
+  padding: calc(16px * var(--k)) calc(20px * var(--k));
   border-top: 1px solid #fff;
   border-bottom: 1px solid rgba(123, 121, 116, 0.07);
-  border-radius: 18px;
+  border-radius: calc(18px * var(--k));
   background: #fefdfb;
   grid-column: var(--col) / span var(--span, 1);
   grid-row: var(--row) / span var(--tall, 1);
@@ -76,7 +83,7 @@
   flex-flow: row;
   justify-content: space-between;
   align-items: center;
-  height: 80px;
+  height: calc(80px * var(--k));
 }
 
 .card[data-variant="logo"] {
@@ -87,7 +94,8 @@
   display: block;
   flex: none;
   width: auto;
-  height: 32px;
+  /* the card sets --logo-h inline from the strip data */
+  height: calc(var(--logo-h, 32px) * var(--k));
   /* multiply drops any white box on opaque art; transparent art is unchanged */
   mix-blend-mode: multiply;
 }
@@ -101,13 +109,16 @@
 .quote {
   display: flex;
   flex-flow: column;
-  gap: 5.6px;
+  gap: calc(5.6px * var(--k));
   min-width: 0;
+  /* the card sets these inline from the strip data */
+  width: calc(var(--quote-w) * var(--k));
+  max-width: calc(var(--quote-max-w) * var(--k));
 }
 
 .quoteText {
   margin: 0;
-  font-size: 12px;
+  font-size: calc(12px * var(--kt));
   line-height: 1.3;
 }
 
@@ -115,18 +126,18 @@
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  gap: 3.2px;
-  margin-bottom: 4.8px;
+  gap: calc(3.2px * var(--k));
+  margin-bottom: calc(4.8px * var(--k));
 }
 
 .titleBig {
-  font-size: 20px;
+  font-size: calc(20px * var(--kt));
   font-weight: 500;
   line-height: 1.3;
 }
 
 .titleSmall {
-  font-size: 9.6px;
+  font-size: calc(9.6px * var(--kt));
   font-weight: 500;
   line-height: 1;
   text-transform: uppercase;
@@ -135,17 +146,17 @@
 .stat {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: calc(8px * var(--k));
   font-weight: 500;
 }
 
 .statValue {
-  font-size: 23.2px;
+  font-size: calc(23.2px * var(--kt));
   line-height: 1.3;
 }
 
 .statLabel {
-  font-size: 9.6px;
+  font-size: calc(9.6px * var(--kt));
   font-weight: 500;
   line-height: 1.15;
   text-transform: uppercase;
@@ -169,16 +180,39 @@
 
 @media screen and (max-width: 991px) {
   .card {
-    gap: 14px;
+    gap: calc(14px * var(--k));
   }
   .shade {
     width: 8%;
   }
+  /* Never shrinks: the quote or stat beside it yields instead, so the art
+     keeps its proportions. */
   .logoBox {
     display: flex;
+    flex: none;
     justify-content: flex-start;
     align-items: center;
-    max-height: 30px;
+    max-height: calc(30px * var(--k));
+  }
+}
+
+/* Phones: the cards at four fifths, so between two and three cells show
+   across, with the type close to full size so it stays readable. Quotes
+   take the card's full width rather than the reference's fixed widths. */
+@media (max-width: 767px) {
+  .section {
+    --k: 0.8;
+    --kt: 0.95;
+  }
+  .quote {
+    width: auto;
+    max-width: none;
+  }
+  /* Logo and figure sit together in the middle of a stat card instead of
+     pushed to its two ends. */
+  .card[data-variant="hstat"] {
+    justify-content: center;
+    gap: calc(36px * var(--k));
   }
 }
 

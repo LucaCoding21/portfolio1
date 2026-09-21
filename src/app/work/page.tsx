@@ -6,8 +6,8 @@ import Footer from "@/components/Footer";
 
 export default function WorkPage() {
   return (
-    <div className="min-h-screen bg-white text-black">
-      <div className="relative z-10 bg-white">
+    <div className="min-h-screen bg-[#f9f8f5] text-[#1a1613]">
+      <div className="relative z-10 bg-[#f9f8f5]">
         <WorkGallery />
         <Contact />
         <Footer />

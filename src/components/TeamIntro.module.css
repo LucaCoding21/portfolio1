@@ -136,8 +136,12 @@
     white-space: normal;
   }
   .photo {
+    /* Portrait first on phones, copy under it. */
+    order: -1;
     width: 100%;
-    max-width: 340px;
+    /* The developer label runs 14% past the right edge; 78vw leaves that
+       much margin on a 360px phone. */
+    max-width: min(300px, 78vw);
     margin: 0 auto;
   }
 }

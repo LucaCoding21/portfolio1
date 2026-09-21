@@ -296,10 +296,10 @@ export default function ComesToYou() {
         <Reveal
           selector="[data-moment]"
           stagger={0.12}
-          className="mx-auto mt-14 grid max-w-[520px] gap-8 md:mt-16 lg:max-w-none lg:grid-cols-3 lg:gap-5"
+          className="mx-auto mt-14 grid max-w-[520px] grid-cols-[minmax(0,1fr)] gap-8 md:mt-16 lg:max-w-none lg:grid-cols-3 lg:gap-5"
         >
           {MOMENTS.map(({ title, src, caption, window }) => (
-            <article key={title} data-moment className="flex flex-col">
+            <article key={title} data-moment className="flex min-w-0 flex-col">
               <div
                 aria-hidden="true"
                 className="relative flex h-[400px] items-center overflow-hidden rounded-2xl px-5 shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)]"

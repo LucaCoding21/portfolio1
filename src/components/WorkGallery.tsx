@@ -1,29 +1,46 @@
 "use client";
 
 /**
- * /work gallery, cloned 1:1 from revelatio.studio/work with the palette
- * inverted (white ground, black type). Grid view + list view with a sticky
- * preview follower, tag filter, load-in reveal and the "Open project" cursor
- * label. Motion values (eases, durations, staggers, offsets) are the
- * reference's own, read from its scripts and IX2 data.
+ * /work gallery, laid out as a works overview: the eyebrow and headline
+ * across the top, then a narrow left column with a vertical filter list
+ * (the industries as plain text, the chosen one in ink), and beside it a
+ * wide two-column grid of covers
+ * with one caption line each: name, industry, and the headline result at the
+ * far end, then the line the owner said with their photo and name. The grid/list switch sits as two small words at the top of the
+ * right column. In list view the left column stacks above so the rows run
+ * the full width.
  *
- * PLACEHOLDER: headline copy and the `services` column come from
- * src/data/workGallery.ts and are marked there.
+ * The list is an index: one line per project with its number, the name and
+ * industry, then a column with the result as one plain line over a short
+ * line about the project, and an arrow that opens the live site.
+ * Clicking the line opens the row: the picture enlarges into place under
+ * that short line, and the owner's line unfolds under the name. One row is
+ * open at a time.
+ *
+ * Reels are quiet at rest. On a fine pointer a card's reel fades up and
+ * starts only while the cover is hovered; projects without a reel crossfade
+ * to their mockup instead. On touch there is no hover, so the reel plays
+ * while the card sits mostly in view (one column, so one at a time).
+ *
+ * Filter motion (out/in/stagger) comes from revelatio.studio/work. Surfaces are the homepage's: paper ground, ink
+ * type, Outfit titles, DM Sans body, Geist for the tracked eyebrow.
+ *
+ * PLACEHOLDER: headline copy comes from src/data/workGallery.ts.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import {
   WORK_FILTERS,
-  WORK_HEADLINE,
+  WORK_HEADLINE_LINES,
+  WORK_HEADLINE_LINES_SHORT,
   WORK_ITEMS,
   type WorkGalleryItem,
 } from "@/data/workGallery";
 import s from "./WorkGallery.module.css";
 
-gsap.registerPlugin(CustomEase, ScrambleTextPlugin);
+gsap.registerPlugin(CustomEase);
 
 type View = "grid" | "list";
 
@@ -36,32 +53,72 @@ const IN_DURATION_MS = 520;
 const STAGGER_MS = 80;
 const TRANSITION_GAP_MS = 70;
 
-// preview-follower.js
-const FOLLOWER_OFFSET = 100;
-const FOLLOWER_DURATION = 0.5;
-const FOLLOWER_EASE = "power2.inOut";
+// list rows: the body unfolds and the picture enlarges into place
+const OPEN_DURATION = 0.6;
+const CLOSE_DURATION = 0.4;
+const ACCORDION_EASE = "power3.inOut";
+const PICTURE_DURATION = 0.9;
 
-// scramble-cursor.js
-const SCRAMBLE_CHARS = "XYZxy#&@0$€£";
+// hover reel: the fade-up on enter is slower than the drain on leave
+const REEL_IN = 0.7;
+const REEL_OUT = 0.35;
+
+const EYEBROW = "Selected work";
 
 const norm = (v: string) => v.trim().toLowerCase().replace(/\s+/g, " ");
 
 function GridIcon() {
   return (
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M11.8373 5.33398H7.97111C6.51413 5.33398 5.33301 6.5151 5.33301 7.97209V11.8383C5.33301 13.2953 6.51413 14.4764 7.97111 14.4764H11.8373C13.2943 14.4764 14.4754 13.2953 14.4754 11.8383V7.97209C14.4754 6.5151 13.2943 5.33398 11.8373 5.33398Z" fill="currentColor" />
-      <path d="M11.8373 17.5273H7.97111C6.51413 17.5273 5.33301 18.7085 5.33301 20.1655V24.0316C5.33301 25.4886 6.51413 26.6697 7.97111 26.6697H11.8373C13.2943 26.6697 14.4754 25.4886 14.4754 24.0316V20.1655C14.4754 18.7085 13.2943 17.5273 11.8373 17.5273Z" fill="currentColor" />
-      <path d="M24.0307 5.33398H20.1645C18.7075 5.33398 17.5264 6.5151 17.5264 7.97209V11.8383C17.5264 13.2953 18.7075 14.4764 20.1645 14.4764H24.0307C25.4876 14.4764 26.6688 13.2953 26.6688 11.8383V7.97209C26.6688 6.5151 25.4876 5.33398 24.0307 5.33398Z" fill="currentColor" />
-      <path d="M24.0307 17.5273H20.1645C18.7075 17.5273 17.5264 18.7085 17.5264 20.1655V24.0316C17.5264 25.4886 18.7075 26.6697 20.1645 26.6697H24.0307C25.4876 26.6697 26.6688 25.4886 26.6688 24.0316V20.1655C26.6688 18.7085 25.4876 17.5273 24.0307 17.5273Z" fill="currentColor" />
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M11.8373 5.33398H7.97111C6.51413 5.33398 5.33301 6.5151 5.33301 7.97209V11.8383C5.33301 13.2953 6.51413 14.4764 7.97111 14.4764H11.8373C13.2943 14.4764 14.4754 13.2953 14.4754 11.8383V7.97209C14.4754 6.5151 13.2943 5.33398 11.8373 5.33398Z"
+        fill="currentColor"
+      />
+      <path
+        d="M11.8373 17.5273H7.97111C6.51413 17.5273 5.33301 18.7085 5.33301 20.1655V24.0316C5.33301 25.4886 6.51413 26.6697 7.97111 26.6697H11.8373C13.2943 26.6697 14.4754 25.4886 14.4754 24.0316V20.1655C14.4754 18.7085 13.2943 17.5273 11.8373 17.5273Z"
+        fill="currentColor"
+      />
+      <path
+        d="M24.0307 5.33398H20.1645C18.7075 5.33398 17.5264 6.5151 17.5264 7.97209V11.8383C17.5264 13.2953 18.7075 14.4764 20.1645 14.4764H24.0307C25.4876 14.4764 26.6688 13.2953 26.6688 11.8383V7.97209C26.6688 6.5151 25.4876 5.33398 24.0307 5.33398Z"
+        fill="currentColor"
+      />
+      <path
+        d="M24.0307 17.5273H20.1645C18.7075 17.5273 17.5264 18.7085 17.5264 20.1655V24.0316C17.5264 25.4886 18.7075 26.6697 20.1645 26.6697H24.0307C25.4876 26.6697 26.6688 25.4886 26.6688 24.0316V20.1655C26.6688 18.7085 25.4876 17.5273 24.0307 17.5273Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }
 
 function ListIcon() {
   return (
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="5.33301" y="5.33398" width="21.3333" height="9.33333" rx="1.33333" fill="currentColor" />
-      <rect x="5.33301" y="17.334" width="21.3333" height="9.33333" rx="1.33333" fill="currentColor" />
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <rect
+        x="5.33301"
+        y="5.33398"
+        width="21.3333"
+        height="9.33333"
+        rx="1.33333"
+        fill="currentColor"
+      />
+      <rect
+        x="5.33301"
+        y="17.334"
+        width="21.3333"
+        height="9.33333"
+        rx="1.33333"
+        fill="currentColor"
+      />
     </svg>
   );
 }
@@ -80,8 +137,13 @@ function prepare(el: HTMLElement, mode: "in" | "out") {
 
 const filterTimers = new WeakMap<HTMLElement, number>();
 
-function animateListFilter(list: HTMLElement, shouldShow: (el: HTMLElement) => boolean) {
-  const items = Array.from(list.querySelectorAll<HTMLElement>("[data-filter-item]"));
+function animateListFilter(
+  list: HTMLElement,
+  shouldShow: (el: HTMLElement) => boolean,
+) {
+  const items = Array.from(
+    list.querySelectorAll<HTMLElement>("[data-filter-item]"),
+  );
   if (!items.length) return;
   const visibleNow = items.filter((it) => it.style.display !== "none");
 
@@ -139,40 +201,40 @@ function animateListFilter(list: HTMLElement, shouldShow: (el: HTMLElement) => b
 
 export default function WorkGallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const asideRef = useRef<HTMLDivElement>(null);
   const projectRef = useRef<HTMLDivElement>(null);
   const gridPaneRef = useRef<HTMLDivElement>(null);
   const listPaneRef = useRef<HTMLDivElement>(null);
   const gridListRef = useRef<HTMLDivElement>(null);
   const listListRef = useRef<HTMLDivElement>(null);
-  const followerWrapRef = useRef<HTMLDivElement>(null);
-  const followerRef = useRef<HTMLDivElement>(null);
-  const followerInnerRef = useRef<HTMLDivElement>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const cursorTextRef = useRef<HTMLSpanElement>(null);
 
   const [view, setView] = useState<View>("grid");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const filterRef = useRef<string | null>(null);
+  // -1 is none: the list starts closed and opens only on a click.
+  const [openId, setOpenId] = useState<number>(-1);
 
-  /* load-in: scramble-text.js initScrambleOnLoadIn */
+  /* load-in: header, then the columns */
   useEffect(() => {
-    const targets = [headlineRef.current, projectRef.current].filter(Boolean) as HTMLElement[];
+    const targets = [
+      headerRef.current,
+      asideRef.current,
+      projectRef.current,
+    ].filter(Boolean) as HTMLElement[];
     targets.forEach((el, i) => {
       gsap.fromTo(
         el,
         { autoAlpha: 0, y: "0.75em" },
-        { autoAlpha: 1, y: "0em", duration: 0.9, delay: 0.2 + i * 0.18, ease: "power3.out", overwrite: true }
+        {
+          autoAlpha: 1,
+          y: "0em",
+          duration: 0.9,
+          delay: 0.2 + i * 0.18,
+          ease: "power3.out",
+          overwrite: true,
+        },
       );
-    });
-  }, []);
-
-  /* React sets `muted` as a property only; cloned <video>s need the attribute to autoplay. */
-  useEffect(() => {
-    sectionRef.current?.querySelectorAll("video").forEach((v) => {
-      v.muted = true;
-      v.setAttribute("muted", "");
-      v.play().catch(() => {});
     });
   }, []);
 
@@ -194,6 +256,11 @@ export default function WorkGallery() {
   /* tab switch: Webflow tabs, out 100ms / in 300ms, ease */
   const switchView = (next: View) => {
     if (next === view) return;
+    // The list has no filter, so it always shows every project, all closed.
+    if (next === "list") {
+      if (activeFilter !== null) chooseFilter(null);
+      setOpenId(-1);
+    }
     const outPane = view === "grid" ? gridPaneRef.current : listPaneRef.current;
     const inPane = next === "grid" ? gridPaneRef.current : listPaneRef.current;
     if (!outPane || !inPane) return;
@@ -204,386 +271,124 @@ export default function WorkGallery() {
       onComplete: () => {
         setView(next);
         gsap.set(outPane, { clearProps: "opacity" });
-        gsap.fromTo(inPane, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: WF_EASE });
+        gsap.fromTo(
+          inPane,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.3, ease: WF_EASE },
+        );
       },
     });
   };
 
-  /* card hover: IX2 a-4 / a-5 on .case-img */
-  const onCardEnter = (e: React.MouseEvent<HTMLElement>) => {
-    const media = e.currentTarget.querySelector<HTMLElement>("[data-case-img]");
-    if (!media) return;
-    gsap.killTweensOf(media);
-    gsap.to(media, { scale: 1.1, duration: 0.8, ease: "circ.out" });
-  };
-  const onCardLeave = (e: React.MouseEvent<HTMLElement>) => {
-    const media = e.currentTarget.querySelector<HTMLElement>("[data-case-img]");
-    if (!media) return;
-    gsap.killTweensOf(media);
-    gsap.to(media, { scale: 1, duration: 0.5, ease: WF_EASE });
-  };
-
-  /* cursor label: scramble-cursor.js */
-  useEffect(() => {
-    const cursor = cursorRef.current;
-    const text = cursorTextRef.current;
-    if (!cursor || !text) return;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-
-    let mouseX = 0;
-    let mouseY = 0;
-    let started = false;
-    let active = false;
-    let activeItem: Element | null = null;
-    const scale = { value: 0.02 };
-    let tween: gsap.core.Tween | null = null;
-
-    const pose = () => {
-      cursor.style.transform = `translate3d(${mouseX}px,${mouseY}px,0) translate(-50%,-50%) scale(${scale.value})`;
-    };
-    const animate = (on: boolean) => {
-      tween?.kill();
-      tween = gsap.to(scale, {
-        value: on ? 1 : 0.02,
-        duration: on ? 0.32 : 0.2,
-        ease: on ? "power3.out" : "power2.out",
-        onUpdate: pose,
-      });
-    };
-    const update = () => {
-      const hover = document.elementFromPoint(mouseX, mouseY)?.closest("[data-cursor-hover]") ?? null;
-      const isHover = !!hover;
-      if (isHover !== active) {
-        active = isHover;
-        animate(active);
-        document.documentElement.classList.toggle("cursor-label-active", active);
-      }
-      if (hover !== activeItem) {
-        const label = hover?.getAttribute("data-cursor-text") || "";
-        gsap.to(text, {
-          duration: 0.6,
-          overwrite: "auto",
-          scrambleText: { text: label, chars: SCRAMBLE_CHARS, speed: 1.2 },
-        });
-        activeItem = hover;
-      }
-    };
-    const onMove = (e: MouseEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      if (!started) {
-        started = true;
-        cursor.style.opacity = "1";
-      }
-      pose();
-      requestAnimationFrame(update);
-    };
-    const onScroll = () => {
-      if (started) requestAnimationFrame(update);
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("scroll", onScroll);
-      document.documentElement.classList.remove("cursor-label-active");
-      tween?.kill();
-    };
-  }, []);
-
-  /* preview follower: preview-follower.js */
-  useEffect(() => {
-    const wrap = followerWrapRef.current;
-    const follower = followerRef.current;
-    const inner = followerInnerRef.current;
-    const component = wrap?.querySelector<HTMLElement>("[data-preview-component]");
-    if (!wrap || !follower || !inner || !component) return;
-    const items = Array.from(wrap.querySelectorAll<HTMLElement>("[data-follower-item]"));
-    if (!items.length) return;
-
-    let prevIndex = 0;
-    let activeIndex = 0;
-
-    const playClone = (clone: Element) => {
-      clone.querySelectorAll("video").forEach((v) => {
-        v.muted = true;
-        v.setAttribute("muted", "");
-        v.play().catch(() => {});
-      });
-    };
-
-    const setVisual = (index: number, animate = true) => {
-      if (index === activeIndex && inner.querySelector("[data-follower-visual]")) return;
-      const visual = items[index]?.querySelector<HTMLElement>("[data-follower-visual]");
-      if (!visual) return;
-      const forward = index >= prevIndex;
-
-      inner.querySelectorAll<HTMLElement>("[data-follower-visual]").forEach((el) => {
-        gsap.killTweensOf(el);
-        if (!animate) {
-          el.remove();
-          return;
-        }
-        gsap.to(el, {
-          yPercent: forward ? -FOLLOWER_OFFSET : FOLLOWER_OFFSET,
-          duration: FOLLOWER_DURATION,
-          ease: FOLLOWER_EASE,
-          overwrite: "auto",
-          onComplete: () => el.remove(),
-        });
-      });
-
-      const clone = visual.cloneNode(true) as HTMLElement;
-      inner.appendChild(clone);
-      playClone(clone);
-      if (animate) {
-        gsap.fromTo(
-          clone,
-          { yPercent: forward ? FOLLOWER_OFFSET : -FOLLOWER_OFFSET },
-          { yPercent: 0, duration: FOLLOWER_DURATION, ease: FOLLOWER_EASE, overwrite: "auto" }
-        );
-      } else {
-        gsap.set(clone, { yPercent: 0 });
-      }
-      prevIndex = index;
-      activeIndex = index;
-    };
-
-    setVisual(0, false);
-
-    const mobileMq = window.matchMedia("(max-width: 991px)");
-    const enters = items.map((item, index) => {
-      const fn = () => {
-        if (mobileMq.matches) return;
-        setVisual(index, true);
-      };
-      item.addEventListener("mouseenter", fn);
-      return fn;
-    });
-
-    /* mobile: follower tracks the item nearest the viewport centre */
-    let lastActive = -1;
-    let shownVisual = -1;
-    let posRaf = 0;
-    let curTop: number | null = null;
-    let curLeft: number | null = null;
-    let tgtTop = 0;
-    let tgtLeft = 0;
-    let imgTimer = 0;
-
-    const setActiveItem = (index: number) => {
-      items.forEach((it, i) => {
-        it.classList.toggle(s.isActive, i === index);
-        it.classList.toggle(s.isInactive, i !== index);
-      });
-    };
-    const clearActiveItem = () => {
-      items.forEach((it) => it.classList.remove(s.isActive, s.isInactive));
-    };
-    const computeTarget = (index: number) => {
-      const item = items[index];
-      if (!item) return;
-      const compRect = component.getBoundingClientRect();
-      const itemRect = item.getBoundingClientRect();
-      const fw = follower.getBoundingClientRect().width;
-      tgtTop = itemRect.bottom - compRect.top;
-      tgtLeft = (compRect.width - fw) * 0.5;
-    };
-    const posLoop = () => {
-      posRaf = 0;
-      if (curTop === null || curLeft === null) {
-        curTop = tgtTop;
-        curLeft = tgtLeft;
-      }
-      curTop += (tgtTop - curTop) * 0.16;
-      curLeft += (tgtLeft - curLeft) * 0.16;
-      follower.style.top = curTop + "px";
-      follower.style.left = curLeft + "px";
-      if (Math.abs(tgtTop - curTop) > 0.4 || Math.abs(tgtLeft - curLeft) > 0.4) {
-        posRaf = requestAnimationFrame(posLoop);
-      } else {
-        curTop = tgtTop;
-        curLeft = tgtLeft;
-        follower.style.top = curTop + "px";
-        follower.style.left = curLeft + "px";
-      }
-    };
-    const requestPos = (instant: boolean) => {
-      if (instant) {
-        if (posRaf) cancelAnimationFrame(posRaf);
-        posRaf = 0;
-        curTop = tgtTop;
-        curLeft = tgtLeft;
-        follower.style.top = curTop + "px";
-        follower.style.left = curLeft + "px";
-        return;
-      }
-      if (!posRaf) posRaf = requestAnimationFrame(posLoop);
-    };
-    const scheduleVisual = (index: number, instant: boolean) => {
-      if (index === shownVisual) return;
-      if (instant) {
-        if (imgTimer) window.clearTimeout(imgTimer);
-        imgTimer = 0;
-        setVisual(index, false);
-        shownVisual = index;
-        return;
-      }
-      if (imgTimer) window.clearTimeout(imgTimer);
-      imgTimer = window.setTimeout(() => {
-        imgTimer = 0;
-        setVisual(index, true);
-        shownVisual = index;
-      }, 110);
-    };
-    const nearestIndexToCenter = () => {
-      const vc = window.innerHeight * 0.5;
-      let best = 0;
-      let bestDist = Infinity;
-      items.forEach((it, i) => {
-        const r = it.getBoundingClientRect();
-        if (!r.height) return;
-        const d = Math.abs(r.top + r.height * 0.5 - vc);
-        if (d < bestDist) {
-          bestDist = d;
-          best = i;
-        }
-      });
-      return best;
-    };
-    const activeByScroll = (instant: boolean) => {
-      const best = nearestIndexToCenter();
-      computeTarget(best);
-      requestPos(instant);
-      if (instant || best !== lastActive) {
-        setActiveItem(best);
-        scheduleVisual(best, instant);
-        lastActive = best;
-      }
-    };
-    const resetToDesktop = () => {
-      if (imgTimer) window.clearTimeout(imgTimer);
-      imgTimer = 0;
-      if (posRaf) cancelAnimationFrame(posRaf);
-      posRaf = 0;
-      clearActiveItem();
-      lastActive = -1;
-      shownVisual = -1;
-      curTop = null;
-      curLeft = null;
-      gsap.set(follower, { clearProps: "top,left" });
-    };
-
-    let scrollRaf = 0;
-    const onScroll = () => {
-      if (!mobileMq.matches) {
-        if (lastActive !== -1) resetToDesktop();
-        return;
-      }
-      if (scrollRaf) return;
-      scrollRaf = requestAnimationFrame(() => {
-        scrollRaf = 0;
-        activeByScroll(false);
-      });
-    };
-    const onResize = () => {
-      if (mobileMq.matches) activeByScroll(true);
-      else resetToDesktop();
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize, { passive: true });
-    if (mobileMq.matches) activeByScroll(true);
-
-    return () => {
-      items.forEach((it, i) => it.removeEventListener("mouseenter", enters[i]));
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      if (posRaf) cancelAnimationFrame(posRaf);
-      if (imgTimer) window.clearTimeout(imgTimer);
-    };
-  }, []);
-
-  const toggleFilter = (tag: string) => {
-    // The reference has no "all" chip; clicking the active chip again clears it.
-    setActiveFilter((cur) => (cur === tag ? null : tag));
-  };
+  const chooseFilter = (tag: string | null) => setActiveFilter(tag);
 
   return (
     <section ref={sectionRef} className={s.section}>
       <div className={s.paddingGlobal}>
         <div className={s.container}>
-          <div className={s.component}>
-            <div className={s.header}>
-              <div className={s.headlineWrap}>
-                <h1 ref={headlineRef} className={`${s.headline} ${s.loadIn}`}>
-                  {WORK_HEADLINE}
-                </h1>
+          <header ref={headerRef} className={`${s.header} ${s.loadIn}`}>
+            <p className={s.eyebrow}>{EYEBROW}</p>
+            <h1 className={s.headline}>
+              {/* The full line, and a shorter one that swaps in on phones. */}
+              <span className={s.headlineFull}>
+                {WORK_HEADLINE_LINES.map((line, i) => (
+                  <span key={line} className={s.headlineLine}>
+                    {i > 0 && <br />}
+                    {line}
+                  </span>
+                ))}
+              </span>
+              <span className={s.headlineShort}>
+                {WORK_HEADLINE_LINES_SHORT.map((line, i) => (
+                  <span key={line} className={s.headlineLine}>
+                    {i > 0 && <br />}
+                    {line}
+                  </span>
+                ))}
+              </span>
+            </h1>
+          </header>
+
+          <div className={`${s.component} ${view === "list" ? s.isList : ""}`}>
+            {/* ---------- left column: the filter ---------- */}
+            <aside ref={asideRef} className={`${s.aside} ${s.loadIn}`}>
+              <nav className={s.filters} aria-label="Filter by industry">
+                <ul className={s.filterList}>
+                  {[null, ...WORK_FILTERS].map((tag) => {
+                    const active = activeFilter === tag;
+                    return (
+                      <li key={tag ?? "all"}>
+                        <button
+                          type="button"
+                          aria-pressed={active}
+                          className={`${s.filterItem} ${active ? s.isActive : ""}`}
+                          onClick={() => chooseFilter(tag)}
+                        >
+                          <span className={s.filterName}>{tag ?? "All"}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            </aside>
+
+            {/* ---------- right column ---------- */}
+            <div
+              ref={projectRef}
+              className={`${s.projectComponent} ${s.loadIn}`}
+            >
+              <div className={s.viewMenu} role="group" aria-label="View">
+                <button
+                  type="button"
+                  aria-pressed={view === "grid"}
+                  className={`${s.viewLink} ${view === "grid" ? s.isCurrent : ""}`}
+                  onClick={() => switchView("grid")}
+                >
+                  <GridIcon />
+                  Grid
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={view === "list"}
+                  className={`${s.viewLink} ${view === "list" ? s.isCurrent : ""}`}
+                  onClick={() => switchView("list")}
+                >
+                  <ListIcon />
+                  List
+                </button>
               </div>
-            </div>
 
-            <div ref={projectRef} className={`${s.projectComponent} ${s.loadIn}`}>
-              <div className={s.filterWrapper}>
-                <div className={s.filterList} role="list">
-                  {WORK_FILTERS.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      role="listitem"
-                      className={`${s.filterItem} ${activeFilter === tag ? s.isActive : ""}`}
-                      onClick={() => toggleFilter(tag)}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className={s.tabs}>
-                <div className={s.tabsMenu}>
-                  <button
-                    type="button"
-                    aria-label="Grid view"
-                    className={`${s.tabLink} ${view === "grid" ? s.isCurrent : ""}`}
-                    onClick={() => switchView("grid")}
-                  >
-                    <GridIcon />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="List view"
-                    className={`${s.tabLink} ${view === "list" ? s.isCurrent : ""}`}
-                    onClick={() => switchView("list")}
-                  >
-                    <ListIcon />
-                  </button>
-                </div>
-
-                <div className={s.tabsContent}>
-                  {/* ---------- grid ---------- */}
-                  <div ref={gridPaneRef} className={`${s.tabPane} ${view === "grid" ? s.isActive : ""}`}>
-                    <div ref={gridListRef} className={s.grid} role="list">
-                      {WORK_ITEMS.map((p) => (
-                        <GridCard key={p.id} item={p} onEnter={onCardEnter} onLeave={onCardLeave} />
-                      ))}
-                    </div>
+              <div className={s.tabsContent}>
+                {/* ---------- grid ---------- */}
+                <div
+                  ref={gridPaneRef}
+                  className={`${s.tabPane} ${view === "grid" ? s.isActive : ""}`}
+                >
+                  <div ref={gridListRef} className={s.grid} role="list">
+                    {WORK_ITEMS.map((p) => (
+                      <GridCard key={p.id} item={p} />
+                    ))}
                   </div>
+                </div>
 
-                  {/* ---------- list ---------- */}
-                  <div ref={listPaneRef} className={`${s.tabPane} ${view === "list" ? s.isActive : ""}`}>
-                    <div ref={followerWrapRef} className={s.previewContainer}>
-                      <div className={s.previewComponent} data-preview-component="">
-                        <div ref={followerRef} className={s.follower}>
-                          <div ref={followerInnerRef} className={s.followerInner} />
-                        </div>
-                        <div className={s.collection}>
-                          <div ref={listListRef} className={s.list} role="list">
-                            {WORK_ITEMS.map((p) => (
-                              <ListRow key={p.id} item={p} />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                {/* ---------- list ---------- */}
+                <div
+                  ref={listPaneRef}
+                  className={`${s.tabPane} ${view === "list" ? s.isActive : ""}`}
+                >
+                  <div ref={listListRef} className={s.list} role="list">
+                    {WORK_ITEMS.map((p, i) => (
+                      <ListRow
+                        key={p.id}
+                        item={p}
+                        index={i + 1}
+                        open={openId === p.id}
+                        onToggle={() =>
+                          setOpenId((cur) => (cur === p.id ? -1 : p.id))
+                        }
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
@@ -591,61 +396,209 @@ export default function WorkGallery() {
           </div>
         </div>
       </div>
-
-      <div ref={cursorRef} className={s.cursor} aria-hidden="true">
-        <span ref={cursorTextRef} className={s.cursorLabel}>
-          Open project
-        </span>
-      </div>
     </section>
   );
 }
 
-function GridCard({
-  item,
-  onEnter,
-  onLeave,
+/** The headline result as one plain line: the figure in ink, the label muted. */
+function Result({
+  result,
+  className,
 }: {
-  item: WorkGalleryItem;
-  onEnter: (e: React.MouseEvent<HTMLElement>) => void;
-  onLeave: (e: React.MouseEvent<HTMLElement>) => void;
+  result: NonNullable<WorkGalleryItem["result"]>;
+  className?: string;
 }) {
+  const value = <span className={s.resultValue}>{result.value}</span>;
+  const label = result.label ? (
+    <span className={s.resultLabel}>{result.label}</span>
+  ) : null;
+  return (
+    <span className={`${s.result} ${className ?? ""}`}>
+      {result.labelFirst ? (
+        <>
+          {label} {value}
+        </>
+      ) : (
+        <>
+          {value} {label}
+        </>
+      )}
+    </span>
+  );
+}
+
+/** Who said it, then the one line they said. A lettered circle stands in for a missing photo. */
+function Said({
+  quote,
+  className,
+}: {
+  quote: NonNullable<WorkGalleryItem["quote"]>;
+  className?: string;
+}) {
+  // The fullest line, so a two-part message reads as its point, not its greeting.
+  const line = quote.texts.reduce((a, b) => (b.length > a.length ? b : a), "");
+  if (!line) return null;
+  return (
+    <figure className={`${s.said} ${className ?? ""}`}>
+      <figcaption className={s.saidBy}>
+        {quote.avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={quote.avatar}
+            alt=""
+            className={s.saidAvatar}
+            loading="lazy"
+          />
+        ) : (
+          <span className={s.saidAvatarBlank} aria-hidden>
+            {quote.author.charAt(0)}
+          </span>
+        )}
+        <span>
+          <span className={s.saidName}>{quote.author}</span>, {quote.role}
+        </span>
+      </figcaption>
+      <blockquote className={s.saidLine}>
+        <p>&ldquo;{line}&rdquo;</p>
+      </blockquote>
+    </figure>
+  );
+}
+
+function GridCard({ item }: { item: WorkGalleryItem }) {
   const external = item.href.startsWith("http");
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const reelRef = useRef<HTMLVideoElement>(null);
+  const altRef = useRef<HTMLImageElement>(null);
+
+  /* Bring the reel (or mockup) up over the cover. */
+  const wake = useCallback(() => {
+    const media = mediaRef.current;
+    const reel = reelRef.current;
+    const alt = altRef.current;
+    if (!media) return;
+    gsap.killTweensOf([media, reel, alt].filter(Boolean));
+    gsap.to(media, { scale: 1.04, duration: 0.9, ease: "circ.out" });
+    if (reel) {
+      reel.currentTime = 0;
+      reel.play().catch(() => {});
+      gsap.to(reel, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
+    } else if (alt) {
+      gsap.to(alt, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
+    }
+  }, []);
+
+  /* Settle back to the cover and stop the reel. */
+  const rest = useCallback(() => {
+    const media = mediaRef.current;
+    const reel = reelRef.current;
+    const alt = altRef.current;
+    if (!media) return;
+    gsap.killTweensOf([media, reel, alt].filter(Boolean));
+    gsap.to(media, { scale: 1, duration: 0.55, ease: WF_EASE });
+    if (reel) {
+      gsap.to(reel, {
+        opacity: 0,
+        duration: REEL_OUT,
+        ease: "power2.inOut",
+        onComplete: () => {
+          reel.pause();
+          reel.currentTime = 0;
+        },
+      });
+    } else if (alt) {
+      gsap.to(alt, { opacity: 0, duration: REEL_OUT, ease: "power2.inOut" });
+    }
+  }, []);
+
+  /* No hover on touch: the reel runs while the card sits mostly in view. */
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!media || !reelRef.current) return;
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? wake() : rest()));
+      },
+      { threshold: 0.6 },
+    );
+    io.observe(media);
+    return () => io.disconnect();
+  }, [wake, rest]);
+
+  const onEnter = () => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+      return;
+    wake();
+  };
+  const onLeave = () => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+      return;
+    rest();
+  };
+
   return (
     <div
       role="listitem"
       className={s.card}
       data-filter-item=""
       data-tags={item.tags.join("|")}
-      data-cursor-hover=""
-      data-cursor-text="Open project"
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >
       <div className={s.cardImage}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={item.poster} alt="" className={s.cardPoster} loading="lazy" />
-        <div className={s.caseImg} data-case-img="">
-          <video autoPlay muted loop playsInline preload="metadata" poster={item.poster}>
-            <source src={item.video} />
-          </video>
+        <div ref={mediaRef} className={s.caseImg} data-case-img="">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={item.poster}
+            alt=""
+            className={s.cardPoster}
+            loading="lazy"
+            style={
+              item.posterPosition
+                ? { objectPosition: item.posterPosition }
+                : undefined
+            }
+          />
+          {item.video ? (
+            <video
+              ref={reelRef}
+              className={s.reel}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden
+            >
+              <source src={item.video} />
+            </video>
+          ) : item.hoverImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              ref={altRef}
+              src={item.hoverImage}
+              alt=""
+              className={s.reel}
+              loading="lazy"
+              style={
+                item.hoverImagePosition
+                  ? { objectPosition: item.hoverImagePosition }
+                  : undefined
+              }
+            />
+          ) : null}
         </div>
       </div>
-      <div className={s.cardContent}>
-        <div className={s.cardRow}>
-          <div className={s.cardTitle}>{item.name}</div>
-          <div className={s.tagList} role="list">
-            {item.tags.map((t) => (
-              <div key={t} role="listitem" className={s.tag}>
-                {t}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className={s.cardDesc}>
-          <div className={s.cardDescText}>{item.description}</div>
-        </div>
+
+      <div className={s.caption}>
+        <h2 className={s.captionName}>{item.name}</h2>
+        <span className={s.captionTag}>{item.tags.join(", ")}</span>
+        {item.result && (
+          <Result result={item.result} className={s.captionResult} />
+        )}
       </div>
+      {item.quote && <Said quote={item.quote} className={s.cardSaid} />}
+
       <a
         href={item.href}
         className={s.cardLink}
@@ -657,50 +610,274 @@ function GridCard({
   );
 }
 
-function ListRow({ item }: { item: WorkGalleryItem }) {
+function ArrowOut() {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden fill="none">
+      <path
+        d="M4 12 12 4M5.5 4H12v6.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ListRow({
+  item,
+  index,
+  open,
+  onToggle,
+}: {
+  item: WorkGalleryItem;
+  index: number;
+  open: boolean;
+  onToggle: () => void;
+}) {
   const external = item.href.startsWith("http");
+  const textRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const pictureRef = useRef<HTMLAnchorElement>(null);
+  const posterRef = useRef<HTMLImageElement>(null);
+  const reelRef = useRef<HTMLVideoElement>(null);
+  const altRef = useRef<HTMLImageElement>(null);
+  const first = useRef(true);
+
+  /* Open: the picture unfolds under the short line, enlarging into position
+     (the frame grows from a touch smaller while the cover settles from a
+     tighter crop), and the owner's line unfolds under the name. Close: the
+     reverse. First render sets the state without motion. */
+  useEffect(() => {
+    const text = textRef.current;
+    const media = mediaRef.current;
+    const picture = pictureRef.current;
+    const poster = posterRef.current;
+    if (!media || !picture || !poster) return;
+    const folds = [media, text].filter(Boolean) as HTMLElement[];
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const instant = first.current || reduce;
+    first.current = false;
+    gsap.killTweensOf([...folds, picture, poster]);
+    const unfold = (el: HTMLElement) => {
+      gsap.set(el, { display: "block" });
+      gsap.fromTo(
+        el,
+        { height: 0, opacity: 0 },
+        {
+          height: "auto",
+          opacity: 1,
+          duration: OPEN_DURATION,
+          ease: ACCORDION_EASE,
+          onComplete: () => {
+            gsap.set(el, { height: "auto" });
+          },
+        },
+      );
+    };
+    const fold = (el: HTMLElement) => {
+      gsap.to(el, {
+        height: 0,
+        opacity: 0,
+        duration: CLOSE_DURATION,
+        ease: ACCORDION_EASE,
+        onComplete: () => {
+          gsap.set(el, { display: "none" });
+        },
+      });
+    };
+
+    if (open) {
+      if (instant) {
+        gsap.set(folds, { display: "block", height: "auto", opacity: 1 });
+        gsap.set([picture, poster], { clearProps: "transform,opacity" });
+        return;
+      }
+      folds.forEach((el) => unfold(el));
+      gsap.fromTo(
+        picture,
+        { scale: 0.86, opacity: 0, transformOrigin: "50% 0%" },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: PICTURE_DURATION,
+          ease: "power3.out",
+          delay: 0.08,
+        },
+      );
+      gsap.fromTo(
+        poster,
+        { scale: 1.18, transformOrigin: "50% 50%" },
+        {
+          scale: 1,
+          duration: PICTURE_DURATION + 0.3,
+          ease: "power3.out",
+          delay: 0.08,
+        },
+      );
+    } else {
+      const reel = reelRef.current;
+      if (reel) {
+        reel.pause();
+        reel.currentTime = 0;
+        gsap.set(reel, { opacity: 0 });
+      }
+      if (instant) {
+        gsap.set(folds, { display: "none", height: 0, opacity: 0 });
+        return;
+      }
+      folds.forEach(fold);
+    }
+  }, [open]);
+
+  /* The reel runs only while the picture is hovered, as in the grid. */
+  const wake = () => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+      return;
+    const reel = reelRef.current;
+    const alt = altRef.current;
+    if (reel) {
+      gsap.killTweensOf(reel);
+      reel.currentTime = 0;
+      reel.play().catch(() => {});
+      gsap.to(reel, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
+    } else if (alt) {
+      gsap.killTweensOf(alt);
+      gsap.to(alt, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
+    }
+  };
+  const rest = () => {
+    const reel = reelRef.current;
+    const alt = altRef.current;
+    if (reel) {
+      gsap.killTweensOf(reel);
+      gsap.to(reel, {
+        opacity: 0,
+        duration: REEL_OUT,
+        ease: "power2.inOut",
+        onComplete: () => {
+          reel.pause();
+          reel.currentTime = 0;
+        },
+      });
+    } else if (alt) {
+      gsap.killTweensOf(alt);
+      gsap.to(alt, { opacity: 0, duration: REEL_OUT, ease: "power2.inOut" });
+    }
+  };
+
+  const linkProps = {
+    href: item.href,
+    target: external ? "_blank" : undefined,
+    rel: external ? "noopener noreferrer" : undefined,
+  };
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
     <div
       role="listitem"
-      className={s.item}
+      className={`${s.item} ${open ? s.isOpen : ""}`}
       data-filter-item=""
-      data-follower-item=""
       data-tags={item.tags.join("|")}
-      data-cursor-hover=""
-      data-cursor-text="Open project"
     >
-      <div className={s.itemInner}>
-        <div className={s.itemRow}>
-          <div className={`${s.col} ${s.colLarge}`}>
-            <h2 className={s.itemHeading}>{item.name}</h2>
-          </div>
-          <div className={`${s.col} ${s.colSmall} ${s.hideMobile}`}>
-            <p className={s.itemText}>{item.tags[0]}</p>
-          </div>
-          <div className={`${s.col} ${s.colSmall} ${s.colRight}`}>
-            <div className={s.serviceList} role="list">
-              {item.services.map((sv) => (
-                <div key={sv} role="listitem" className={s.service}>
-                  {sv}
-                </div>
-              ))}
+      {/* The whole row is the toggle; the arrow and the picture are links. */}
+      <div
+        className={s.row}
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        aria-controls={`work-row-${item.id}`}
+        onClick={onToggle}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onToggle();
+          }
+        }}
+      >
+        <span className={s.num}>{String(index).padStart(2, "0")}</span>
+
+        <div className={s.nameCol}>
+          <h2 className={s.rowHeading}>
+            <span className={s.rowName}>{item.name}</span>
+            <span className={s.rowTag}>{item.tags.join(", ")}</span>
+          </h2>
+          {item.quote && (
+            <div ref={textRef} className={s.rowText}>
+              <div className={s.rowTextInner}>
+                <Said quote={item.quote} />
+              </div>
             </div>
+          )}
+        </div>
+
+        <div className={s.descCol}>
+          {item.result && <Result result={item.result} className={s.rowStat} />}
+          <p className={s.rowLine}>{item.description}</p>
+          <div ref={mediaRef} id={`work-row-${item.id}`} className={s.rowMedia}>
+            <a
+              ref={pictureRef}
+              {...linkProps}
+              className={s.rowPicture}
+              aria-label={`Open ${item.name}`}
+              onClick={stop}
+              onMouseEnter={wake}
+              onMouseLeave={rest}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                ref={posterRef}
+                src={item.poster}
+                alt=""
+                className={s.pictureImg}
+                loading="lazy"
+                style={
+                  item.posterPosition
+                    ? { objectPosition: item.posterPosition }
+                    : undefined
+                }
+              />
+              {item.video ? (
+                <video
+                  ref={reelRef}
+                  className={s.reel}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-hidden
+                >
+                  <source src={item.video} />
+                </video>
+              ) : item.hoverImage ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  ref={altRef}
+                  src={item.hoverImage}
+                  alt=""
+                  className={s.reel}
+                  loading="lazy"
+                  style={
+                    item.hoverImagePosition
+                      ? { objectPosition: item.hoverImagePosition }
+                      : undefined
+                  }
+                />
+              ) : null}
+            </a>
           </div>
         </div>
-        <div className={s.visual} data-follower-visual="">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={item.poster} alt="" className={s.visualImg} loading="lazy" />
-          <video className={s.visualVideo} autoPlay muted loop playsInline preload="metadata" poster={item.poster}>
-            <source src={item.video} />
-          </video>
-        </div>
+
         <a
-          href={item.href}
-          className={s.itemLink}
-          aria-label={item.name}
-          target={external ? "_blank" : undefined}
-          rel={external ? "noopener noreferrer" : undefined}
-        />
+          {...linkProps}
+          className={s.rowArrow}
+          aria-label={`Open ${item.name}`}
+          onClick={stop}
+        >
+          <ArrowOut />
+        </a>
       </div>
     </div>
   );

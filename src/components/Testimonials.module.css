@@ -159,6 +159,9 @@
     padding: 0 1.5rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    /* Snap points measure from the padding edge, so without this the row
+       snaps the first card flush to the screen edge on load. */
+    scroll-padding-inline: 1.5rem;
     scrollbar-width: none;
   }
   .row::-webkit-scrollbar {

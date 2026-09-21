@@ -42,6 +42,12 @@ const CARDS = SUCCESS_STORIES.map((story, i) => ({
    2.5 for three cards, plus one per extra card. */
 const EXTRA = CARDS.length - 3;
 
+/* Below desktop each card holds in front for a stretch of scroll before it
+   lifts (the reference runs straight from arriving into leaving). In
+   timeline units, where a card's arrival is 2; the scroll distances grow by
+   the same share so the moves themselves keep their pace. */
+const HOLD = 1.2;
+
 const play = (v: HTMLVideoElement | null) => {
   if (v && v.paused) {
     v.currentTime = 0;
@@ -72,6 +78,9 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
 
     const w = () => window.innerWidth;
     const vh = () => window.innerHeight;
+    // Set once at build: the hold is baked into the timeline's positions.
+    const hold = w() < BP.tablet ? HOLD : 0;
+    const stretch = (2 + hold) / 2;
 
     const setLive = (el: HTMLElement, on: boolean) => {
       el.classList.toggle(s.isLive, on);
@@ -143,13 +152,16 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       tl.to(
         desc,
         {
-          opacity: 0,
           y: () => (w() >= BP.desktop ? "-60%" : `-${vh()}px`),
           duration: () =>
             w() < BP.desktop && w() >= BP.tablet ? 2 : w() >= BP.desktop ? 0.5 : 3,
         },
         0
       );
+      // Below desktop the copy sits under the plate and would otherwise ride
+      // up half-transparent over the next card for the whole lift, so it
+      // fades out in the first stretch of the move.
+      tl.to(desc, { opacity: 0, duration: () => (w() >= BP.desktop ? 0.5 : 0.35) }, 0);
       tl.to(plate, { background: "transparent", duration: 0.1 }, 0);
       tl.to(
         plate,
@@ -191,8 +203,14 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     const next = (i: number) => {
       const tl = gsap.timeline({ defaults: { ease: "none" } });
       const el = elements[i];
-      for (let k = 0; k < i; k++) tl.add(back(el, i, k), k === 0 ? 0 : undefined);
+      // Each step back is padded by the hold too, so a card starts up
+      // exactly as the one in front of it starts to lift.
+      for (let k = 0; k < i; k++) {
+        tl.add(back(el, i, k), k === 0 ? 0 : undefined);
+        if (hold) tl.to({}, { duration: hold });
+      }
       tl.add(enter(el), i === 0 ? 0 : undefined);
+      if (hold) tl.to({}, { duration: hold });
       if (i < elements.length - 1) tl.add(leave(el));
       return tl;
     };
@@ -207,8 +225,8 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
           w() >= BP.desktop
             ? `+=${(2.2 + EXTRA) * vh()}`
             : w() >= BP.tablet
-              ? `+=${(3 + EXTRA) * vh()}`
-              : `+=${(2.5 + EXTRA) * vh()}`,
+              ? `+=${(3 + EXTRA) * vh() * stretch}`
+              : `+=${(2.5 + EXTRA) * vh() * stretch}`,
         pin: true,
         invalidateOnRefresh: true,
       });
@@ -218,7 +236,7 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         scrollTrigger: {
           trigger: carousel,
           start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
-          end: () => `+=${(3 + EXTRA) * vh()}`,
+          end: () => `+=${(3 + EXTRA) * vh() * stretch}`,
           scrub: 0.25,
           invalidateOnRefresh: true,
         },

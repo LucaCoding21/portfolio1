@@ -22,8 +22,17 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import s from "./LoadingScreen.module.css";
 
-const POSTER = "/lassie-hero-poster.jpg";
-const REEL = "/lassie-hero.mp4";
+/** The hero reel: 1080p landscape, and a 9:16 crop from the same 1080p
+ *  source for phones (a landscape 720p file blown up by object-fit: cover
+ *  showed only a ~400px sliver, stretched 3x, and read blurry). LassieHero
+ *  uses the same pair so the two <video>s share one cache entry. */
+export const REEL = "/hero-reel.mp4";
+/* The query is a cache buster: bump it whenever the crop is re-cut, or
+   phones keep playing the copy they already have. */
+export const REEL_MOBILE = "/hero-reel-mobile.mp4?v=5";
+export const POSTER = "/hero-reel-poster.jpg";
+export const POSTER_MOBILE = "/hero-reel-poster-mobile.jpg?v=5";
+export const MOBILE_MEDIA = "(max-width: 767px)";
 export const LOADER_HANDOFF_EVENT = "lassie:loader-video";
 const MEDIA_TIMEOUT_MS = 2000;
 const WORD_IN = 0.4;
@@ -150,18 +159,22 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
         </span>
         <span ref={gapRef} className={s.gap}>
           <span ref={plateRef} className={s.plate}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={POSTER} alt="" className={s.media} decoding="async" />
+            <picture>
+              <source srcSet={POSTER_MOBILE} media={MOBILE_MEDIA} />
+              <img src={POSTER} alt="" className={s.media} decoding="async" />
+            </picture>
             <video
               ref={videoRef}
-              src={REEL}
               muted
               loop
               playsInline
               autoPlay
               preload="auto"
               className={`${s.media} ${s.video}`}
-            />
+            >
+              <source src={REEL_MOBILE} media={MOBILE_MEDIA} type="video/mp4" />
+              <source src={REEL} type="video/mp4" />
+            </video>
           </span>
         </span>
         <span ref={rightRef} className={s.half}>

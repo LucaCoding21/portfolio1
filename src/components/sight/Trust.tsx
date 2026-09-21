@@ -225,7 +225,7 @@ export default function Trust() {
       <Reveal className="mt-20 md:mt-28">
         <div className="mx-auto flex max-w-[1440px] items-center gap-6 px-6 md:px-12">
           <span className="h-px flex-1 bg-[var(--line)]" aria-hidden="true" />
-          <p className="shrink-0 text-center text-[0.68rem] font-medium uppercase tracking-[0.22em] text-[var(--ink-faint)]">
+          <p className="min-w-0 text-center text-[0.68rem] font-medium uppercase tracking-[0.22em] text-[var(--ink-faint)]">
             Companies Cloverfield has built for
           </p>
           <span className="h-px flex-1 bg-[var(--line)]" aria-hidden="true" />

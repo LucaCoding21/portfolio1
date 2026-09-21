@@ -42,7 +42,9 @@ const LABELS: readonly HandLabelSpec[] = [
   {
     key: "developer",
     title: "The Developer",
-    className: "right-[-14%] top-[-9%] w-[62%]",
+    // On phones the photo already sits near the edge, so the label stays
+    // inside it; from md it runs past the photo into the margin.
+    className: "right-[2%] top-[-5%] w-[58%] md:right-[-14%] md:top-[-9%] md:w-[62%]",
   },
   {
     key: "designer",

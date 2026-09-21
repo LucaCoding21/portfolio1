@@ -154,15 +154,27 @@
 }
 
 @media (max-width: 767px) {
+  /* No viewport-tall floor on phones, so the card is only as tall as its
+     content. The question tucked behind it then starts above the card's
+     top, under Selected Works, which paints over it (see
+     LassieFeatures.module.css). */
   .wrap {
-    padding: 4rem 0 5rem;
+    min-height: 0;
+    padding: 5rem 0 4.5rem;
   }
   .stage {
     padding: 2.5rem 0;
     font-size: 2.125rem;
   }
+  /* On phones the deck sits under the rows in the flow instead of over
+     them, so the type stays readable. */
   .deck {
+    position: relative;
+    left: auto;
+    top: auto;
     width: 92vw;
+    margin: 3rem auto 0;
+    transform: none;
   }
   .card {
     width: 34%;
@@ -174,6 +186,6 @@
     font-size: 1.4rem;
   }
   .foot {
-    margin-top: 3.5rem;
+    margin-top: 5.5rem;
   }
 }

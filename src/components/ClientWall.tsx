@@ -57,12 +57,24 @@ function Card({ card }: { card: WallCard }) {
           alt={logo.name}
           loading="eager"
           className={`${s.logo} ${logo.dark ? s.logoDark : ""}`}
-          style={{ height: card.logoHeight ?? Math.min(logo.height, variant === "logo" ? MAX_BARE_LOGO : MAX_BOXED_LOGO) }}
+          style={
+            {
+              "--logo-h": `${card.logoHeight ?? Math.min(logo.height, variant === "logo" ? MAX_BARE_LOGO : MAX_BOXED_LOGO)}px`,
+            } as React.CSSProperties
+          }
         />
       </div>
 
       {(variant === "quote" || variant === "hquote") && (
-        <div className={s.quote} style={{ width: card.quoteWidth, maxWidth: card.quoteMaxWidth }}>
+        <div
+          className={s.quote}
+          style={
+            {
+              "--quote-w": card.quoteWidth != null ? `${card.quoteWidth}px` : "auto",
+              "--quote-max-w": card.quoteMaxWidth != null ? `${card.quoteMaxWidth}px` : "none",
+            } as React.CSSProperties
+          }
+        >
           {card.title && (
             <div className={s.title}>
               <div className={s.titleBig}>{card.title.big}</div>

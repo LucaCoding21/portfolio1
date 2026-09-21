@@ -1,0 +1,288 @@
+/*
+ * How do we actually do it? A technical sheet on the same paper and DM Sans
+ * as the Lassie sections above (reference root 10px, rem written as px).
+ * Everything sits on a fixed viewport: the sheet is one screen tall, the
+ * object fills the middle, the furniture pins to the corners.
+ *
+ * The section is the curtain over Our Approach: a full viewport tall, above
+ * it in the stack, rounded along the bottom edge that uncovers it.
+ */
+.wrap {
+  --ink: #1a1613;
+  --muted: #666;
+  --paper: #f9f8f5;
+  --green: #2f7a4d;
+  --edge: 16px;
+  position: relative;
+  z-index: 2;
+  height: 100svh;
+  padding: var(--edge);
+  overflow: hidden;
+  border-radius: 0 0 24px 24px;
+  /* A white sheet on the paper: the plate has to differ from the ground
+     behind it or the scroll-in inset is invisible. */
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@media (min-width: 1280px) {
+  .wrap {
+    --edge: 32px;
+    border-radius: 0 0 48px 48px;
+  }
+}
+
+/* ---------- the question: justified block, top left ---------- */
+
+.question {
+  position: absolute;
+  top: var(--edge);
+  left: var(--edge);
+  z-index: 2;
+  width: min(42vw, 620px);
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(30px, 4.6vw, 84px);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+}
+
+/* Each line justifies itself; the last one sits left. Masks clip the rise. */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+  text-align-last: justify;
+}
+
+.line:last-child {
+  text-align-last: left;
+}
+
+.word {
+  display: block;
+  will-change: transform;
+}
+
+/* ---------- small print: index, clock, coordinates ---------- */
+
+.index,
+.meta {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  line-height: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 1440px) {
+  .index,
+  .meta {
+    font-size: 13px;
+    line-height: 22px;
+  }
+}
+
+.index {
+  top: var(--edge);
+  right: var(--edge);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, auto));
+  column-gap: 40px;
+  row-gap: 4px;
+}
+
+.indexItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.square {
+  width: 8px;
+  height: 8px;
+  background: var(--ink);
+}
+
+.indexNum {
+  color: var(--muted);
+}
+
+.meta div {
+  display: flex;
+  gap: 8px;
+}
+
+.meta dt {
+  color: var(--muted);
+}
+
+.meta dd {
+  margin: 0;
+}
+
+.clock {
+  top: calc(var(--edge) + 76px);
+  right: var(--edge);
+}
+
+.coords {
+  bottom: var(--edge);
+  left: var(--edge);
+}
+
+/* ---------- the how: small caps paragraph, bottom right ---------- */
+
+.how {
+  position: absolute;
+  right: var(--edge);
+  bottom: var(--edge);
+  z-index: 2;
+  width: min(36vw, 520px);
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: justify;
+}
+
+@media (min-width: 1440px) {
+  .how {
+    font-size: 14px;
+  }
+}
+
+/* ---------- the object ---------- */
+
+/* Centred by the box, not by a transform, so GSAP owns the stage's
+   transform outright during the entry. Sized so the exploded stack clears
+   the corner furniture. */
+.stageBox {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 3svh;
+  pointer-events: none;
+}
+
+.stage {
+  position: relative;
+  width: min(48vw, 78svh * 1.5, 760px);
+  aspect-ratio: 3 / 2;
+  perspective: 1600px;
+}
+
+/* the reference's corner ticks */
+.corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--ink);
+  opacity: 0.6;
+}
+
+.cornerTr {
+  top: -8%;
+  right: -6%;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.cornerBl {
+  bottom: -8%;
+  left: -6%;
+  border-right: 0;
+  border-top: 0;
+}
+
+.tilt,
+.stack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.stack {
+  will-change: transform;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.sheet {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.marker {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: var(--green);
+  transition:
+    left 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- narrow ---------- */
+
+@media (max-width: 1023px) {
+  .wrap {
+    height: auto;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;
+    row-gap: 24px;
+    padding: 24px var(--edge) 32px;
+  }
+  .question,
+  .index,
+  .meta,
+  .how,
+  .stageBox {
+    position: static;
+    width: auto;
+    transform: none;
+  }
+  .stageBox {
+    display: block;
+    padding-bottom: 0;
+  }
+  .question {
+    font-size: clamp(32px, 9vw, 56px);
+  }
+  .index {
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+  }
+  .stage {
+    width: min(100%, 78svh * 1.5);
+    margin: 0 auto;
+    align-self: center;
+  }
+  .how {
+    text-align: left;
+  }
+  .clock {
+    display: none;
+  }
+}

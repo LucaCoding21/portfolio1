@@ -359,13 +359,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8%;
+  padding: 6%;
 }
 
 .reel {
   position: relative;
   width: 100%;
-  max-width: 84%;
+  max-width: 90%;
   border-radius: 0.15rem;
   overflow: clip;
   opacity: 0;
@@ -403,4 +403,70 @@
 .card.isLive .overlay {
   opacity: 1;
   backdrop-filter: blur(2px);
+}
+
+/* Below desktop the copy sits under the plate instead of above it (the
+   owner's call for phones), and the pair is centred in the viewport while
+   the carousel is pinned. The pinned carousel starts at 50svh - 50vw, the
+   plate is the inner box's height (width capped at 468px, aspect 362/346)
+   and 225px covers the gap plus the tallest description. The block sits
+   48px above true centre (it reads better under the nav); on short phones
+   it instead starts just under the nav (76px). */
+@media (max-width: 1023px) {
+  .section {
+    --plate-h: calc(min(100vw - 32px, 468px) * 0.956);
+    /* Where the first card sits above the carousel's top edge (negative on
+       most phones). */
+    --card-top: max(calc(76px - 50svh + 50vw), calc(50vw - (var(--plate-h) + 225px) / 2 - 48px));
+  }
+  .card {
+    top: var(--card-top);
+  }
+  /* The card overhangs the carousel by that much, so the intro keeps at
+     least that plus a gap under the title; otherwise the first cover rides
+     over "selected works" on the way in. */
+  .intro {
+    margin-bottom: max(80px, calc(32px - var(--card-top)));
+  }
+  /* Tighter run-out under the last card on phones. Above the How We Do It
+     stage, which starts a viewport before More Work's bottom edge and so
+     reaches up under this section when that card is shorter than a
+     viewport. */
+  .section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0;
+    /* The last card's copy hangs under its plate, past the carousel's box
+       on short phones (card top + plate + gap and the tallest copy, less
+       the box's height), and More Work would paint over its last line. */
+    padding-bottom: max(32px, calc(var(--card-top) + var(--plate-h) + 225px - 100vw + 24px));
+  }
+  .description,
+  .description.isRight {
+    top: auto;
+    bottom: -25px;
+    width: auto;
+    max-width: 100%;
+    transform: translateY(100%);
+  }
+  /* The result reads as one line: chip, then its label beside it. */
+  .cardResult {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  .resultValue {
+    flex: none;
+  }
+}
+
+/* Phones: the reel runs nearly edge to edge of the plate instead of sitting
+   in a wide dark frame. */
+@media (max-width: 767px) {
+  .reelSlot {
+    padding: 10px;
+  }
+  .reel {
+    max-width: 100%;
+  }
 }

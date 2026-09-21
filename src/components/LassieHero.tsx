@@ -15,7 +15,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { LOADER_HANDOFF_EVENT } from "./LoadingScreen";
+import { LOADER_HANDOFF_EVENT, MOBILE_MEDIA, POSTER, POSTER_MOBILE, REEL, REEL_MOBILE } from "./LoadingScreen";
 import s from "./LassieHero.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -239,18 +239,29 @@ export default function LassieHero({ ready }: { ready: boolean }) {
     <section ref={heroRef} aria-label="Hero section" className={s.hero} data-nav-theme="dark">
       <div ref={mediaRef} className={s.plate}>
         <div className={s.inner}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/lassie-hero-poster.jpg" alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
+          {/* The video carries no poster attribute: it would paint the
+              landscape still over this responsive one on phones. Until the
+              first frame decodes the video is transparent and this shows. */}
+          <picture>
+            <source srcSet={POSTER_MOBILE} media={MOBILE_MEDIA} />
+            <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
+          </picture>
           <video
-            src="/lassie-hero.mp4"
             muted
             loop
             playsInline
             preload="auto"
-            poster="/lassie-hero-poster.jpg"
             aria-label="Cloverfield Studio web design showcase reel"
             className={s.video}
-          />
+          >
+            {/* Phones get the 9:16 crop; the list must match the loader's so
+                both videos share one cache entry and the handoff is seamless. */}
+            <source src={REEL_MOBILE} media={MOBILE_MEDIA} type="video/mp4" />
+            <source src={REEL} type="video/mp4" />
+          </video>
+          {/* scrim: darkens only the band behind the copy and the top edge
+              under the nav; the frame edges stay bright so the reel reads */}
+          <div aria-hidden="true" className={s.scrim} />
         </div>
       </div>
 
@@ -262,7 +273,8 @@ export default function LassieHero({ ready }: { ready: boolean }) {
         </h1>
         <p className={`${s.bodyMd} ${s.sub}`}>
           Our work has generated more than 5,000 inquiries for local businesses.
-          <br />
+          {/* The break is hidden on phones, so the sentences need a real space between them. */}
+          <br />{" "}
           We design every site to make you more money.
         </p>
         <div ref={tasksRef} className={s.tasks} aria-live="polite">

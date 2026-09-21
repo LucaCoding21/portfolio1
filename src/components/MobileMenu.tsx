@@ -125,14 +125,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       style={{ clipPath: "circle(0% at 90% 4%)", visibility: "hidden" }}
     >
       {/* Nav items */}
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-5">
         {NAV_ITEMS.map((item, i) => (
           <Link
             key={item.label}
             ref={(el) => { navItemsRef.current[i] = el; }}
             href={item.href}
             onClick={(e) => handleNavClick(e, item.href)}
-            className={`block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] transition-colors duration-300 ${
+            className={`block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] pb-[0.18em] -mb-[0.18em] transition-colors duration-300 ${
               item.href === "/sight"
                 ? "sight-nav-link"
                 : "text-[#111113] hover:text-[#111113]/60"
@@ -152,7 +152,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         className="mt-12 self-start px-8 py-4 rounded-full bg-[#111113] text-white text-lg font-[family-name:var(--font-outfit)] font-medium transition-colors duration-300 hover:bg-[#111113]/85"
         style={{ opacity: 0 }}
       >
-        Book a call &rarr;
+        Book a call
       </Link>
     </div>
   );

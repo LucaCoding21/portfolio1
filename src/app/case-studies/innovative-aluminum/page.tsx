@@ -214,7 +214,7 @@ export default function InnovativeAluminumCaseStudy() {
 
       {/* Title block — heading row + content row align across columns */}
       <section className="px-6 md:px-10 mb-16 md:mb-24">
-        <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-x-10 md:gap-x-16 gap-y-6 md:gap-y-8">
+        <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-x-10 md:gap-x-12 lg:gap-x-16 gap-y-6 md:gap-y-8">
           <h1 className="md:col-span-8 order-1 font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.6rem,3.8vw,2.8rem)] tracking-tight leading-[1.05]">
             Innovative Aluminum
           </h1>
@@ -287,12 +287,12 @@ export default function InnovativeAluminumCaseStudy() {
 
       {/* Content body with sticky sidebar */}
       <div className="px-6 md:px-10 pb-24 md:pb-32">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-20">
-          <aside className="md:col-span-2 md:-ml-6 lg:-ml-10">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-[150px_minmax(0,1fr)] gap-10 md:gap-12 lg:gap-20">
+          <aside className="md:-ml-6 lg:-ml-10">
             <CaseStudySidebar sections={SECTIONS} />
           </aside>
 
-          <div className="md:col-span-10 flex flex-col gap-24 md:gap-36">
+          <div className="min-w-0 flex flex-col gap-24 md:gap-36">
             {/* Mission */}
             <section id="mission" className="scroll-mt-32">
               <Eyebrow>The Mission</Eyebrow>
@@ -519,7 +519,7 @@ export default function InnovativeAluminumCaseStudy() {
       {/* CTA */}
       <section className="px-6 md:px-10 pb-32 md:pb-48 pt-12 md:pt-16 border-t border-black/[0.06]">
         <div className="max-w-[1200px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-16 items-end">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 items-end">
             <div className="md:col-span-8">
               <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/45 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
                 Next move

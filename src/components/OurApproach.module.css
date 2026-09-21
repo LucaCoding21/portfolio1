@@ -1,0 +1,150 @@
+/*
+ * Our approach. The stage starts one viewport early, behind the section
+ * above, and runs one viewport past the section's own height so the sticky
+ * section stays put exactly as long as the curtain takes to clear.
+ */
+.stage {
+  position: relative;
+  z-index: 0;
+  margin-top: -100vh;
+  padding-bottom: 100vh;
+}
+
+.wrap {
+  --ink: #111113;
+  --muted: #6a665e;
+  --cream: #f8f2e8;
+  --rule-color: rgb(17 17 19 / 0.35);
+  position: sticky;
+  top: 0;
+  padding: clamp(2.5rem, 4vw, 4rem) 2.5rem clamp(4rem, 6vw, 6rem);
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+}
+
+/* Full-bleed wordmark: sized to the viewport so it always fills the line. */
+.wordmark {
+  margin: 0 0 clamp(1rem, 2vw, 2rem);
+  font-size: 14.2vw;
+  font-weight: 800;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* number | text | cover, a hairline drawn along the top of each row */
+.row {
+  --rule: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(4rem, 9vw, 9rem) minmax(0, 1fr) clamp(240px, 30vw, 420px);
+  column-gap: clamp(1.5rem, 3vw, 3rem);
+  align-items: start;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem) 0;
+}
+
+.row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule-color);
+  transform: scaleX(var(--rule));
+  transform-origin: left center;
+}
+
+.index {
+  padding-top: 0.35rem;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+.text {
+  max-width: 34ch;
+}
+
+.name {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.summary {
+  margin: 0;
+  font-size: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+
+.cover {
+  position: relative;
+  aspect-ratio: 8 / 5;
+  overflow: hidden;
+  border-radius: 14px;
+  background: rgb(17 17 19 / 0.06);
+}
+
+.cover img {
+  object-fit: cover;
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: clamp(1.5rem, 2.5vw, 2.5rem);
+  border-top: 1px solid var(--rule-color);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.linkArrow {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link:hover .linkArrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 767px) {
+  .wrap {
+    padding: 2rem 1.5rem 4rem;
+  }
+  .wordmark {
+    font-size: 13.5vw;
+  }
+  .row {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    row-gap: 1.25rem;
+    padding: 1.5rem 0;
+  }
+  .cover {
+    grid-column: 1 / -1;
+    border-radius: 10px;
+  }
+}

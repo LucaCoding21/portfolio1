@@ -1,19 +1,26 @@
 /*
-  Revelatio /work clone, colours inverted (white ground, black type).
-  Every length is in em off the section font-size, which is the reference's
-  fluid body size: .833vw desktop, 1.615vw ≤991, 2.086vw ≤767, 3.738vw ≤479.
-  Reference viewport for the numbers in comments: 1470px (1em = 12.245px).
+  /work gallery as a works overview. Left column: eyebrow, headline, vertical
+  filter list. Right column: the view switch, then a two-column grid of covers
+  with one caption line each, or the accordion list. Surfaces are the
+  homepage's: paper ground, ink type, Outfit titles, DM Sans body, Geist for
+  the tracked eyebrow, hairlines at 12% ink.
+
+  Lengths are in em off the section font-size, a fluid body: .833vw desktop,
+  1.615vw ≤991, 2.086vw ≤767, 3.738vw ≤479 (1em = 12.245px at 1470px wide).
 */
 
 .section {
-  --ink: #000;
-  --paper: #fff;
-  --line: rgba(0, 0, 0, 0.08);        /* neutral-200 */
-  --chip-bg: rgba(0, 0, 0, 0.04);     /* neutral-100 */
-  --chip-ink: rgba(0, 0, 0, 0.64);    /* neutral-500 */
-  --filter-border: rgba(0, 0, 0, 0.32); /* neutral-400 */
+  --ink: #1a1613;
+  --ink-soft: #55504a;
+  --muted: #6a665e;
+  --faint: #a19c93;
+  --paper: #f9f8f5;
+  --line: rgb(26 22 19 / 0.12);
+  --media-bg: #ece7e0;
+  --media-radius: 8px;
+  --green: #dcebd9;
 
-  font-family: var(--font-inter), Arial, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   font-size: 0.833vw;
   line-height: 1.5;
   background: var(--paper);
@@ -35,33 +42,32 @@
   padding-bottom: 8em;
 }
 
-.component {
+/* Eyebrow and headline across the top. */
+.header {
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  gap: 5.75em;
+  gap: 1.5em;
+  width: 100%;
+  margin-bottom: 4.5em;
 }
 
-.header {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2.5em;
+/* Two columns: a narrow filter column that holds still, and the work. */
+.component {
+  display: grid;
+  grid-template-columns: minmax(11em, 15%) 1fr;
+  align-items: start;
+  column-gap: 4em;
   width: 100%;
 }
 
-.headlineWrap {
-  max-width: 65em;
+/* List view has no filter column; the rows run the full width. */
+.component.isList {
+  grid-template-columns: 1fr;
 }
 
-.headline {
-  margin: 0;
-  font-size: 3em;
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: var(--ink);
+.component.isList .aside {
+  display: none;
 }
 
 /* load-in: starts hidden, GSAP brings it up */
@@ -70,94 +76,137 @@
   transform: translateY(0.75em);
 }
 
-.projectComponent {
-  position: relative;
-  display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  gap: 2.5em;
-  width: 100%;
+/* ---------- left column ---------- */
+
+.aside {
+  position: sticky;
+  top: 6em;
 }
 
-/* ---------- filter chips ---------- */
+/* The homepage's tracked eyebrow. */
+.eyebrow {
+  margin: 0;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 0.75em;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 
-.filterWrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
+.headline {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 2.75em;
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.headlineShort {
+  display: none;
+}
+
+.filters {
+  width: 100%;
 }
 
 .filterList {
   display: flex;
-  align-items: center;
-  gap: 0.667em;
-  flex-wrap: wrap;
+  flex-flow: column;
+  align-items: stretch;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
+/* Plain words. The chosen one is set in ink and a weight up; the rest sit back. */
 .filterItem {
-  font: inherit;
-  border: 1px solid var(--filter-border);
-  border-radius: 0.25em;
-  padding: 0.625em 1.25em;
-  font-size: 0.875em;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1em;
+  width: 100%;
+  padding: 0.45em 0;
+  border: 0;
   background: transparent;
-  opacity: 0.4;
+  font: inherit;
+  font-size: 1.0625em;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  text-align: left;
+  color: var(--muted);
   cursor: pointer;
-  transition: all 0.3s;
+  transition: color 0.25s ease;
 }
 
 .filterItem:hover {
-  opacity: 0.8;
+  color: var(--ink);
 }
 
 .filterItem.isActive {
-  opacity: 1;
-  background-color: var(--chip-bg);
-  border-color: transparent;
+  font-weight: 600;
+  color: var(--ink);
 }
 
-/* ---------- tabs ---------- */
+.filterItem:focus-visible {
+  outline: none;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 
-/* the reference keeps an empty embed as the first flex child, so the tabs
-   start one flex gap (2.5em) below the absolutely positioned filter */
-.tabs {
+/* ---------- right column ---------- */
+
+.projectComponent {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  align-items: stretch;
+  gap: 2em;
   width: 100%;
-  padding-top: 2.5em;
+  min-width: 0;
 }
 
-.tabsMenu {
+/* Two small words, icon and label, at the top of the column. */
+.viewMenu {
   display: flex;
   justify-content: flex-end;
-  align-items: flex-start;
-  gap: 0.688em;
-  margin-bottom: 2.5em;
+  align-items: center;
+  gap: 1.5em;
 }
 
-.tabLink {
-  width: 2em;
-  height: 2em;
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
   padding: 0;
   border: 0;
   background: transparent;
-  opacity: 0.32;
+  font: inherit;
+  font-size: 0.875em;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--faint);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: color 0.25s ease;
 }
 
-.tabLink.isCurrent {
-  opacity: 1;
-}
-
-.tabLink svg {
-  width: 100%;
-  height: 100%;
+.viewLink svg {
+  width: 1.15em;
+  height: 1.15em;
   display: block;
+}
+
+.viewLink:hover,
+.viewLink.isCurrent {
+  color: var(--ink);
 }
 
 .tabsContent {
@@ -180,8 +229,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: auto;
-  column-gap: 2em;
-  row-gap: 5em;
+  column-gap: 1.5em;
+  row-gap: 2.5em;
   width: 100%;
 }
 
@@ -190,14 +239,25 @@
   display: flex;
   flex-flow: column;
   align-items: stretch;
-  gap: 1em;
+  gap: 0.9em;
 }
 
 .cardImage {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
+  border-radius: var(--media-radius);
+  background: var(--media-bg);
+}
+
+/* The cover and, over it, the reel or mockup. This is what the hover scales. */
+.caseImg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .cardPoster {
@@ -207,347 +267,372 @@
   object-fit: cover;
 }
 
-/* the reel sits over the poster; this is the element the hover scales */
-.caseImg {
+/* Reel or mockup: hidden at rest, GSAP fades it up while the cover is hovered. */
+.reel {
   position: absolute;
   inset: 0;
   z-index: 1;
-  pointer-events: none;
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  justify-content: center;
-  will-change: transform;
-}
-
-.caseImg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  will-change: opacity;
 }
 
-.cardContent {
+/* One line under the cover: index, name, industry, and the result at the end. */
+.caption {
   display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  gap: 0.5em;
-  width: 100%;
-  text-wrap: balance;
-}
-
-.cardRow {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-
-.cardTitle {
-  font-size: 1.25em;
-  font-weight: 400;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-
-.tagList {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-}
-
-.tag {
-  display: inline-flex;
   align-items: baseline;
-  width: auto;
-  border-radius: 0.25em;
-  padding: 0.25em 0.5em;
-  font-size: 0.875em;
-  background-color: var(--chip-bg);
-  color: var(--chip-ink);
-}
-
-.cardDesc {
-  opacity: 0.6;
-}
-
-.cardDescText {
+  gap: 0.75em;
   width: 100%;
-  max-width: 32rem;
-  font-size: 0.875em;
-  letter-spacing: -0.03em;
+  min-width: 0;
+  font-size: 1em;
+  line-height: 1.3;
+}
+
+.captionName {
+  flex: none;
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.0625em;
+  font-weight: 600;
+  line-height: inherit;
+  letter-spacing: -0.01em;
   color: var(--ink);
+}
+
+.captionTag {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--muted);
+}
+
+.captionResult {
+  flex: none;
+  margin-left: auto;
+  white-space: nowrap;
 }
 
 .cardLink {
   position: absolute;
   inset: 0;
   z-index: 2;
+  border-radius: var(--media-radius);
+}
+
+/* ---------- shared: headline result and the owner's line ---------- */
+
+/* One plain line: the figure in ink, the label muted. */
+.result {
+  display: inline;
+  font-size: 1em;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.resultValue {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.resultLabel {
+  color: var(--muted);
+}
+
+.said {
+  display: flex;
+  flex-flow: column;
+  gap: 0.6em;
+  margin: 0;
+  max-width: 40em;
+}
+
+.saidLine {
+  margin: 0;
+}
+
+.saidLine p {
+  margin: 0;
+  font-size: 1.125em;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.saidBy {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font-size: 0.875em;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.saidAvatar,
+.saidAvatarBlank {
+  flex: none;
+  width: 1.75em;
+  height: 1.75em;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--media-bg);
+}
+
+/* Initial in a circle when there is no photo. */
+.saidAvatarBlank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8em;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink-soft);
+}
+
+.saidName {
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Under a grid caption: a size down, so the caption stays the lead. */
+.cardSaid {
+  gap: 0.5em;
+  margin-top: 0.1em;
+}
+
+.cardSaid .saidLine p {
+  font-size: 1em;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.cardSaid .saidBy {
+  font-size: 0.8125em;
+}
+
+.cardSaid .saidAvatar,
+.cardSaid .saidAvatarBlank {
+  width: 1.6em;
+  height: 1.6em;
 }
 
 /* ---------- list view ---------- */
-
-.previewContainer {
-  width: 100%;
-}
-
-.previewComponent {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.follower {
-  position: sticky;
-  top: 5em;
-  left: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 27.25em;
-  height: 30em;
-  aspect-ratio: 1 / 1.25;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.followerInner {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-/* clones of .visual dropped into the follower fill it */
-.followerInner .visual {
-  display: block;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  border-radius: 0 !important;
-}
-
-.collection {
-  width: 100%;
-  max-width: 85.75em;
-}
 
 .list {
   position: relative;
   display: flex;
   flex-flow: column;
-  gap: 0.5em;
   width: 100%;
+  border-top: 1px solid var(--line);
 }
 
 .item {
+  --num-col: 1.5em;
   width: 100%;
+  border-bottom: 1px solid var(--line);
   transition: opacity 0.2s;
 }
 
-@media (hover: hover) and (min-width: 992px) {
-  .list:has(.item:hover) .item:not(:hover) {
-    opacity: 0.5;
-  }
-}
-
-.itemInner {
-  position: relative;
+/* One row: number, name column, description column, arrow. The description
+   column holds the stat over the short line, and the picture under them
+   when open. */
+.row {
+  display: grid;
+  grid-template-columns: var(--num-col) minmax(0, 1fr) minmax(0, 1.4fr) auto;
+  align-items: start;
+  column-gap: 2em;
   width: 100%;
-  border-top: 1px solid var(--line);
-  padding-top: 1.25em;
-  padding-bottom: 1.25em;
-  text-decoration: none;
+  padding: 1.25em 0;
+  cursor: pointer;
 }
 
-.itemRow {
+.row:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px rgb(26 22 19 / 0.35);
+}
+
+.num {
+  padding-top: 0.55em;
+  font-size: 0.75em;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  transition: color 0.25s ease;
+}
+
+.row:hover .num,
+.item.isOpen .num {
+  color: var(--ink);
+}
+
+.nameCol,
+.descCol {
+  min-width: 0;
+}
+
+/* The number sits closer to the name than the other columns do. */
+.nameCol {
+  margin-left: -1em;
+}
+
+.rowHeading {
   display: flex;
   flex-flow: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 2em;
-  width: 100%;
-}
-
-.col {
-  flex: 1;
-  max-width: 27.25em;
-}
-
-.colRight {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.itemHeading {
+  align-items: baseline;
+  gap: 0.6em;
   margin: 0;
-  font-size: 1em;
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--ink);
 }
 
-.itemText {
-  margin: 0;
-  font-size: 1em;
-  font-weight: 400;
+.rowName {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.375em;
+  font-weight: 500;
   line-height: 1.2;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   color: var(--ink);
 }
 
-.serviceList {
+.rowTag {
+  font-size: 0.9375em;
+  line-height: 1.2;
+  color: var(--faint);
+}
+
+.descCol {
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  gap: 0;
+  gap: 0.3em;
+  padding-top: 0.2em;
 }
 
-.service {
-  font-size: 1em;
-  letter-spacing: -0.019em;
+.rowLine {
+  max-width: 34em;
+  margin: 0;
+  font-size: 0.9375em;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* The result, one line over the description, run through with a soft green
+   highlighter: the feature cards' green behind bold ink. */
+.rowStat {
+  display: inline;
+  margin-bottom: 0.35em;
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  background: var(--green);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  font-size: 0.9375em;
+  font-weight: 600;
+  line-height: 1.5;
   color: var(--ink);
 }
 
-.visual {
-  position: absolute;
+.rowStat .resultLabel {
+  color: var(--ink);
+}
+
+.rowArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75em;
+  height: 1.75em;
+  margin-top: 0.1em;
+  color: var(--ink);
+}
+
+.rowArrow svg {
+  width: 1.1em;
+  height: 1.1em;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.2, 1, 0.36, 1);
+}
+
+.rowArrow:hover svg {
+  transform: translate(0.12em, -0.12em);
+}
+
+/* The text under the name and the picture, folded away when closed. GSAP
+   owns display and height. */
+.rowText,
+.rowMedia {
   display: none;
-  width: 20em;
-  aspect-ratio: 1 / 1.25;
+  width: 100%;
+  height: 0;
   overflow: hidden;
-}
-
-.visualImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.visualVideo {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.itemLink {
-  position: absolute;
-  inset: 0;
-}
-
-/* ---------- cursor label ---------- */
-
-.cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100000;
-  padding: 1em 1em 0 0.5em;
-  pointer-events: none;
   opacity: 0;
+}
+
+.rowTextInner {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: 1.25em;
+  padding: 1.25em 0 1em;
+  cursor: auto;
+}
+
+/* GSAP scales the frame and the cover as the row opens. */
+.rowPicture {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  margin: 0.75em 0 0.5em;
+  overflow: hidden;
+  border-radius: var(--media-radius);
+  background: var(--media-bg);
+  will-change: transform, opacity;
+}
+
+.pictureImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   will-change: transform;
 }
 
-.cursorLabel {
-  display: inline-block;
-  padding: 0 0.75em;
-  border-radius: 0.25em;
-  background-color: rgba(255, 255, 255, 0.72);
-  color: var(--ink);
-  font-size: 0.875em;
-  line-height: 1.5;
-  white-space: nowrap;
-}
-
-/* ---------- breakpoints (mirroring the reference) ---------- */
+/* ---------- breakpoints ---------- */
 
 @media screen and (max-width: 991px) {
   .section {
     font-size: 1.615vw;
   }
-  .headline {
-    font-size: 3.25em;
+  .component {
+    grid-template-columns: 1fr;
+    row-gap: 3em;
   }
   .header {
-    flex-flow: column;
-    align-items: flex-start;
+    margin-bottom: 3.5em;
   }
-  .cardTitle {
-    font-size: 1.125em;
+  .aside {
+    position: static;
   }
-
-  .previewComponent {
-    position: relative;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
+  .headline {
+    font-size: 2.5em;
   }
-  .follower {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 10em;
-    height: 12.5em;
-    margin: 0;
+  /* Filters run along one line under the headline. */
+  .filters {
+    padding-top: 1.25em;
   }
-  .list {
-    gap: 1em;
+  .filterList {
+    flex-flow: row wrap;
+    gap: 0.25em 1.75em;
   }
-  .item {
-    border-top: 1px solid var(--line);
-    padding-top: 1em;
-    padding-bottom: 1em;
-  }
-  .item.isInactive {
-    opacity: 0.35;
-  }
-  .item.isActive {
-    opacity: 1;
-  }
-  .itemInner {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    border: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .itemRow {
-    flex-flow: row;
-    gap: 0;
-  }
-  .colLarge {
-    flex: 1;
-    order: -1;
-    width: 100%;
-    max-width: none;
-  }
-  .colSmall {
-    display: flex;
-    flex: 1;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    text-align: right;
-  }
-  .visual {
-    order: -1;
-    width: 10em;
-    height: 12.5em;
-    border-radius: 0.75em;
+  .filterItem {
+    width: auto;
+    padding: 0.3em 0;
   }
 }
 
@@ -555,34 +640,61 @@
   .section {
     font-size: 2.086vw;
   }
-  .headline {
-    font-size: 2.25em;
-  }
   .container {
     padding-top: 5em;
     padding-bottom: 5em;
+  }
+  .headlineFull {
+    display: none;
+  }
+  .headlineShort {
+    display: inline;
+  }
+  /* More air between covers on phones. */
+  .grid {
+    column-gap: 2em;
+    row-gap: 3.5em;
   }
   .paddingGlobal {
     padding-left: 1em;
     padding-right: 1em;
   }
-  .itemInner {
-    gap: 1em;
+  .item {
+    --num-col: 1.25em;
   }
-  .colSmall {
-    flex: 1;
-    width: 100%;
-    max-width: none;
+  .nameCol {
+    margin-left: 0;
   }
-  .itemText {
-    text-align: left;
+  /* Number, name, arrow on the first line; the description column drops
+     under the name, so the picture sits above the text when open. */
+  .row {
+    grid-template-columns: var(--num-col) minmax(0, 1fr) auto;
+    column-gap: 1em;
   }
-  .previewContainer {
-    padding-left: 1em;
-    padding-right: 1em;
+  .descCol {
+    grid-column: 2;
+    grid-row: 2;
   }
-  .tagList {
-    flex-wrap: wrap;
+  .nameCol {
+    display: contents;
+  }
+  .rowHeading {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .rowText {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  .rowArrow {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .descCol {
+    padding-top: 0.35em;
+  }
+  .rowTextInner {
+    padding-top: 1em;
   }
 }
 
@@ -590,64 +702,31 @@
   .section {
     font-size: 3.738vw;
   }
-  .component {
-    gap: 3em;
-    padding-top: 1em;
-  }
   .grid {
-    display: flex;
-    flex-flow: column;
-    gap: 1.5em;
+    grid-template-columns: 1fr;
+    row-gap: 3.5em;
   }
   .cardImage {
-    aspect-ratio: auto;
-    height: 15em;
+    aspect-ratio: 4 / 3;
   }
-  .tabs {
-    padding-top: 6.2em; /* 2.5em gap + 3.7em */
+  .caption {
+    flex-wrap: wrap;
+    row-gap: 0.25em;
   }
-  .tabsMenu {
-    justify-content: flex-start;
+  .captionResult {
+    flex-basis: 100%;
+    margin-left: 0;
   }
-  .hideMobile {
-    display: none !important;
+  .rowName {
+    font-size: 1.375em;
   }
-  .itemHeading {
-    font-size: 0.875em;
-  }
-  .itemText {
-    font-size: 0.875em;
-  }
-  .collection {
-    position: relative;
-  }
-  .list {
-    gap: 0.5em;
-    justify-content: center;
-    align-items: center;
-  }
-  .colSmall {
-    flex: 0 auto;
-    width: auto;
-    text-align: left;
-  }
-  .colSmall.colRight {
-    justify-content: flex-end;
-  }
-  .itemRow {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 2em;
-    column-gap: 0;
-    align-items: center;
-  }
-  .visual {
-    order: 0;
-    width: 10em;
-    height: 12.5em;
-  }
-  .previewContainer {
-    padding-left: 0;
-    padding-right: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .filterItem,
+  .viewLink,
+  .num,
+  .rowArrow svg {
+    transition: none;
   }
 }

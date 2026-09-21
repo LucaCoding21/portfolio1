@@ -69,17 +69,27 @@ export default function VideoCta() {
   return (
     <section ref={sectionRef} className={s.wrap} aria-label="Book a call">
       <div className={s.plate} data-plate>
+        {/* Phones get a 9:16 crop of the 1080p source, panned right onto the
+            bench, so the plate is not upscaling a sliver of the landscape
+            file. The poster is a <picture> for the same reason; the video
+            carries none so it cannot paint the landscape still over it. */}
+        <picture>
+          <source srcSet="/closing-reel-poster-mobile.jpg?v=3" media="(max-width: 767px)" />
+          <img src="/closing-reel-poster.jpg" alt="" aria-hidden className={s.video} />
+        </picture>
         <video
           ref={videoRef}
-          src="/closing-reel.mp4?v=2"
-          poster="/closing-reel-poster.jpg"
           muted
           loop
           playsInline
           preload="metadata"
           className={s.video}
           aria-hidden
-        />
+        >
+          {/* The query is a cache buster: bump it whenever the crop is re-cut. */}
+          <source src="/closing-reel-mobile.mp4?v=3" media="(max-width: 767px)" type="video/mp4" />
+          <source src="/closing-reel.mp4?v=4" type="video/mp4" />
+        </video>
         <div className={s.scrim} />
         <div className={s.content}>
           <p className={s.line} data-rise>

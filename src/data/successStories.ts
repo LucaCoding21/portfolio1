@@ -45,7 +45,8 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     ],
     resultValue: "12 studies",
     resultLabel: "With First Nations leaders across BC, on one platform",
-    image: "/success/transforming-landscapes.webp",
+    // Seawall photo for the card's cover; the reel keeps its own poster.
+    image: "/success/transforming-landscapes-cover.webp",
     video: "/success/transforming-landscapes.mp4",
     href: "/work",
     site: "https://www.transforminglandscapes.ca/",
@@ -56,7 +57,8 @@ export const SUCCESS_STORIES: SuccessStory[] = [
       "Portfolio for a Vancouver concert and wedding photographer, built to feel like the work.",
     resultValue: "3x",
     resultLabel: "Monthly bookings, now fully booked three months out",
-    image: "/success/ace.webp",
+    // Concert photo for the card's cover; the reel keeps its own poster.
+    image: "/success/ace-cover.jpg",
     video: "/success/ace.mp4",
     href: "/work",
     site: "https://acesuasola.com/",
@@ -67,7 +69,8 @@ export const SUCCESS_STORIES: SuccessStory[] = [
       "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
     resultValue: "+21%",
     resultLabel: "More visitors turned into buyers than the old store",
-    image: "/success/caddie-companion.webp",
+    // Product photo for the card's cover; the reel keeps its own poster.
+    image: "/success/caddie-companion-cover.jpg",
     video: "/success/caddie-companion.mp4",
     href: "/work",
     site: "https://www.caddiecompanion.com/",
