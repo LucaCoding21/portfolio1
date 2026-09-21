@@ -160,8 +160,20 @@
 }
 
 /* On phones the two sentences wrap on their own; the forced break would
-   leave a stray short line in the middle. */
+   leave a stray short line in the middle. A size up from the reference's
+   14px so it reads at arm's length. */
 @media (max-width: 767px) {
+  /* The portrait crop puts more bright sky behind the copy, so the pool
+     and the nav band run a little heavier on phones. */
+  .scrim {
+    --scrim: 0.62;
+    --scrim-top: 0.45;
+  }
+  .sub {
+    margin-bottom: 12px;
+    font-size: 16px;
+    line-height: 22px;
+  }
   .sub br {
     display: none;
   }

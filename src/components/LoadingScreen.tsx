@@ -29,9 +29,9 @@ import s from "./LoadingScreen.module.css";
 export const REEL = "/hero-reel.mp4";
 /* The query is a cache buster: bump it whenever the crop is re-cut, or
    phones keep playing the copy they already have. */
-export const REEL_MOBILE = "/hero-reel-mobile.mp4?v=5";
+export const REEL_MOBILE = "/hero-reel-mobile.mp4?v=8";
 export const POSTER = "/hero-reel-poster.jpg";
-export const POSTER_MOBILE = "/hero-reel-poster-mobile.jpg?v=5";
+export const POSTER_MOBILE = "/hero-reel-poster-mobile.jpg?v=8";
 export const MOBILE_MEDIA = "(max-width: 767px)";
 export const LOADER_HANDOFF_EVENT = "lassie:loader-video";
 const MEDIA_TIMEOUT_MS = 2000;

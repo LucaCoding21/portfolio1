@@ -640,15 +640,30 @@
   .section {
     font-size: 2.086vw;
   }
+  /* More air under the nav, less between the headline and the filters. */
   .container {
-    padding-top: 5em;
+    padding-top: 7.5em;
     padding-bottom: 5em;
+  }
+  .header {
+    margin-bottom: 2em;
   }
   .headlineFull {
     display: none;
   }
   .headlineShort {
     display: inline;
+  }
+  /* Sized so each of the short headline's two lines fits a 360px phone. */
+  .headline {
+    font-size: 2.1em;
+  }
+  /* Filters sit close under the headline, chips tighter. */
+  .filters {
+    padding-top: 0.25em;
+  }
+  .filterList {
+    gap: 0.1em 1.25em;
   }
   /* More air between covers on phones. */
   .grid {
@@ -706,16 +721,39 @@
     grid-template-columns: 1fr;
     row-gap: 3.5em;
   }
+  /* The single column's order comes from the component (Bloomkey under ACE). */
+  .card {
+    order: var(--order, 0);
+  }
   .cardImage {
     aspect-ratio: 4 / 3;
   }
+  /* Name, industry and the result on one line: the industry gives way
+     first, then the result's label runs to an ellipsis; the figure and the
+     name always show. */
   .caption {
-    flex-wrap: wrap;
-    row-gap: 0.25em;
+    flex-wrap: nowrap;
+    gap: 0.6em;
+  }
+  .captionTag {
+    flex: 0 4 auto;
   }
   .captionResult {
-    flex-basis: 100%;
-    margin-left: 0;
+    display: block;
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-left: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Each project's comment in its own box. */
+  .cardSaid {
+    gap: 0.5em;
+    margin-top: 0.35em;
+    padding: 0.9em 1em;
+    border: 1px solid rgb(26 22 19 / 0.1);
+    border-radius: 0.9em;
+    background: #fff;
   }
   .rowName {
     font-size: 1.375em;

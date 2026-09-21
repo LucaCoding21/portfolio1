@@ -9,17 +9,12 @@
  * ends flush with the stage, so the next block follows right after it.
  */
 .stage {
-  /* On the stage, not the section: the riding headline sits outside it. */
   --cream: #faf7f3;
   position: relative;
   z-index: 0;
   margin-top: -100svh;
 }
 
-/* The riding copy of the question; only phones show it (see below). */
-.ride {
-  display: none;
-}
 
 .stage::after {
   content: "";
@@ -171,58 +166,27 @@
 }
 
 @media (max-width: 767px) {
-  /* Phones keep the pin, but the question rides the card: a GSAP scrub in
-     HowWeDoIt.tsx holds it just under More Work's bottom edge as that card
-     lifts, so it is the first thing to show, and lands in this resting
-     spot as the card clears while the rows are uncovered beneath it.
-     Tighter gutters so the block runs wider, and the hairlines a tone
-     lighter on the small screen. */
+  /* Phones skip the curtain: the section follows More Work in normal flow,
+     question first, no pin and no hold (a reveal would mean holding the
+     page still while the card lifts, with the question either waiting
+     under a run of paper or hidden behind the rows). Tighter gutters so
+     the block runs wider, and the hairlines a tone lighter. */
+  .stage {
+    margin-top: 0;
+  }
+  .stage::after {
+    display: none;
+  }
   .wrap {
     --rule-color: rgb(17 17 19 / 0.14);
-    padding: 0 1rem 4rem;
+    position: static;
+    min-height: 0;
+    padding: 4rem 1rem 4rem;
   }
-  /* The question sits at the section's very top; the top padding is the
-     air between the card's edge and the type. In the section it is only a
-     spacer: the copy in .ride is the one you see. */
   .headline {
     max-width: none;
-    margin-bottom: 1.5rem;
-    padding: 5rem 0 1.5rem;
+    margin-bottom: 3rem;
     font-size: 15.5vw;
-    visibility: hidden;
-  }
-  /* The ride. The box is anchored at More Work's bottom edge (the stage
-     starts a viewport above it) and is exactly as tall as the question, so
-     the sticky copy inside comes up under the card's edge, holds at the top
-     of the screen once it gets there (where the spacer sits in the pinned
-     section) and lets go the moment the section does, travelling on with
-     it. A paper plate, above the rows it uncovers. */
-  .ride {
-    display: block;
-    position: absolute;
-    top: 100svh;
-    left: 0;
-    right: 0;
-    z-index: 2;
-    padding: 0 1rem;
-    pointer-events: none;
-  }
-  .rideHeadline {
-    position: sticky;
-    top: 0;
-    margin-bottom: 0;
-    background: var(--cream);
-    visibility: visible;
-  }
-  /* Reaches up under the card so nothing shows through its rounded corners. */
-  .rideHeadline::before {
-    content: "";
-    position: absolute;
-    left: -1rem;
-    right: -1rem;
-    top: -4rem;
-    height: 4rem;
-    background: var(--cream);
   }
   .row {
     grid-template-columns: 1fr;

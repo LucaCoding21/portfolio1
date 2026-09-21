@@ -9,12 +9,8 @@
  * The stage starts one viewport early, tucked behind the card, and carries a
  * trailing viewport of run (a sticky child only holds inside its parent's
  * content box) that the section itself ends up covering once it lets go.
- * On phones the question rides the card's edge instead of waiting under it:
- * a copy of it sits in an absolutely placed box anchored at the card's
- * bottom edge and is sticky within it, so it comes up with the card, lands
- * at the top of the pinned section and from then on travels with it (the
- * section's own headline is an invisible spacer there). Pure layout, no
- * scroll listener, so it tracks the card to the pixel on any phone.
+ * Phones skip the curtain and run the section in normal flow (see the
+ * stylesheet).
  *
  * Top left, the question in oversized grotesque, its first line spread edge
  * to edge of its own column and the shorter lines flush left. Under it the
@@ -73,9 +69,9 @@ const PHASES: { name: string; body: string; note?: string | string[]; video: str
   },
 ];
 
-function Headline({ className }: { className?: string }) {
+function Headline() {
   return (
-    <h2 className={`${s.headline} ${className ?? ""}`}>
+    <h2 className={s.headline}>
       {LINES.map((words, i) => (
         <span key={i} className={`${s.line} ${i === 0 ? s.spread : ""}`}>
           {words.map((word, j) => (
@@ -205,10 +201,6 @@ export default function HowWeDoIt() {
           ))}
         </ol>
       </section>
-      {/* Phones only: the copy of the question that rides the card's edge. */}
-      <div className={s.ride} aria-hidden="true">
-        <Headline className={s.rideHeadline} />
-      </div>
     </div>
   );
 }

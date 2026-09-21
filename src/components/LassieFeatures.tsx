@@ -48,17 +48,18 @@ const EXTRA = CARDS.length - 3;
    the same share so the moves themselves keep their pace. */
 const HOLD = 1.2;
 
+/* Both run only on a change of state (see setLive), never per frame: a
+   play() on a phone reports `paused` for a moment while it starts, and
+   resetting the time on every scrub frame kept the reel stuck on frame 0. */
 const play = (v: HTMLVideoElement | null) => {
-  if (v && v.paused) {
-    v.currentTime = 0;
-    v.play().catch(() => {});
-  }
+  if (!v) return;
+  v.currentTime = 0;
+  v.play().catch(() => {});
 };
 const pause = (v: HTMLVideoElement | null) => {
-  if (v && !v.paused) {
-    v.currentTime = 0;
-    v.pause();
-  }
+  if (!v) return;
+  v.pause();
+  v.currentTime = 0;
 };
 
 export default function LassieFeatures({ ready }: { ready: boolean }) {
@@ -82,7 +83,13 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     const hold = w() < BP.tablet ? HOLD : 0;
     const stretch = (2 + hold) / 2;
 
+    // Called on every scrub frame by the timelines below, so it only does
+    // work when the state actually flips.
+    const live = new WeakSet<HTMLElement>();
     const setLive = (el: HTMLElement, on: boolean) => {
+      if (live.has(el) === on) return;
+      if (on) live.add(el);
+      else live.delete(el);
       el.classList.toggle(s.isLive, on);
       el.style.pointerEvents = on ? "auto" : "none";
       const reel = el.querySelector<HTMLVideoElement>("video");
@@ -95,13 +102,13 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
       const media = el.querySelector<HTMLElement>(`.${s.media}`);
       const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+      // Live from halfway in, and it stays live (onComplete covers a flick
+      // that skips straight past the window, and the hold after it); the
+      // lift turns it off again.
       const tl = gsap.timeline({
         defaults: { ease: "none" },
-        onUpdate: () => {
-          const p = tl.progress();
-          if (p > 0.5 && p < 0.8) setLive(el, true);
-          if (p < 0.5) setLive(el, false);
-        },
+        onUpdate: () => setLive(el, tl.progress() >= 0.5),
+        onComplete: () => setLive(el, true),
       });
       if (!plate || !media || !desc) return tl;
       const below = w() < BP.desktop;
@@ -231,13 +238,16 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         invalidateOnRefresh: true,
       });
 
+      // Touch screens scrub straight off the finger; a mouse wheel gets the
+      // reference's short smoothing.
+      const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
       const master = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: carousel,
           start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
           end: () => `+=${(3 + EXTRA) * vh() * stretch}`,
-          scrub: 0.25,
+          scrub: touch ? true : 0.25,
           invalidateOnRefresh: true,
         },
       });
@@ -296,7 +306,8 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
                 <div className={s.reelSlot}>
                   <div className={s.reel}>
                     <div className={s.reelVideo}>
-                      <video src={card.story.video} loop muted playsInline preload="metadata" />
+                      {/* Buffered up front so the first frames are there the moment a card goes live. */}
+                      <video src={card.story.video} loop muted playsInline preload="auto" />
                     </div>
                   </div>
                 </div>
