@@ -408,28 +408,35 @@
   backdrop-filter: blur(2px);
 }
 
-/* Below desktop the copy sits under the plate instead of above it (the
-   owner's call for phones), and the pair is centred in the viewport while
-   the carousel is pinned. The pinned carousel starts at 50svh - 50vw, the
-   plate is the inner box's height (width capped at 468px, aspect 362/346)
-   and 225px covers the gap plus the tallest description. The block sits
-   48px above true centre (it reads better under the nav); on short phones
-   it instead starts just under the nav (76px). */
+/* Below desktop the copy sits above the plate (as in the base rule) and the
+   pair is centred in the viewport while the carousel is pinned. The pinned
+   carousel starts at 50svh - 50vw, the plate is the inner box's height
+   (width capped at 468px, aspect 362/346) and --copy-h covers the tallest
+   description (160px at 390) plus the 25px gap. The block sits 48px above
+   true centre (it reads better under the nav); on short phones the copy
+   instead starts just under the nav (76px). --card-top is where the plate
+   starts, so --copy-h is added on top of the block's start. */
 @media (max-width: 1023px) {
   .section {
     --plate-h: calc(min(100vw - 32px, 468px) * 0.956);
+    --copy-h: 185px;
     /* Where the first card sits above the carousel's top edge (negative on
        most phones). */
-    --card-top: max(calc(76px - 50svh + 50vw), calc(50vw - (var(--plate-h) + 225px) / 2 - 48px));
+    --card-top: max(
+      calc(76px - 50svh + 50vw + var(--copy-h)),
+      calc(50vw - (var(--plate-h) - var(--copy-h)) / 2 - 48px)
+    );
   }
   .card {
     top: var(--card-top);
   }
-  /* The card overhangs the carousel by that much, so the intro keeps at
-     least that plus a gap under the title; otherwise the first cover rides
-     over "selected works" on the way in. */
+  /* The card overhangs the carousel by that much plus the copy above the
+     plate, so the intro keeps at least that plus a small gap under the
+     title; otherwise the first card rides over "selected works" on the way
+     in. The first card's copy is visible from the start (see start() in
+     the component), so the gap reads as copy, not blank. */
   .intro {
-    margin-bottom: max(80px, calc(32px - var(--card-top)));
+    margin-bottom: max(80px, calc(24px + var(--copy-h) - var(--card-top)));
   }
   /* Tighter run-out under the last card on phones. Above the How We Do It
      stage, which starts a viewport before More Work's bottom edge and so
@@ -439,18 +446,16 @@
     position: relative;
     z-index: 1;
     margin-bottom: 0;
-    /* The last card's copy hangs under its plate, past the carousel's box
-       on short phones (card top + plate + gap and the tallest copy, less
-       the box's height), and More Work would paint over its last line. */
-    padding-bottom: max(32px, calc(var(--card-top) + var(--plate-h) + 225px - 100vw + 24px));
+    /* The last card's plate can run past the carousel's box on short
+       phones (card top + plate, less the box's height), and More Work
+       would paint over its bottom edge. */
+    padding-bottom: max(32px, calc(var(--card-top) + var(--plate-h) - 100vw + 24px));
   }
   .description,
   .description.isRight {
-    top: auto;
-    bottom: -25px;
+    top: -25px;
     width: auto;
     max-width: 100%;
-    transform: translateY(100%);
   }
   /* The result reads as one line: chip, then its label beside it. */
   .cardResult {

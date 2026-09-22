@@ -58,6 +58,30 @@ export const projects: Project[] = [
     ],
   },
   {
+    id: 12,
+    name: "Innovative Aluminum",
+    description: "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
+    kpis: ["$5M+ lifetime value of dealer accounts signed in the first 90 days"],
+    metrics: [
+      { value: "$5M+", label: "Lifetime value of dealer accounts signed in the first 90 days" },
+    ],
+    tags: ["Local Business"],
+    image: "/success/innovative-aluminum.webp",
+    url: "https://www.innovativealuminum.com/",
+  },
+  {
+    id: 13,
+    name: "Caddie Companion",
+    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+    kpis: ["+21% more visitors turned into buyers than the old store"],
+    metrics: [
+      { value: "+21%", label: "More visitors turned into buyers than the old store" },
+    ],
+    tags: ["Ecommerce"],
+    image: "/success/caddie-companion-cover.jpg",
+    url: "https://www.caddiecompanion.com/",
+  },
+  {
     id: 10,
     name: "Bloomkey",
     description: "Floral studio crafting bespoke arrangements for weddings and events.",
@@ -155,29 +179,30 @@ export const projects: Project[] = [
       avatar: "/nancy-headshot.webp",
     },
   },
-  {
-    id: 3,
-    name: "League1v1",
-    description: "Vancouver's competitive basketball league, built for players, sponsors, and the game.",
-    kpis: ["Built in 5 days", "$12k in sponsorship revenue"],
-    metrics: [
-      { value: "5 days", label: "Build time" },
-      { value: "$12k", label: "Sponsorship revenue" },
-    ],
-    tags: ["Sports & Events"],
-    image: "/league1v1-cover.webp",
-    hoverImage: "/league1v1.webp",
-    url: "https://league1v1.com/",
-    quote: {
-      texts: ["Dude I honestly didn't think we needed a website, im glad you guys proved me wrong"],
-      author: "Jacob Abraham",
-      role: "Co-founder, League1v1",
-      avatar: "/league1v1-headshot.webp",
-    },
-  },
+  // League1v1 is off the site for now (owner's call, September 2026).
+  // {
+  //   id: 3,
+  //   name: "League1v1",
+  //   description: "Vancouver's competitive basketball league, built for players, sponsors, and the game.",
+  //   kpis: ["Built in 5 days", "$12k in sponsorship revenue"],
+  //   metrics: [
+  //     { value: "5 days", label: "Build time" },
+  //     { value: "$12k", label: "Sponsorship revenue" },
+  //   ],
+  //   tags: ["Sports & Events"],
+  //   image: "/league1v1-cover.webp",
+  //   hoverImage: "/league1v1.webp",
+  //   url: "https://league1v1.com/",
+  //   quote: {
+  //     texts: ["Dude I honestly didn't think we needed a website, im glad you guys proved me wrong"],
+  //     author: "Jacob Abraham",
+  //     role: "Co-founder, League1v1",
+  //     avatar: "/league1v1-headshot.webp",
+  //   },
+  // },
 ];
 
-export const HOMEPAGE_PROJECT_IDS = [9, 1, 3, 4, 8];
+export const HOMEPAGE_PROJECT_IDS = [9, 1, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );

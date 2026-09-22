@@ -65,6 +65,9 @@ const REELS: Record<number, { video: string; poster: string }> = {
     poster: "/success/transforming-landscapes.webp",
   },
   1: { video: "/success/ace.mp4", poster: "/success/ace.webp" },
+  12: { video: "/success/innovative-aluminum.mp4", poster: "/success/innovative-aluminum.webp" },
+  // The product photo stays as the cover; the reel plays over it on hover.
+  13: { video: "/success/caddie-companion.mp4", poster: "/success/caddie-companion-cover.jpg" },
 };
 
 /**

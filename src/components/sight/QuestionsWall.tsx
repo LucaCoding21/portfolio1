@@ -36,14 +36,14 @@ const FADE = 240;
 function Pill({ q, before }: Q) {
   return (
     <li
-      className="sight-app sight-pill flex shrink-0 cursor-default items-center gap-3 rounded-full border bg-white py-3.5 pl-6 pr-3 shadow-[0_1px_2px_0_rgba(20,24,33,0.04)]"
+      className="sight-app sight-pill flex shrink-0 cursor-default items-center gap-2.5 rounded-full border bg-white py-2.5 pl-4 pr-2 shadow-[0_1px_2px_0_rgba(20,24,33,0.04)] md:gap-3 md:py-3.5 md:pl-6 md:pr-3"
       style={{ borderColor: "#ECEDEF" }}
     >
       <span className="shrink-0" style={{ color: T.BLUE }}>
         <Spark className="h-4 w-4" />
       </span>
       {/* The question sets the width; the "before" line sits on top of it */}
-      <span className="relative block whitespace-nowrap text-[17px] font-medium">
+      <span className="relative block whitespace-nowrap text-[14px] font-medium md:text-[17px]">
         <span className="sight-pill-q block" style={{ color: T.INK }}>
           {q}
         </span>
@@ -56,7 +56,7 @@ function Pill({ q, before }: Q) {
         </span>
       </span>
       <span
-        className="sight-pill-send flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+        className="sight-pill-send flex h-8 w-8 shrink-0 items-center justify-center rounded-full md:h-10 md:w-10"
         style={{ backgroundColor: `${T.BLUE}14`, color: T.BLUE }}
       >
         <Icon d={P.arrowUp} className="h-4 w-4" strokeWidth={2} />
@@ -126,7 +126,7 @@ export default function QuestionsWall() {
   const rows = TRADES[shown].rows;
 
   return (
-    <section ref={sectionRef} id="questions" className="scroll-mt-24 pb-14 pt-28 md:pb-20 md:pt-40">
+    <section ref={sectionRef} id="questions" className="scroll-mt-24 pb-14 pt-10 md:pb-20 md:pt-40">
       <Cinematic className="mx-auto max-w-[52rem] px-6 text-center md:px-10">
         <Words
           className="font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"
@@ -190,7 +190,7 @@ export default function QuestionsWall() {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="sight-wall-rows flex flex-col gap-4" data-fading={fading || undefined}>
+        <div className="sight-wall-rows flex flex-col gap-3 md:gap-4" data-fading={fading || undefined}>
           {rows.map((items, i) => (
             <Row
               key={`${TRADES[shown].id}-${i}`}

@@ -77,7 +77,7 @@
   pointer-events: none;
   background:
     radial-gradient(
-      ellipse 62% 58% at 50% 50%,
+      ellipse 54% 50% at 50% 50%,
       rgba(26, 22, 19, var(--scrim)) 0%,
       rgba(26, 22, 19, calc(var(--scrim) * 0.6)) 40%,
       rgba(26, 22, 19, 0) 100%
@@ -163,10 +163,10 @@
    leave a stray short line in the middle. A size up from the reference's
    14px so it reads at arm's length. */
 @media (max-width: 767px) {
-  /* The portrait crop puts more bright sky behind the copy, so the pool
-     and the nav band run a little heavier on phones. */
+  /* The pool read as a visible dark blob on phones, so it runs lighter
+     than desktop there; the nav band stays heavier for the bright sky. */
   .scrim {
-    --scrim: 0.62;
+    --scrim: 0.38;
     --scrim-top: 0.45;
   }
   .sub {

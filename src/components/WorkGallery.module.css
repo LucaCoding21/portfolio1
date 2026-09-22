@@ -227,7 +227,9 @@
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, …): a track never grows past the container for a long
+     unbreakable line inside a card (the one-line attribution on phones). */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   grid-auto-rows: auto;
   column-gap: 1.5em;
   row-gap: 2.5em;
@@ -240,6 +242,7 @@
   flex-flow: column;
   align-items: stretch;
   gap: 0.9em;
+  min-width: 0;
 }
 
 .cardImage {
@@ -280,7 +283,7 @@
 }
 
 /* One line under the cover: index, name, industry, and the result at the end. */
-.caption {
+.captionRow {
   display: flex;
   align-items: baseline;
   gap: 0.75em;
@@ -288,6 +291,19 @@
   min-width: 0;
   font-size: 1em;
   line-height: 1.3;
+}
+
+/* Name and industry are items of the row themselves; phones group them. */
+.captionHead {
+  display: contents;
+}
+
+/* the result, at the far end of the row */
+.caption {
+  display: flex;
+  flex: none;
+  min-width: 0;
+  margin-left: auto;
 }
 
 .captionName {
@@ -311,8 +327,6 @@
 }
 
 .captionResult {
-  flex: none;
-  margin-left: auto;
   white-space: nowrap;
 }
 
@@ -718,42 +732,81 @@
     font-size: 3.738vw;
   }
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     row-gap: 3.5em;
   }
   /* The single column's order comes from the component (Bloomkey under ACE). */
   .card {
     order: var(--order, 0);
   }
+  /* Shorter cover, so name, cover, result and comment fit one screen. */
   .cardImage {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 3 / 2;
   }
-  /* Name, industry and the result on one line: the industry gives way
-     first, then the result's label runs to an ellipsis; the figure and the
-     name always show. */
-  .caption {
-    flex-wrap: nowrap;
+  /* The card reads name and industry, cover, result, comment. The row
+     wrapper dissolves so its parts can be ordered around the cover; the
+     name and industry stay one line (the industry gives way, to an
+     ellipsis, before the name does). */
+  .captionRow {
+    display: contents;
+  }
+  .captionHead {
+    display: flex;
+    align-items: baseline;
+    order: 0;
     gap: 0.6em;
+    min-width: 0;
+    font-size: 1em;
+    line-height: 1.3;
   }
-  .captionTag {
-    flex: 0 4 auto;
+  .captionName {
+    font-size: 1.2em;
+    line-height: 1.2;
+  }
+  .cardImage {
+    order: 1;
+  }
+  .caption {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+    font-size: 1em;
+    line-height: 1.3;
   }
   .captionResult {
-    display: block;
-    flex: 0 1 auto;
+    white-space: normal;
+  }
+  .cardSaid {
+    order: 3;
+  }
+  /* Each project's comment on a soft plate: the line first, then one
+     muted line of who said it, no photo. */
+  .cardSaid {
+    gap: 0.45em;
+    margin-top: 0.25em;
+    padding: 0.9em 1em;
+    border-radius: 0.5em;
+    background: rgb(26 22 19 / 0.04);
+  }
+  .cardSaid .saidLine {
+    order: 0;
+  }
+  .cardSaid .saidLine p {
+    color: var(--ink);
+  }
+  .cardSaid .saidBy {
+    order: 1;
+    font-size: 0.8125em;
+  }
+  .cardSaid .saidAvatar,
+  .cardSaid .saidAvatarBlank {
+    display: none;
+  }
+  .cardSaid .saidBy > span {
     min-width: 0;
-    margin-left: auto;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  /* Each project's comment in its own box. */
-  .cardSaid {
-    gap: 0.5em;
-    margin-top: 0.35em;
-    padding: 0.9em 1em;
-    border: 1px solid rgb(26 22 19 / 0.1);
-    border-radius: 0.9em;
-    background: #fff;
+    white-space: nowrap;
   }
   .rowName {
     font-size: 1.375em;

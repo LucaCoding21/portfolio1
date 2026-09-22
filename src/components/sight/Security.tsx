@@ -188,7 +188,7 @@ function Glyph({
     <svg
       data-glyph
       viewBox={`0 0 ${size} ${size}`}
-      className="w-full max-w-[148px]"
+      className="w-full max-w-[148px] max-sm:w-[56px] max-sm:shrink-0"
       aria-hidden="true"
       fill={color}
     >
@@ -354,24 +354,28 @@ export default function Security() {
           </p>
         </Cinematic>
 
-        {/* the proof */}
+        {/* the proof. Phones run it as a list: a small glyph beside each
+            title and caption, a hairline between rows. From sm it is the
+            grid of big glyphs. */}
         <div
           data-row
-          className="mt-12 grid grid-cols-2 gap-x-5 gap-y-12 border-t border-[var(--line)] pt-12 sm:grid-cols-3 md:mt-14 md:pt-16 lg:grid-cols-5 lg:gap-x-8"
+          className="mt-10 grid grid-cols-1 border-t border-[var(--line)] sm:mt-12 sm:grid-cols-3 sm:gap-x-5 sm:gap-y-12 sm:pt-12 md:mt-14 md:pt-16 lg:grid-cols-5 lg:gap-x-8"
         >
           {ITEMS.map((item) => (
             <div
               key={item.title}
               data-item
-              className="flex flex-col items-center text-center"
+              className="flex items-center gap-5 border-b border-[var(--line)] py-5 max-sm:last:border-b-0 sm:flex-col sm:items-center sm:gap-0 sm:border-b-0 sm:py-0 sm:text-center"
             >
               <Glyph rows={item.glyph} color={item.color} />
-              <p className="mt-7 text-[1rem] font-medium leading-snug text-[var(--ink)]">
-                {item.title}
-              </p>
-              <p className="mt-1.5 max-w-[14rem] text-[0.86rem] leading-[1.5] text-[var(--ink-soft)]">
-                {item.caption}
-              </p>
+              <div className="min-w-0">
+                <p className="text-[1rem] font-medium leading-snug text-[var(--ink)] sm:mt-7">
+                  {item.title}
+                </p>
+                <p className="mt-1 max-w-[14rem] text-[0.86rem] leading-[1.5] text-[var(--ink-soft)] sm:mt-1.5">
+                  {item.caption}
+                </p>
+              </div>
             </div>
           ))}
         </div>

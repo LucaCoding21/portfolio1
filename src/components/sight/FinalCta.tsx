@@ -147,7 +147,7 @@ export default function FinalCta() {
       <div className="relative flex min-h-[92vh] items-center justify-center px-6 py-28 md:py-40">
         <div
           data-cta-card
-          className="w-full max-w-[640px] rounded-[2rem] bg-white p-8 text-center shadow-[0_24px_70px_-24px_rgba(20,24,33,0.32)] md:p-14"
+          className="w-full max-w-[640px] rounded-2xl bg-white p-8 text-center shadow-[0_10px_30px_-18px_rgba(20,24,33,0.16)] md:rounded-[2rem] md:p-14 md:shadow-[0_24px_70px_-24px_rgba(20,24,33,0.32)]"
         >
           <Cinematic start="top 85%">
             <Words
@@ -161,7 +161,7 @@ export default function FinalCta() {
           {/* the ask bar, with the reader's questions typing themselves in */}
           <div
             aria-hidden="true"
-            className="mx-auto mt-8 flex max-w-[30rem] items-center gap-3 rounded-full border border-[var(--line)] bg-white py-2.5 pl-5 pr-2.5 text-left shadow-[0_8px_24px_-14px_rgba(20,24,33,0.25)]"
+            className="mx-auto mt-8 flex max-w-[30rem] items-center gap-3 rounded-full border border-[var(--line)] bg-white py-2.5 pl-5 pr-2.5 text-left shadow-[0_2px_8px_-4px_rgba(20,24,33,0.12)] md:shadow-[0_8px_24px_-14px_rgba(20,24,33,0.25)]"
           >
             <span className="flex min-w-0 flex-1 items-center text-[0.98rem] text-[var(--ink)]">
               <span data-typed className="truncate" />

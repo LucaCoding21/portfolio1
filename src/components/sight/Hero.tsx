@@ -230,13 +230,15 @@ export default function Hero() {
 
     // The whole trio (card + both photos) drifts slightly down-left with
     // the scroll. Lives on the shared wrapper so it never touches the
-    // tuck timeline below.
+    // tuck timeline below. Phones only drift down: the card is centred
+    // there and a sideways move reads as off-centre.
+    const wide = window.matchMedia("(min-width: 768px)").matches;
     if (drift) {
       gsap.fromTo(
         drift,
         { x: 0, y: 0 },
         {
-          x: -34,
+          x: wide ? -34 : 0,
           y: 52,
           ease: "none",
           scrollTrigger: {
@@ -350,15 +352,14 @@ export default function Hero() {
                 connects the tools you already use and just answers.
               </p>
 
-              <div data-slide className="mt-8 flex flex-wrap items-center gap-3">
+              {/* On phones the credit sits centred right under the button; from
+                  md it is its own line under the button row. */}
+              <div data-slide className="mt-8 inline-flex flex-col items-center gap-2.5 md:items-start md:gap-5">
                 <Pill href={BOOK_URL} variant="primary">
                   Book a demo
                 </Pill>
+                <p className="text-[0.875rem] text-[var(--ink-faint)]">Built by Cloverfield</p>
               </div>
-
-              <p data-slide className="mt-5 text-[0.875rem] text-[var(--ink-faint)]">
-                Built by Cloverfield
-              </p>
             </Cinematic>
           </div>
 
@@ -415,7 +416,7 @@ export default function Hero() {
           </div>
 
           {/* Story — one screen next to the pinned card */}
-          <div className="pb-24 pt-24 md:col-start-1 md:row-start-2 md:-ml-16 md:flex md:min-h-screen md:flex-col md:justify-center md:translate-y-[10vh] md:pb-[8vh] md:pt-0 lg:-ml-28">
+          <div className="pb-20 pt-24 md:col-start-1 md:row-start-2 md:-ml-16 md:flex md:min-h-screen md:flex-col md:justify-center md:translate-y-[10vh] md:pb-[8vh] md:pt-0 lg:-ml-28">
             <Cinematic>
               <Words
                 className="font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]"

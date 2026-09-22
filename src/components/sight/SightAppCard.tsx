@@ -16,7 +16,8 @@ import {
  * built as real DOM animated with GSAP. Pauses off-screen; with
  * prefers-reduced-motion it holds the completed first answer. The panel
  * is height-locked (min-h) so the hero's scroll choreography keeps the
- * same footprint it was tuned against.
+ * same footprint it was tuned against; phones, where it just sits in the
+ * flow between the copy and the story, get a shorter lock.
  */
 
 /* ---------- product tokens (hex from the app's CSS variables) ---------- */
@@ -411,7 +412,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
           choreography was tuned against. */}
       <div
         data-card-shell
-        className="flex min-h-[640px] flex-col rounded-2xl border bg-white p-4 shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_24px_60px_-24px_rgba(20,24,33,0.28)]"
+        className="flex min-h-[420px] flex-col rounded-2xl border bg-white p-4 shadow-[0_1px_2px_0_rgba(20,24,33,0.05),0_24px_60px_-24px_rgba(20,24,33,0.28)] md:min-h-[640px]"
         style={{ borderColor: `${LINE}b3` }}
       >
         {/* The Ask box */}

@@ -245,14 +245,16 @@ export default function Faq() {
     >
       <div className="mx-auto w-[95%] max-w-[1280px]">
         {/* the painted field, with one app window on it */}
-        <div data-band className="relative overflow-hidden rounded-[2rem]">
+        {/* Phones drop the painting (a flat surface behind the window) and
+            run a tighter corner. */}
+        <div data-band className="relative overflow-hidden rounded-2xl bg-[var(--surface)] md:rounded-[2rem]">
           {/* the painting is portrait and the band is wide, so a single
               cover crop blows it up ~3×. Five copies at a fixed height,
               every other one mirrored, tile across with no seam. The
               height is fixed and the strip is pinned to the top, so opening an
               answer reveals more paint instead of rescaling it. */}
           <div
-            className="absolute inset-0 overflow-hidden bg-[#2b4a7a]"
+            className="absolute inset-0 hidden overflow-hidden bg-[#2b4a7a] md:block"
             aria-hidden="true"
           >
             <div
@@ -273,7 +275,7 @@ export default function Faq() {
               ))}
             </div>
           </div>
-          <div className="relative z-10 flex justify-center px-4 py-10 md:px-10 md:py-16 lg:py-20">
+          <div className="relative z-10 flex justify-center px-3 py-6 md:px-10 md:py-16 lg:py-20">
             <div data-window className="w-full max-w-[1040px]">
               <AppPanel pad={false}>
                 <div className="grid gap-10 px-6 py-8 md:px-10 md:py-12 lg:grid-cols-[1fr_1.2fr] lg:gap-16 lg:px-14 lg:py-14">

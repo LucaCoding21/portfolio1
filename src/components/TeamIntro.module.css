@@ -117,11 +117,13 @@
 
 @media (max-width: 767px) {
   .wrap {
-    padding: 4rem 1.5rem 7rem;
+    padding: 4rem 1.5rem 4rem;
   }
   .inner {
     grid-template-columns: 1fr;
-    row-gap: 4.5rem;
+    /* The designer label hangs under the photo (top 103%), so the copy
+       needs the extra room or it crowds the handwriting. */
+    row-gap: 5rem;
     padding-right: 0;
   }
   .copy {

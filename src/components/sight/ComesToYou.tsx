@@ -263,7 +263,7 @@ export default function ComesToYou() {
     <section
       ref={scope}
       id="comes-to-you"
-      className="scroll-mt-24 pb-28 pt-16 md:pb-40 md:pt-20"
+      className="scroll-mt-24 pb-20 pt-16 md:pb-40 md:pt-20"
     >
       <p className="sr-only">
         Sight keeps an eye on the small things that slip when you are busy,
@@ -302,7 +302,7 @@ export default function ComesToYou() {
             <article key={title} data-moment className="flex min-w-0 flex-col">
               <div
                 aria-hidden="true"
-                className="relative flex h-[400px] items-center overflow-hidden rounded-2xl px-5 shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)]"
+                className="relative flex h-[400px] items-center overflow-hidden rounded-2xl px-5 shadow-[0_8px_20px_-12px_rgba(20,24,33,0.18)] md:shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)]"
               >
                 <Image
                   src={src}
@@ -316,10 +316,10 @@ export default function ComesToYou() {
                   {window}
                 </div>
               </div>
-              <h3 className="mt-6 text-[1.15rem] font-medium leading-snug tracking-[-0.01em] text-[var(--ink)]">
+              <h3 className="mt-4 text-[1.15rem] font-semibold leading-snug tracking-[-0.01em] text-[var(--ink)]">
                 {title}
               </h3>
-              <p className="mt-2 text-[0.98rem] leading-[1.55] text-[var(--ink-soft)]">
+              <p className="mt-1 text-[0.98rem] leading-[1.55] text-[var(--ink-soft)]">
                 {caption}
               </p>
             </article>

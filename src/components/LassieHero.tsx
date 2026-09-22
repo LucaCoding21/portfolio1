@@ -94,21 +94,16 @@ export default function LassieHero({ ready }: { ready: boolean }) {
     setVars();
     window.addEventListener("resize", setVars);
 
-    // Play only once the video can run and no zoom is in flight, so the first
-    // decoded frames never land mid-transition on a cold load. The poster
-    // covers until then. Fallback timer for browsers that only buffer on play().
+    // Play as soon as the hero is on screen and no zoom is in flight. The
+    // video is transparent until its first frame decodes, so the poster
+    // covers the wait and nothing lands mid-transition. Don't gate this on
+    // canplay: iOS Safari only buffers once play() is called, so waiting
+    // for it left the poster up for the whole fallback timer on a refresh.
     let inHero = false;
     let zooming = false;
-    let videoOk = !!video && video.readyState >= 3;
     const tryPlay = () => {
-      if (video && videoOk && inHero && !zooming) video.play().catch(() => {});
+      if (video && inHero && !zooming) video.play().catch(() => {});
     };
-    const onCanPlay = () => {
-      videoOk = true;
-      tryPlay();
-    };
-    video?.addEventListener("canplay", onCanPlay, { once: true });
-    const fallback = window.setTimeout(onCanPlay, 3000);
     const onTrStart = (e: TransitionEvent) => {
       if (e.target === plate && e.propertyName === "transform") zooming = true;
     };
@@ -127,7 +122,6 @@ export default function LassieHero({ ready }: { ready: boolean }) {
     const onHandoff = (e: Event) => {
       const time = (e as CustomEvent<{ time: number }>).detail?.time;
       if (!video || typeof time !== "number") return;
-      videoOk = true;
       try {
         video.currentTime = time;
       } catch {}
@@ -174,8 +168,6 @@ export default function LassieHero({ ready }: { ready: boolean }) {
     return () => {
       window.removeEventListener("resize", setVars);
       window.removeEventListener(LOADER_HANDOFF_EVENT, onHandoff);
-      window.clearTimeout(fallback);
-      video?.removeEventListener("canplay", onCanPlay);
       plate.removeEventListener("transitionstart", onTrStart);
       plate.removeEventListener("transitionend", onTrDone);
       plate.removeEventListener("transitioncancel", onTrDone);

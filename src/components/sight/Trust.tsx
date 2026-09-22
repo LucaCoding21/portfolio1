@@ -39,7 +39,7 @@ function LogoRow({ logos, hidden }: { logos: typeof LOGOS; hidden?: boolean }) {
       {[...logos, ...logos].map(({ name, src, h, white }, i) => (
         <li
           key={`${name}-${i}`}
-          className="flex shrink-0 items-center px-10 md:px-12"
+          className="flex shrink-0 items-center px-6 md:px-12"
         >
           <Image
             src={src}
@@ -178,7 +178,7 @@ export default function Trust() {
 
               <div
                 data-layer-photo
-                className="absolute bottom-[8%] left-0 aspect-[4/5] w-[50%] rounded-md shadow-[0_12px_32px_-16px_rgba(32,33,36,0.22)]"
+                className="absolute bottom-[6%] left-[6%] aspect-[4/5] w-[64%] rounded-md shadow-[0_12px_32px_-16px_rgba(32,33,36,0.22)] md:bottom-[8%] md:left-0 md:w-[50%]"
               >
                 {/* Mask wipes open on scroll; the image inside counter-zooms. */}
                 <div
@@ -190,7 +190,7 @@ export default function Trust() {
                       src="/sight/founders-crop.webp"
                       alt="William and Irish, founder and co-founder of Cloverfield"
                       fill
-                      sizes="(min-width: 1024px) 320px, 50vw"
+                      sizes="(min-width: 1024px) 320px, 64vw"
                       className="object-cover"
                     />
                   </div>

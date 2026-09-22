@@ -276,6 +276,13 @@
 .sight-logo.brightness-0 {
   filter: brightness(0);
 }
+/* Phones: the marks run smaller so more of them sit in frame. The width
+   follows from the used height, so the art keeps its proportions. */
+@media (max-width: 767px) {
+  .sight-logo {
+    max-height: 2.4rem;
+  }
+}
 
 /* ================================
    HOW IT WORKS — stacked feature cards
@@ -439,8 +446,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 400px;
-  max-width: 100%;
+  /* max-width, not width: a fixed width counts as the column's minimum
+     and pushed the card past the screen on phones. */
+  width: 100%;
+  max-width: 400px;
 }
 .hiw-callout-label {
   margin: 0 0 -2px;
@@ -616,8 +625,12 @@
     border-radius: 0 0 1.75rem 1.75rem;
   }
   .hiw-item {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     border-radius: 1.75rem 1.75rem 0 0;
+  }
+  .hiw-left,
+  .hiw-right {
+    min-width: 0;
   }
   .hiw-left {
     gap: 64px;
@@ -657,19 +670,48 @@
   .hiw-theme:last-child {
     border-radius: 0 0 1.5rem 1.5rem;
   }
+  /* Phones don't stack the cards (they're static, not sticky), so each one
+     is a rounded block in its own right: paint the background through the
+     bottom strip the next card rides over, and round all four corners.
+     Without this the painted box ended square right where the next card's
+     rounded top corners cut in, which read as a broken corner. */
   .hiw-item {
-    border-radius: 1.5rem 1.5rem 0 0;
+    background-clip: border-box;
+    border-radius: 1.5rem;
+  }
+  /* The image goes between the description and the call-out, so the left
+     column's children join the card's own flow and take their own padding.
+     The column's 48px gap goes with it; the paddings below stand in. */
+  .hiw-item {
+    display: flex;
+    flex-direction: column;
   }
   .hiw-left {
-    gap: 48px;
-    padding: 20px 20px 44px;
+    display: contents;
+  }
+  .hiw-stack {
+    order: 1;
+    padding: 20px 20px 0;
+  }
+  .hiw-right {
+    order: 2;
+    padding: 24px 20px 0;
+  }
+  .hiw-btm {
+    order: 3;
+    padding: 32px 20px 44px;
   }
   .hiw-title {
     font-size: 32px;
     line-height: 32px;
     letter-spacing: -1.28px;
   }
+  /* The box grows to its window instead of holding a ratio that cropped
+     the taller ones (Connections, the founders' note). */
   .hiw-media {
+    aspect-ratio: auto;
+    min-height: 240px;
+    padding: 16px;
     border-radius: 0.75rem;
   }
   .hiw-buttons {

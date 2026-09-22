@@ -599,11 +599,18 @@ function GridCard({ item, order }: { item: WorkGalleryItem; order: number }) {
         </div>
       </div>
 
-      <div className={s.caption}>
-        <h2 className={s.captionName}>{item.name}</h2>
-        <span className={s.captionTag}>{item.tags.join(", ")}</span>
+      {/* Name, industry and result on one line. Phones dissolve the row and
+          reorder the card: name and industry above the cover, the result
+          and the comment under it (see the stylesheet). */}
+      <div className={s.captionRow}>
+        <div className={s.captionHead}>
+          <h2 className={s.captionName}>{item.name}</h2>
+          <span className={s.captionTag}>{item.tags.join(", ")}</span>
+        </div>
         {item.result && (
-          <Result result={item.result} className={s.captionResult} />
+          <div className={s.caption}>
+            <Result result={item.result} className={s.captionResult} />
+          </div>
         )}
       </div>
       {item.quote && <Said quote={item.quote} className={s.cardSaid} />}

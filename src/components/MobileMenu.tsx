@@ -6,6 +6,9 @@ import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { NAV_ITEMS } from "@/data/projects";
 
+// The desktop nav gets home from the wordmark; the menu spells it out.
+const MENU_ITEMS = [{ label: "Home", href: "/" }, ...NAV_ITEMS];
+
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
@@ -110,6 +113,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       return;
     }
 
+    // Already home: the route won't change, so just go back to the top
+    if (href === "/" && onHome) {
+      e.preventDefault();
+      onClose();
+      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
+      return;
+    }
+
     // Cross-page navigation — close menu, then let the router push
     e.preventDefault();
     onClose();
@@ -125,14 +136,14 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       style={{ clipPath: "circle(0% at 90% 4%)", visibility: "hidden" }}
     >
       {/* Nav items */}
-      <nav className="flex flex-col gap-5">
-        {NAV_ITEMS.map((item, i) => (
+      <nav className="flex flex-col gap-7">
+        {MENU_ITEMS.map((item, i) => (
           <Link
             key={item.label}
             ref={(el) => { navItemsRef.current[i] = el; }}
             href={item.href}
             onClick={(e) => handleNavClick(e, item.href)}
-            className={`block font-[family-name:var(--font-outfit)] font-bold text-[15vw] leading-[0.95] pb-[0.18em] -mb-[0.18em] transition-colors duration-300 ${
+            className={`block font-[family-name:var(--font-outfit)] font-bold text-[12.5vw] leading-[0.95] pb-[0.18em] -mb-[0.18em] transition-colors duration-300 ${
               item.href === "/sight"
                 ? "sight-nav-link"
                 : "text-[#111113] hover:text-[#111113]/60"

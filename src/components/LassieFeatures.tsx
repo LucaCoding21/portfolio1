@@ -28,6 +28,9 @@ import StoryDescription from "./StoryDescription";
 import s from "./LassieFeatures.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
+// iOS shows and hides its address bar mid-scroll; without this each one
+// fires a resize, ScrollTrigger refreshes, and the pinned carousel jumps.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const BP = { mobile: 394, tablet: 1024, desktop: 1280, desktopLarge: 1440 };
 
@@ -105,8 +108,10 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       // Live from halfway in, and it stays live (onComplete covers a flick
       // that skips straight past the window, and the hold after it); the
       // lift turns it off again.
+      // Phones hold each card in front for a stretch, so the arrival eases
+      // into the stop instead of hitting it at full speed.
       const tl = gsap.timeline({
-        defaults: { ease: "none" },
+        defaults: { ease: w() < BP.tablet ? "power1.out" : "none" },
         onUpdate: () => setLive(el, tl.progress() >= 0.5),
         onComplete: () => setLive(el, true),
       });
@@ -143,11 +148,13 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
 
     /* a card lifts off the top. The reference passes `ease: "linear"` as a
        timeline option, which GSAP ignores, so these tweens run on the default
-       power1.out: the lift starts fast and settles. Measured, not assumed. */
+       power1.out: the lift starts fast and settles. Measured, not assumed.
+       Phones come out of a hold, so there the lift starts gently too. */
     const leave = (el: HTMLElement) => {
       const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
       const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
       const tl = gsap.timeline({
+        defaults: { ease: w() < BP.tablet ? "power1.inOut" : "power1.out" },
         onUpdate: () => {
           const p = tl.progress();
           if (p > 0.3) setLive(el, false);
@@ -165,9 +172,9 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         },
         0
       );
-      // Below desktop the copy sits under the plate and would otherwise ride
-      // up half-transparent over the next card for the whole lift, so it
-      // fades out in the first stretch of the move.
+      // Below desktop the copy would otherwise ride up half-transparent over
+      // the next card for the whole lift, so it fades out in the first
+      // stretch of the move.
       tl.to(desc, { opacity: 0, duration: () => (w() >= BP.desktop ? 0.5 : 0.35) }, 0);
       tl.to(plate, { background: "transparent", duration: 0.1 }, 0);
       tl.to(
@@ -191,11 +198,15 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
         if (!plate || !media || !desc) return;
         tl.set(plate, { scale: 0.95, y: "10%", immediateRender: true });
         tl.set(media, { scale: 1.2, immediateRender: true });
+        // On phones the first card's copy is already showing above its
+        // plate as the section scrolls in, so the gap under the title
+        // isn't blank; the enter tween then has nothing to do for it.
+        const shown = () => w() < BP.tablet && i === 0;
         tl.set(
           desc,
           {
-            opacity: 0,
-            y: () => "50%",
+            opacity: () => (shown() ? 1 : 0),
+            y: () => (shown() ? "0%" : "50%"),
             scale: () => (w() < BP.desktop && i > 0 ? 0.8 : 1),
             immediateRender: true,
           },
@@ -235,6 +246,9 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
               ? `+=${(3 + EXTRA) * vh() * stretch}`
               : `+=${(2.5 + EXTRA) * vh() * stretch}`,
         pin: true,
+        // Pin a frame early so a fast flick on a phone doesn't show the
+        // carousel scroll past before it locks.
+        anticipatePin: 1,
         invalidateOnRefresh: true,
       });
 

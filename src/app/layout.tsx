@@ -3,6 +3,7 @@ import { Geist, Outfit, Caveat, Sometype_Mono, Reenie_Beanie, DM_Sans, Cormorant
 import Script from "next/script";
 import "./globals.css";
 import LassieNav from "@/components/LassieNav";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -113,7 +114,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5"
@@ -368,6 +369,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
       <body
         className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} antialiased`}
       >
+        <ScrollToTop />
         <LassieNav />
         {children}
       </body>
