@@ -41,7 +41,7 @@ const LINES = [
 const PHASES: { name: string; body: string; note?: string | string[]; video: string; poster: string }[] = [
   {
     name: "Kickoff",
-    body: "We start with one focused call to understand your business, your customers, and what the new site needs to do. From there, we take the lead.",
+    body: "We start with one focused call to understand your business, your customers, and what the new site needs to do. After that, most of the work is on our side.",
     // Small line under the body: the owner's time cost, stated up front.
     note: "About 45 minutes of your time.",
     video: "/approach-kickoff.mp4",
@@ -55,7 +55,7 @@ const PHASES: { name: string; body: string; note?: string | string[]; video: str
   },
   {
     name: "Design",
-    body: "We turn the strategy into the site. With the direction clear, we design the full website around what your customers need to understand, trust and act on. You see exactly how it looks and works before we build anything.",
+    body: "Using what we learned, we design every page of the site around what your customers are looking for. You see exactly how it looks and works before we build anything.",
     note: "Full design ready for review in ~1–2 weeks",
     video: "/approach-design.mp4",
     poster: "/approach-design-poster.jpg",

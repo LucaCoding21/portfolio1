@@ -16,7 +16,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
-import { NAV_ITEMS } from "@/data/projects";
+import { CAL_URL, NAV_ITEMS } from "@/data/projects";
 import MobileMenu from "./MobileMenu";
 import s from "./LassieNav.module.css";
 
@@ -174,8 +174,10 @@ export default function LassieNav() {
           </Link>
         ))}
 
-        <Link
-          href="/#contact"
+        <a
+          href={CAL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
           className={`${s.item} ${s.isCta}`}
           onMouseEnter={onItemEnter}
           onFocus={onItemEnter}
@@ -185,13 +187,13 @@ export default function LassieNav() {
             {/* Two stacked copies in a clipped box: hover slides the stack up
                 one row, so the label flips out the top and back in from below. */}
             <span className={s.flip}>
-              <span className={s.flipRow}>Start a Project</span>
+              <span className={s.flipRow}>Book A Free Call</span>
               <span className={s.flipRow} aria-hidden>
-                Start a Project
+                Book A Free Call
               </span>
             </span>
           </span>
-        </Link>
+        </a>
 
         <button
           type="button"

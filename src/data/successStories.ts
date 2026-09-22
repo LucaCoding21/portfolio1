@@ -28,7 +28,7 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     description:
       "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
     resultValue: "$5M+",
-    resultLabel: "Lifetime value of dealer accounts signed in the first 90 days",
+    resultLabel: "Dealer lifetime value signed in 90 days",
     image: "/success/innovative-aluminum.webp",
     video: "/success/innovative-aluminum.mp4",
     href: "/work",

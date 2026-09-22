@@ -13,7 +13,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { CAL_URL } from "@/data/projects";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import s from "./VideoCta.module.css";
@@ -96,8 +96,8 @@ export default function VideoCta() {
             Your site could be next.
           </p>
           <div data-rise>
-            <Link href="#contact" className={s.button}>
-              <span className={s.buttonLabel}>Book a call</span>
+            <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.button}>
+              <span className={s.buttonLabel}>See what we&apos;d fix</span>
               <span className={s.buttonDisc} aria-hidden>
                 <svg viewBox="0 0 16 16" width="14" height="14" fill="none">
                   <path
@@ -109,7 +109,8 @@ export default function VideoCta() {
                   />
                 </svg>
               </span>
-            </Link>
+            </a>
+            <span className={s.note}>Free review of your current website.</span>
           </div>
         </div>
       </div>

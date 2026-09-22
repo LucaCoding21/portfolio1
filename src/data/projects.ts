@@ -32,11 +32,69 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  // Order here is the order on /work (owner's call, September 2026).
+  {
+    id: 8,
+    name: "WrapCity",
+    description: "Vinyl car wrap shop built to turn heads online and in the streets.",
+    kpis: ["+34% booking inquiries", "~$40k pipeline in 3 months"],
+    metrics: [
+      { value: "+34%", label: "Booking inquiries" },
+      { value: "~$40k", label: "Pipeline in 3 months" },
+    ],
+    tags: ["Trades & Manufacturing"],
+    image: "/wrapcity-cover.webp",
+    hoverImage: "/wrapcity-mockup.webp",
+    url: "https://wrapcity.co/",
+    quote: {
+      texts: [
+        "Just wanted to let you know I landed a $7000 job this morning because of the website. I didn't even advertise it!",
+        "Also my Google Ads are working way better since the new site. Didn't expect that.",
+      ],
+      author: "Taylor Paige",
+      role: "Founder, WrapCity",
+      avatar: "/wrapcity-headshot-v3.webp",
+    },
+  },
+  {
+    id: 14,
+    name: "Northwest Railing",
+    description: "Custom glass, aluminum and cable railings installed across Washington State.",
+    kpis: ["+58% more quote requests"],
+    metrics: [{ value: "+58%", label: "More quote requests" }],
+    tags: ["Trades & Manufacturing"],
+    image: "/northwest-railing/northwest-railing-cover.jpg",
+    url: "https://www.northwestrailing.com/",
+  },
+  {
+    id: 12,
+    name: "Innovative Aluminum",
+    description: "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
+    kpis: ["$5M+ dealer lifetime value signed in 90 days"],
+    metrics: [{ value: "$5M+", label: "Dealer lifetime value signed in 90 days" }],
+    tags: ["Trades & Manufacturing"],
+    image: "/success/innovative-aluminum.webp",
+    url: "https://www.innovativealuminum.com/",
+  },
+  {
+    id: 13,
+    name: "Caddie Companion",
+    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+    kpis: ["+21% more visitors turned into buyers than the old store"],
+    metrics: [
+      { value: "+21%", label: "More visitors turned into buyers than the old store" },
+    ],
+    tags: ["Ecommerce & Shopify"],
+    image: "/success/caddie-companion-cover.jpg",
+    url: "https://www.caddiecompanion.com/",
+  },
   {
     id: 9,
     name: "Transforming Landscapes",
     description: "A research initiative on First Nations-led real estate development in BC.",
-    tags: ["Realtors"],
+    kpis: ["12 studies with First Nations leaders across BC, on one platform"],
+    metrics: [{ value: "12 studies", label: "With First Nations leaders across BC, on one platform" }],
+    tags: ["Real Estate"],
     image: "/transforming/transforming-cover.jpg",
     hoverImage: "/transforming/transforming.png",
     url: "https://www.transforminglandscapes.ca/",
@@ -58,50 +116,23 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 12,
-    name: "Innovative Aluminum",
-    description: "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
-    kpis: ["$5M+ lifetime value of dealer accounts signed in the first 90 days"],
-    metrics: [
-      { value: "$5M+", label: "Lifetime value of dealer accounts signed in the first 90 days" },
-    ],
-    tags: ["Local Business"],
-    image: "/success/innovative-aluminum.webp",
-    url: "https://www.innovativealuminum.com/",
-  },
-  {
-    id: 13,
-    name: "Caddie Companion",
-    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
-    kpis: ["+21% more visitors turned into buyers than the old store"],
-    metrics: [
-      { value: "+21%", label: "More visitors turned into buyers than the old store" },
-    ],
-    tags: ["Ecommerce"],
-    image: "/success/caddie-companion-cover.jpg",
-    url: "https://www.caddiecompanion.com/",
-  },
-  {
-    id: 10,
-    name: "Bloomkey",
-    description: "Floral studio crafting bespoke arrangements for weddings and events.",
-    kpis: ["Newly launched"],
-    tags: ["Local Business"],
-    image: "/bloomkey/bloomkey-cover.jpeg",
-    imagePosition: "58% center",
-    hoverImage: "/bloomkey/bloomkey.png",
-    hoverImagePosition: "center 75%",
-    url: "https://www.bloomkey.ca/",
-  },
-  {
     id: 11,
     name: "Afterparty",
     description: "Event production company designing unforgettable nights.",
     kpis: ["5,000 sessions in 1 month", "30 newsletter signups in 1 day", "100/100 PageSpeed score"],
-    tags: ["Ecommerce"],
+    tags: ["Events & Hospitality", "Ecommerce & Shopify"],
     image: "/afterparty/afterparty-cover.jpg",
     hoverImage: "/afterparty/afterparty.png",
     url: "https://www.afterparty.space/",
+    // Verbatim from the owners' video testimonial. Ellen's line, for another
+    // placement: "I feel like they really over-delivered, and I feel like they
+    // just truly care about the end result."
+    quote: {
+      texts: ["It was one of the smoothest processes I've ever had for any project."],
+      author: "Vien",
+      role: "Co-founder, Afterparty",
+      avatar: "/afterparty/vien-headshot.jpg",
+    },
   },
   {
     id: 1,
@@ -123,28 +154,59 @@ export const projects: Project[] = [
       avatar: "/ACE/ace-headshot-v5.webp",
     },
   },
+  // Added September 2026 (Northwest Railing too). Covers are each site's
+  // share image until real photos land; no results or quotes yet.
   {
-    id: 8,
-    name: "WrapCity",
-    description: "Vinyl car wrap shop built to turn heads online and in the streets.",
-    kpis: ["+34% booking inquiries", "~$40k pipeline in 3 months"],
-    metrics: [
-      { value: "+34%", label: "Booking inquiries" },
-      { value: "~$40k", label: "Pipeline in 3 months" },
-    ],
-    tags: ["Local Business"],
-    image: "/wrapcity-cover.webp",
-    hoverImage: "/wrapcity-mockup.webp",
-    url: "https://wrapcity.co/",
-    quote: {
-      texts: [
-        "Just wanted to let you know I landed a $7000 job this morning because of the website. I didn't even advertise it!",
-        "Also my Google Ads are working way better since the new site. Didn't expect that.",
-      ],
-      author: "Taylor Paige",
-      role: "Founder, WrapCity",
-      avatar: "/wrapcity-headshot-v3.webp",
-    },
+    id: 15,
+    name: "Shoobydoo",
+    description: "Concert and live music photography from festivals and club shows in Vancouver.",
+    tags: ["Photography"],
+    image: "/shoobydoo/shoobydoo-cover.jpg",
+    url: "https://www.shoobydoo.ca/",
+  },
+  {
+    id: 16,
+    name: "Southbound Sips",
+    description: "Mobile bar and bartending service for weddings and events across Georgia.",
+    tags: ["Events & Hospitality"],
+    image: "/southboundsips/southboundsips-cover.jpg",
+    url: "https://www.southboundsips.com/",
+  },
+  {
+    id: 17,
+    name: "Dreamhouse Printing",
+    description: "Vancouver screen printing and embroidery shop with instant online quotes.",
+    tags: ["Ecommerce & Shopify"],
+    image: "/dreamhouse/dreamhouse-cover.jpg",
+    url: "https://www.dreamhouseprinting.com/",
+  },
+  {
+    id: 18,
+    name: "Real Estate 360",
+    description: "Site for REIBC's conference bringing together the people shaping BC real estate.",
+    tags: ["Real Estate", "Events & Hospitality"],
+    image: "/re360/re360-cover.jpg",
+    url: "https://www.re360.ca/",
+  },
+  {
+    id: 19,
+    name: "Flow State Therapy",
+    description: "Virtual counselling practice serving clients across British Columbia.",
+    tags: ["Clinics & Therapy"],
+    image: "/flowstate/flowstate-cover.jpg",
+    url: "https://www.flowstate-therapy.com/",
+  },
+  {
+    id: 10,
+    name: "Bloomkey",
+    description: "Career counselling and employment coaching practice in Surrey, BC.",
+    kpis: ["Newly launched"],
+    tags: ["Clinics & Therapy"],
+    image: "/bloomkey/bloomkey-cover.jpeg",
+    imagePosition: "58% center",
+    hoverImage: "/bloomkey/bloomkey.png",
+    hoverImagePosition: "center 75%",
+    url: "https://www.bloomkey.ca/",
   },
   {
     id: 4,
@@ -168,7 +230,7 @@ export const projects: Project[] = [
     name: "Nancy Tran",
     description: "Real estate agent helping families find their perfect home in Vancouver.",
     kpis: ["Site paid for itself in 3 weeks", "8 qualified buyer leads in 1 month"],
-    tags: ["Realtors"],
+    tags: ["Real Estate"],
     image: "/sophia/sophia-cover2.jpg",
     hoverImage: "/nancy-mockup.webp",
     url: "https://nancytranrealtor.com/",
@@ -206,6 +268,9 @@ export const HOMEPAGE_PROJECT_IDS = [9, 1, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );
+
+/** Booking page. Every booking CTA opens it in a new tab. */
+export const CAL_URL = "https://cal.com/cloverfield/30min";
 
 export const NAV_ITEMS = [
   { label: "Work", href: "/work" },

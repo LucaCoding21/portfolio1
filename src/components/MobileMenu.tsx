@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
-import { NAV_ITEMS } from "@/data/projects";
+import { CAL_URL, NAV_ITEMS } from "@/data/projects";
 
 // The desktop nav gets home from the wordmark; the menu spells it out.
 const MENU_ITEMS = [{ label: "Home", href: "/" }, ...NAV_ITEMS];
@@ -156,15 +156,17 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       </nav>
 
       {/* CTA */}
-      <Link
+      <a
         ref={ctaRef}
-        href="/#contact"
-        onClick={(e) => handleNavClick(e, "/#contact")}
+        href={CAL_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onClose}
         className="mt-12 self-start px-8 py-4 rounded-full bg-[#111113] text-white text-lg font-[family-name:var(--font-outfit)] font-medium transition-colors duration-300 hover:bg-[#111113]/85"
         style={{ opacity: 0 }}
       >
-        Book a call
-      </Link>
+        Book A Free Call
+      </a>
     </div>
   );
 }

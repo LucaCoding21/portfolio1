@@ -5,7 +5,7 @@
  * across the top, then a narrow left column with a vertical filter list
  * (the industries as plain text, the chosen one in ink), and beside it a
  * wide two-column grid of covers
- * with one caption line each: name, industry, and the headline result at the
+ * with one caption line each: the name and the headline result at the
  * far end, then the line the owner said with their photo and name. The grid/list switch sits as two small words at the top of the
  * right column. In list view the left column stacks above so the rows run
  * the full width.
@@ -199,13 +199,6 @@ function animateListFilter(
 
 /* ------------------------------------------------------------------ */
 
-/* Phones run the single column in list order, except Bloomkey sits right
-   under ACE (the owner's call). Even slots for the list, the odd one after
-   ACE for Bloomkey. */
-const ACE_INDEX = WORK_ITEMS.findIndex((p) => p.name === "ACE");
-const phoneOrder = (item: WorkGalleryItem, i: number) =>
-  item.name === "Bloomkey" && ACE_INDEX >= 0 ? ACE_INDEX * 2 + 1 : i * 2;
-
 export default function WorkGallery() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -373,8 +366,8 @@ export default function WorkGallery() {
                   className={`${s.tabPane} ${view === "grid" ? s.isActive : ""}`}
                 >
                   <div ref={gridListRef} className={s.grid} role="list">
-                    {WORK_ITEMS.map((p, i) => (
-                      <GridCard key={p.id} item={p} order={phoneOrder(p, i)} />
+                    {WORK_ITEMS.map((p) => (
+                      <GridCard key={p.id} item={p} />
                     ))}
                   </div>
                 </div>
@@ -472,7 +465,7 @@ function Said({
   );
 }
 
-function GridCard({ item, order }: { item: WorkGalleryItem; order: number }) {
+function GridCard({ item }: { item: WorkGalleryItem }) {
   const external = item.href.startsWith("http");
   const mediaRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLVideoElement>(null);
@@ -550,8 +543,6 @@ function GridCard({ item, order }: { item: WorkGalleryItem; order: number }) {
       className={s.card}
       data-filter-item=""
       data-tags={item.tags.join("|")}
-      // Phones lay the covers out by this (see the stylesheet).
-      style={{ "--order": order } as React.CSSProperties}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >
@@ -599,13 +590,12 @@ function GridCard({ item, order }: { item: WorkGalleryItem; order: number }) {
         </div>
       </div>
 
-      {/* Name, industry and result on one line. Phones dissolve the row and
-          reorder the card: name and industry above the cover, the result
+      {/* Name and result on one line. Phones dissolve the row and
+          reorder the card: the name above the cover, the result
           and the comment under it (see the stylesheet). */}
       <div className={s.captionRow}>
         <div className={s.captionHead}>
           <h2 className={s.captionName}>{item.name}</h2>
-          <span className={s.captionTag}>{item.tags.join(", ")}</span>
         </div>
         {item.result && (
           <div className={s.caption}>

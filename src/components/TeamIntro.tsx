@@ -15,6 +15,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
 import ArrowCta from "@/components/ArrowCta";
+import { CAL_URL } from "@/data/projects";
 import s from "./TeamIntro.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -105,7 +106,7 @@ export default function TeamIntro() {
       <div className={s.inner}>
         <div className={s.copy}>
           <h2 className={s.title} data-rise>
-            Your business has outgrown the website that got you here.
+            Most people meet your business online first.
           </h2>
 
           <p className={s.body} data-rise>
@@ -130,7 +131,7 @@ export default function TeamIntro() {
           </dl>
 
           <div data-rise>
-            <ArrowCta href="/#contact" note="Free review of your current website.">
+            <ArrowCta href={CAL_URL} note="Free review of your current website.">
               See what we&apos;d fix
             </ArrowCta>
           </div>

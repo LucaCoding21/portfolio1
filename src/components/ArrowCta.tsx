@@ -98,7 +98,12 @@ export default function ArrowCta({
 
   return (
     <div className={`${s.block} ${className}`}>
-      <Link ref={btnRef} href={href} className={s.btn}>
+      <Link
+        ref={btnRef}
+        href={href}
+        className={s.btn}
+        {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
+      >
         <span ref={fillRef} aria-hidden className={s.fill} />
         <span className={s.content}>
           {live && <span aria-hidden className={s.dotSlot} />}

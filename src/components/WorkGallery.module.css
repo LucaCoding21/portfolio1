@@ -282,7 +282,7 @@
   will-change: opacity;
 }
 
-/* One line under the cover: index, name, industry, and the result at the end. */
+/* One line under the cover: the name, and the result at the end. */
 .captionRow {
   display: flex;
   align-items: baseline;
@@ -293,7 +293,7 @@
   line-height: 1.3;
 }
 
-/* Name and industry are items of the row themselves; phones group them. */
+/* The name is an item of the row itself; phones lift it above the cover. */
 .captionHead {
   display: contents;
 }
@@ -315,15 +315,6 @@
   line-height: inherit;
   letter-spacing: -0.01em;
   color: var(--ink);
-}
-
-.captionTag {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: var(--muted);
 }
 
 .captionResult {
@@ -735,18 +726,12 @@
     grid-template-columns: minmax(0, 1fr);
     row-gap: 3.5em;
   }
-  /* The single column's order comes from the component (Bloomkey under ACE). */
-  .card {
-    order: var(--order, 0);
-  }
   /* Shorter cover, so name, cover, result and comment fit one screen. */
   .cardImage {
     aspect-ratio: 3 / 2;
   }
-  /* The card reads name and industry, cover, result, comment. The row
-     wrapper dissolves so its parts can be ordered around the cover; the
-     name and industry stay one line (the industry gives way, to an
-     ellipsis, before the name does). */
+  /* The card reads name, cover, result, comment. The row wrapper
+     dissolves so its parts can be ordered around the cover. */
   .captionRow {
     display: contents;
   }

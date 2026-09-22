@@ -9,7 +9,10 @@ import ClientWall from "@/components/ClientWall";
 import TeamIntro from "@/components/TeamIntro";
 import MoreWork from "@/components/MoreWork";
 
-const LOADED_FLAG = "cf-loader-seen";
+// Lives in module memory, so it resets on every full page load (refresh, hard
+// refresh, typed URL) and the intro plays again. It only survives client-side
+// navigation, so clicking back to "/" from /work skips straight to the page.
+let loaderPlayed = false;
 
 const HowWeDoIt = dynamic(() => import("@/components/HowWeDoIt"));
 const Testimonials = dynamic(() => import("@/components/Testimonials"));
@@ -22,12 +25,11 @@ export default function HomeClient() {
   const [ready, setReady] = useState(false);
   const [skipped, setSkipped] = useState(false);
 
-  // Before paint, decide whether to skip the loader: if we already played it
-  // this session, or if the URL has a hash (we're arriving at /#about etc).
+  // Before paint, decide whether to skip the loader: if it already played in
+  // this page load, or if the URL has a hash (we're arriving at /#about etc).
   useLayoutEffect(() => {
     const hasHash = !!window.location.hash;
-    const alreadyPlayed = sessionStorage.getItem(LOADED_FLAG) === "1";
-    if (hasHash || alreadyPlayed) {
+    if (hasHash || loaderPlayed) {
       setIsLoading(false);
       setSkipped(true);
     }
@@ -60,7 +62,7 @@ export default function HomeClient() {
       document.body.style.inset = "";
       document.body.style.width = "";
 
-      sessionStorage.setItem(LOADED_FLAG, "1");
+      loaderPlayed = true;
 
       const hash = window.location.hash;
       if (skipped && hash) {

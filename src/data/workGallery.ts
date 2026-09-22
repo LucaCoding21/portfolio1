@@ -68,6 +68,12 @@ const REELS: Record<number, { video: string; poster: string }> = {
   12: { video: "/success/innovative-aluminum.mp4", poster: "/success/innovative-aluminum.webp" },
   // The product photo stays as the cover; the reel plays over it on hover.
   13: { video: "/success/caddie-companion.mp4", poster: "/success/caddie-companion-cover.jpg" },
+  // 16 down: recorded frame by frame with Playwright (1920x1200, 60fps).
+  // Share images stay as covers until real photos land.
+  16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover.jpg" },
+  14: { video: "/success/northwest-railing.mp4", poster: "/northwest-railing/northwest-railing-cover.jpg" },
+  8: { video: "/success/wrapcity.mp4", poster: "/wrapcity-cover.webp" },
+  15: { video: "/success/shoobydoo.mp4", poster: "/shoobydoo/shoobydoo-cover.jpg" },
 };
 
 /**
@@ -108,7 +114,18 @@ export const WORK_ITEMS: WorkGalleryItem[] = projects.map((p) => {
   };
 });
 
-/** Chips in the order the industries first appear, Realtors through Sports & Events. */
-export const WORK_FILTERS: string[] = Array.from(
-  new Set(WORK_ITEMS.flatMap((p) => p.tags)),
-);
+/** Filter order. Any tag not listed here still gets a filter, after these.
+    Keep each filter at two or more projects (owner's call, September 2026). */
+const FILTER_ORDER = [
+  "Real Estate",
+  "Trades & Manufacturing",
+  "Clinics & Therapy",
+  "Events & Hospitality",
+  "Photography",
+  "Ecommerce & Shopify",
+];
+const used = new Set(WORK_ITEMS.flatMap((p) => p.tags));
+export const WORK_FILTERS: string[] = [
+  ...FILTER_ORDER.filter((t) => used.has(t)),
+  ...[...used].filter((t) => !FILTER_ORDER.includes(t)),
+];

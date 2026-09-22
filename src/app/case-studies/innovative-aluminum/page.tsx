@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { CAL_URL } from "@/data/projects";
 import CaseStudyHeroVideo from "@/components/CaseStudyHeroVideo";
 import CaseStudySidebar from "@/components/CaseStudySidebar";
 
@@ -419,10 +420,12 @@ export default function InnovativeAluminumCaseStudy() {
                     </p>
                   </div>
                   <Link
-                    href="/#contact"
+                    href={CAL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="cursor-book relative self-start md:self-auto inline-flex items-center px-7 py-3.5 md:px-8 md:py-4 rounded-full bg-white text-black text-xs md:text-sm uppercase tracking-[0.18em] font-[family-name:var(--font-outfit)] font-medium hover:bg-white/90 transition-colors whitespace-nowrap"
                   >
-                    Book a call
+                    Book A Free Call
                   </Link>
                 </div>
               </div>
@@ -530,10 +533,12 @@ export default function InnovativeAluminumCaseStudy() {
             </div>
             <div className="md:col-span-4 flex md:justify-end">
               <Link
-                href="/#contact"
+                href={CAL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                 className="inline-flex items-center px-8 py-4 md:px-10 md:py-5 rounded-full bg-black text-white text-sm md:text-base uppercase tracking-[0.18em] font-[family-name:var(--font-outfit)] font-medium hover:bg-black/80 transition-all duration-300 cursor-book"
               >
-                Book a call
+                Book A Free Call
               </Link>
             </div>
           </div>

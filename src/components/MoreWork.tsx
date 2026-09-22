@@ -39,9 +39,13 @@ const CRAFT = [
   "Apps",
 ];
 
-/* Covers of the projects that are not already on a card above. */
+/* Covers of projects that are not already on a card above. Pinned by name so
+   reordering /work (projects.ts order) does not reshuffle the homepage. */
 const featured = new Set(SUCCESS_STORIES.map((story) => story.title));
-const DECK = projects.filter((p) => !featured.has(p.name)).slice(0, 5);
+const DECK_NAMES = ["Bloomkey", "Afterparty", "WrapCity", "Njagih Studios", "Nancy Tran"];
+const DECK = DECK_NAMES.map((name) => projects.find((p) => p.name === name)).filter(
+  (p): p is (typeof projects)[number] => !!p && !featured.has(p.name),
+);
 
 /* Resting pose per card: x and y offsets as a share of the deck width, and a
    tilt. Written as a loose fan, heaviest in the middle. */

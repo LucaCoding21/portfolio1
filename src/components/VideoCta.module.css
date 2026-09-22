@@ -61,6 +61,17 @@
   text-wrap: balance;
 }
 
+/* Small Outfit line under the button, same copy as the team section's CTA. */
+.note {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.78);
+}
+
 /* The hero's white plate button, with the arrow in an ink disc. */
 .button {
   display: inline-flex;

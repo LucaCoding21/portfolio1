@@ -28,7 +28,7 @@ No test framework is configured.
 
 **Routing:** Two pages — homepage (`/`) and work page (`/work`). Both are client components (`"use client"`).
 
-**Homepage flow:** `LoadingScreen` (the plate bloom: the wordmark parts, the hero poster appears in the gap as a small plate and grows to the viewport, about 1.3s, first visit per session only) → on complete, `page.tsx` unlocks scroll, waits for layout reflow via double-rAF, then sets `ready` flag that triggers entry animations in `Hero` and `About`.
+**Homepage flow:** `LoadingScreen` (the plate bloom: the wordmark parts, the hero poster appears in the gap as a small plate and grows to the viewport, about 1.3s, on every full page load; skipped on client-side returns to `/` and on hash URLs) → on complete, `page.tsx` unlocks scroll, waits for layout reflow via double-rAF, then sets `ready` flag that triggers entry animations in `Hero` and `About`.
 
 **Data:** Project data lives in `src/data/projects.ts`. `homepageProjects` is a filtered subset (by `HOMEPAGE_PROJECT_IDS`). The `/work` page shows all projects. Navigation items (`NAV_ITEMS`) are also exported from this file.
 
