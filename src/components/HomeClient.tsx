@@ -4,8 +4,8 @@ import { useState, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import { scrollToHash } from "@/lib/scrollToHash";
-import LassieHero from "@/components/LassieHero";
-import LassieFeatures from "@/components/LassieFeatures";
+import HomeHero from "@/components/HomeHero";
+import SelectedWorks from "@/components/SelectedWorks";
 import ClientWall from "@/components/ClientWall";
 import TeamIntro from "@/components/TeamIntro";
 import MoreWork from "@/components/MoreWork";
@@ -101,10 +101,10 @@ export default function HomeClient() {
       {isLoading && (
         <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />
       )}
-      <LassieHero ready={ready} />
+      <HomeHero ready={ready} />
       <ClientWall />
       <TeamIntro />
-      <LassieFeatures ready={ready} />
+      <SelectedWorks ready={ready} />
       <MoreWork />
       {/* More Work is the card that scrolls off to uncover How We Do It,
           which holds until the card has cleared, then scrolls on. */}

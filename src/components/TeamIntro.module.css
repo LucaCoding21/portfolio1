@@ -78,6 +78,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* At desktop size 600 reads heavy; phones keep it. */
+@media (min-width: 768px) {
+  .statValue {
+    font-weight: 500;
+  }
+}
+
 .statLabel {
   margin: 0;
   font-size: 0.6875rem;

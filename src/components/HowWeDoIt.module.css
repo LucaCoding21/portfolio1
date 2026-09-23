@@ -63,6 +63,12 @@
   display: inline-block;
 }
 
+/* The space inside each inline-block word is trimmed, so the lines that
+   aren't spread ("do it?") need the gap put back. */
+.line:not(.spread) .word + .word {
+  margin-left: 0.25em;
+}
+
 .rows {
   margin: 0;
   padding: 0;
@@ -187,6 +193,8 @@
     max-width: none;
     margin-bottom: 3rem;
     font-size: 15.5vw;
+    /* A little more air between the three lines than the desktop 0.88. */
+    line-height: 0.96;
   }
   .row {
     grid-template-columns: 1fr;

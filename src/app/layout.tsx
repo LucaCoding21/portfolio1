@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Geist, Outfit, Caveat, Sometype_Mono, Reenie_Beanie, DM_Sans, Cormorant_Garamond } from "next/font/google";
+import { Geist, Inter, Outfit, Caveat, Sometype_Mono, Reenie_Beanie, DM_Sans, Cormorant_Garamond } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-import LassieNav from "@/components/LassieNav";
+import SiteNav from "@/components/SiteNav";
+import MobileDock from "@/components/MobileDock";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const geistSans = Geist({
@@ -32,7 +33,7 @@ const sometype = Sometype_Mono({
   subsets: ["latin"],
 });
 
-// Lassie clone faces (homepage hero, features, nav): DM Sans is theirs;
+// Faces from the cloned reference (homepage hero, selected works, nav): DM Sans is theirs;
 // Cormorant Garamond stands in for their licensed ABC Marist.
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -44,6 +45,13 @@ const marist = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500"],
   style: ["normal", "italic"],
+});
+
+// The mobile dock, cloned from a Framer template set in Inter.
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 // Handwritten face for the partner labels and names in Why Cloverfield.
@@ -367,10 +375,11 @@ gtag('config', 'G-KHS5MBDWV5');`}
         />
       </head>
       <body
-        className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} antialiased`}
+        className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} ${inter.variable} antialiased`}
       >
         <ScrollToTop />
-        <LassieNav />
+        <SiteNav />
+        <MobileDock />
         {children}
       </body>
     </html>

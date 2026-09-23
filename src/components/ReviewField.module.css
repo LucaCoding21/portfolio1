@@ -111,7 +111,7 @@
 
 .dark .field {
   border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
 }
 
 .dark .field:focus-within {
@@ -142,7 +142,9 @@
   .input {
     flex: none;
     width: 100%;
-    height: 52px;
+    /* A touch smaller than the desktop pill; the text stays 16px so iOS
+       doesn't zoom the page when the field is tapped. */
+    height: 46px;
     border: 1px solid rgba(17, 17, 19, 0.18);
     background: #fff;
   }
@@ -154,8 +156,8 @@
   }
   .field .cta {
     align-self: flex-start;
-    --h: 52px;
-    --chip: 36px;
+    --h: 46px;
+    --chip: 32px;
   }
   .note {
     margin-left: 0.25rem;
@@ -163,5 +165,25 @@
   /* Centred on footage, so the stacked button centres too. */
   .dark .field .cta {
     align-self: center;
+  }
+  /* Stacked over footage, the button flips to paper with an ink chip, and squares off
+     so it doesn't read as a second pill beside the input. The label stays
+     white: it is blended with difference, so white reads as ink on the paper
+     button and as paper once the ink chip swells under it. */
+  .dark .field .cta {
+    --ink: #fff;
+    --paper: #111113;
+    --label: #fff;
+    --radius: 12px;
+    --chip-radius: 8px;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.1));
+  }
+  /* Stacked, the field is just a wrapper: a light shadow on each control
+     instead of one big one around both. */
+  .dark .field {
+    box-shadow: none;
+  }
+  .dark .input {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   }
 }

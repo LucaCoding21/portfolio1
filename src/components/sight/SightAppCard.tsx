@@ -265,6 +265,13 @@ export default function SightAppCard({ className = "" }: { className?: string })
 
     const master = gsap.timeline({ repeat: -1 });
 
+    // Phones: the card sits in the flow below the copy and is seen in
+    // passing, so the lead-up to the answer (idle, typing, the holds and
+    // the thinking shimmer) runs at about half the time. The answer's own
+    // hold stays long enough to read.
+    const phone = window.matchMedia("(max-width: 767px)").matches;
+    const lead = phone ? 0.45 : 1;
+
     exchanges.forEach((ex) => {
       const question = ex.dataset.question ?? "";
       const qEcho = ex.querySelector("[data-q-echo]");
@@ -306,7 +313,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
       tl.set(replyWords, { opacity: 0 });
 
       // 1. Idle caret moment.
-      tl.to({}, { duration: 0.6 });
+      tl.to({}, { duration: 0.6 * lead });
 
       // 2. The question types character-by-character.
       tl.set(placeholder, { autoAlpha: 0 });
@@ -316,7 +323,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
         { i: 0 },
         {
           i: question.length,
-          duration: question.length * 0.03,
+          duration: question.length * 0.03 * (phone ? 0.6 : 1),
           ease: "none",
           onUpdate: () => {
             typed.textContent = question.slice(0, Math.round(proxy.i));
@@ -324,7 +331,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
         }
       );
       // Hold on the fully-typed question for a beat before sending.
-      tl.to({}, { duration: 1 });
+      tl.to({}, { duration: 1 * lead });
 
       // 3. Send: the input clears and the question lands as a bold heading
       // right away, so the reader keeps the context, with the thinking
@@ -343,13 +350,13 @@ export default function SightAppCard({ className = "" }: { className?: string })
       );
       tl.set(thinking, { display: "flex" }, "-=0.15");
       tl.fromTo(thinking, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.25 }, "<");
-      tl.to({}, { duration: 0.8 });
+      tl.to({}, { duration: 0.8 * lead });
       tl.to(thinking, { autoAlpha: 0, duration: 0.15 });
       tl.call(() => {
         if (thinkingLabel) thinkingLabel.textContent = thinking2;
       });
       tl.to(thinking, { autoAlpha: 1, duration: 0.15 });
-      tl.to({}, { duration: 1.0 });
+      tl.to({}, { duration: 1.0 * lead });
 
       // 4. The shimmer gives way under the question: the reply streams in
       // word by word, then the data panel rises in — rows stagger, bars
@@ -361,9 +368,9 @@ export default function SightAppCard({ className = "" }: { className?: string })
         opacity: 1,
         duration: 0.3,
         ease: "power1.out",
-        stagger: 0.05,
+        stagger: phone ? 0.03 : 0.05,
       });
-      tl.to({}, { duration: 0.35 });
+      tl.to({}, { duration: 0.35 * lead });
       tl.fromTo(
         answer,
         { autoAlpha: 0, y: 14 },
@@ -393,11 +400,21 @@ export default function SightAppCard({ className = "" }: { className?: string })
     // a trigger (ScrollTrigger measures the resting position and would
     // pause the loop while the card is still pinned on screen). Watch the
     // enclosing section instead.
+    // Phones watch the card itself (it isn't sticky there) and start the
+    // loop from the top the first time it comes into view, so the reader
+    // sees the question typed rather than landing mid-answer.
+    let seen = !phone;
     const st = ScrollTrigger.create({
-      trigger: root.closest("section") ?? root,
-      start: "top bottom",
+      trigger: phone ? root : (root.closest("section") ?? root),
+      start: phone ? "top 90%" : "top bottom",
       end: "bottom top",
-      onToggle: (self) => (self.isActive ? master.play() : master.pause()),
+      onToggle: (self) => {
+        if (!self.isActive) return master.pause();
+        if (!seen) {
+          seen = true;
+          master.restart();
+        } else master.play();
+      },
     });
     if (!st.isActive) master.pause();
   });

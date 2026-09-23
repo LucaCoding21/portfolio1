@@ -233,6 +233,23 @@ export default function HowItWorks() {
   const scope = useSightGsap<HTMLElement>((root, reduced) => {
     const callouts = gsap.utils.toArray<HTMLElement>("[data-callout]", root);
 
+    // Below desktop the cards stack with a 16px sticky top (sight.css). A
+    // card taller than the screen would have its bottom covered by the next
+    // one before it was ever seen, so it sticks once its bottom reaches the
+    // bottom of the screen instead.
+    const themes = gsap.utils.toArray<HTMLElement>(".hiw-theme", root);
+    const fitTops = () => {
+      const below = window.innerWidth < 992;
+      themes.forEach((t) => {
+        const room = window.innerHeight - t.offsetHeight - 16;
+        t.style.setProperty("--hiw-top", below && room < 16 ? `${room}px` : "");
+      });
+    };
+    fitTops();
+    const ro = new ResizeObserver(fitTops);
+    themes.forEach((t) => ro.observe(t));
+    window.addEventListener("resize", fitTops);
+
     callouts.forEach((co) => {
       const logos = gsap.utils.toArray<HTMLElement>("[data-logo]", co);
       const quotes = gsap.utils.toArray<HTMLElement>("[data-quote]", co);
@@ -295,6 +312,12 @@ export default function HowItWorks() {
 
       gsap.delayedCall(HOLD, step);
     });
+
+    // gsap.context calls this on revert.
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fitTops);
+    };
   });
 
   return (

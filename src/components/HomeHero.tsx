@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Hero cloned from lassie.ai, running on our hero reel. Once you scroll 100px
+ * Hero cloned from a reference site, running on our hero reel. Once you scroll 100px
  * the media plate shrinks in from the edges (inset 32px, 64px corners on
  * desktop; 16px / 24px below) over 1s on their ease-out-quint. The reference
  * animates clip-path; we animate transform only (see the zoom effect) so the
@@ -26,7 +26,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { CustomEase } from "gsap/dist/CustomEase";
 import { LOADER_HANDOFF_EVENT, MOBILE_MEDIA, POSTER, POSTER_MOBILE, REEL, REEL_MOBILE } from "./LoadingScreen";
 import { INTRO_EVENT } from "@/lib/intro";
-import s from "./LassieHero.module.css";
+import s from "./HomeHero.module.css";
 
 gsap.registerPlugin(ScrollTrigger, CustomEase);
 
@@ -73,7 +73,7 @@ function TaskGlyph({ icon }: { icon: TaskIcon }) {
   );
 }
 
-export default function LassieHero({ ready }: { ready: boolean }) {
+export default function HomeHero({ ready }: { ready: boolean }) {
   const heroRef = useRef<HTMLElement>(null);
   const tasksRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
@@ -159,7 +159,7 @@ export default function LassieHero({ ready }: { ready: boolean }) {
     if (!hero || !plate) return;
     const video = hero.querySelector("video");
     const setTheme = (t: "dark" | "light") =>
-      window.dispatchEvent(new CustomEvent("lassie:nav-theme", { detail: t }));
+      window.dispatchEvent(new CustomEvent("cloverfield:nav-theme", { detail: t }));
 
     // The plate is an oversized rounded frame that scales down, with the
     // media inside counter-scaled so the picture never moves. Only transform
@@ -345,10 +345,14 @@ export default function LassieHero({ ready }: { ready: boolean }) {
             <source srcSet={POSTER_MOBILE} media={MOBILE_MEDIA} />
             <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
           </picture>
+          {/* autoPlay lets iOS start the muted reel natively. Left to play()
+              alone, Safari drew its own play button over the paused video
+              and on some phones never started it. */}
           <video
             muted
             loop
             playsInline
+            autoPlay
             preload="auto"
             aria-label="Cloverfield Studio web design showcase reel"
             className={s.video}

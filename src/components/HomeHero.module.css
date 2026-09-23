@@ -1,5 +1,5 @@
 /*
-  Lassie hero clone. Reference root is 10px; rem values are written as px.
+  Homepage hero, cloned from a reference. Reference root is 10px; rem values are written as px.
   Type scales are the reference's clamp() formulas with rem converted to px.
   Breakpoints: tablet 1024, desktop 1280, desktopLarge 1440.
 */

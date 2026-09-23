@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * "Cloverfield selected works" intro and the pinned feature cards beneath
- * it, cloned from Lassie's FeaturesCarousel. The card plates carry
+ * "Our selected works" intro and the pinned feature cards beneath
+ * it, cloned from a reference site's features carousel. The card plates carry
  * our Success Stories covers, and the story reel that normally stands up on
  * hover stands up on its own while a card is the live one.
  *
@@ -20,15 +20,17 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { CustomEase } from "gsap/dist/CustomEase";
+import { ScrambleTextPlugin } from "gsap/dist/ScrambleTextPlugin";
 import { SUCCESS_STORIES } from "@/data/successStories";
 import { isJumping } from "@/lib/scrollToHash";
 import StoryDescription from "./StoryDescription";
-import s from "./LassieFeatures.module.css";
+import s from "./SelectedWorks.module.css";
 
-gsap.registerPlugin(ScrollTrigger, CustomEase);
+gsap.registerPlugin(ScrollTrigger, CustomEase, ScrambleTextPlugin);
 // iOS shows and hides its address bar mid-scroll; without this each one
 // fires a resize, ScrollTrigger refreshes, and the pinned carousel jumps.
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -46,6 +48,9 @@ const CARDS = SUCCESS_STORIES.map((story, i) => ({
    700ms tween on his --ease-fast curve, however hard or slow the wheel. */
 const EASE = "cw-ease-fast";
 const STEP = 0.7;
+/* The desktop hover label and the characters it scrambles through. */
+const VIEW_LABEL = "Click to view";
+const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+";
 /* Wheel events this far apart start a new gesture. */
 const GESTURE_GAP = 200;
 /* Minimum time between two steps. */
@@ -67,7 +72,7 @@ const pause = (v: HTMLVideoElement | null) => {
   v.currentTime = 0;
 };
 
-export default function LassieFeatures({ ready }: { ready: boolean }) {
+export default function SelectedWorks({ ready }: { ready: boolean }) {
   const carouselRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -282,6 +287,27 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     window.addEventListener("touchend", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
 
+    // Desktop hover: "Click to view" scrambles in over the card, letters
+    // cycling through random characters before they settle, left to right.
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const hoverOff: (() => void)[] = [];
+    if (fine && !reduced) {
+      cards.forEach(({ el }) => {
+        const link = el.querySelector<HTMLElement>(`.${s.plateLink}`);
+        const text = el.querySelector<HTMLElement>("[data-view-text]");
+        if (!link || !text) return;
+        const onViewEnter = () =>
+          gsap.to(text, {
+            duration: 0.7,
+            ease: "none",
+            overwrite: true,
+            scrambleText: { text: VIEW_LABEL, chars: SCRAMBLE_CHARS, speed: 0.6, revealDelay: 0.1 },
+          });
+        link.addEventListener("mouseenter", onViewEnter);
+        hoverOff.push(() => link.removeEventListener("mouseenter", onViewEnter));
+      });
+    }
+
     const ctx = gsap.context(() => {
       // The first card comes up as the section scrolls in, and the stack
       // builds behind it.
@@ -340,6 +366,7 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("keydown", onKey);
+      hoverOff.forEach((off) => off());
       clearTimeout(gestureEnd);
       liveTimers.forEach((t) => t.kill());
       setLocked(false);
@@ -351,7 +378,7 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     <section className={s.section}>
       <section className={s.intro}>
         <h2 className={s.title}>
-          Cloverfield
+          Our
           <br />
           selected works
         </h2>
@@ -379,6 +406,25 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
                     <span className={s.resultValue}>{card.story.resultValue}</span>
                     <span className={s.resultLabel}>{card.story.resultLabel}</span>
                   </p>
+                  {card.story.caseStudy && (
+                    <Link href={card.story.caseStudy} className={s.caseStudy}>
+                      <span className={s.caseStudyLabel}>View case study</span>
+                      <svg
+                        viewBox="0 0 12 12"
+                        aria-hidden
+                        className={s.caseStudyArrow}
+                      >
+                        <path
+                          d="M3 9 9 3M4.5 3H9v4.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
+                  )}
                 </div>
               </article>
 
@@ -408,6 +454,10 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
                   aria-label={`Open the ${card.story.title} website in a new tab`}
                   className={s.plateLink}
                 />
+                {/* Desktop hover label; the text scrambles in (see onViewEnter). */}
+                <span aria-hidden className={s.viewLabel}>
+                  <span data-view-text>{VIEW_LABEL}</span>
+                </span>
               </div>
             </div>
           </div>

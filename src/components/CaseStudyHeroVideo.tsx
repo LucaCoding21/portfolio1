@@ -63,23 +63,9 @@ export default function CaseStudyHeroVideo({
         };
       });
 
-      // Mobile: subtler scale, stays larger
+      // Mobile: no shrink, the video holds its full width
       mm.add("(max-width: 767px)", () => {
-        gsap.set(inner, { scale: 1, borderRadius: "16px" });
-
-        const st = ScrollTrigger.create({
-          trigger: wrapper,
-          start: "top 90%",
-          end: "top 20%",
-          scrub: 0.6,
-          animation: gsap.fromTo(
-            inner,
-            { scale: 1, borderRadius: "16px" },
-            { scale: 0.95, borderRadius: "12px", ease: "none" }
-          ),
-        });
-
-        return () => st.kill();
+        gsap.set(inner, { scale: 1, borderRadius: "12px" });
       });
     });
 
@@ -93,7 +79,7 @@ export default function CaseStudyHeroVideo({
     <div
       ref={innerRef}
       className="relative overflow-hidden bg-black will-change-transform"
-      style={{ aspectRatio, borderRadius: "16px" }}
+      style={{ aspectRatio, borderRadius: "12px" }}
     >
       <video
         src={src}

@@ -611,9 +611,11 @@
   .hiw-head {
     margin-bottom: 36px;
   }
+  /* Still stacked below desktop, with a smaller gap at the top. A card
+     taller than the screen gets its own (negative) --hiw-top from
+     HowItWorks, so it sticks only once its bottom is in view. */
   .hiw-theme {
-    position: relative;
-    top: 0;
+    top: var(--hiw-top, 16px);
   }
   .hiw-list {
     border-radius: 1.75rem;
@@ -670,14 +672,16 @@
   .hiw-theme:last-child {
     border-radius: 0 0 1.5rem 1.5rem;
   }
-  /* Phones don't stack the cards (they're static, not sticky), so each one
-     is a rounded block in its own right: paint the background through the
-     bottom strip the next card rides over, and round all four corners.
-     Without this the painted box ended square right where the next card's
-     rounded top corners cut in, which read as a broken corner. */
+  /* On phones each card is a rounded block in its own right: paint the
+     background through the bottom strip the next card rides over, and
+     round all four corners. Without this the painted box ended square
+     right where the next card's rounded top corners cut in, which read as
+     a broken corner. A soft shadow on the top edge separates a card from
+     the one it slides over. */
   .hiw-item {
     background-clip: border-box;
     border-radius: 1.5rem;
+    box-shadow: 0 -10px 24px -14px rgba(20, 24, 33, 0.22);
   }
   /* The image goes between the description and the call-out, so the left
      column's children join the card's own flow and take their own padding.

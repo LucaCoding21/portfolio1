@@ -1,5 +1,5 @@
 /*
-  Nav restyle (Sep 2026). Geometry and motion still follow the Lassie clone
+  Nav restyle (Sep 2026). Geometry and motion still follow the cloned reference
   (44px items, sliding pill, collapsing wordmark) but the surfaces changed:
   the items no longer sit on their own white pills, which read as "everything
   selected". Instead the whole row lives on one warm-gray frosted bar, the
@@ -212,7 +212,11 @@
   cursor: pointer;
 }
 
+/* Under 768px the Framer-style MobileDock takes over. */
 @media (max-width: 767px) {
+  .nav {
+    display: none;
+  }
   .desktopOnly {
     display: none;
   }
@@ -222,7 +226,7 @@
 }
 
 /*
-  Mobile menu, cloned from lassie.ai (390px probe). Their root is 10px too.
+  Mobile menu, cloned from the reference (390px probe). Their root is 10px too.
   Closed, the bar is untouched. Open, the nav is the viewport minus 16px a
   side, the frosted ring wraps whatever height the white panel reaches, and
   the panel starts under the row (-44px) so the logo sits on white.

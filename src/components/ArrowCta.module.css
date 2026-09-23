@@ -24,7 +24,9 @@
   /* right pad = chip inset, so the chip hugs the end of the pill */
   padding: 0 calc((var(--h) - var(--chip)) / 2 - 1px) 0 22px;
   border: 1px solid var(--ink);
-  border-radius: 999px;
+  /* Overridable per use: --radius (pill by default), --chip-radius and
+     --label (the blended label colour; keep it light, see .content). */
+  border-radius: var(--radius, 999px);
   overflow: hidden;
   isolation: isolate;
   background: var(--ink);
@@ -52,7 +54,7 @@
   right: calc((var(--h) - var(--chip)) / 2 - 1px);
   width: var(--chip);
   height: var(--chip);
-  border-radius: 50%;
+  border-radius: var(--chip-radius, 50%);
   background: var(--paper);
   transform-origin: center;
   will-change: transform;
@@ -66,7 +68,7 @@
   display: inline-flex;
   align-items: center;
   gap: 16px;
-  color: var(--paper);
+  color: var(--label, var(--paper));
   mix-blend-mode: difference;
 }
 

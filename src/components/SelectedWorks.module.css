@@ -1,5 +1,5 @@
 /*
-  Lassie "AI that runs the doctor's office" intro + pinned feature cards.
+  Selected works intro + pinned feature cards, cloned from a reference.
   Reference root is 10px; rem values are written as px. Breakpoints: tablet
   1024, desktop 1280, desktopLarge 1440.
 */
@@ -270,6 +270,57 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* A plain text link under the result. On hover an underline draws in
+   from the left and the arrow nudges up and to the right. */
+.caseStudy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 18px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.caseStudyLabel {
+  position: relative;
+}
+
+.caseStudyLabel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.caseStudyArrow {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@media (hover: hover) {
+  .caseStudy:hover .caseStudyLabel::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  .caseStudy:hover .caseStudyArrow {
+    transform: translate(2px, -2px);
+  }
+}
+
+.caseStudy:focus-visible .caseStudyLabel::after {
+  transform: scaleX(1);
+}
+
 /* Same face as .cardBody at every breakpoint. */
 .resultLabel {
   font-size: 13px;
@@ -340,6 +391,46 @@
 
 .isLive .plateLink {
   pointer-events: auto;
+}
+
+/* "Click to view": a small ink pill centred on the plate, shown while the
+   live card's link is hovered. Desktop with a mouse only; the text scrambles
+   in from the component. */
+.viewLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  display: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgb(17 17 19 / 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  transition:
+    opacity 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .viewLabel {
+    display: block;
+  }
+  .isLive .plateLink:hover + .viewLabel {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 /* ---- the Success Stories hover reel, popping up on its own ---- */
@@ -436,7 +527,7 @@
      in. The first card's copy is visible from the start (see start() in
      the component), so the gap reads as copy, not blank. */
   .intro {
-    margin-bottom: max(80px, calc(24px + var(--copy-h) - var(--card-top)));
+    margin-bottom: max(80px, calc(48px + var(--copy-h) - var(--card-top)));
   }
   /* Tighter run-out under the last card on phones. Above the How We Do It
      stage, which starts a viewport before More Work's bottom edge and so

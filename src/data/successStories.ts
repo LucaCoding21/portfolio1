@@ -20,6 +20,8 @@ export interface SuccessStory {
   href: string;
   /** The live site the cover and reel open in a new tab. */
   site: string;
+  /** Internal case study; adds a "View case study" button under the result. */
+  caseStudy?: string;
 }
 
 export const SUCCESS_STORIES: SuccessStory[] = [
@@ -33,6 +35,7 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     video: "/success/innovative-aluminum.mp4",
     href: "/work",
     site: "https://www.innovativealuminum.com/",
+    caseStudy: "/case-studies/innovative-aluminum",
   },
   {
     title: "Transforming Landscapes",

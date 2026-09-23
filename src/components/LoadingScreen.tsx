@@ -12,7 +12,7 @@
  * 3. The same plate goes fixed, blooms to fill the viewport while the two
  *    halves of the word slide off, and the paper fades out onto the real
  *    hero underneath. Just before the fade the hero is told the reel's
- *    current time (see LassieHero), so its own video picks up on the same
+ *    current time (see HomeHero), so its own video picks up on the same
  *    frame and the swap is invisible.
  *
  * The bloom waits for the reel to be playable (or 2s, whichever is first)
@@ -28,7 +28,7 @@ import s from "./LoadingScreen.module.css";
 
 /** The hero reel: 1080p landscape, and a 9:16 crop from the same 1080p
  *  source for phones (a landscape 720p file blown up by object-fit: cover
- *  showed only a ~400px sliver, stretched 3x, and read blurry). LassieHero
+ *  showed only a ~400px sliver, stretched 3x, and read blurry). HomeHero
  *  uses the same pair so the two <video>s share one cache entry. */
 export const REEL = "/hero-reel.mp4";
 /* The query is a cache buster: bump it whenever the crop is re-cut, or
@@ -37,7 +37,7 @@ export const REEL_MOBILE = "/hero-reel-mobile.mp4?v=8";
 export const POSTER = "/hero-reel-poster.jpg";
 export const POSTER_MOBILE = "/hero-reel-poster-mobile.jpg?v=8";
 export const MOBILE_MEDIA = "(max-width: 767px)";
-export const LOADER_HANDOFF_EVENT = "lassie:loader-video";
+export const LOADER_HANDOFF_EVENT = "cloverfield:loader-video";
 const MEDIA_TIMEOUT_MS = 2000;
 const LETTER_IN = 0.55;
 const LETTER_STAGGER = 0.03;

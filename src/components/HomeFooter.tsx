@@ -60,14 +60,18 @@ export default function HomeFooter() {
   return (
     // The clip keeps the pinned footer hidden until the last section
     // scrolls up off it, so the page lifts away to reveal the reel. The
-    // footer is 60svh tall on phones, 80svh from md, plus the corner tuck: the negative margin slides
-    // it under the section's rounded bottom corners.
+    // footer is 60svh tall on phones, 80svh from md, plus the corner tuck:
+    // the negative margin slides it under the section's rounded corners.
+    // It sticks to the viewport's bottom edge rather than a computed top, so
+    // it stays flush when iOS Safari hides its toolbars and the viewport
+    // grows past 100svh. The track above it (twice the footer's height)
+    // gives the sticky room to ride up from.
     <div
       className="relative -mt-[28px] h-[calc(60svh+28px)] md:-mt-[48px] md:h-[calc(80svh+48px)]"
       style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}
     >
-      <div className="relative -top-[100svh] h-[calc(160svh+28px)] md:h-[calc(180svh+48px)]">
-        <footer className="sticky top-[calc(40svh-28px)] h-[calc(60svh+28px)] w-full overflow-hidden bg-[#1a1613] text-white md:top-[calc(20svh-48px)] md:h-[calc(80svh+48px)]">
+      <div className="absolute inset-x-0 bottom-0 flex h-[200%] flex-col justify-end">
+        <footer className="sticky bottom-0 h-1/2 w-full shrink-0 overflow-hidden bg-[#1a1613] text-white">
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
@@ -92,7 +96,7 @@ export default function HomeFooter() {
           <div className="relative flex h-full flex-col justify-between px-6 pt-[52px] pb-4 md:px-10 md:pt-[80px] md:pb-6 font-[family-name:var(--font-outfit)]">
             <div className="flex items-start justify-between gap-6 text-sm md:text-[15px]">
               <div className="flex flex-col items-start gap-1.5">
-                <p className="text-white">Get an AI summary of Cloverfield</p>
+                <p className="font-medium text-white md:font-normal">Get an AI summary of Cloverfield</p>
                 <div className="mt-1 flex items-center gap-1.5">
                   {AI_SERVICES.map((s) => (
                     <a
@@ -125,7 +129,7 @@ export default function HomeFooter() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="font-medium text-white transition-opacity duration-300 hover:opacity-60"
+                    className="font-semibold text-white transition-opacity duration-300 hover:opacity-60 md:font-medium"
                   >
                     {item.label}
                   </Link>

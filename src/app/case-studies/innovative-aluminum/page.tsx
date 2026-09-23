@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Footer from "@/components/Footer";
+import HomeFooter from "@/components/HomeFooter";
 import { CAL_URL } from "@/data/projects";
 import CaseStudyHeroVideo from "@/components/CaseStudyHeroVideo";
 import CaseStudySidebar from "@/components/CaseStudySidebar";
@@ -181,7 +181,9 @@ export default function InnovativeAluminumCaseStudy() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className="min-h-screen bg-[#f9f8f5] text-black">
+      {/* The white block lifts off the pinned footer, as on the homepage. */}
+      <div className="relative z-10 rounded-b-[28px] bg-white md:rounded-b-[48px]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -245,7 +247,7 @@ export default function InnovativeAluminumCaseStudy() {
       </section>
 
       {/* Hero video — scroll-driven scale (kept) */}
-      <section className="px-6 md:px-10 mb-16 md:mb-24">
+      <section className="px-3 md:px-10 mb-16 md:mb-24">
         <div className="max-w-[1600px] mx-auto">
           <CaseStudyHeroVideo
             src="/innovative-aluminum-hero.mp4"
@@ -549,13 +551,14 @@ export default function InnovativeAluminumCaseStudy() {
               href="/work"
               className="hover:text-black transition-colors cursor-view"
             >
-              See more work →
+              See more work
             </Link>
           </div>
         </div>
       </section>
+      </div>
 
-      <Footer />
+      <HomeFooter />
     </div>
   );
 }

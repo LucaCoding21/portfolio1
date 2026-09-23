@@ -82,4 +82,8 @@
     height: 62svh;
     border-radius: 22px;
   }
+  /* The line and field sit lower on phones, closer to the plate's edge. */
+  .content {
+    padding-bottom: 1.5rem;
+  }
 }

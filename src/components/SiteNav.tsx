@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Nav cloned from lassie.ai: a centred row of items on one sheet of glass.
+ * Nav cloned from a reference site: a centred row of items on one sheet of glass.
  * Items are plain text at rest; on hover one white pill slides under the
  * pointer (0.3s expo.out) and the label rolls: it slides out the top as a
  * copy slides in from below, on calebwu.ca's ease. The call to action is the only solid (black) pill.
@@ -9,10 +9,10 @@
  * it a "light" one. Past 400px of scroll the wordmark folds away and only the
  * mark stays (0.6s power4.out).
  *
- * Their flower + "Lassie" wordmark becomes our "c" mark + "loverfield".
+ * The reference's flower + wordmark becomes our "c" mark + "loverfield".
  * The sound toggle is gone by request.
  *
- * Mobile menu, also cloned from lassie.ai: "Menu" does not open a separate
+ * Mobile menu, also cloned from the reference: "Menu" does not open a separate
  * overlay. The bar itself widens to the viewport minus 16px a side (0.5s,
  * custom ease 0.85,0.05,0.09,0.91) while the logo row nudges 4px in, and at
  * 0.2s a white panel drops out of it (height 0 to auto, 0.15s). Close runs
@@ -32,11 +32,11 @@ import { CustomEase } from "gsap/CustomEase";
 import { CAL_URL, NAV_ITEMS } from "@/data/projects";
 import { scrollToHash, scrollToTop } from "@/lib/scrollToHash";
 import { INTRO_EVENT } from "@/lib/intro";
-import s from "./LassieNav.module.css";
+import s from "./SiteNav.module.css";
 
 gsap.registerPlugin(CustomEase);
 
-// Lassie's motion tokens.
+// The reference's motion tokens.
 const DURATION = { fast: 0.3, medium: 0.6, slow: 1 };
 const EASE = "power4.out";
 const EASE_OUT = "expo.out";
@@ -44,8 +44,8 @@ const EASE_OUT = "expo.out";
 const COLLAPSE_AT = 400;
 const EXPAND_AT = 360;
 
-// Lassie's mobile menu timings.
-const MENU_OPEN = { duration: 0.5, ease: CustomEase.create("lassieMenu", "0.85, 0.05, 0.09, 0.91") };
+// The reference's mobile menu timings.
+const MENU_OPEN = { duration: 0.5, ease: CustomEase.create("menuOpen", "0.85, 0.05, 0.09, 0.91") };
 const MENU_PANEL_OPEN = { duration: 0.5 * DURATION.fast };
 const MENU_CLOSE = { duration: 0.26, ease: "power3.inOut" };
 const MENU_ROW_NUDGE = 4;
@@ -64,7 +64,7 @@ const MENU_AFTER_RULE = NAV_ITEMS.filter((i) => i.href === "/sight");
 
 type MenuState = "closed" | "opening" | "open" | "closing";
 
-export default function LassieNav() {
+export default function SiteNav() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
@@ -125,8 +125,8 @@ export default function LassieNav() {
       const t = (e as CustomEvent<"dark" | "light">).detail;
       if (t === "dark" || t === "light") setTheme(t);
     };
-    window.addEventListener("lassie:nav-theme", onTheme);
-    return () => window.removeEventListener("lassie:nav-theme", onTheme);
+    window.addEventListener("cloverfield:nav-theme", onTheme);
+    return () => window.removeEventListener("cloverfield:nav-theme", onTheme);
   }, []);
 
   // Only the homepage has a dark hero; every other page runs light.
