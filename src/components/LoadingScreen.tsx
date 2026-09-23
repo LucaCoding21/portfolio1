@@ -3,9 +3,12 @@
 /**
  * Intro loader: the plate bloom. About 1.3s from first paint to the hero.
  *
- * 1. "Cloverfield" rises in on the paper, then parts in the middle.
- * 2. The hero reel appears in the gap as a small rounded plate, already
- *    playing.
+ * 1. "Cloverfield" rises in on the paper a letter at a time, then parts in
+ *    the middle.
+ * 2. The hero reel pops into the gap as a small rounded plate, already
+ *    playing. Gap and plate open on calebwu.ca's sticker overshoot, so the
+ *    plate opens a little too far, shoves the two halves apart, and they
+ *    spring back before the bloom.
  * 3. The same plate goes fixed, blooms to fill the viewport while the two
  *    halves of the word slide off, and the paper fades out onto the real
  *    hero underneath. Just before the fade the hero is told the reel's
@@ -20,6 +23,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { CustomEase } from "gsap/dist/CustomEase";
 import s from "./LoadingScreen.module.css";
 
 /** The hero reel: 1080p landscape, and a 9:16 crop from the same 1080p
@@ -35,13 +39,19 @@ export const POSTER_MOBILE = "/hero-reel-poster-mobile.jpg?v=8";
 export const MOBILE_MEDIA = "(max-width: 767px)";
 export const LOADER_HANDOFF_EVENT = "lassie:loader-video";
 const MEDIA_TIMEOUT_MS = 2000;
-const WORD_IN = 0.4;
-const GAP_AT = 0.25;
-const GAP_IN = 0.35;
-const BLOOM_AT = 0.6;
+const LETTER_IN = 0.55;
+const LETTER_STAGGER = 0.03;
+const GAP_AT = 0.3;
+const GAP_IN = 0.5;
+/* The recoil has to settle before the plate is measured for the bloom. */
+const BLOOM_AT = GAP_AT + GAP_IN + 0.05;
 const BLOOM = 0.75;
 const EASE_IN_OUT = "expo.inOut";
 const EASE_OUT = "expo.out";
+/* calebwu.ca's sticker curve: ~10% past the target, then back. */
+const RECOIL = "cf-recoil";
+
+const HALVES = ["Clover", "field"];
 
 interface LoadingScreenProps {
   onLoadingComplete: () => void;
@@ -49,6 +59,7 @@ interface LoadingScreenProps {
 
 export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  const wordRef = useRef<HTMLDivElement>(null);
   const leftRef = useRef<HTMLSpanElement>(null);
   const rightRef = useRef<HTMLSpanElement>(null);
   const gapRef = useRef<HTMLSpanElement>(null);
@@ -62,12 +73,15 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
 
   useEffect(() => {
     const root = rootRef.current;
+    const word = wordRef.current;
     const left = leftRef.current;
     const right = rightRef.current;
     const gap = gapRef.current;
     const plate = plateRef.current;
     const video = videoRef.current;
-    if (!root || !left || !right || !gap || !plate || !video) return;
+    if (!root || !word || !left || !right || !gap || !plate || !video) return;
+    if (!CustomEase.get(RECOIL)) CustomEase.create(RECOIL, "0.34, 1.56, 0.64, 1");
+    const letters = word.querySelectorAll<HTMLElement>(`.${s.letter}`);
 
     let disposed = false;
     const finish = () => {
@@ -91,6 +105,8 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
       gsap.set([left, right], { autoAlpha: 1 });
+      gsap.set(letters, { autoAlpha: 1, y: 0 });
+      gsap.set(plate, { scale: 1 });
       mediaReady.then(() => {
         if (disposed) return;
         handoff();
@@ -104,14 +120,18 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
     const vw = () => root.clientWidth;
     const gapWidth = () => Math.min(vw() * 0.14, 260);
 
-    gsap.set([left, right], { autoAlpha: 0, y: 12 });
+    gsap.set([left, right], { autoAlpha: 1 });
+    gsap.set(letters, { autoAlpha: 0, y: "0.35em" });
     gsap.set(gap, { width: 0 });
+    gsap.set(plate, { scale: 0 });
 
-    // Part one runs at once: the word rises and opens.
+    // Part one runs at once: the letters ripple up, then the plate pops the
+    // word open.
     const intro = gsap.timeline();
     intro
-      .to([left, right], { autoAlpha: 1, y: 0, duration: WORD_IN, ease: EASE_OUT }, 0)
-      .to(gap, { width: gapWidth, duration: GAP_IN, ease: EASE_OUT }, GAP_AT);
+      .to(letters, { autoAlpha: 1, y: 0, duration: LETTER_IN, stagger: LETTER_STAGGER, ease: EASE_OUT }, 0)
+      .to(gap, { width: gapWidth, duration: GAP_IN, ease: RECOIL }, GAP_AT)
+      .to(plate, { scale: 1, duration: GAP_IN, ease: RECOIL }, GAP_AT);
 
     // Part two waits for the poster and for the word to have opened.
     const openAt = new Promise<void>((resolve) => {
@@ -121,6 +141,9 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
 
     Promise.all([mediaReady, openAt]).then(() => {
       if (disposed) return;
+      // Land the recoil exactly (a slow first frame can leave it short).
+      intro.progress(1);
+      gsap.set(plate, { scale: 1 });
       const R = root.getBoundingClientRect();
       const P = plate.getBoundingClientRect();
       // Same element, so the reel keeps playing: pin it where it sits, then grow.
@@ -153,9 +176,9 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
 
   return (
     <div ref={rootRef} className={s.root} aria-hidden="true">
-      <div className={s.word}>
+      <div ref={wordRef} className={s.word}>
         <span ref={leftRef} className={s.half}>
-          Clover
+          {splitLetters(HALVES[0])}
         </span>
         <span ref={gapRef} className={s.gap}>
           <span ref={plateRef} className={s.plate}>
@@ -178,9 +201,17 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
           </span>
         </span>
         <span ref={rightRef} className={s.half}>
-          field
+          {splitLetters(HALVES[1])}
         </span>
       </div>
     </div>
   );
+}
+
+function splitLetters(text: string) {
+  return text.split("").map((ch, i) => (
+    <span key={i} className={s.letter}>
+      {ch}
+    </span>
+  ));
 }

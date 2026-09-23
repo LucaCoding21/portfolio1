@@ -19,13 +19,21 @@
   left: 50%;
   top: 16px;
   z-index: 50;
-  display: flex;
-  gap: 2px;
+  display: block;
   width: max-content;
   padding: 0;
   transform: translateX(-50%);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   color: var(--ink);
+}
+
+/* the row of items; its own box so the mobile menu can nudge it */
+.row {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  width: max-content;
 }
 
 /* over the hero video the bar goes a touch more opaque so it holds up */
@@ -146,8 +154,9 @@
   box-shadow: 0 0 0 2px rgba(26, 22, 19, 0.35);
 }
 
-/* call to action hover: vertical text flip. The row height leaves room for
-   descenders so nothing clips at rest. */
+/* hover: vertical text roll on every label, links and call to action alike.
+   The row height leaves room for descenders so nothing clips at rest. The
+   curve is calebwu.ca's --ease-fast: a quick start and a long settle. */
 .flip {
   display: block;
   height: 1.3em;
@@ -158,11 +167,11 @@
   display: block;
   height: 1.3em;
   line-height: 1.3em;
-  transition: transform 0.55s cubic-bezier(0.76, 0, 0.24, 1);
+  transition: transform 0.5s cubic-bezier(0.62, 0.61, 0.02, 1);
 }
 
-.item.isCta:hover .flipRow,
-.item.isCta:focus-visible .flipRow {
+.item:hover .flipRow,
+.item:focus-visible .flipRow {
   transform: translateY(-1.3em);
 }
 
@@ -209,5 +218,121 @@
   }
   .menuButton {
     display: block;
+  }
+}
+
+/*
+  Mobile menu, cloned from lassie.ai (390px probe). Their root is 10px too.
+  Closed, the bar is untouched. Open, the nav is the viewport minus 16px a
+  side, the frosted ring wraps whatever height the white panel reaches, and
+  the panel starts under the row (-44px) so the logo sits on white.
+*/
+.rowHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 0;
+  margin-top: -44px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.panelInert {
+  pointer-events: none;
+}
+
+/* fixed to the open width, so nothing reflows while the bar widens */
+.panelInner {
+  position: relative;
+  left: 50%;
+  box-sizing: border-box;
+  width: calc(100vw - 32px);
+  padding: 0 16px;
+  transform: translateX(-50%);
+}
+
+.panelList {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 128px 0 16px;
+}
+
+.panelLink {
+  display: block;
+  width: 100%;
+  min-height: 36px;
+  margin-bottom: 8px;
+  text-align: left;
+  text-decoration: none;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(36px, 9.13vw, 40px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #000;
+}
+
+/* the one link under the rule (their "Login") */
+.panelLinkRuled {
+  margin-top: 14px;
+  margin-bottom: 20px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.panelCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  line-height: 18px;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.panelCta:hover {
+  background: #2c2723;
+}
+.panelCta:active {
+  background: #000;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  z-index: 2;
+  display: block;
+  width: 66px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 21px;
+  color: #000;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .nav.menuShown {
+    width: calc(100vw - 32px);
+  }
+  .nav.menuTall .ring {
+    height: calc(100% + 10px);
+    min-height: 54px;
   }
 }

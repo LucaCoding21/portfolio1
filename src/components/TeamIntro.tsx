@@ -14,8 +14,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
-import ArrowCta from "@/components/ArrowCta";
-import { CAL_URL } from "@/data/projects";
+import ReviewField from "@/components/ReviewField";
 import s from "./TeamIntro.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -85,6 +84,9 @@ export default function TeamIntro() {
       section.querySelectorAll<HTMLElement>("[data-count]").forEach((el, i) => {
         const target = Number(el.dataset.count);
         const counter = { n: 0 };
+        // Zero now, not on the tween's first frame: that frame waits out the
+        // delay, and the row has already risen in showing the final figure.
+        el.textContent = formatCount(0);
         gsap.to(counter, {
           n: target,
           duration: 1.6,
@@ -121,7 +123,8 @@ export default function TeamIntro() {
                 <dt className={s.statLabel}>{stat.label}</dt>
                 <dd className={s.statValue}>
                   {/* The resting markup holds the final figure, so it reads
-                      without JS; the tween overwrites it from zero. */}
+                      without JS; on mount the effect zeroes it before the
+                      section is on screen, then counts up. */}
                   {stat.prefix}
                   <span data-count={stat.value}>{formatCount(stat.value)}</span>
                   {stat.suffix}
@@ -131,9 +134,7 @@ export default function TeamIntro() {
           </dl>
 
           <div data-rise>
-            <ArrowCta href={CAL_URL} note="Free review of your current website.">
-              See what we&apos;d fix
-            </ArrowCta>
+            <ReviewField source="team" />
           </div>
         </div>
 

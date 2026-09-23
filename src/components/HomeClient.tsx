@@ -3,6 +3,7 @@
 import { useState, useEffect, useLayoutEffect } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
+import { scrollToHash } from "@/lib/scrollToHash";
 import LassieHero from "@/components/LassieHero";
 import LassieFeatures from "@/components/LassieFeatures";
 import ClientWall from "@/components/ClientWall";
@@ -69,8 +70,7 @@ export default function HomeClient() {
         // Arrived from another page via /#about-style link — jump to the section
         // on the next frame so the layout is settled.
         requestAnimationFrame(() => {
-          const el = document.querySelector(hash);
-          if (el) el.scrollIntoView({ behavior: "auto" });
+          scrollToHash(hash, "instant");
           setReady(true);
         });
       } else if (skipped) {

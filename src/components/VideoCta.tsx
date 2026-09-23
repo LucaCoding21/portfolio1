@@ -2,25 +2,30 @@
 
 /**
  * The closing call: a full-width reel in a rounded plate with a margin of
- * paper around it, one line and the button in the middle, sending people
- * down to the booking section. The reel plays only while it is on screen;
- * the line and button rise in with it.
- *
- * The button is the hero's: a white plate with the ink label, here with the
- * arrow in an ink disc that slides the label over on hover.
+ * paper around it, one line and the website-review field in the middle
+ * (the same field as the team section, tagged "closing"). The reel plays
+ * only while it is on screen; the line and field rise in with it.
  *
  * PLACEHOLDER: the line is a first pass.
  */
 
 import { useEffect, useRef } from "react";
-import { CAL_URL } from "@/data/projects";
+import ReviewField from "@/components/ReviewField";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import s from "./VideoCta.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function VideoCta() {
+export default function VideoCta({
+  source = "closing",
+  onPaper = false,
+}: {
+  /** Which placement the review field reports as: the homepage or /work. */
+  source?: "closing" | "work";
+  /** On a paper page (/work): paper ground and room above the plate. */
+  onPaper?: boolean;
+} = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -67,7 +72,7 @@ export default function VideoCta() {
   }, []);
 
   return (
-    <section ref={sectionRef} className={s.wrap} aria-label="Book a call">
+    <section ref={sectionRef} className={`${s.wrap} ${onPaper ? s.onPaper : ""}`} aria-label="Book a call">
       <div className={s.plate} data-plate>
         {/* Phones get a 9:16 crop of the 1080p source, panned right onto the
             bench, so the plate is not upscaling a sliver of the landscape
@@ -95,22 +100,8 @@ export default function VideoCta() {
           <p className={s.line} data-rise>
             Your site could be next.
           </p>
-          <div data-rise>
-            <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.button}>
-              <span className={s.buttonLabel}>See what we&apos;d fix</span>
-              <span className={s.buttonDisc} aria-hidden>
-                <svg viewBox="0 0 16 16" width="14" height="14" fill="none">
-                  <path
-                    d="M2.5 8h11M9 3.5 13.5 8 9 12.5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </a>
-            <span className={s.note}>Free review of your current website.</span>
+          <div data-rise className={s.form}>
+            <ReviewField source={source} tone="dark" />
           </div>
         </div>
       </div>

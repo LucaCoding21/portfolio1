@@ -125,6 +125,16 @@
   font-style: italic;
 }
 
+/* headline lines and words, for the word-by-word entrance */
+.line {
+  display: block;
+}
+
+.word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
 /* text-body-md */
 .bodyMd {
   margin: 0;

@@ -33,6 +33,14 @@
   transition: transform 0.18s ease;
 }
 
+/* Button reset for the form variant. */
+.asButton {
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
 .btn:active {
   transform: scale(0.97);
 }

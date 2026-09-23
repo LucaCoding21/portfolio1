@@ -17,6 +17,8 @@ export interface Project {
   hoverImage?: string;
   hoverImagePosition?: string;
   url?: string;
+  /** /work grid: show `description` in the quote slot (only when there is no quote). */
+  showDescription?: boolean;
   column?: "left" | "right";
   quote?: {
     texts: string[];
@@ -32,7 +34,9 @@ export interface Project {
 }
 
 export const projects: Project[] = [
-  // Order here is the order on /work (owner's call, September 2026).
+  // Order here is the order on /work (owner's call, September 2026). Covers
+  // for the projects added in September are each site's share image until
+  // real photos land.
   {
     id: 8,
     name: "WrapCity",
@@ -77,23 +81,11 @@ export const projects: Project[] = [
     url: "https://www.innovativealuminum.com/",
   },
   {
-    id: 13,
-    name: "Caddie Companion",
-    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
-    kpis: ["+21% more visitors turned into buyers than the old store"],
-    metrics: [
-      { value: "+21%", label: "More visitors turned into buyers than the old store" },
-    ],
-    tags: ["Ecommerce & Shopify"],
-    image: "/success/caddie-companion-cover.jpg",
-    url: "https://www.caddiecompanion.com/",
-  },
-  {
     id: 9,
     name: "Transforming Landscapes",
     description: "A research initiative on First Nations-led real estate development in BC.",
-    kpis: ["12 studies with First Nations leaders across BC, on one platform"],
-    metrics: [{ value: "12 studies", label: "With First Nations leaders across BC, on one platform" }],
+    kpis: ["12 studies with First Nations leaders"],
+    metrics: [{ value: "12 studies", label: "With First Nations leaders" }],
     tags: ["Real Estate"],
     image: "/transforming/transforming-cover.jpg",
     hoverImage: "/transforming/transforming.png",
@@ -135,6 +127,18 @@ export const projects: Project[] = [
     },
   },
   {
+    id: 13,
+    name: "Caddie Companion",
+    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+    kpis: ["+21% more visitors turned into buyers than the old store"],
+    metrics: [
+      { value: "+21%", label: "More visitors turned into buyers than the old store" },
+    ],
+    tags: ["Ecommerce & Shopify"],
+    image: "/success/caddie-companion-cover.jpg",
+    url: "https://www.caddiecompanion.com/",
+  },
+  {
     id: 1,
     name: "ACE",
     description: "Reimagining digital experiences for tomorrow.",
@@ -154,75 +158,45 @@ export const projects: Project[] = [
       avatar: "/ACE/ace-headshot-v5.webp",
     },
   },
-  // Added September 2026 (Northwest Railing too). Covers are each site's
-  // share image until real photos land; no results or quotes yet.
-  {
-    id: 15,
-    name: "Shoobydoo",
-    description: "Concert and live music photography from festivals and club shows in Vancouver.",
-    tags: ["Photography"],
-    image: "/shoobydoo/shoobydoo-cover.jpg",
-    url: "https://www.shoobydoo.ca/",
-  },
-  {
-    id: 16,
-    name: "Southbound Sips",
-    description: "Mobile bar and bartending service for weddings and events across Georgia.",
-    tags: ["Events & Hospitality"],
-    image: "/southboundsips/southboundsips-cover.jpg",
-    url: "https://www.southboundsips.com/",
-  },
-  {
-    id: 17,
-    name: "Dreamhouse Printing",
-    description: "Vancouver screen printing and embroidery shop with instant online quotes.",
-    tags: ["Ecommerce & Shopify"],
-    image: "/dreamhouse/dreamhouse-cover.jpg",
-    url: "https://www.dreamhouseprinting.com/",
-  },
   {
     id: 18,
     name: "Real Estate 360",
-    description: "Site for REIBC's conference bringing together the people shaping BC real estate.",
+    description: "Site for REIBC's conference, with speakers including BCREA's CEO and Chief Economist.",
+    showDescription: true,
+    kpis: ["15+ BC industry speakers"],
+    metrics: [{ value: "15+", label: "BC industry speakers" }],
     tags: ["Real Estate", "Events & Hospitality"],
     image: "/re360/re360-cover.jpg",
     url: "https://www.re360.ca/",
   },
   {
+    id: 16,
+    name: "Southbound Sips",
+    description: "Mobile bar and bartending service for weddings and events across Georgia.",
+    kpis: ["Site paid for itself in 4 days"],
+    tags: ["Events & Hospitality"],
+    image: "/southboundsips/southboundsips-cover.jpg",
+    url: "https://www.southboundsips.com/",
+  },
+  {
     id: 19,
     name: "Flow State Therapy",
     description: "Virtual counselling practice serving clients across British Columbia.",
+    kpis: ["100/100 accessibility score", "94 PageSpeed performance score"],
+    metrics: [
+      { value: "100/100", label: "Accessibility score" },
+      { value: "94", label: "PageSpeed performance score" },
+    ],
     tags: ["Clinics & Therapy"],
     image: "/flowstate/flowstate-cover.jpg",
     url: "https://www.flowstate-therapy.com/",
-  },
-  {
-    id: 10,
-    name: "Bloomkey",
-    description: "Career counselling and employment coaching practice in Surrey, BC.",
-    kpis: ["Newly launched"],
-    tags: ["Clinics & Therapy"],
-    image: "/bloomkey/bloomkey-cover.jpeg",
-    imagePosition: "58% center",
-    hoverImage: "/bloomkey/bloomkey.png",
-    hoverImagePosition: "center 75%",
-    url: "https://www.bloomkey.ca/",
-  },
-  {
-    id: 4,
-    name: "Njagih Studios",
-    description:
-      "Crafting visual stories for artists and creatives through bold photography.",
-    kpis: ["Built and launched in 7 days", "+21% inquiries in 3 months"],
-    tags: ["Photography"],
-    image: "/Njagih/njagih-cover.jpg",
-    hoverImage: "/Njagih/njagih studios.webp",
-    url: "https://njagihstudios.com/",
+    // Verbatim from Paula's video testimonial. Also usable: "I have no regrets
+    // and I love what we came up with."
     quote: {
-      texts: ["Best designers I've worked with, no exaggeration"],
-      author: "Israel Njagih",
-      role: "Owner, Njagih Studios",
-      avatar: "/Njagih/njagih-headshot-v2.webp",
+      texts: ["They made things so easy for me and the creative process was super fun."],
+      author: "Paula Wilson",
+      role: "Therapist, Flow State Therapy",
+      avatar: "/flowstate/paula-headshot.jpg",
     },
   },
   {
@@ -240,6 +214,55 @@ export const projects: Project[] = [
       role: "Realtor, Grand Central Realty",
       avatar: "/nancy-headshot.webp",
     },
+  },
+  {
+    id: 10,
+    name: "Bloomkey",
+    description: "Career counselling and employment coaching practice in Surrey, BC.",
+    kpis: ["Built and launched in 9 days"],
+    tags: ["Clinics & Therapy"],
+    image: "/bloomkey/bloomkey-cover.jpeg",
+    imagePosition: "58% center",
+    hoverImage: "/bloomkey/bloomkey.png",
+    hoverImagePosition: "center 75%",
+    url: "https://www.bloomkey.ca/",
+  },
+  {
+    id: 4,
+    name: "Njagih Studios",
+    description:
+      "Crafting visual stories for artists and creatives through bold photography.",
+    kpis: ["Built and launched in 9 days", "+21% inquiries in 3 months"],
+    tags: ["Photography"],
+    image: "/Njagih/njagih-cover.jpg",
+    hoverImage: "/Njagih/njagih studios.webp",
+    url: "https://njagihstudios.com/",
+    quote: {
+      texts: ["Best designers I've worked with, no exaggeration"],
+      author: "Israel Njagih",
+      role: "Owner, Njagih Studios",
+      avatar: "/Njagih/njagih-headshot-v2.webp",
+    },
+  },
+  {
+    id: 15,
+    name: "Shoobydoo",
+    description: "Concert and live music photography from festivals and club shows in Vancouver.",
+    kpis: ["Newly launched"],
+    metrics: [{ value: "Newly launched", label: "" }],
+    tags: ["Photography"],
+    image: "/shoobydoo/shoobydoo-cover.jpg",
+    url: "https://www.shoobydoo.ca/",
+  },
+  {
+    id: 17,
+    name: "Dreamhouse Printing",
+    description: "Vancouver screen printing and embroidery shop with instant online quotes.",
+    kpis: ["Newly launched"],
+    metrics: [{ value: "Newly launched", label: "" }],
+    tags: ["Ecommerce & Shopify"],
+    image: "/dreamhouse/dreamhouse-cover.jpg",
+    url: "https://www.dreamhouseprinting.com/",
   },
   // League1v1 is off the site for now (owner's call, September 2026).
   // {
@@ -271,6 +294,12 @@ export const homepageProjects = projects.filter((p) =>
 
 /** Booking page. Every booking CTA opens it in a new tab. */
 export const CAL_URL = "https://cal.com/cloverfield/30min";
+/**
+ * The free website review ("See what we'd fix"). The site's URL is passed as
+ * ?website=…, which Cal prefills into the booking question with identifier
+ * `website`.
+ */
+export const REVIEW_CAL_URL = "https://cal.com/cloverfield/website-review";
 
 export const NAV_ITEMS = [
   { label: "Work", href: "/work" },

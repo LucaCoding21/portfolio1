@@ -1,0 +1,167 @@
+/*
+ * The review field: a paper pill holding the input, with the studio's ink
+ * ArrowCta seated in its right end, and the Outfit note under it.
+ */
+
+.form {
+  --ink: #111113;
+  --muted: #6a665e;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.65rem;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px;
+  border: 1px solid rgba(17, 17, 19, 0.18);
+  border-radius: 999px;
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.field:focus-within {
+  border-color: var(--ink);
+}
+
+.field[data-invalid] {
+  border-color: #b4452f;
+}
+
+.input {
+  /* Basis 0: the input's default size would otherwise set a min width and
+     push the form past its column on phones. */
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  height: 44px;
+  padding: 0 4px 0 16px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* Chrome paints autofilled fields light blue, square to the input box. Paint
+   it back to the field's white and round the input, so it stays snug. */
+.input {
+  border-radius: 999px;
+}
+
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+  -webkit-text-fill-color: var(--ink);
+  caret-color: var(--ink);
+  transition: background-color 9999s ease-out;
+}
+
+.input::placeholder {
+  color: #9a958c;
+}
+
+/* The pill sits inside the field, so it is a touch shorter than on its own. */
+.field .cta {
+  flex: none;
+  --h: 46px;
+  --chip: 32px;
+}
+
+.note {
+  margin: 0 0 0 1.1rem;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.field[data-invalid] + .note {
+  color: #b4452f;
+}
+
+.srOnly,
+.honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* On footage (the closing reel): centred, a clearer edge on the pill, and the
+   note in white. */
+.dark {
+  align-items: center;
+  margin: 0 auto;
+}
+
+.dark .field {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+.dark .field:focus-within {
+  border-color: #fff;
+}
+
+.dark .note {
+  margin-left: 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark .field[data-invalid] + .note {
+  color: #ffc2b4;
+}
+
+/* Small phones: no room for both on one line. The input becomes its own pill
+   and the button sits under it. */
+@media screen and (max-width: 479px) {
+  .field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .input {
+    flex: none;
+    width: 100%;
+    height: 52px;
+    border: 1px solid rgba(17, 17, 19, 0.18);
+    background: #fff;
+  }
+  .input:focus {
+    border-color: var(--ink);
+  }
+  .field[data-invalid] .input {
+    border-color: #b4452f;
+  }
+  .field .cta {
+    align-self: flex-start;
+    --h: 52px;
+    --chip: 36px;
+  }
+  .note {
+    margin-left: 0.25rem;
+  }
+  /* Centred on footage, so the stacked button centres too. */
+  .dark .field .cta {
+    align-self: center;
+  }
+}

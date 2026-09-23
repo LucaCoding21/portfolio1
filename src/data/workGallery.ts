@@ -3,9 +3,9 @@
  *
  * Each item carries the project's headline result and its client quote from
  * `projects.ts`, so the card can show what the site did and what the owner
- * said. Media: projects with a storyboarded reel in /public/success use it
- * (played on hover only); the rest show their cover and swap to the mockup
- * on hover.
+ * said. Media: projects with a reel in /public/success play it on their
+ * own while on screen; the rest show their cover and swap to the mockup on
+ * hover.
  *
  * PLACEHOLDER: the headline is lifted verbatim from the reference and
  * `services` is a stand-in until real per-project services exist.
@@ -38,7 +38,7 @@ export interface WorkGalleryItem {
   /** Cover at rest. */
   poster: string;
   posterPosition?: string;
-  /** Storyboarded reel, played on hover. */
+  /** Screen-recorded reel, played while the card is on screen. */
   video?: string;
   /** Mockup shown on hover when there is no reel. */
   hoverImage?: string;
@@ -46,6 +46,8 @@ export interface WorkGalleryItem {
   /** Headline figure and what it measures. */
   result?: WorkResult;
   quote?: WorkQuote;
+  /** Grid card shows `description` in the quote slot when there is no quote. */
+  showDescription?: boolean;
   href: string;
 }
 
@@ -58,22 +60,28 @@ export const WORK_HEADLINE = WORK_HEADLINE_LINES.join(" ");
 /** Phones get a shorter line; the full one would run five lines there. */
 export const WORK_HEADLINE_LINES_SHORT = ["Websites and brands,", "built for clarity."];
 
-/** Reels by project id: the storyboarded 12s walkthroughs in /public/success. */
+/**
+ * Reels by project id, all 16:10 and played on their own while the card is on
+ * screen. Most are the owner's own screen recordings; Southbound Sips was
+ * recorded frame by frame with Playwright. Files ending in -work are /work
+ * only: the homepage Success Stories keep their original storyboarded reels.
+ */
 const REELS: Record<number, { video: string; poster: string }> = {
-  9: {
-    video: "/success/transforming-landscapes.mp4",
-    poster: "/success/transforming-landscapes.webp",
-  },
-  1: { video: "/success/ace.mp4", poster: "/success/ace.webp" },
-  12: { video: "/success/innovative-aluminum.mp4", poster: "/success/innovative-aluminum.webp" },
-  // The product photo stays as the cover; the reel plays over it on hover.
-  13: { video: "/success/caddie-companion.mp4", poster: "/success/caddie-companion-cover.jpg" },
-  // 16 down: recorded frame by frame with Playwright (1920x1200, 60fps).
-  // Share images stay as covers until real photos land.
-  16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover.jpg" },
-  14: { video: "/success/northwest-railing.mp4", poster: "/northwest-railing/northwest-railing-cover.jpg" },
   8: { video: "/success/wrapcity.mp4", poster: "/wrapcity-cover.webp" },
+  14: { video: "/success/northwest-railing.mp4", poster: "/northwest-railing/northwest-railing-cover.jpg" },
+  12: { video: "/success/innovative-aluminum-work.mp4", poster: "/success/innovative-aluminum.webp" },
+  13: { video: "/success/caddie-companion-work.mp4", poster: "/success/caddie-companion-cover.jpg" },
+  9: { video: "/success/transforming-landscapes-work.mp4", poster: "/success/transforming-landscapes.webp" },
+  11: { video: "/success/afterparty.mp4", poster: "/afterparty/afterparty-cover.jpg" },
+  1: { video: "/success/ace-work.mp4", poster: "/success/ace.webp" },
   15: { video: "/success/shoobydoo.mp4", poster: "/shoobydoo/shoobydoo-cover.jpg" },
+  16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover.jpg" },
+  17: { video: "/success/dreamhouse.mp4", poster: "/dreamhouse/dreamhouse-cover.jpg" },
+  18: { video: "/success/re360.mp4", poster: "/re360/re360-cover.jpg" },
+  19: { video: "/success/flowstate.mp4", poster: "/flowstate/flowstate-cover.jpg" },
+  10: { video: "/success/bloomkey.mp4", poster: "/bloomkey/bloomkey-cover.jpeg" },
+  4: { video: "/success/njagih.mp4", poster: "/Njagih/njagih-cover.jpg" },
+  6: { video: "/success/nancy-tran.mp4", poster: "/sophia/sophia-cover2.jpg" },
 };
 
 /**
@@ -83,7 +91,9 @@ const REELS: Record<number, { video: string; poster: string }> = {
  * launched in 7 days"). Claims with no figure ("Newly launched") show none.
  */
 function headline(p: Project): WorkResult | undefined {
-  const lower = (t: string) => t.charAt(0).toLowerCase() + t.slice(1);
+  // Lowercase the first letter so the label reads on from the figure, but
+  // leave acronyms ("BC industry speakers") alone.
+  const lower = (t: string) => (/^[A-Z]{2}/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1));
   if (p.metrics?.length)
     return { value: p.metrics[0].value, label: lower(p.metrics[0].label) };
   for (const kpi of p.kpis ?? []) {
@@ -110,6 +120,7 @@ export const WORK_ITEMS: WorkGalleryItem[] = projects.map((p) => {
     hoverImagePosition: p.hoverImagePosition,
     result: headline(p),
     quote: p.quote,
+    showDescription: p.showDescription,
     href: p.url ?? "/work",
   };
 });

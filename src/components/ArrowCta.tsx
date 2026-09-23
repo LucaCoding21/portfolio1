@@ -12,14 +12,13 @@
  *
  * `live` adds a pulsing green dot before the label (an availability signal).
  * `note` prints a small Outfit line under the button. No magnetism.
+ * Without `href` it renders a submit button, for use inside a form.
  */
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import s from "./ArrowCta.module.css";
-
-const CHIP = 36; // px, matches --chip in the stylesheet
 
 function Arrow() {
   return (
@@ -42,7 +41,8 @@ export default function ArrowCta({
   live = false,
   className = "",
 }: {
-  href: string;
+  /** Omit to render a submit button (for a form) instead of a link. */
+  href?: string;
   children: string;
   /** Small line under the button. */
   note?: string;
@@ -50,7 +50,7 @@ export default function ArrowCta({
   live?: boolean;
   className?: string;
 }) {
-  const btnRef = useRef<HTMLAnchorElement>(null);
+  const btnRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -68,9 +68,12 @@ export default function ArrowCta({
       /* Scale that takes the chip from its corner to the far edge of the pill. */
       const coverScale = () => {
         const r = btn.getBoundingClientRect();
-        const cx = r.width - (r.height - CHIP) / 2 - CHIP / 2;
+        // Measured, not assumed: --chip can be overridden (the review field
+        // seats a smaller pill), and a stale size stops the wipe short.
+        const chip = fill.offsetWidth;
+        const cx = r.width - (r.height - chip) / 2 - chip / 2;
         const reach = Math.hypot(cx, r.height / 2);
-        return (reach * 2 + 4) / CHIP;
+        return (reach * 2 + 4) / chip;
       };
 
       const onEnter = () => {
@@ -96,27 +99,39 @@ export default function ArrowCta({
     return () => ctx.revert();
   }, []);
 
+  const inner = (
+    <>
+      <span ref={fillRef} aria-hidden className={s.fill} />
+      <span className={s.content}>
+        {live && <span aria-hidden className={s.dotSlot} />}
+        <span ref={labelRef} className={s.label}>
+          {children}
+        </span>
+        <span ref={arrowRef} aria-hidden className={s.arrow}>
+          <Arrow />
+        </span>
+      </span>
+      {/* Outside the blend layer so it keeps its own colour. */}
+      {live && <span aria-hidden className={s.dot} />}
+    </>
+  );
+
   return (
     <div className={`${s.block} ${className}`}>
-      <Link
-        ref={btnRef}
-        href={href}
-        className={s.btn}
-        {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
-      >
-        <span ref={fillRef} aria-hidden className={s.fill} />
-        <span className={s.content}>
-          {live && <span aria-hidden className={s.dotSlot} />}
-          <span ref={labelRef} className={s.label}>
-            {children}
-          </span>
-          <span ref={arrowRef} aria-hidden className={s.arrow}>
-            <Arrow />
-          </span>
-        </span>
-        {/* Outside the blend layer so it keeps its own colour. */}
-        {live && <span aria-hidden className={s.dot} />}
-      </Link>
+      {href ? (
+        <Link
+          ref={btnRef}
+          href={href}
+          className={s.btn}
+          {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
+        >
+          {inner}
+        </Link>
+      ) : (
+        <button ref={btnRef} type="submit" className={`${s.btn} ${s.asButton}`}>
+          {inner}
+        </button>
+      )}
       {note && <span className={s.note}>{note}</span>}
     </div>
   );

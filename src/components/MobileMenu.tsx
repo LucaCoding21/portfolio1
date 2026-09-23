@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { CAL_URL, NAV_ITEMS } from "@/data/projects";
+import { scrollToHash } from "@/lib/scrollToHash";
 
 // The desktop nav gets home from the wordmark; the menu spells it out.
 const MENU_ITEMS = [{ label: "Home", href: "/" }, ...NAV_ITEMS];
@@ -107,8 +108,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       e.preventDefault();
       onClose();
       setTimeout(() => {
-        const el = document.querySelector(hash);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
+        scrollToHash(hash);
       }, 100);
       return;
     }

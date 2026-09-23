@@ -17,10 +17,9 @@
  * that short line, and the owner's line unfolds under the name. One row is
  * open at a time.
  *
- * Reels are quiet at rest. On a fine pointer a card's reel fades up and
- * starts only while the cover is hovered; projects without a reel crossfade
- * to their mockup instead. On touch there is no hover, so the reel plays
- * while the card sits mostly in view (one column, so one at a time).
+ * Reels play on their own, looping, whenever the card is on screen, and
+ * pause off screen. Projects without a reel crossfade to their mockup on
+ * hover (fine pointer only).
  *
  * Filter motion (out/in/stagger) comes from revelatio.studio/work. Surfaces are the homepage's: paper ground, ink
  * type, Outfit titles, DM Sans body, Geist for the tracked eyebrow.
@@ -28,7 +27,7 @@
  * PLACEHOLDER: headline copy comes from src/data/workGallery.ts.
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import {
@@ -471,70 +470,37 @@ function GridCard({ item }: { item: WorkGalleryItem }) {
   const reelRef = useRef<HTMLVideoElement>(null);
   const altRef = useRef<HTMLImageElement>(null);
 
-  /* Bring the reel (or mockup) up over the cover. */
-  const wake = useCallback(() => {
-    const media = mediaRef.current;
-    const reel = reelRef.current;
-    const alt = altRef.current;
-    if (!media) return;
-    gsap.killTweensOf([media, reel, alt].filter(Boolean));
-    gsap.to(media, { scale: 1.04, duration: 0.9, ease: "circ.out" });
-    if (reel) {
-      reel.currentTime = 0;
-      reel.play().catch(() => {});
-      gsap.to(reel, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
-    } else if (alt) {
-      gsap.to(alt, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
-    }
-  }, []);
-
-  /* Settle back to the cover and stop the reel. */
-  const rest = useCallback(() => {
-    const media = mediaRef.current;
-    const reel = reelRef.current;
-    const alt = altRef.current;
-    if (!media) return;
-    gsap.killTweensOf([media, reel, alt].filter(Boolean));
-    gsap.to(media, { scale: 1, duration: 0.55, ease: WF_EASE });
-    if (reel) {
-      gsap.to(reel, {
-        opacity: 0,
-        duration: REEL_OUT,
-        ease: "power2.inOut",
-        onComplete: () => {
-          reel.pause();
-          reel.currentTime = 0;
-        },
-      });
-    } else if (alt) {
-      gsap.to(alt, { opacity: 0, duration: REEL_OUT, ease: "power2.inOut" });
-    }
-  }, []);
-
-  /* No hover on touch: the reel runs while the card sits mostly in view. */
+  /* Reels play on their own, looping, whenever the card is on screen (and
+     pause off screen so a page of them stays light). Hover is only for
+     cards without a reel: the cover pushes in and swaps to the mockup. */
   useEffect(() => {
-    const media = mediaRef.current;
-    if (!media || !reelRef.current) return;
-    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const reel = reelRef.current;
+    if (!reel) return;
     const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => (e.isIntersecting ? wake() : rest()));
-      },
-      { threshold: 0.6 },
+      ([e]) => (e.isIntersecting ? reel.play().catch(() => {}) : reel.pause()),
+      { threshold: 0.1 },
     );
-    io.observe(media);
+    io.observe(reel);
     return () => io.disconnect();
-  }, [wake, rest]);
+  }, []);
+
+  const finePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   const onEnter = () => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
-      return;
-    wake();
+    const media = mediaRef.current;
+    const alt = altRef.current;
+    if (!media || !alt || !finePointer()) return;
+    gsap.killTweensOf([media, alt]);
+    gsap.to(media, { scale: 1.04, duration: 0.9, ease: "circ.out" });
+    gsap.to(alt, { opacity: 1, duration: REEL_IN, ease: "power2.out" });
   };
   const onLeave = () => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches)
-      return;
-    rest();
+    const media = mediaRef.current;
+    const alt = altRef.current;
+    if (!media || !alt || !finePointer()) return;
+    gsap.killTweensOf([media, alt]);
+    gsap.to(media, { scale: 1, duration: 0.55, ease: WF_EASE });
+    gsap.to(alt, { opacity: 0, duration: REEL_OUT, ease: "power2.inOut" });
   };
 
   return (
@@ -564,6 +530,7 @@ function GridCard({ item }: { item: WorkGalleryItem }) {
             <video
               ref={reelRef}
               className={s.reel}
+              style={{ opacity: 1 }}
               muted
               loop
               playsInline
@@ -603,7 +570,21 @@ function GridCard({ item }: { item: WorkGalleryItem }) {
           </div>
         )}
       </div>
-      {item.quote && <Said quote={item.quote} className={s.cardSaid} />}
+      {item.quote ? (
+        <Said quote={item.quote} className={s.cardSaid} />
+      ) : item.showDescription ? (
+        // Opted in (showDescription): the project's one line in the quote's
+        // slot and type, with no byline and no quote marks, since nobody said it.
+        <div className={`${s.said} ${s.cardSaid}`}>
+          <div className={s.saidLine}>
+            <p>{item.description}</p>
+          </div>
+        </div>
+      ) : (
+        // Nothing to say: hold a one-line quote's height anyway, so a row of
+        // two quoteless cards keeps the same air below it as the others.
+        <div className={s.saidSpacer} aria-hidden />
+      )}
 
       <a
         href={item.href}

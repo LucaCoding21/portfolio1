@@ -412,6 +412,13 @@
   margin-top: 0.1em;
 }
 
+/* Stand-in for a card with no quote: a one-line quote's height (measured at
+   3.25em at 1440 and 900 wide), so rows of quoteless cards keep their air. */
+.saidSpacer {
+  min-height: 3.25em;
+  margin-top: 0.1em;
+}
+
 .cardSaid .saidLine p {
   font-size: 1em;
   line-height: 1.45;
@@ -721,6 +728,10 @@
 @media screen and (max-width: 479px) {
   .section {
     font-size: 3.738vw;
+  }
+  /* One column: no neighbour to line up with. */
+  .saidSpacer {
+    display: none;
   }
   .grid {
     grid-template-columns: minmax(0, 1fr);

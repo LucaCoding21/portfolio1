@@ -32,6 +32,16 @@
   will-change: transform, opacity;
 }
 
+/* each letter rises on its own. Hidden in the stylesheet, not by JS, so
+   the server-rendered word never flashes up before the ripple. The plate
+   likewise starts popped shut. */
+.letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.35em);
+  will-change: transform, opacity;
+}
+
 /* the gap the plate opens in; width is animated from 0 */
 .gap {
   position: relative;
@@ -47,6 +57,7 @@
   overflow: hidden;
   border-radius: clamp(10px, 1.2vw, 18px);
   background: #1a1613;
+  transform: scale(0);
 }
 
 /* the same plate is pinned (position: fixed) and grown by JS at bloom time */

@@ -1,12 +1,19 @@
 /*
  * Closing call. A rounded video plate inset from the edges on paper, copy
- * and the button dead centre.
+ * and the review field dead centre.
  */
 .wrap {
   --paper: #f9f8f5;
   --edge: clamp(1rem, 2.5vw, 2.5rem);
   padding: 0 var(--edge) var(--edge);
   background: #fff;
+}
+
+/* After a paper page's content (/work): match its ground, and leave the same
+   air above the plate as below the last row of the grid. */
+.onPaper {
+  padding-top: clamp(4rem, 8vw, 7rem);
+  background: var(--paper);
 }
 
 .plate {
@@ -61,66 +68,10 @@
   text-wrap: balance;
 }
 
-/* Small Outfit line under the button, same copy as the team section's CTA. */
-.note {
-  display: block;
-  margin-top: 0.75rem;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: 0.8125rem;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-/* The hero's white plate button, with the arrow in an ink disc. */
-.button {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  height: 56px;
-  padding: 0 8px 0 24px;
-  border-radius: 16px;
-  background: #fff;
-  color: #1a1613;
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.005em;
-  text-decoration: none;
-  transition: background-color 0.2s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.button:hover {
-  background: #f8f6f2;
-  transform: translateY(-2px);
-}
-
-.buttonLabel {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.button:hover .buttonLabel {
-  transform: translateX(3px);
-}
-
-.buttonDisc {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: #1a1613;
-  color: #fff;
-  overflow: hidden;
-}
-
-.buttonDisc svg {
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.button:hover .buttonDisc svg {
-  transform: translateX(3px);
+/* The review field, capped so it reads as one control over the footage. */
+.form {
+  width: 100%;
+  max-width: 30rem;
 }
 
 @media (max-width: 767px) {
