@@ -7,16 +7,16 @@ import { projects } from "@/data/projects";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], weight: ["400"] });
 
 export const metadata: Metadata = {
-  title: "Our Work | Cloverfield Studio — Web Design Surrey BC",
+  title: "Our Work | Cloverfield Studio, Web Design Surrey BC",
   description:
-    "Browse our portfolio of custom web design projects for established businesses in Surrey BC, Vancouver, and across the Lower Mainland. Realtors, photographers, local businesses, manufacturers.",
+    "Websites we've built for local businesses in Surrey BC, Vancouver, and across the Lower Mainland, and the customers they brought in. Trades, real estate, clinics, hospitality, ecommerce, and photography.",
   alternates: {
     canonical: "https://cloverfield.studio/work",
   },
   openGraph: {
     title: "Our Work | Cloverfield Studio",
     description:
-      "Custom web design portfolio. Realtors, photographers, local businesses, manufacturers. Websites that generate leads in Surrey BC and Vancouver.",
+      "Websites that bring in customers, for trades, real estate, clinics, hospitality, ecommerce, and photography businesses in Surrey BC and Vancouver.",
     url: "https://cloverfield.studio/work",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -52,9 +52,9 @@ export default function WorkLayout({
       {
         "@type": "CollectionPage",
         "@id": "https://cloverfield.studio/work#collection",
-        "name": "Cloverfield Studio — Work",
+        "name": "Cloverfield Studio · Work",
         "description":
-          "Portfolio of custom web design projects by Cloverfield Studio, a web design agency in Surrey BC.",
+          "Websites Cloverfield Studio has built for local businesses, a web design studio in Surrey BC.",
         "url": "https://cloverfield.studio/work",
         "isPartOf": { "@id": "https://cloverfield.studio/#website" },
         "publisher": { "@id": "https://cloverfield.studio/#business" },

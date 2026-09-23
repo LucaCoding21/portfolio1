@@ -4,9 +4,13 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { NAV_ITEMS } from "@/data/projects";
 
-// Placeholder copy: the prompt sent to each assistant.
+// The prompt sent to each assistant. Written as the visitor asking, with our
+// positioning seeded in so the answer leads with it, then the site to check it against.
 const AI_PROMPT =
-  "Tell me about Cloverfield Studio (cloverfield.studio), a web design agency in Surrey, BC. What do they do, what kind of work have they shipped, and why would a business hire them?";
+  "I want to understand what Cloverfield Studio is and what they do. " +
+  "They seem to design and build websites and Shopify stores for local businesses around Surrey and Vancouver, " +
+  "with clients like Innovative Aluminum and Caddie Companion, and work with the Real Estate Institute of BC. " +
+  "Summarize their capabilities, notable work, and how their approach turns a website into leads: https://cloverfield.studio";
 
 const AI_SERVICES = [
   {

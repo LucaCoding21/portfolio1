@@ -15,20 +15,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
 import ReviewField from "@/components/ReviewField";
+import { STUDIO_STATS as STATS } from "@/data/projects";
 import s from "./TeamIntro.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * `value` counts up from zero on scroll, with thousands separators; `prefix`
- * and `suffix` are printed around it.
- */
-const STATS = [
-  { value: 5000, prefix: "", suffix: "+", label: "Customer inquiries generated" },
-  { value: 35, prefix: "+", suffix: "%", label: "Conversion lift" },
-  { value: 30, prefix: "", suffix: "+", label: "Websites launched" },
-  { value: 40, prefix: "+", suffix: "%", label: "More inquiries" },
-];
 
 const formatCount = (n: number) => Math.round(n).toLocaleString("en-CA");
 
