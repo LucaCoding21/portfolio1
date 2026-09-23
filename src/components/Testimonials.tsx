@@ -1,45 +1,28 @@
 "use client";
 
 /**
- * Video testimonials, all on show at once: copy on the left, three portrait
- * reels side by side on the right, the same language as the prints in More
- * Work. Every reel plays muted while the row is on screen; the sound button
- * on a card unmutes that one from the start and quiets the others.
+ * Testimonials, all on show at once: copy on the left, three portrait cards
+ * side by side on the right, the same language as the prints in More Work.
+ * The first two are client videos; every reel plays muted while the row is
+ * on screen, and the sound button on a card unmutes that one from the start
+ * and quiets the other. The third card cycles through the written quotes.
  *
- * PLACEHOLDER: copy is a first pass, and the reels are the Innovative
- * Aluminum dealer testimonials standing in until we have our own.
+ * PLACEHOLDER: section copy is a first pass. Videos and quotes are real.
  */
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { TESTIMONIAL_QUOTES, TESTIMONIAL_VIDEOS } from "@/data/testimonials";
 import s from "./Testimonials.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const REELS = [
-  {
-    name: "Gabrial Winkler",
-    role: "Founder, N.W. Railings",
-    video: "/testimonials/gabrial-winkler.mp4",
-    poster: "/testimonials/gabrial-winkler-poster.jpg",
-    position: "center 30%",
-  },
-  {
-    name: "Tom Wright",
-    role: "Founder, Tuff Deck Lofts and Railings",
-    video: "/testimonials/tom-wright.mp4",
-    poster: "/testimonials/tom-wright-poster.jpg",
-    position: "center 30%",
-  },
-  {
-    name: "Maegan Kimball",
-    role: "Sales Administration Coordinator, Modern",
-    video: "/testimonials/maegan-kimball.mp4",
-    poster: "/testimonials/maegan-kimball-poster.jpg",
-    position: "center 60%",
-  },
-];
+const REELS = TESTIMONIAL_VIDEOS;
+
+/* How long each written quote stays up before the next. */
+const QUOTE_MS = 7000;
 
 function SoundIcon({ on }: { on: boolean }) {
   return (
@@ -54,6 +37,109 @@ function SoundIcon({ on }: { on: boolean }) {
         <path d="m16 9 5 6M21 9l-5 6" />
       )}
     </svg>
+  );
+}
+
+function ArrowIcon({ dir }: { dir: "left" | "right" }) {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      {dir === "left" ? <path d="M10 3.5 5.5 8l4.5 4.5" /> : <path d="M6 3.5 10.5 8 6 12.5" />}
+    </svg>
+  );
+}
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("");
+}
+
+/* Written quotes, one at a time in a reel-shaped card. Advances on a timer
+   while on screen, holds while hovered or focused; the dots jump and the arrows step. */
+function QuoteCard() {
+  const ref = useRef<HTMLLIElement>(null);
+  const [i, setI] = useState(0);
+  const [held, setHeld] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (held || !visible) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setTimeout(() => setI((n) => (n + 1) % TESTIMONIAL_QUOTES.length), QUOTE_MS);
+    return () => window.clearTimeout(id);
+  }, [i, held, visible]);
+
+  const t = TESTIMONIAL_QUOTES[i];
+  const n = TESTIMONIAL_QUOTES.length;
+  const step = (d: number) => setI((c) => (c + d + n) % n);
+
+  return (
+    <li
+      ref={ref}
+      className={`${s.card} ${s.quoteCard}`}
+      data-card
+      onMouseEnter={() => setHeld(true)}
+      onMouseLeave={() => setHeld(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={() => setHeld(false)}
+    >
+      <figure key={i} className={s.quoteBody} aria-live="polite">
+        {t.stat && (
+          <div className={s.stat}>
+            <span className={s.statValue}>{t.stat.value}</span>
+            <span className={s.statLabel}>{t.stat.label}</span>
+          </div>
+        )}
+        <blockquote className={s.quote}>
+          <p>&ldquo;{t.quote}&rdquo;</p>
+        </blockquote>
+        <figcaption className={s.who}>
+          {t.avatar ? (
+            <Image src={t.avatar} alt="" width={40} height={40} className={s.avatar} />
+          ) : (
+            <span className={s.avatar} aria-hidden>
+              {initials(t.name)}
+            </span>
+          )}
+          <span>
+            <span className={s.whoName}>{t.name}</span>
+            <span className={s.whoRole}>{t.role}</span>
+          </span>
+        </figcaption>
+      </figure>
+      <div className={s.controls}>
+        <div className={s.dots}>
+          {TESTIMONIAL_QUOTES.map((q, n) => (
+            <button
+              key={q.name}
+              type="button"
+              className={s.dot}
+              aria-label={`Quote from ${q.name}`}
+              aria-current={n === i}
+              onClick={() => setI(n)}
+            />
+          ))}
+        </div>
+        <div className={s.arrows}>
+          <button type="button" className={s.arrow} aria-label="Previous quote" onClick={() => step(-1)}>
+            <ArrowIcon dir="left" />
+          </button>
+          <button type="button" className={s.arrow} aria-label="Next quote" onClick={() => step(1)}>
+            <ArrowIcon dir="right" />
+          </button>
+        </div>
+      </div>
+    </li>
   );
 }
 
@@ -171,6 +257,7 @@ export default function Testimonials() {
               </div>
             </li>
           ))}
+          <QuoteCard />
         </ul>
       </div>
     </section>

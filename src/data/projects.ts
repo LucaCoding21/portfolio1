@@ -64,18 +64,28 @@ export const projects: Project[] = [
     id: 14,
     name: "Northwest Railing",
     description: "Custom glass, aluminum and cable railings installed across Washington State.",
-    kpis: ["+58% more quote requests"],
-    metrics: [{ value: "+58%", label: "More quote requests" }],
+    kpis: ["+33% inquiries in 3 months"],
+    metrics: [{ value: "+33%", label: "Inquiries in 3 months" }],
     tags: ["Trades & Manufacturing"],
     image: "/northwest-railing/northwest-railing-cover.jpg",
     url: "https://www.northwestrailing.com/",
+    quote: {
+      texts: [
+        "Inquiries were up 33% in the first three months. It paid for itself faster than anything else I've spent on.",
+      ],
+      author: "Gabrial Winkler",
+      role: "Founder, Northwest Railing",
+    },
   },
   {
     id: 12,
     name: "Innovative Aluminum",
     description: "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
-    kpis: ["$5M+ dealer lifetime value signed in 90 days"],
-    metrics: [{ value: "$5M+", label: "Dealer lifetime value signed in 90 days" }],
+    kpis: ["$5M+ dealer lifetime value signed in 90 days", "+180% inquiries"],
+    metrics: [
+      { value: "$5M+", label: "Dealer lifetime value signed in 90 days" },
+      { value: "+180%", label: "Inquiries" },
+    ],
     tags: ["Trades & Manufacturing"],
     image: "/success/innovative-aluminum.webp",
     url: "https://www.innovativealuminum.com/",
@@ -141,7 +151,8 @@ export const projects: Project[] = [
   {
     id: 1,
     name: "ACE",
-    description: "Reimagining digital experiences for tomorrow.",
+    description:
+      "Portfolio for a Vancouver concert and wedding photographer, built to feel like the work.",
     kpis: ["Tripled monthly bookings", "Fully booked 3 months out"],
     metrics: [
       { value: "Tripled", label: "Monthly bookings" },
@@ -195,7 +206,7 @@ export const projects: Project[] = [
     quote: {
       texts: ["They made things so easy for me and the creative process was super fun."],
       author: "Paula Wilson",
-      role: "Therapist, Flow State Therapy",
+      role: "Founder, Flow State Therapy",
       avatar: "/flowstate/paula-headshot.jpg",
     },
   },
@@ -291,6 +302,18 @@ export const HOMEPAGE_PROJECT_IDS = [9, 1, 4, 8];
 export const homepageProjects = projects.filter((p) =>
   HOMEPAGE_PROJECT_IDS.includes(p.id)
 );
+
+/**
+ * The studio's headline figures, shown in the About section (TeamIntro) and
+ * listed in /llms.txt. `value` counts up from zero on scroll, with thousands
+ * separators; `prefix` and `suffix` are printed around it.
+ */
+export const STUDIO_STATS = [
+  { value: 3000, prefix: "", suffix: "+", label: "Customer inquiries generated" },
+  { value: 35, prefix: "+", suffix: "%", label: "Conversion lift" },
+  { value: 30, prefix: "", suffix: "+", label: "Websites launched" },
+  { value: 40, prefix: "+", suffix: "%", label: "More inquiries" },
+];
 
 /** Booking page. Every booking CTA opens it in a new tab. */
 export const CAL_URL = "https://cal.com/cloverfield/30min";

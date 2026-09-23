@@ -64,14 +64,14 @@ const reenie = Reenie_Beanie({
 export const metadata: Metadata = {
   title: "Web Design Surrey BC | Cloverfield Studio",
   description:
-    "Web design in Surrey BC that generates leads. Custom websites for established businesses. No templates, launched in under a week. Book a free consultation.",
+    "Web design in Surrey BC for local businesses that want more customers. Our sites have generated 3,000+ inquiries for our clients. Book a free call.",
   keywords: [
     "web design surrey bc",
     "web design companies in surrey bc",
     "surrey bc web design",
     "web design in surrey bc",
     "small business web design",
-    "custom website design",
+    "lead generation web design",
     "lead generating websites",
     "web design Vancouver",
     "web development Surrey BC",
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Web Design Surrey BC | Cloverfield Studio",
     description:
-      "Custom web design in Surrey BC for established businesses. No templates, launched in under a week. Websites that generate leads.",
+      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
     url: "https://cloverfield.studio",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -103,7 +103,7 @@ export const metadata: Metadata = {
         url: "https://cloverfield.studio/og-image.jpeg",
         width: 1200,
         height: 630,
-        alt: "Cloverfield Studio — Web Design Agency in Surrey BC",
+        alt: "Cloverfield Studio, web design in Surrey BC",
       },
     ],
   },
@@ -111,7 +111,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Web Design Surrey BC | Cloverfield Studio",
     description:
-      "Custom web design in Surrey BC for established businesses. No templates, launched in under a week. Websites that generate leads.",
+      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
     images: ["https://cloverfield.studio/og-image.jpeg"],
   },
 };
@@ -146,7 +146,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "name": "Cloverfield Studio",
                   "alternateName": "Cloverfield",
                   "description":
-                    "Web design and development agency in Surrey BC building custom, lead-generating websites for established businesses. No templates, launched in under a week. AI-search optimized.",
+                    "Web design and development studio in Surrey BC. We make websites that bring in customers for local businesses, designed around what their customers are looking for. Our work has generated more than 3,000 inquiries.",
                   "url": "https://cloverfield.studio",
                   "logo": "https://cloverfield.studio/og-image.jpeg",
                   "image": "https://cloverfield.studio/og-image.jpeg",
@@ -174,14 +174,10 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "knowsAbout": [
                     "Web design",
                     "Web development",
-                    "Custom website design",
+                    "Lead generation websites for local businesses",
                     "Small business websites",
-                    "Lead generation websites",
-                    "Next.js development",
-                    "SEO-optimized websites",
-                    "AI search optimization",
-                    "Generative engine optimization",
-                    "LLM SEO",
+                                        "Next.js development",
+                    "Shopify development",
                     "Landing page design",
                     "E-commerce websites",
                     "Brand identity",
@@ -196,9 +192,9 @@ gtag('config', 'G-KHS5MBDWV5');`}
                         "@type": "Offer",
                         "itemOffered": {
                           "@type": "Service",
-                          "name": "Custom Web Design",
+                          "name": "Web Design",
                           "description":
-                            "Bespoke websites designed and built from scratch for established businesses in Surrey, Vancouver, and the Lower Mainland.",
+                            "Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.",
                         },
                       },
                       {
@@ -207,7 +203,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                           "@type": "Service",
                           "name": "Web Development",
                           "description":
-                            "Fast, modern websites built with Next.js and optimized for performance and SEO.",
+                            "Fast, modern websites built with Next.js.",
                         },
                       },
                       {
@@ -223,9 +219,9 @@ gtag('config', 'G-KHS5MBDWV5');`}
                         "@type": "Offer",
                         "itemOffered": {
                           "@type": "Service",
-                          "name": "AI Search Optimization",
+                          "name": "Shopify Stores",
                           "description":
-                            "Websites optimized to be read, indexed, and cited by ChatGPT, Claude, Perplexity, and Google AI Overviews.",
+                            "Shopify stores designed and built for local brands selling online.",
                         },
                       },
                     ],
@@ -241,7 +237,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                     "ratingValue": "5",
                     "bestRating": "5",
                     "worstRating": "1",
-                    "ratingCount": "7",
+                    "ratingCount": "5",
                     "reviewCount": "7",
                   },
                   "review": [
@@ -325,38 +321,6 @@ gtag('config', 'G-KHS5MBDWV5');`}
                       "reviewBody":
                         "Best designers I've worked with, no exaggeration.",
                     },
-                    {
-                      "@type": "Review",
-                      "reviewRating": {
-                        "@type": "Rating",
-                        "ratingValue": "5",
-                        "bestRating": "5",
-                      },
-                      "author": {
-                        "@type": "Person",
-                        "name": "Jacob Abraham",
-                        "jobTitle": "Co-founder",
-                        "worksFor": { "@type": "Organization", "name": "League1v1" },
-                      },
-                      "reviewBody":
-                        "Dude I honestly didn't think we needed a website, I'm glad you guys proved me wrong.",
-                    },
-                    {
-                      "@type": "Review",
-                      "reviewRating": {
-                        "@type": "Rating",
-                        "ratingValue": "5",
-                        "bestRating": "5",
-                      },
-                      "author": {
-                        "@type": "Person",
-                        "name": "Alex",
-                        "jobTitle": "Founder",
-                        "worksFor": { "@type": "Organization", "name": "Clover Studio" },
-                      },
-                      "reviewBody":
-                        "They actually get design. Best agency I've worked with.",
-                    },
                   ],
                 },
                 {
@@ -365,7 +329,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "url": "https://cloverfield.studio",
                   "name": "Cloverfield Studio",
                   "description":
-                    "Web design agency in Surrey BC. Custom websites, launched in under a week. AI-search optimized.",
+                    "Web design studio in Surrey BC. We make websites that bring in customers for local businesses.",
                   "publisher": { "@id": "https://cloverfield.studio/#business" },
                   "inLanguage": "en-CA",
                 },

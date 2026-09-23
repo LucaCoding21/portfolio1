@@ -382,7 +382,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
           ))}
         </h1>
         <p ref={subRef} className={`${s.bodyMd} ${s.sub}`}>
-          Our work has generated more than 5,000 inquiries for local businesses.
+          Our work has generated more than 3,000 inquiries for local businesses.
           {/* The break is hidden on phones, so the sentences need a real space between them. */}
           <br />{" "}
           We design every site to make you more money.

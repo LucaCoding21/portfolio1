@@ -5,8 +5,8 @@
  * quote card spans both strips and one horizontal quote sits in the top
  * strip. Each cell is pinned by row / col / span / tall.
  *
- * SAMPLE copy: every quote, stat and person name is a placeholder written
- * to fit the layout. Logos come from `clientLogos.ts`.
+ * Quotes are the clients' own words. Stats match `projects.ts`; keep them
+ * in step. Logos come from `clientLogos.ts`.
  */
 import { CLIENT_LOGOS, type ClientLogo } from "./clientLogos";
 
@@ -14,8 +14,8 @@ export type WallVariant = "logo" | "quote" | "hquote" | "hstat";
 
 export interface WallPerson {
   name: string;
-  title: string;
-  avatar: string;
+  title?: string;
+  avatar?: string;
 }
 
 export interface WallCard {
@@ -34,7 +34,11 @@ export interface WallCard {
   /** Optional headline block above the quote on a tall card. */
   title?: { big: string; small: string };
   stat?: { value: string; lines: string[] };
-  /** Shown in the cursor bubble on hover. Cards without one do not get the bubble. */
+  /**
+   * Who said it. Not drawn on the card; it is read out as a visually hidden
+   * attribution so screen readers and anything reading the page text know
+   * whose words these are. Only for real people who said it.
+   */
   person?: WallPerson;
   href?: string;
 }
@@ -83,6 +87,7 @@ export const WALL_CARDS: WallCard[] = [
     col: 7,
     span: 2,
     tall: 2,
+    // His own words.
     quote: "“Inquiries were up 33% in the first three months. It paid for itself faster than anything else I've spent on.”",
     quoteWidth: 208,
     person: { name: "Gabrial Winkler", title: "Founder", avatar: "/testimonials/gabrial-winkler-poster.jpg" },
@@ -90,14 +95,14 @@ export const WALL_CARDS: WallCard[] = [
   },
   { logo: logo("Venue Series"), variant: "logo", row: 1, col: 9 },
   {
-    logo: logo("Venues Quarterly"),
-    logoHeight: 26,
+    logo: logo("League1v1"),
     variant: "hquote",
     row: 1,
     col: 10,
     span: 2,
-    // Price angle. Written with their permission; no named person on file.
-    quote: "“The quote was the invoice. Nothing got added on, nothing got padded.”",
+    // Jacob's words on pricing.
+    quote: "“What they quoted is what we paid. No surprise add-ons at the end.”",
+    person: { name: "Jacob Abraham", title: "Co-founder" },
     quoteMaxWidth: 190,
     href: "/work",
   },
@@ -109,7 +114,8 @@ export const WALL_CARDS: WallCard[] = [
     col: 12,
     span: 2,
     tall: 2,
-    quote: "“I sent them my photos and answered one call. A week later the site was live. I did almost nothing.”",
+    // His own words.
+    quote: "“I sent them my photos and answered one call. Nine days later the site was live. I did almost nothing.”",
     quoteWidth: 208,
     person: { name: "Israel Njagih", title: "Owner", avatar: "/Njagih/njagih-headshot-v2.webp" },
     href: "/work",
@@ -121,15 +127,15 @@ export const WALL_CARDS: WallCard[] = [
 
   /* strip 2 */
   {
-    logo: logo("Real Estate Institute of BC"),
-    logoHeight: 30,
+    logo: logo("Afterparty"),
+    logoHeight: 40,
     variant: "hquote",
     row: 2,
     col: 14,
     span: 2,
-    // Promised-vs-delivered angle. Written with their permission; the
-    // executive director has no headshot on file, so no hover bubble.
-    quote: "“They scoped it, priced it, gave us a date, and hit all three. No surprises, no change orders.”",
+    // Vien's own words, the same quote as on /work.
+    quote: "“It was one of the smoothest processes I've ever had for any project.”",
+    person: { name: "Vien", title: "Co-founder" },
     quoteMaxWidth: 200,
     href: "/work",
   },
@@ -146,8 +152,8 @@ export const WALL_CARDS: WallCard[] = [
     person: { name: "Ace Suasola", title: "Photographer", avatar: "/ACE/ace-headshot-v5.webp" },
     href: "/work",
   },
-  { logo: logo("Afterparty"), logoHeight: 48, variant: "logo", row: 2, col: 11 },
-  { logo: logo("League1v1"), variant: "logo", row: 2, col: 3 },
+  { logo: logo("Real Estate Institute of BC"), logoHeight: 30, variant: "logo", row: 2, col: 11 },
+  { logo: logo("Venues Quarterly"), logoHeight: 26, variant: "logo", row: 2, col: 3 },
   { logo: logo("Bloomkey"), variant: "logo", row: 2, col: 4 },
   { logo: logo("Dreamhouse Printing"), logoHeight: 38, variant: "logo", row: 2, col: 16 },
 ];

@@ -85,6 +85,22 @@ function Card({ card }: { card: WallCard }) {
         </div>
       )}
 
+      {/* Who the quote or stat belongs to. Hidden on screen, where the logo
+          already says it; read by screen readers and page-text readers. */}
+      {variant !== "logo" && (
+        <span className="sr-only">
+          {!card.person
+            ? logo.name
+            : [
+                card.person.name,
+                card.person.title,
+                card.person.name === logo.name ? null : logo.name,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+        </span>
+      )}
+
       {variant === "hstat" && card.stat && (
         <div className={s.stat}>
           <div className={s.statValue}>{card.stat.value}</div>
