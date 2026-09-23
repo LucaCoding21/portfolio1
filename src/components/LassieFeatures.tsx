@@ -6,12 +6,13 @@
  * our Success Stories covers, and the story reel that normally stands up on
  * hover stands up on its own while a card is the live one.
  *
- * Motion follows calebwu.ca's card deck rather than a scrub: the section
- * pins, and while it is pinned each scroll gesture (wheel, swipe or arrow
- * key) steps one card, played as a fixed 700ms tween on his ease. The front
- * card lifts straight off the top; the ones behind wait at scale .85 / 12%
- * down, .7 / 24% down, and so on. Stepping past either end hands the scroll
- * back to the page.
+ * Motion is their scroll timeline, generalised to any number of cards: the
+ * section pins for 2.2 viewport heights on desktop (3 on tablet, 2.5 on
+ * mobile) plus one per card beyond three, and a scrubbed timeline of parallel
+ * tracks runs across 3 (+1 per extra card) viewport heights. Track 0 brings
+ * the first card in and out, track 1 holds the second card back (scale .85,
+ * 12% down) then brings it in and out, track 2 holds the third two steps back
+ * (scale .7, 24% down), one step back, then in, and so on.
  *
  * Card copy is the project's title, blurb and headline result from
  * `successStories`. Their Lottie flower above
@@ -22,18 +23,16 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { CustomEase } from "gsap/dist/CustomEase";
 import { SUCCESS_STORIES } from "@/data/successStories";
-import { isJumping } from "@/lib/scrollToHash";
 import StoryDescription from "./StoryDescription";
 import s from "./LassieFeatures.module.css";
 
-gsap.registerPlugin(ScrollTrigger, CustomEase);
+gsap.registerPlugin(ScrollTrigger);
 // iOS shows and hides its address bar mid-scroll; without this each one
 // fires a resize, ScrollTrigger refreshes, and the pinned carousel jumps.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
-const BP = { tablet: 1024, desktop: 1280 };
+const BP = { mobile: 394, tablet: 1024, desktop: 1280, desktopLarge: 1440 };
 
 /* Shown in sequence; the last in the DOM is the first one up. Title, blurb
    and the headline result all come from the story. Copy alternates sides. */
@@ -42,20 +41,19 @@ const CARDS = SUCCESS_STORIES.map((story, i) => ({
   story,
 }));
 
-/* calebwu.ca's card deck: one scroll gesture is one card, played as a fixed
-   700ms tween on his --ease-fast curve, however hard or slow the wheel. */
-const EASE = "cw-ease-fast";
-const STEP = 0.7;
-/* Wheel events this far apart start a new gesture. */
-const GESTURE_GAP = 200;
-/* Minimum time between two steps. */
-const STEP_GAP = 225;
-/* A swipe counts past this speed (px/ms) or distance (px). */
-const SWIPE_V = 0.3;
-const SWIPE_D = 50;
+/* Viewport heights the section stays pinned for: the reference's 2.2 / 3 /
+   2.5 for three cards, plus one per extra card. */
+const EXTRA = CARDS.length - 3;
 
-/* Both run only on a change of state (see setLive): a play() on a phone
-   reports `paused` for a moment while it starts. */
+/* Below desktop each card holds in front for a stretch of scroll before it
+   lifts (the reference runs straight from arriving into leaving). In
+   timeline units, where a card's arrival is 2; the scroll distances grow by
+   the same share so the moves themselves keep their pace. */
+const HOLD = 1.2;
+
+/* Both run only on a change of state (see setLive), never per frame: a
+   play() on a phone reports `paused` for a moment while it starts, and
+   resetting the time on every scrub frame kept the reel stuck on frame 0. */
 const play = (v: HTMLVideoElement | null) => {
   if (!v) return;
   v.currentTime = 0;
@@ -80,19 +78,16 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
     // sequence order: index 0 = DOM last
     const els = [...cardRefs.current].reverse();
     if (!carousel || els.some((e) => !e)) return;
-    const cards = (els as HTMLDivElement[]).map((el) => ({
-      el,
-      plate: el.querySelector<HTMLElement>(`.${s.plate}`)!,
-      media: el.querySelector<HTMLElement>(`.${s.media}`)!,
-      desc: el.querySelector<HTMLElement>(`.${s.descriptionAnim}`)!,
-    }));
-    const last = cards.length - 1;
+    const elements = els as HTMLDivElement[];
 
-    if (!CustomEase.get(EASE)) CustomEase.create(EASE, "0.62, 0.61, 0.02, 1");
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const w = () => window.innerWidth;
     const vh = () => window.innerHeight;
+    // Set once at build: the hold is baked into the timeline's positions.
+    const hold = w() < BP.tablet ? HOLD : 0;
+    const stretch = (2 + hold) / 2;
 
+    // Called on every scrub frame by the timelines below, so it only does
+    // work when the state actually flips.
     const live = new WeakSet<HTMLElement>();
     const setLive = (el: HTMLElement, on: boolean) => {
       if (live.has(el) === on) return;
@@ -104,247 +99,177 @@ export default function LassieFeatures({ ready }: { ready: boolean }) {
       if (on) play(reel);
       else pause(reel);
     };
-    const liveTimers: gsap.core.Tween[] = [];
 
-    let arrived = false;
-    let current = 0;
-
-    /* Every card's pose for where the deck is. `stagger` spaces the cards
-       behind by 150ms a slot, as the stack builds on arrival. */
-    const render = (instant = false, stagger = false) => {
-      const d = instant || reduced ? 0 : STEP;
-      const below = w() < BP.desktop;
-      liveTimers.splice(0).forEach((t) => t.kill());
-
-      cards.forEach(({ el, plate, media, desc }, i) => {
-        const opts = { duration: d, ease: EASE, overwrite: "auto" as const };
-
-        if (!arrived) {
-          // Waiting under the title: every plate stacked a little low, and
-          // on phones the first card's copy already showing above it.
-          const shown = w() < BP.tablet && i === 0;
-          gsap.to(plate, { ...opts, scale: 0.95, y: "10%", opacity: 1 });
-          gsap.to(media, { ...opts, scale: 1.2, opacity: 1 });
-          gsap.to(desc, {
-            ...opts,
-            opacity: shown ? 1 : 0,
-            y: shown ? "0%" : "50%",
-            scale: below && i > 0 ? 0.8 : 1,
-          });
-          setLive(el, false);
-          return;
-        }
-
-        const slot = i - current;
-        if (slot < 0) {
-          // Lifted straight off the top.
-          gsap.to(plate, { ...opts, scale: 1, y: -vh(), opacity: 1 });
-          gsap.to(desc, { ...opts, y: below ? -vh() : "-60%" });
-          gsap.to(desc, { ...opts, opacity: 0, duration: d * 0.45 });
-          setLive(el, false);
-        } else if (slot === 0) {
-          gsap.to(plate, { ...opts, scale: 1, y: 0, opacity: 1 });
-          gsap.to(media, { ...opts, scale: 1, opacity: 1 });
-          gsap.to(desc, { ...opts, opacity: 1, y: "0%", scale: 1, delay: d ? 0.1 : 0 });
-          // Live from halfway in, like the scrubbed version.
-          if (d) liveTimers.push(gsap.delayedCall(d / 2, () => setLive(el, true)));
-          else setLive(el, true);
-        } else {
-          const delay = stagger && d ? 0.15 * Math.min(slot, 2) : 0;
-          gsap.to(plate, { ...opts, delay, scale: 1 - 0.15 * slot, y: `${12 * slot}%`, opacity: 1 });
-          gsap.to(media, { ...opts, delay, scale: 1.05, opacity: Math.max(0, 0.5 - slot / 5) });
-          gsap.to(desc, { ...opts, opacity: 0, y: `${90 * slot}%`, scale: below ? 0.8 : 1 });
-          setLive(el, false);
-        }
+    /* a card comes up to the front */
+    const enter = (el: HTMLElement) => {
+      const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
+      const media = el.querySelector<HTMLElement>(`.${s.media}`);
+      const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+      // Live from halfway in, and it stays live (onComplete covers a flick
+      // that skips straight past the window, and the hold after it); the
+      // lift turns it off again.
+      // Phones hold each card in front for a stretch, so the arrival eases
+      // into the stop instead of hitting it at full speed.
+      const tl = gsap.timeline({
+        defaults: { ease: w() < BP.tablet ? "power1.out" : "none" },
+        onUpdate: () => setLive(el, tl.progress() >= 0.5),
+        onComplete: () => setLive(el, true),
       });
+      if (!plate || !media || !desc) return tl;
+      const below = w() < BP.desktop;
+      tl.to(el, { scale: 1, y: 0 }, 0);
+      tl.to(desc, { opacity: 1, duration: () => (below ? 0.5 : 1) }, below ? 0 : 0.1);
+      tl.to(desc, { duration: () => (below ? 2 : 1), scale: 1, y: "0%" }, below ? 0 : 0.1);
+      tl.to(plate, { scale: () => 1, y: () => 0, opacity: () => 1, duration: 2 }, 0);
+      tl.to(plate, { background: "#F9F8F5", duration: 0.1 }, 0);
+      tl.to(media, { opacity: () => 1 }, 0);
+      tl.fromTo(media, { scale: 1.05 }, { scale: 1, duration: 2 }, 0);
+      return tl;
     };
 
-    render(true);
-
-    /* ---- the lock: while pinned, scroll gestures step the deck ---- */
-
-    let pin: ScrollTrigger | null = null;
-    let locked = false;
-    let lastStep = 0;
-
-    // A phone flick keeps coasting after the finger lifts, and blocking
-    // touchmove can't stop that; hiding the page's overflow does. Touch only,
-    // so a desktop scrollbar never disappears and shifts the layout.
-    const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
-    const setLocked = (on: boolean) => {
-      locked = on;
-      if (touch) document.documentElement.style.overflow = on ? "hidden" : "";
+    /* a card waits behind, `t - r` steps back */
+    const back = (el: HTMLElement, t: number, r: number) => {
+      const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
+      const media = el.querySelector<HTMLElement>(`.${s.media}`);
+      const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        onUpdate: () => setLive(el, false),
+      });
+      if (!plate || !media || !desc) return tl;
+      const l = t - r;
+      tl.to(el, { scale: 1, y: 0 }, 0);
+      tl.to(desc, { opacity: 0, y: () => `${(90 - r) * l}%` }, 0);
+      tl.to(plate, { background: "#F9F8F5", duration: 0.1 }, 0);
+      tl.to(plate, { scale: () => 1 - 0.15 * l, duration: 2, y: () => `${(12 - r) * l}%`, opacity: () => 1 }, 0);
+      tl.to(media, { opacity: () => (l <= 0 ? 1 : 0.5 - l / 5) }, 0);
+      return tl;
     };
 
-    const lock = () => {
-      // A nav link's scroll (back to the hero, down to a section) runs
-      // straight through the deck; only the user's own scrolling is caught.
-      if (isJumping()) return;
-      setLocked(true);
-      // The wheel stream that carried the page here is still running;
-      // treat it as the gesture in progress so it doesn't also step a card.
-      inGesture = true;
-      lastWheel = performance.now();
-      endGestureSoon();
+    /* a card lifts off the top. The reference passes `ease: "linear"` as a
+       timeline option, which GSAP ignores, so these tweens run on the default
+       power1.out: the lift starts fast and settles. Measured, not assumed.
+       Phones come out of a hold, so there the lift starts gently too. */
+    const leave = (el: HTMLElement) => {
+      const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
+      const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+      const tl = gsap.timeline({
+        defaults: { ease: w() < BP.tablet ? "power1.inOut" : "power1.out" },
+        onUpdate: () => {
+          const p = tl.progress();
+          if (p > 0.3) setLive(el, false);
+          else setLive(el, true);
+        },
+      });
+      if (!plate || !desc) return tl;
+      tl.to(el, { scale: 1, y: 0 }, 0);
+      tl.to(
+        desc,
+        {
+          y: () => (w() >= BP.desktop ? "-60%" : `-${vh()}px`),
+          duration: () =>
+            w() < BP.desktop && w() >= BP.tablet ? 2 : w() >= BP.desktop ? 0.5 : 3,
+        },
+        0
+      );
+      // Below desktop the copy would otherwise ride up half-transparent over
+      // the next card for the whole lift, so it fades out in the first
+      // stretch of the move.
+      tl.to(desc, { opacity: 0, duration: () => (w() >= BP.desktop ? 0.5 : 0.35) }, 0);
+      tl.to(plate, { background: "transparent", duration: 0.1 }, 0);
+      tl.to(
+        plate,
+        {
+          scale: () => 1,
+          duration: () => (w() >= BP.desktop ? 3 : w() >= BP.tablet ? 2 : 3),
+          y: () => `${-vh()}px`,
+        },
+        0
+      );
+      return tl;
     };
 
-    const release = (dir: 1 | -1) => {
-      setLocked(false);
-      if (!pin) return;
-      // Anywhere inside the pin looks the same, so jumping to its edge is
-      // invisible, and the next scroll carries straight on out.
-      window.scrollTo({ top: dir > 0 ? pin.end : pin.start, behavior: "instant" });
+    const start = () => {
+      const tl = gsap.timeline({});
+      elements.forEach((el, i) => {
+        const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
+        const media = el.querySelector<HTMLElement>(`.${s.media}`);
+        const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+        if (!plate || !media || !desc) return;
+        tl.set(plate, { scale: 0.95, y: "10%", immediateRender: true });
+        tl.set(media, { scale: 1.2, immediateRender: true });
+        // On phones the first card's copy is already showing above its
+        // plate as the section scrolls in, so the gap under the title
+        // isn't blank; the enter tween then has nothing to do for it.
+        const shown = () => w() < BP.tablet && i === 0;
+        tl.set(
+          desc,
+          {
+            opacity: () => (shown() ? 1 : 0),
+            y: () => (shown() ? "0%" : "50%"),
+            scale: () => (w() < BP.desktop && i > 0 ? 0.8 : 1),
+            immediateRender: true,
+          },
+          0
+        );
+      });
+      return tl;
     };
 
-    const step = (dir: 1 | -1) => {
-      const now = performance.now();
-      if (now - lastStep < STEP_GAP) return;
-      lastStep = now;
-      const next = current + dir;
-      if (next < 0 || next > last) {
-        release(dir);
-        return;
+    /* card i waits i steps back, one step per card ahead of it, then comes
+       up; every card but the last lifts off afterwards */
+    const next = (i: number) => {
+      const tl = gsap.timeline({ defaults: { ease: "none" } });
+      const el = elements[i];
+      // Each step back is padded by the hold too, so a card starts up
+      // exactly as the one in front of it starts to lift.
+      for (let k = 0; k < i; k++) {
+        tl.add(back(el, i, k), k === 0 ? 0 : undefined);
+        if (hold) tl.to({}, { duration: hold });
       }
-      current = next;
-      render();
+      tl.add(enter(el), i === 0 ? 0 : undefined);
+      if (hold) tl.to({}, { duration: hold });
+      if (i < elements.length - 1) tl.add(leave(el));
+      return tl;
     };
-
-    // Wheel: calebwu.ca's gesture rule. A gesture steps once when it starts;
-    // a sudden jump in speed mid-stream (a fresh flick through trackpad
-    // momentum) counts as a new one.
-    let inGesture = false;
-    let lastWheel = 0;
-    let lastSpeed = 0;
-    let gestureEnd: ReturnType<typeof setTimeout> | undefined;
-    const endGestureSoon = () => {
-      clearTimeout(gestureEnd);
-      gestureEnd = setTimeout(() => {
-        inGesture = false;
-        lastSpeed = 0;
-      }, GESTURE_GAP);
-    };
-    const onWheel = (e: WheelEvent) => {
-      if (!locked) return;
-      e.preventDefault();
-      const now = performance.now();
-      const dy = Math.abs(e.deltaY);
-      const dt = now - lastWheel;
-      const speed = dt > 0 ? dy / dt : 0;
-      const spike = lastSpeed > 0 && speed > 2 * lastSpeed && speed > 1;
-      if ((!inGesture || spike) && dy > 0) step(e.deltaY > 0 ? 1 : -1);
-      inGesture = true;
-      lastSpeed = speed;
-      lastWheel = now;
-      endGestureSoon();
-    };
-
-    // Touch: one swipe, one card.
-    let touchStartY = 0;
-    let touchY = 0;
-    let touchT = 0;
-    let touchV = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      if (!locked) return;
-      touchStartY = touchY = e.touches[0].clientY;
-      touchT = Date.now();
-      touchV = 0;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      if (!locked) return;
-      e.preventDefault();
-      const y = e.touches[0].clientY;
-      const now = Date.now();
-      const dt = now - touchT;
-      if (dt > 0) touchV = (touchY - y) / dt;
-      touchY = y;
-      touchT = now;
-    };
-    const onTouchEnd = () => {
-      if (!locked) return;
-      const dist = touchStartY - touchY;
-      if (Math.abs(touchV) > SWIPE_V || Math.abs(dist) > SWIPE_D) {
-        step((Math.abs(touchV) > SWIPE_V ? touchV : dist) > 0 ? 1 : -1);
-      }
-    };
-
-    const onKey = (e: KeyboardEvent) => {
-      if (!locked) return;
-      const down = ["ArrowDown", "PageDown", " "].includes(e.key);
-      const up = ["ArrowUp", "PageUp"].includes(e.key);
-      if (!down && !up) return;
-      e.preventDefault();
-      step(down ? 1 : -1);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
-    window.addEventListener("touchend", onTouchEnd, { passive: true });
-    window.addEventListener("keydown", onKey);
 
     const ctx = gsap.context(() => {
-      // The first card comes up as the section scrolls in, and the stack
-      // builds behind it.
+      const initial = start();
+
       ScrollTrigger.create({
         trigger: carousel,
-        start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
-        onEnter: () => {
-          arrived = true;
-          current = 0;
-          render(false, true);
-        },
-        onLeaveBack: () => {
-          // Normally the deck is back on its first card by now. After a jump
-          // (a nav link) it may not be, and the lifted cards would fly down
-          // across the section above, so they snap instead.
-          const jumped = current !== 0;
-          arrived = false;
-          current = 0;
-          render(jumped);
-        },
-      });
-
-      pin = ScrollTrigger.create({
-        trigger: carousel,
         start: "center center",
-        // One viewport of pin: room to catch a fast flick before it locks.
-        end: () => `+=${vh()}`,
+        end: () =>
+          w() >= BP.desktop
+            ? `+=${(2.2 + EXTRA) * vh()}`
+            : w() >= BP.tablet
+              ? `+=${(3 + EXTRA) * vh() * stretch}`
+              : `+=${(2.5 + EXTRA) * vh() * stretch}`,
         pin: true,
         // Pin a frame early so a fast flick on a phone doesn't show the
         // carousel scroll past before it locks.
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onEnter: () => {
-          if (current !== 0) {
-            current = 0;
-            render();
-          }
-          lock();
-        },
-        onEnterBack: () => {
-          arrived = true;
-          if (current !== last) {
-            current = last;
-            render();
-          }
-          lock();
-        },
-        onLeave: () => setLocked(false),
-        onLeaveBack: () => setLocked(false),
       });
+
+      // Touch screens scrub straight off the finger; a mouse wheel gets the
+      // reference's short smoothing.
+      const touch = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+      const master = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: carousel,
+          start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
+          end: () => `+=${(3 + EXTRA) * vh() * stretch}`,
+          scrub: touch ? true : 0.25,
+          invalidateOnRefresh: true,
+        },
+      });
+      master.add(initial, 0);
+      elements.forEach((_, i) => master.add(next(i), 0));
     }, carousel);
 
-    return () => {
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("keydown", onKey);
-      clearTimeout(gestureEnd);
-      liveTimers.forEach((t) => t.kill());
-      setLocked(false);
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
