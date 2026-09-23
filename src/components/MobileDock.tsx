@@ -12,21 +12,27 @@
  * The button moves closed -> widening; 400ms later the dock moves on to open
  * by itself. Close runs open -> shrinking -> (400ms) -> closed. The button
  * ignores taps mid-way, as in the reference. Each step is Framer's spring
- * { duration: 0.4, bounce: 0 }; the toggle icon turns -90deg -> 90deg.
+ * { duration: 0.4, bounce: 0 }. The toggle's four clover leaves spin and
+ * slim into an X as soon as it is tapped (see .dots in the stylesheet).
  *
- * The "Studio" row is the reference's Docs dropdown: its sub-links drop in
- * on a 0.6s spring while the chevron turns 180deg.
+ * Framer runs these as layout animations: nothing reflows, boxes move and
+ * scale on the GPU. The dock does the same with its own means. Its content
+ * is always laid out at the open size; a clip-path cuts it down to the
+ * current shape, a separate blurred plate behind it follows that shape, and
+ * the logo and toggle slide with the side edges. One tween drives all four.
  *
- * Content is ours; the reference's icons (Framer's stroke set) are kept, as
- * is the order: four links in two columns, then the dropdown row.
+ * Content and colours are ours: four links in two columns and a full-width
+ * call button, on a light frosted plate matching SiteNav's palette. The
+ * reference's icons (Framer's stroke set) are kept.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import { CAL_URL, REVIEW_CAL_URL } from "@/data/projects";
+import { CAL_URL } from "@/data/projects";
 import { scrollToHash, scrollToTop } from "@/lib/scrollToHash";
 import { INTRO_EVENT } from "@/lib/intro";
 import s from "./MobileDock.module.css";
@@ -40,10 +46,11 @@ const SPRING_END = 1 - (1 + U) * Math.exp(-U);
 const spring = (p: number) => (1 - (1 + U * p) * Math.exp(-U * p)) / SPRING_END;
 
 const DOCK = { duration: 0.4, ease: spring };
-const DROP = { duration: 0.6, ease: spring };
 /* the reference's delay(() => setVariant(...), 400) between the two steps */
 const STEP_MS = 400;
 const CLOSED_H = 64;
+/* closed pill = brand + 64px gap + 32px toggle + 16px padding each side */
+const CLOSED_EXTRA = 64 + 32 + 16 * 2;
 
 /* Same first-load slide as SiteNav, so the two navs arrive alike. */
 const REVEAL = { duration: 0.8, ease: CustomEase.create("cfDockReveal", "0.62, 0.61, 0.02, 1") };
@@ -70,24 +77,6 @@ const Svg = ({ className, children }: IconProps & { children: React.ReactNode })
   </svg>
 );
 
-const IconSidebar = (p: IconProps) => (
-  <Svg {...p}>
-    <path d="M5 21c-1.105 0-2-.895-2-2V5c0-1.105.895-2 2-2h14c1.105 0 2 .895 2 2v14c0 1.105-.895 2-2 2Z" />
-    <path d="M9 3v18" />
-  </Svg>
-);
-const IconGrid = (p: IconProps) => (
-  <Svg {...p}>
-    {[
-      [3, 3],
-      [14, 3],
-      [3, 14],
-      [14, 14],
-    ].map(([x, y]) => (
-      <rect key={`${x}${y}`} x={x} y={y} width={7} height={7} rx={1} />
-    ))}
-  </Svg>
-);
 const IconSparkle = (p: IconProps) => (
   <Svg {...p}>
     <path d="M2 12c6 .667 9.333 4 10 10 .667-6 4-9.333 10-10-6-.667-9.333-4-10-10-.667 6-4 9.333-10 10Z" />
@@ -104,10 +93,10 @@ const IconFileLines = (p: IconProps) => (
     <path d="M16 13H8M16 17H8M12 9H8" />
   </Svg>
 );
-const IconFileSearch = (p: IconProps) => (
+const IconUser = (p: IconProps) => (
   <Svg {...p}>
-    <circle cx={11.5} cy={14.5} r={3.5} />
-    <path d="M4 22l5-5M4 15V4c0-1.105.895-2 2-2h8l6 6v12c0 1.105-.895 2-2 2h-7" />
+    <circle cx={12} cy={8} r={4} />
+    <path d="M20 21c0-4.418-3.582-8-8-8s-8 3.582-8 8" />
   </Svg>
 );
 const IconMessageDots = (p: IconProps) => (
@@ -115,63 +104,59 @@ const IconMessageDots = (p: IconProps) => (
     <path d="M21 15c0 1.105-.895 2-2 2H7l-4 4V5c0-1.105.895-2 2-2h14c1.105 0 2 .895 2 2ZM8 10h0M12 10h0M16 10h0" />
   </Svg>
 );
-const IconAngleDown = (p: IconProps) => (
-  <Svg {...p}>
-    <path d="M6 9l6 6 6-6" />
-  </Svg>
-);
-const IconArrowDownRight = (p: IconProps) => (
-  <Svg {...p}>
-    <path d="M7 7l10 10M17 7v10H7" />
-  </Svg>
-);
-
 /* ---- content ---- */
 
 const MAIN = [
-  { label: "Home", href: "/", Icon: IconGrid },
-  { label: "Sight", href: "/sight", Icon: IconSparkle },
   { label: "Work", href: "/work", Icon: IconCloud },
   { label: "Approach", href: "/#how-we-do-it", Icon: IconFileLines },
+  { label: "About", href: "/#about", Icon: IconUser },
+  { label: "Sight", href: "/sight", Icon: IconSparkle, sight: true },
 ];
 
-const SUB = [
-  { label: "About", href: "/#about" },
-  { label: "Website Review", href: REVIEW_CAL_URL, external: true },
-  { label: "Contact", href: "/#contact" },
-  { label: "Instagram", href: "https://www.instagram.com/cloverfield.studio/", external: true },
-  { label: "Email", href: "mailto:cloverfield@cloverfield.studio", external: true },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/cloverfieldstudio/", external: true },
-];
+type Geom = { side: number; bottom: number };
 
 export default function MobileDock() {
   const pathname = usePathname();
   const dockRef = useRef<HTMLElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const dropRef = useRef<HTMLDivElement>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const brandRef = useRef<HTMLAnchorElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const [state, setState] = useState<DockState>("closed");
-  const [dropOpen, setDropOpen] = useState(false);
-  const closedWRef = useRef(0);
-  const openHRef = useRef(0);
+  const stateRef = useRef<DockState>("closed");
   const stepRef = useRef<number | undefined>(undefined);
+  /* how far the visible shape is cut in from each side and from the bottom */
+  const geom = useRef<Geom>({ side: 0, bottom: 0 });
+  const placedRef = useRef(false);
 
-  /* Width and height run as separate tweens, like Framer's layout animation:
-     "open" starts its height while the widening width is still landing, so a
-     new tween only replaces one on the same property. */
-  const tween = (prop: "width" | "height", from: number, to: number) => {
-    const dock = dockRef.current;
-    gsap.fromTo(
-      dock,
-      { [prop]: from },
-      {
-        [prop]: to,
-        ...DOCK,
-        overwrite: "auto",
-        // Cleared by hand: as a clearProps var it would count as a shared
-        // property, and "auto" would strip it from the other tween.
-        onComplete: () => void gsap.set(dock, { clearProps: prop }),
-      }
-    );
+  const render = useCallback(() => {
+    const { side, bottom } = geom.current;
+    const surface = surfaceRef.current;
+    const content = contentRef.current;
+    if (!surface || !content || !brandRef.current || !toggleRef.current) return;
+    surface.style.inset = `0 ${side}px ${bottom}px`;
+    content.style.clipPath = `inset(0 ${side}px ${bottom}px round 20px)`;
+    brandRef.current.style.transform = `translateX(${side}px)`;
+    toggleRef.current.style.transform = `translateX(${-side}px)`;
+  }, []);
+
+  /* the cuts that leave just the closed pill; null while hidden (desktop) */
+  const closedGeom = (): Geom | null => {
+    const content = contentRef.current;
+    const brand = brandRef.current;
+    if (!content || !brand || !content.offsetWidth) return null;
+    const pill = brand.offsetWidth + CLOSED_EXTRA;
+    // whole pixels, so hairlines and the logo tile's border rest crisp
+    return {
+      side: Math.max(0, Math.round((content.offsetWidth - pill) / 2)),
+      bottom: Math.max(0, content.offsetHeight - CLOSED_H),
+    };
+  };
+
+  /* Sides and bottom run as separate tweens, like Framer's layout animation:
+     "open" starts its bottom while the widening sides are still landing. */
+  const tween = (to: Partial<Geom>) => {
+    gsap.to(geom.current, { ...to, ...DOCK, overwrite: "auto", onUpdate: render });
   };
 
   /* first load of the homepage: slide in with the hero, like SiteNav */
@@ -198,58 +183,65 @@ export default function MobileDock() {
   }, []);
 
   const open = () => {
-    const dock = dockRef.current;
-    if (!dock || state !== "closed") return;
-    closedWRef.current = dock.getBoundingClientRect().width;
+    if (state !== "closed") return;
     setState("widening");
   };
 
   const close = useCallback(() => {
-    const dock = dockRef.current;
-    if (!dock) return;
-    setState((cur) => {
-      if (cur !== "open") return cur;
-      openHRef.current = dock.getBoundingClientRect().height;
-      return "shrinking";
-    });
+    setState((cur) => (cur === "open" ? "shrinking" : cur));
   }, []);
 
-  /* Each state's tween runs before paint, from the size the last state left.
-     Sizes go back to the stylesheet once a tween lands. */
+  /* Each state's tween starts before paint, from wherever the last one is. */
   useLayoutEffect(() => {
-    const dock = dockRef.current;
-    const grid = gridRef.current;
-    if (!dock || !grid) return;
+    stateRef.current = state;
     window.clearTimeout(stepRef.current);
+    const closed = closedGeom();
+    if (!closed) return;
 
     if (state === "widening") {
-      tween("width", closedWRef.current, grid.offsetWidth);
+      tween({ side: 0 });
       stepRef.current = window.setTimeout(() => setState("open"), STEP_MS);
     } else if (state === "open") {
-      tween("height", CLOSED_H, dock.getBoundingClientRect().height);
+      tween({ bottom: 0 });
     } else if (state === "shrinking") {
-      tween("height", openHRef.current, CLOSED_H);
+      tween({ bottom: closed.bottom });
       stepRef.current = window.setTimeout(() => setState("closed"), STEP_MS);
-    } else if (closedWRef.current) {
-      tween("width", grid.offsetWidth, dock.getBoundingClientRect().width);
+    } else if (placedRef.current) {
+      tween({ side: closed.side });
+    } else {
+      // first paint: straight to the pill, then show the dock
+      Object.assign(geom.current, closed);
+      render();
+      placedRef.current = true;
+      dockRef.current!.dataset.ready = "";
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state]);
 
   useEffect(() => () => window.clearTimeout(stepRef.current), []);
 
-  /* the Studio dropdown: 40px row <-> row plus sub-links */
-  const firstDrop = useRef(true);
-  useLayoutEffect(() => {
-    const drop = dropRef.current;
-    if (!drop) return;
-    if (firstDrop.current) {
-      firstDrop.current = false;
-      return;
-    }
-    const target = drop.getBoundingClientRect().height;
-    const from = dropOpen ? 40 : drop.scrollHeight;
-    gsap.fromTo(drop, { height: from }, { height: target, ...DROP, clearProps: "height", overwrite: true });
-  }, [dropOpen]);
+  /* Keep the resting shapes right when the content resizes (fonts landing,
+     rotation, coming back from desktop). */
+  useEffect(() => {
+    const content = contentRef.current;
+    const brand = brandRef.current;
+    if (!content || !brand) return;
+    const ro = new ResizeObserver(() => {
+      const cur = stateRef.current;
+      if (gsap.isTweening(geom.current) || (cur !== "closed" && cur !== "open")) return;
+      const closed = closedGeom();
+      if (!closed) return;
+      // mutate, never replace: tweens hold this object
+      Object.assign(geom.current, cur === "closed" ? closed : { side: 0, bottom: 0 });
+      render();
+      placedRef.current = true;
+      if (dockRef.current) dockRef.current.dataset.ready = "";
+    });
+    ro.observe(content);
+    ro.observe(brand);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* Escape closes; growing past the mobile breakpoint snaps shut */
   useEffect(() => {
@@ -260,10 +252,8 @@ export default function MobileDock() {
     const mq = window.matchMedia("(min-width: 768px)");
     const onMq = () => {
       if (!mq.matches) return;
-      gsap.killTweensOf(dockRef.current, "width,height");
+      gsap.killTweensOf(geom.current);
       window.clearTimeout(stepRef.current);
-      gsap.set(dockRef.current, { clearProps: "width,height" });
-      closedWRef.current = 0;
       setState("closed");
     };
     window.addEventListener("keydown", onKey);
@@ -274,16 +264,11 @@ export default function MobileDock() {
     };
   }, [state, close]);
 
-  /* Links close the dock. On the homepage, home and section links scroll
-     there ourselves (see scrollToHash), as SiteNav does. */
+  /* Links close the dock. On the homepage, section links scroll there
+     ourselves (see scrollToHash), as SiteNav does. */
   const onLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     close();
     if (pathname !== "/") return;
-    if (href === "/") {
-      e.preventDefault();
-      scrollToTop();
-      return;
-    }
     if (href.startsWith("/#") && scrollToHash(href.slice(1))) {
       e.preventDefault();
       history.pushState(null, "", href);
@@ -308,97 +293,56 @@ export default function MobileDock() {
 
   return (
     <nav ref={dockRef} className={s.dock} data-state={state} aria-label="Mobile navigation">
-      <div className={s.top}>
-        <Link href="/" className={s.brand} aria-label="Cloverfield home" onClick={onBrandClick}>
-          <span className={s.logo} aria-hidden="true">
-            c
-          </span>
-          <span className={s.title}>Cloverfield</span>
-        </Link>
-        <button
-          type="button"
-          className={s.toggle}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isOpen}
-          aria-controls="dock-menu"
-          aria-disabled={busy || undefined}
-          onClick={isOpen ? close : open}
-        >
-          <IconSidebar className={s.toggleIcon} />
-          <span className={s.toggleBg} />
-        </button>
-      </div>
-
-      <div ref={gridRef} id="dock-menu" className={s.grid} inert={!isOpen}>
-        {MAIN.map(({ label, href, Icon }) => (
-          <Link
-            key={label}
-            href={href}
-            className={s.link}
-            aria-current={isActive(href) ? "page" : undefined}
-            onClick={(e) => onLinkClick(e, href)}
-          >
-            <span className={s.linkInner}>
-              <Icon className={s.icon} />
-              <span className={s.linkText}>{label}</span>
-            </span>
-            <span className={s.linkBg} />
+      <div ref={surfaceRef} className={s.surface} aria-hidden="true" />
+      <div ref={contentRef} className={s.content}>
+        <div className={s.top}>
+          <Link ref={brandRef} href="/" className={s.brand} aria-label="Cloverfield home" onClick={onBrandClick}>
+            {/* the brand mark, cropped square around the C so it sits centred */}
+            <Image className={s.logo} src="/brand-mark.png" alt="" width={32} height={32} priority />
+            <span className={s.title}>Cloverfield</span>
           </Link>
-        ))}
+          <button
+            ref={toggleRef}
+            type="button"
+            className={s.toggle}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="dock-menu"
+            aria-disabled={busy || undefined}
+            onClick={isOpen ? close : open}
+          >
+            <span className={s.dots} aria-hidden="true">
+              <span className={s.dot} />
+              <span className={s.dot} />
+              <span className={s.dot} />
+              <span className={s.dot} />
+            </span>
+            <span className={s.toggleBg} />
+          </button>
+        </div>
 
-        <div ref={dropRef} className={`${s.drop} ${dropOpen ? s.dropOpen : ""}`}>
-          <div className={s.dropRow}>
-            <button
-              type="button"
-              className={s.link}
-              aria-expanded={dropOpen}
-              aria-controls="dock-studio"
-              onClick={() => setDropOpen((o) => !o)}
+        <div id="dock-menu" className={s.grid} inert={!isOpen}>
+          {MAIN.map(({ label, href, Icon, sight }) => (
+            <Link
+              key={label}
+              href={href}
+              className={sight ? `${s.link} ${s.sight}` : s.link}
+              aria-current={isActive(href) ? "page" : undefined}
+              onClick={(e) => onLinkClick(e, href)}
             >
               <span className={s.linkInner}>
-                <IconFileSearch className={s.icon} />
-                <span className={s.linkText}>Studio</span>
-              </span>
-              <IconAngleDown className={s.chevron} />
-              <span className={s.linkBg} />
-            </button>
-            <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.link} onClick={close}>
-              <span className={s.linkInner}>
-                <IconMessageDots className={s.icon} />
-                <span className={s.linkText}>Book A Free Call</span>
+                <Icon className={s.icon} />
+                {/* Sight shimmers blue like SiteNav's (.sight-nav-link) */}
+                <span className={sight ? `${s.linkText} sight-nav-link` : s.linkText}>{label}</span>
               </span>
               <span className={s.linkBg} />
-            </a>
-          </div>
+            </Link>
+          ))}
 
-          <div id="dock-studio" className={s.subGrid} inert={!dropOpen}>
-            {SUB.map((item) => (
-              <div key={item.label} className={s.subWrap}>
-                {item.external ? (
-                  <a
-                    href={item.href}
-                    className={s.sub}
-                    onClick={close}
-                    {...(item.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  >
-                    <span className={s.linkInner}>
-                      <IconArrowDownRight className={s.icon} />
-                      <span className={s.linkText}>{item.label}</span>
-                    </span>
-                    <span className={s.subBg} />
-                  </a>
-                ) : (
-                  <Link href={item.href} className={s.sub} onClick={(e) => onLinkClick(e, item.href)}>
-                    <span className={s.linkInner}>
-                      <IconArrowDownRight className={s.icon} />
-                      <span className={s.linkText}>{item.label}</span>
-                    </span>
-                    <span className={s.subBg} />
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
+          <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.cta} onClick={close}>
+            <IconMessageDots className={s.icon} />
+            <span className={s.linkText}>Book A Free Call</span>
+          </a>
         </div>
       </div>
     </nav>

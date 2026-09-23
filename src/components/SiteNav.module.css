@@ -181,13 +181,28 @@
   }
 }
 
-/* logo: the mark stays, the wordmark collapses after 400px of scroll */
+/* logo: the full "cloverfield" wordmark at the top; after 400px of scroll
+   it collapses and the brand mark (bare: the item's pill is its container)
+   grows in. SiteNav tweens both widths; the mark starts shut. */
 .mark {
-  display: inline-block;
-  font-family: var(--font-outfit), sans-serif;
+  display: block;
+  flex: none;
+  width: 0;
+  height: 22px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.markImg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  max-width: none;
+}
+
+.wordC {
   font-weight: 700;
   font-size: 22px;
-  line-height: 1;
   letter-spacing: -0.03em;
 }
 

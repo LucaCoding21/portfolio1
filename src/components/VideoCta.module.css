@@ -9,10 +9,10 @@
   background: #fff;
 }
 
-/* After a paper page's content (/work): match its ground, and leave the same
-   air above the plate as below the last row of the grid. */
+/* After a paper page's content (/work): match its ground, with a short gap
+   above the plate (the grid's own bottom padding adds to it). */
 .onPaper {
-  padding-top: clamp(4rem, 8vw, 7rem);
+  padding-top: clamp(1.5rem, 3vw, 3rem);
   background: var(--paper);
 }
 

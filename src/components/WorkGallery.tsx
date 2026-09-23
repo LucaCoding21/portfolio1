@@ -24,10 +24,14 @@
  * Filter motion (out/in/stagger) comes from revelatio.studio/work. Surfaces are the homepage's: paper ground, ink
  * type, Outfit titles, DM Sans body, Geist for the tracked eyebrow.
  *
+ * Phones show the grid five cards at a time: the rest wait behind a
+ * "View more" button that lets in five more per tap. A filter starts the
+ * count over.
+ *
  * PLACEHOLDER: headline copy comes from src/data/workGallery.ts.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import {
@@ -63,6 +67,9 @@ const REEL_IN = 0.7;
 const REEL_OUT = 0.35;
 
 const EYEBROW = "Selected work";
+
+// phones: cards shown per step of "View more"
+const PHONE_PAGE = 5;
 
 const norm = (v: string) => v.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -214,6 +221,34 @@ export default function WorkGallery() {
   // -1 is none: the list starts closed and opens only on a click.
   const [openId, setOpenId] = useState<number>(-1);
 
+  /* Phones cap the grid at `shown` cards of the current filter. The cap
+     follows the filter only once its cards have swapped (see the filter
+     effect), so nothing pops in while the old set fades out. Capped cards
+     carry data-over; the stylesheet hides them under 768px only. */
+  const [shown, setShown] = useState(PHONE_PAGE);
+  const [capFilter, setCapFilter] = useState<string | null>(null);
+  const capTag = capFilter ? norm(capFilter) : "";
+  const matching = WORK_ITEMS.filter((p) => !capTag || p.tags.map(norm).includes(capTag));
+  const rank = new Map(matching.map((p, i) => [p.id, i]));
+  const prevShown = useRef(shown);
+
+  /* the cards "View more" just let in rise into place */
+  useLayoutEffect(() => {
+    const from = prevShown.current;
+    prevShown.current = shown;
+    const grid = gridListRef.current;
+    if (!grid || shown <= from) return;
+    const fresh = Array.from(grid.querySelectorAll<HTMLElement>("[data-rank]")).filter((el) => {
+      const r = Number(el.dataset.rank);
+      return r >= from && r < shown;
+    });
+    gsap.fromTo(
+      fresh,
+      { autoAlpha: 0, y: 24 },
+      { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.08, clearProps: "opacity,visibility,transform" },
+    );
+  }, [shown]);
+
   /* load-in: header, then the columns */
   useEffect(() => {
     const targets = [
@@ -250,6 +285,12 @@ export default function WorkGallery() {
     [gridListRef.current, listListRef.current].forEach((list) => {
       if (list) animateListFilter(list, shouldShow);
     });
+    // the phone cap switches with the cards, not before
+    const t = window.setTimeout(() => {
+      setCapFilter(activeFilter);
+      setShown(PHONE_PAGE);
+    }, OUT_DURATION_MS + TRANSITION_GAP_MS);
+    return () => window.clearTimeout(t);
   }, [activeFilter]);
 
   /* tab switch: Webflow tabs, out 100ms / in 300ms, ease */
@@ -366,9 +407,14 @@ export default function WorkGallery() {
                 >
                   <div ref={gridListRef} className={s.grid} role="list">
                     {WORK_ITEMS.map((p) => (
-                      <GridCard key={p.id} item={p} />
+                      <GridCard key={p.id} item={p} rank={rank.get(p.id)} over={(rank.get(p.id) ?? 0) >= shown} />
                     ))}
                   </div>
+                  {matching.length > shown && (
+                    <button type="button" className={s.viewMore} onClick={() => setShown((n) => n + PHONE_PAGE)}>
+                      View more
+                    </button>
+                  )}
                 </div>
 
                 {/* ---------- list ---------- */}
@@ -464,7 +510,7 @@ function Said({
   );
 }
 
-function GridCard({ item }: { item: WorkGalleryItem }) {
+function GridCard({ item, rank, over }: { item: WorkGalleryItem; rank?: number; over: boolean }) {
   const external = item.href.startsWith("http");
   const mediaRef = useRef<HTMLDivElement>(null);
   const reelRef = useRef<HTMLVideoElement>(null);
@@ -509,6 +555,8 @@ function GridCard({ item }: { item: WorkGalleryItem }) {
       className={s.card}
       data-filter-item=""
       data-tags={item.tags.join("|")}
+      data-rank={rank}
+      data-over={over || undefined}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
     >

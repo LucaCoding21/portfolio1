@@ -25,6 +25,7 @@
  */
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
@@ -57,6 +58,8 @@ const REVEAL = { duration: 0.8, ease: CustomEase.create("cfNavReveal", "0.62, 0.
 const REVEAL_FROM = 100;
 /* If the hero never signals (an error, a slow reel), open anyway. */
 const REVEAL_FALLBACK_MS = 5000;
+/* the collapsed logo: the 22px brand mark */
+const MARK_W = 22;
 
 // The panel lists Home first; Sight sits under the rule, like their Login.
 const MENU_MAIN = [{ label: "Home", href: "/" }, ...NAV_ITEMS.filter((i) => i.href !== "/sight")];
@@ -69,6 +72,7 @@ export default function SiteNav() {
   const navRef = useRef<HTMLElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const wordmarkRef = useRef<HTMLSpanElement>(null);
+  const markRef = useRef<HTMLSpanElement>(null);
   const [hovered, setHovered] = useState(false);
   const rowRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -132,18 +136,22 @@ export default function SiteNav() {
   // Only the homepage has a dark hero; every other page runs light.
   const effectiveTheme = pathname === "/" ? theme : "light";
 
-  /* collapse the wordmark after 400px, expand again under 360px */
+  /* collapse the wordmark after 400px, expand again under 360px; the brand
+     mark grows in as the word goes, and back out as it returns */
   useEffect(() => {
     const el = wordmarkRef.current;
-    if (!el) return;
+    const mark = markRef.current;
+    if (!el || !mark) return;
     // Natural width of the wordmark, read from its text each time it opens:
     // a one-off measure on mount could catch the fallback font, or the item
     // still squeezed shut by the first-load reveal, and stick at that.
     const fullWidth = () => el.scrollWidth;
     let collapsed = window.scrollY >= COLLAPSE_AT;
     const apply = (c: boolean) => {
+      gsap.to(mark, { width: c ? MARK_W : 0, opacity: c ? 1 : 0, duration: DURATION.medium, ease: EASE });
       gsap.to(el, {
         width: c ? 0 : fullWidth(),
+        opacity: c ? 0 : 1,
         duration: DURATION.medium,
         ease: EASE,
         onUpdate: () => {
@@ -346,10 +354,13 @@ export default function SiteNav() {
           onFocus={onItemEnter}
         >
           <span className={s.itemBg} />
+          {/* At the top: the full wordmark. Collapsed: the brand mark alone. */}
           <span className={s.label}>
-            <span className={s.mark}>c</span>
+            <span ref={markRef} className={s.mark}>
+              <Image className={s.markImg} src="/brand-mark.png" alt="" width={22} height={22} priority />
+            </span>
             <span ref={wordmarkRef} className={s.wordmark}>
-              loverfield
+              <span className={s.wordC}>c</span>loverfield
             </span>
           </span>
         </Link>

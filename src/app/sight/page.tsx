@@ -1,4 +1,4 @@
-import Footer from "@/components/Footer";
+import HomeFooter from "@/components/HomeFooter";
 import Hero from "@/components/sight/Hero";
 import QuestionsWall from "@/components/sight/QuestionsWall";
 import ComesToYou from "@/components/sight/ComesToYou";
@@ -11,7 +11,9 @@ import FinalCta from "@/components/sight/FinalCta";
 export default function SightPage() {
   return (
     <>
-      <div className="relative z-10 bg-white">
+      {/* overflow-clip rounds FinalCta's edge-to-edge backdrop too, and unlike
+          hidden it leaves sticky sections working */}
+      <div className="relative z-10 overflow-clip rounded-b-[28px] bg-white md:rounded-b-[48px]">
         <main>
           <Hero />
           <QuestionsWall />
@@ -23,7 +25,8 @@ export default function SightPage() {
           <FinalCta />
         </main>
       </div>
-      <Footer />
+      {/* The homepage's footer, pinned underneath; the page above lifts off it. */}
+      <HomeFooter />
     </>
   );
 }

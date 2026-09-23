@@ -236,6 +236,11 @@
   width: 100%;
 }
 
+/* Phones only: "View more" under the grid (see WorkGallery). */
+.viewMore {
+  display: none;
+}
+
 .card {
   position: relative;
   display: flex;
@@ -655,7 +660,7 @@
   /* More air under the nav, less between the headline and the filters. */
   .container {
     padding-top: 7.5em;
-    padding-bottom: 5em;
+    padding-bottom: 2.5em;
   }
   .header {
     margin-bottom: 2em;
@@ -665,6 +670,11 @@
   }
   .headlineShort {
     display: inline;
+  }
+  /* each short line stays whole ("Websites and brands," never splits);
+     it fits with room to spare down to 320px */
+  .headlineShort .headlineLine {
+    white-space: nowrap;
   }
   /* Sized so each of the short headline's two lines fits a 360px phone. */
   .headline {
@@ -681,6 +691,35 @@
   .grid {
     column-gap: 2em;
     row-gap: 3.5em;
+  }
+  /* Five cards at a time; the rest wait for "View more". !important beats
+     the inline display the filter animation writes. */
+  .grid [data-over] {
+    display: none !important;
+  }
+  /* a rounded rectangle, outlined, with the dock's 12px corners */
+  .viewMore {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 3em auto 0;
+    padding: 1em 2.25em;
+    border: 1px solid rgba(26, 22, 19, 0.18);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--ink, #1a1613);
+    font: inherit;
+    font-size: 0.9375em;
+    font-weight: 500;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .viewMore:active {
+    background: var(--ink, #1a1613);
+    color: #fff;
   }
   .paddingGlobal {
     padding-left: 1em;

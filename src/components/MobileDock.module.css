@@ -1,65 +1,87 @@
 /*
-  Mobile nav, cloned 1:1 from dock-menu.framer.website ("Dock Menu").
-  Values are the reference's own: 20px dock radius, rgba(15,15,15,.8) on a
-  10px backdrop blur with a 1px white 8% hairline, 16px top row with a 64px
-  gap, 170px columns, 40px links, 32px sub-links, 8px hover plates.
+  Mobile nav, geometry cloned from dock-menu.framer.website ("Dock Menu"):
+  20px dock radius, 1px hairline, 16px top row with a 64px gap, 170px
+  columns, 40px links, 8px hover plates.
 
   Their springs are Framer's { type: spring, bounce: 0 }: critically damped,
   settling at the given duration. --spring is that curve sampled into
   linear(); MobileDock.tsx uses the same function for its GSAP tweens.
 
-  Colours are the reference's dark-mode tokens (#8f9391 text, #f5faf7 on
-  hover). Its light-mode hover colour is near-black on the dark dock, which
-  reads as a bug, so it is not used.
+  Colours are SiteNav's: a warm-gray frosted plate, #1a1613 ink, a white
+  hover pill, and a solid ink pill for the call to action.
 */
 
 .dock {
   --spring: linear(0, 0.0576, 0.1805, 0.3211, 0.4556, 0.5735, 0.6717, 0.7508, 0.813, 0.861, 0.8975, 0.9249, 0.9454, 0.9606, 0.9717, 0.9799, 0.9858, 0.9901, 0.9932, 0.9954, 0.997, 0.9982, 0.999, 0.9996, 1);
-  --muted: #8f9391;
-  --bright: #f5faf7;
+  --ink: #1a1613;
+  /* full ink, not SiteNav's soft gray: the plate is see-through, so the
+     labels need the contrast */
+  --muted: var(--ink);
+  --bright: var(--ink);
   /* 170px like the reference, narrowing only on phones under 390px so the
      open dock never runs off the screen */
   --col: min(170px, calc((100vw - 50px) / 2));
 
+  /* The dock box is always the open size and takes no taps itself; the
+     plate and the clipped content take them, and only inside the shape. */
   position: fixed;
   top: 16px;
   left: 50%;
   z-index: 50;
   display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
   width: max-content;
-  height: 64px;
-  overflow: clip;
   translate: -50% 0;
-  border-radius: 20px;
-  background-color: rgba(15, 15, 15, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   will-change: transform;
 }
 
+/* hidden until MobileDock has cut it down to the closed pill */
+.dock:not([data-ready]) {
+  visibility: hidden;
+}
+
 @media (max-width: 767px) {
   .dock {
-    display: flex;
+    display: block;
   }
 }
 
+/* The blurred plate. A sibling of the content, not its parent: a clip-path
+   on an ancestor would stop the backdrop blur from seeing the page. Its
+   inset is set per frame to the visible shape. */
+.surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background-color: rgba(246, 245, 242, 0.55);
+  box-shadow:
+    0 1px 2px rgba(26, 22, 19, 0.04),
+    0 6px 20px -12px rgba(26, 22, 19, 0.1);
+  /* prefixed first: in the other order the CSS build keeps only the
+     prefixed one, which Chrome ignores */
+  -webkit-backdrop-filter: blur(24px) saturate(1.3) brightness(1.15);
+  backdrop-filter: blur(24px) saturate(1.3) brightness(1.15);
+  pointer-events: auto;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
 /* the hairline, drawn inside the box like Framer's data-border */
-.dock::after {
+.surface::after {
   content: "";
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(26, 22, 19, 0.06);
   border-radius: inherit;
   pointer-events: none;
-}
-
-.dock[data-state="open"] {
-  height: auto;
 }
 
 /* ---- top row ---- */
@@ -75,51 +97,31 @@
 
 .brand {
   display: flex;
-  flex: 1 0 0;
+  flex: none;
   align-items: center;
   gap: 12px;
-  width: 1px;
-  color: #fff;
+  color: var(--ink);
   text-decoration: none;
 }
 
-.dock[data-state="closed"] .brand {
-  flex: none;
-  width: min-content;
-}
-
-/* the reference's 32px logo tile, carrying our "c" mark */
+/* the favicon mark on a white tile, at the reference's 32px logo size */
 .logo {
-  display: grid;
   flex: none;
-  place-items: center;
   width: 32px;
   height: 32px;
+  padding: 6px;
+  border: 1px solid rgba(26, 22, 19, 0.08);
   border-radius: 8px;
   background: #fff;
-  color: #0f0f0f;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  padding-bottom: 2px;
-  user-select: none;
 }
 
 .title {
-  flex: 1 0 0;
-  width: 1px;
+  flex: none;
   font-size: 12px;
   font-weight: 500;
   line-height: 1.2;
   white-space: nowrap;
   user-select: none;
-}
-
-.dock[data-state="closed"] .title {
-  flex: none;
-  width: auto;
 }
 
 /* ---- open / close button ---- */
@@ -130,27 +132,76 @@
   flex: none;
   align-items: center;
   justify-content: center;
+  /* pinned to the right edge in every state, so it rides the dock's edge
+     while the width tweens instead of jumping when the state flips */
+  margin-left: auto;
   width: 32px;
   height: 32px;
   padding: 0;
   border: 0;
   background: none;
-  color: #fff;
+  color: var(--ink);
   cursor: pointer;
   user-select: none;
 }
 
-.toggleIcon {
+/* The logo's clover, four ink leaves, that becomes an X. Each leaf
+   sits on its own diagonal (--a): a square turned 45deg on that ray, fully
+   rounded except the corner that points at the centre. Opening slims each
+   leaf into an arm reaching the centre while the group spins a quarter
+   turn; closing shrinks the arms back to leaves first, then unspins.
+   The transform lists match in both states so they interpolate cleanly.
+   The X is up from the tap (widening) until the close starts (shrinking). */
+.dots {
   position: relative;
   z-index: 2;
-  width: 16px;
-  height: 16px;
-  rotate: -90deg;
-  transition: rotate 0.4s var(--spring);
+  width: 20px;
+  height: 20px;
+  transition: rotate 0.4s var(--spring) 0.05s;
 }
 
-.dock[data-state="open"] .toggleIcon {
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50% 50% 50% 0.5px;
+  background: currentColor;
+  transform: rotate(var(--a)) translateX(5.75px) rotate(45deg) translate(-50%, -50%);
+  transform-origin: 0 0;
+  transition:
+    width 0.2s var(--spring),
+    height 0.2s var(--spring),
+    border-radius 0.2s var(--spring),
+    transform 0.2s var(--spring);
+}
+
+.dot:nth-child(1) {
+  --a: 45deg;
+}
+.dot:nth-child(2) {
+  --a: 135deg;
+}
+.dot:nth-child(3) {
+  --a: 225deg;
+}
+.dot:nth-child(4) {
+  --a: 315deg;
+}
+
+.dock:is([data-state="widening"], [data-state="open"]) .dots {
   rotate: 90deg;
+  transition-delay: 0s;
+}
+
+.dock:is([data-state="widening"], [data-state="open"]) .dot {
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  transform: rotate(var(--a)) translateX(5px) rotate(0deg) translate(-50%, -50%);
+  transition-duration: 0.3s;
+  transition-delay: 0.15s;
 }
 
 .toggleBg {
@@ -158,7 +209,7 @@
   inset: 0;
   z-index: 1;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #fff;
   filter: blur(5px);
   opacity: 0;
   scale: 0.8;
@@ -188,8 +239,12 @@
 
 .toggle:focus-visible,
 .link:focus-visible,
-.sub:focus-visible {
+.cta:focus-visible {
   outline: none;
+}
+
+.cta:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink);
 }
 
 /* ---- the link grid ---- */
@@ -204,16 +259,8 @@
   gap: 0 8px;
   justify-content: center;
   width: min-content;
-  padding: 8px 16px 24px;
+  padding: 8px 16px 16px;
   overflow: clip;
-}
-
-/* closed: out of flow, hanging centred under the bar (clipped away) */
-.dock[data-state="closed"] .grid {
-  position: absolute;
-  top: 64px;
-  left: 50%;
-  translate: -50% 0;
 }
 
 /* ---- main link (40px) ---- */
@@ -231,6 +278,7 @@
   color: var(--muted);
   font: inherit;
   font-size: 14px;
+  font-weight: 500;
   line-height: 1.2;
   text-align: left;
   text-decoration: none;
@@ -258,27 +306,13 @@
   height: 16px;
 }
 
-.chevron {
-  position: relative;
-  z-index: 2;
-  flex: none;
-  width: 16px;
-  height: 16px;
-  transition: rotate 0.4s var(--spring);
-}
-
-.dropOpen .chevron {
-  rotate: 180deg;
-}
-
-.linkBg,
-.subBg {
+.linkBg {
   position: absolute;
   left: 0;
   right: 0;
   z-index: 1;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #fff;
   opacity: 0;
   scale: 0.8;
   pointer-events: none;
@@ -287,8 +321,6 @@
 .linkBg {
   top: 4px;
   bottom: 4px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   transition:
     opacity 0.4s var(--spring),
     scale 0.4s var(--spring),
@@ -296,77 +328,40 @@
     bottom 0.4s var(--spring);
 }
 
-/* ---- dropdown row ---- */
+/* Sight: blue icon beside the shimmering label */
+.sight .linkInner {
+  color: #3b7cf6;
+}
 
-.drop {
+/* ---- call to action: full width, solid ink ---- */
+
+.cta {
   grid-column: span 2;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  height: 40px;
-  overflow: clip;
-}
-
-.dropOpen {
-  height: auto;
-}
-
-.dropRow {
-  display: grid;
-  flex: none;
-  grid-template-columns: repeat(2, var(--col));
-  gap: 8px;
-  justify-content: center;
-}
-
-.subGrid {
-  display: grid;
-  flex: none;
-  grid-template-columns: repeat(2, minmax(var(--col), 1fr));
-  grid-auto-rows: 32px;
-  gap: 0 8px;
-  justify-content: center;
-}
-
-/* ---- sub link (32px) ---- */
-
-.subWrap {
-  opacity: 0;
-  transition: opacity 0.6s var(--spring);
-}
-
-.dropOpen .subWrap {
-  opacity: 1;
-}
-
-.sub {
-  position: relative;
-  display: flex;
   align-items: center;
-  width: 100%;
-  height: 32px;
-  padding: 10px 12px 10px 8px;
-  color: var(--muted);
-  font-size: 12px;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  margin-top: 12px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
   line-height: 1.2;
   text-decoration: none;
-  cursor: pointer;
-  transition: color 0.3s var(--spring);
+  transition: background-color 0.3s ease;
 }
 
-.subBg {
-  top: 0;
-  bottom: 0;
-  transition:
-    opacity 0.3s var(--spring),
-    scale 0.3s var(--spring);
+.cta:active {
+  background: #000;
 }
 
 @media (hover: hover) {
-  .link:hover,
-  .sub:hover {
+  .link:hover {
     color: var(--bright);
+  }
+  .cta:hover {
+    background: #2c2723;
   }
   .link:hover .linkBg {
     opacity: 1;
@@ -374,26 +369,15 @@
     top: 2px;
     bottom: 2px;
   }
-  .sub:hover .subBg {
-    opacity: 1;
-    scale: 1;
-  }
 }
 
 .link:focus-visible,
-.sub:focus-visible,
-.link[aria-current="page"],
-.sub[aria-current="page"] {
+.link[aria-current="page"] {
   color: var(--bright);
 }
 
 .link:focus-visible .linkBg,
 .link[aria-current="page"] .linkBg {
-  opacity: 1;
-  scale: 1;
-}
-
-.sub:focus-visible .subBg {
   opacity: 1;
   scale: 1;
 }
