@@ -10,6 +10,7 @@ const CalEmbed = dynamic(
 
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
+  const embedRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   // Only mount Cal.com when the section is near the viewport
@@ -28,6 +29,37 @@ export default function Contact() {
     );
 
     observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // The embed loads a second or two after it mounts and grows by ~900px.
+  // The footer below is pinned, so the browser has nothing to anchor the
+  // scroll to and a visitor already past the calendar gets shoved back up
+  // into it. When it resizes above the middle of the screen, shift the
+  // scroll by the same amount so they stay put. The box keeps the
+  // placeholder's 400px as a floor so it only ever grows while loading.
+  useEffect(() => {
+    const box = embedRef.current;
+    if (!box) return;
+
+    let prev = box.offsetHeight;
+    const observer = new ResizeObserver(() => {
+      const height = box.offsetHeight;
+      const delta = height - prev;
+      prev = height;
+      if (!delta) return;
+      const oldBottom = box.getBoundingClientRect().bottom - delta;
+      if (oldBottom >= window.innerHeight / 2) return;
+      const doc = document.documentElement;
+      const wasAtBottom =
+        doc.scrollHeight - delta - window.innerHeight - window.scrollY <= 8;
+      if (wasAtBottom) {
+        window.scrollTo({ top: doc.scrollHeight, behavior: "instant" });
+      } else {
+        window.scrollBy({ top: delta, behavior: "instant" });
+      }
+    });
+    observer.observe(box);
     return () => observer.disconnect();
   }, []);
 
@@ -98,9 +130,10 @@ export default function Contact() {
         </p>
 
         <div
+          ref={embedRef}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className="flex justify-center border border-black/10 rounded-2xl overflow-hidden"
+          className="flex min-h-[400px] justify-center border border-black/10 rounded-2xl overflow-hidden"
         >
           {visible ? (
             <CalEmbed
@@ -109,7 +142,7 @@ export default function Contact() {
               style={{ width: "100%", height: "100%", overflow: "auto" }}
             />
           ) : (
-            <div style={{ width: "100%", minHeight: 400 }} />
+            <div style={{ width: "100%" }} />
           )}
         </div>
       </div>

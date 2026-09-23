@@ -18,7 +18,7 @@ const HowWeDoIt = dynamic(() => import("@/components/HowWeDoIt"));
 const Testimonials = dynamic(() => import("@/components/Testimonials"));
 const VideoCta = dynamic(() => import("@/components/VideoCta"));
 const Contact = dynamic(() => import("@/components/Contact"));
-const Footer = dynamic(() => import("@/components/Footer"));
+const HomeFooter = dynamic(() => import("@/components/HomeFooter"));
 
 export default function HomeClient() {
   const [isLoading, setIsLoading] = useState(true);
@@ -109,12 +109,13 @@ export default function HomeClient() {
       {/* More Work is the card that scrolls off to uncover How We Do It,
           which holds until the card has cleared, then scrolls on. */}
       <HowWeDoIt />
-      <div className="relative z-10 bg-white">
+      <div className="relative z-10 rounded-b-[28px] bg-white md:rounded-b-[48px]">
         <Testimonials />
         <VideoCta />
         <Contact />
-        <Footer />
       </div>
+      {/* The footer is pinned underneath; the white block above lifts off it. */}
+      <HomeFooter />
     </div>
   );
 }
