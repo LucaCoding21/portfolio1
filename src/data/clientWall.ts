@@ -95,14 +95,14 @@ export const WALL_CARDS: WallCard[] = [
   },
   { logo: logo("Venue Series"), variant: "logo", row: 1, col: 9 },
   {
-    logo: logo("League1v1"),
+    logo: logo("Bloomkey"),
     variant: "hquote",
     row: 1,
     col: 10,
     span: 2,
-    // Jacob's words on pricing.
+    // Mishele's words on pricing, cleared with her for this card (September 2026).
     quote: "“What they quoted is what we paid. No surprise add-ons at the end.”",
-    person: { name: "Jacob Abraham", title: "Co-founder" },
+    person: { name: "Mishele", title: "Founder" },
     quoteMaxWidth: 190,
     href: "/work",
   },
@@ -132,11 +132,12 @@ export const WALL_CARDS: WallCard[] = [
     variant: "hquote",
     row: 2,
     col: 14,
-    span: 2,
+    // Three wide so the bottom strip stays gap-free after Bloomkey moved up.
+    span: 3,
     // Vien's own words, the same quote as on /work.
     quote: "“It was one of the smoothest processes I've ever had for any project.”",
     person: { name: "Vien", title: "Co-founder" },
-    quoteMaxWidth: 200,
+    quoteMaxWidth: 260,
     href: "/work",
   },
   { logo: logo("Real Estate 360"), variant: "logo", row: 2, col: 5 },
@@ -149,13 +150,12 @@ export const WALL_CARDS: WallCard[] = [
     col: 9,
     span: 2,
     stat: { value: "3x", lines: ["monthly", "bookings"] },
-    person: { name: "Ace Suasola", title: "Photographer", avatar: "/ACE/ace-headshot-v5.webp" },
+    person: { name: "Ace Suasola", title: "Owner", avatar: "/ACE/ace-headshot-v5.webp" },
     href: "/work",
   },
   { logo: logo("Real Estate Institute of BC"), logoHeight: 30, variant: "logo", row: 2, col: 11 },
   { logo: logo("Venues Quarterly"), logoHeight: 26, variant: "logo", row: 2, col: 3 },
-  { logo: logo("Bloomkey"), variant: "logo", row: 2, col: 4 },
-  { logo: logo("Dreamhouse Printing"), logoHeight: 38, variant: "logo", row: 2, col: 16 },
+  { logo: logo("Dreamhouse Printing"), logoHeight: 38, variant: "logo", row: 2, col: 4 },
 ];
 
 /** Number of grid columns the cards actually use, so no empty tracks trail the wall. */

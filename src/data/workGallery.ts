@@ -110,6 +110,7 @@ function headline(p: Project): WorkResult | undefined {
 /** Case studies by project id. */
 const CASE_STUDIES: Record<number, string> = {
   12: "/case-studies/innovative-aluminum",
+  13: "/case-studies/caddie-companion",
 };
 
 /** These lead the gallery in this order (Innovative Aluminum, WrapCity,

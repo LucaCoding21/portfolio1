@@ -52,7 +52,7 @@ export const projects: Project[] = [
     url: "https://wrapcity.co/",
     quote: {
       texts: [
-        "Just wanted to let you know I landed a $7000 job this morning because of the website. I didn't even advertise it!",
+        "Just wanted to let you know I landed a $7,000 job this morning because of the website. I didn't even advertise it!",
         "Also my Google Ads are working way better since the new site. Didn't expect that.",
       ],
       author: "Taylor Paige",
@@ -139,10 +139,10 @@ export const projects: Project[] = [
   {
     id: 13,
     name: "Caddie Companion",
-    description: "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
-    kpis: ["+21% more visitors turned into buyers than the old store"],
+    description: "Headless Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+    kpis: ["+21% more visitors turned into buyers", "PageSpeed score from about 30 to 99"],
     metrics: [
-      { value: "+21%", label: "More visitors turned into buyers than the old store" },
+      { value: "+21%", label: "More visitors turned into buyers" },
     ],
     tags: ["Ecommerce & Shopify"],
     image: "/success/caddie-companion-cover.jpg",
@@ -237,6 +237,11 @@ export const projects: Project[] = [
     hoverImage: "/bloomkey/bloomkey.png",
     hoverImagePosition: "center 75%",
     url: "https://www.bloomkey.ca/",
+    quote: {
+      texts: ["What they quoted is what we paid. No surprise add-ons at the end."],
+      author: "Mishele",
+      role: "Founder, Bloomkey",
+    },
   },
   {
     id: 4,
@@ -249,7 +254,7 @@ export const projects: Project[] = [
     hoverImage: "/Njagih/njagih studios.webp",
     url: "https://njagihstudios.com/",
     quote: {
-      texts: ["Best designers I've worked with, no exaggeration"],
+      texts: ["I sent them my photos and answered one call. Nine days later the site was live. I did almost nothing."],
       author: "Israel Njagih",
       role: "Owner, Njagih Studios",
       avatar: "/Njagih/njagih-headshot-v2.webp",
@@ -275,27 +280,6 @@ export const projects: Project[] = [
     image: "/dreamhouse/dreamhouse-cover.jpg",
     url: "https://www.dreamhouseprinting.com/",
   },
-  // League1v1 is off the site for now (owner's call, September 2026).
-  // {
-  //   id: 3,
-  //   name: "League1v1",
-  //   description: "Vancouver's competitive basketball league, built for players, sponsors, and the game.",
-  //   kpis: ["Built in 5 days", "$12k in sponsorship revenue"],
-  //   metrics: [
-  //     { value: "5 days", label: "Build time" },
-  //     { value: "$12k", label: "Sponsorship revenue" },
-  //   ],
-  //   tags: ["Sports & Events"],
-  //   image: "/league1v1-cover.webp",
-  //   hoverImage: "/league1v1.webp",
-  //   url: "https://league1v1.com/",
-  //   quote: {
-  //     texts: ["Dude I honestly didn't think we needed a website, im glad you guys proved me wrong"],
-  //     author: "Jacob Abraham",
-  //     role: "Co-founder, League1v1",
-  //     avatar: "/league1v1-headshot.webp",
-  //   },
-  // },
 ];
 
 export const HOMEPAGE_PROJECT_IDS = [9, 1, 4, 8];

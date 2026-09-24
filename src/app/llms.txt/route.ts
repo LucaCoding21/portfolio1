@@ -14,11 +14,12 @@ const SITE = "https://cloverfield.studio";
 // Projects with their own write-up on the site, by project id.
 const CASE_STUDIES: Record<number, string> = {
   12: `${SITE}/case-studies/innovative-aluminum`,
+  13: `${SITE}/case-studies/caddie-companion`,
 };
 
 const INTRO = `# Cloverfield Studio
 
-> Cloverfield Studio is a two-person web design and development studio in Surrey, British Columbia, Canada: a designer and a developer. We make websites that bring in customers for local businesses across the Lower Mainland (Surrey, Vancouver, Burnaby, Langley, Richmond).
+> Cloverfield Studio is a two-person web design and development studio in Surrey, British Columbia, Canada: a designer and a developer. We make websites that bring in customers, mostly for local businesses across the Lower Mainland (Surrey, Vancouver, Burnaby, Langley, Richmond), plus a few clients in the US.
 
 Most people meet a business online first. We make a business look as established online as it is in real life, then make it easier for the right customers to understand why it's worth choosing.
 
@@ -50,7 +51,7 @@ Surrey, British Columbia, Canada. Booking link: ${CAL_URL}
 
 ## Service area
 
-Surrey BC, Vancouver BC, Burnaby BC, Langley BC, Richmond BC, Coquitlam BC, Delta BC, White Rock BC, North Vancouver BC, West Vancouver BC, Lower Mainland, British Columbia, Canada.`;
+Surrey BC, Vancouver BC, Burnaby BC, Langley BC, Richmond BC, Coquitlam BC, Delta BC, White Rock BC, North Vancouver BC, West Vancouver BC, Lower Mainland, British Columbia, Canada. A few clients are in the United States.`;
 
 function stats() {
   const lines = STUDIO_STATS.map(

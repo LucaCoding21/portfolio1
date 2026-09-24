@@ -69,13 +69,14 @@ export const SUCCESS_STORIES: SuccessStory[] = [
   {
     title: "Caddie Companion",
     description:
-      "Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
+      "Headless Shopify store rebuild for a golf multi-tool that replaces six things in the bag.",
     resultValue: "+21%",
-    resultLabel: "More visitors turned into buyers than the old store",
+    resultLabel: "More visitors turned into buyers",
     // Product photo for the card's cover; the reel keeps its own poster.
     image: "/success/caddie-companion-cover.jpg",
     video: "/success/caddie-companion.mp4",
     href: "/work",
     site: "https://www.caddiecompanion.com/",
+    caseStudy: "/case-studies/caddie-companion",
   },
 ];

@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const SITE = "https://cloverfield.studio";
 
 // Existing case studies with dedicated pages. Add new slugs here as they ship.
-const CASE_STUDY_SLUGS = ["innovative-aluminum"];
+const CASE_STUDY_SLUGS = ["innovative-aluminum", "caddie-companion"];
 
 // Planned service pages — uncomment as each goes live so it's instantly indexable.
 // Keeping commented (not in sitemap) avoids 404s being submitted to Google.

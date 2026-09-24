@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   }
 
   const where =
-    ({ team: "homepage team section", closing: "homepage closing video", work: "/work page" } as Record<string, string>)[
+    ({ team: "homepage team section", closing: "homepage closing video", work: "/work page", "case-caddie": "Caddie Companion case study" } as Record<string, string>)[
       body?.source
     ] ?? "homepage";
 

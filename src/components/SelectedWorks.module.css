@@ -402,43 +402,44 @@
   pointer-events: auto;
 }
 
-/* "Click to view": a small ink pill centred on the plate, shown while the
-   live card's link is hovered. Desktop with a mouse only; the text scrambles
-   in from the component. */
+/* "Click to view": a square white tag that sits just below and right of the cursor
+   while the live card's link is hovered. The outer span is moved to the
+   pointer by the component; the inner pill fades and scales in. Desktop with
+   a mouse only. */
 .viewLabel {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   z-index: 5;
   display: none;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: rgb(17 17 19 / 0.78);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: #fff;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.92);
-  transition:
-    opacity 0.25s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
+}
+
+.viewPill {
+  display: block;
+  padding: 9px 12px;
+  background: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  color: #1a1613;
+  opacity: 0;
+  transform: translate(22px, 30px) scale(0.9);
+  transform-origin: top left;
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .viewLabel {
     display: block;
   }
-  .isLive .plateLink:hover + .viewLabel {
+  .isLive .plateLink:hover + .viewLabel .viewPill {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(22px, 30px) scale(1);
   }
 }
 

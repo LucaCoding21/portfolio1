@@ -23,7 +23,7 @@ const SECTIONS = [
 export const metadata: Metadata = {
   title: "Innovative Aluminum Systems Case Study | Cloverfield Studio",
   description:
-    "How Cloverfield Studio rebuilt Innovative Aluminum's website so Claude recommends them by name. Two weeks after launch. New leads. New referral source.",
+    "How Cloverfield Studio rebuilt Innovative Aluminum's website: $5M+ in dealer lifetime value signed in 90 days, inquiries up 180%, and Claude recommending them by name.",
   keywords: [
     "aluminum railing website design",
     "manufacturer web design case study",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title:
       "Innovative Aluminum Systems Case Study | Cloverfield Studio",
     description:
-      "Two weeks after launch, Claude recommends Innovative Aluminum by name. Inside Cloverfield Studio's rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
+      "$5M+ in dealer lifetime value signed in 90 days and inquiries up 180%. Inside Cloverfield Studio's rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
     url: "https://cloverfield.studio/case-studies/innovative-aluminum",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title:
       "Innovative Aluminum Systems Case Study | Cloverfield Studio",
     description:
-      "Two weeks after launch, Claude recommends Innovative Aluminum by name. Inside the rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
+      "$5M+ in dealer lifetime value signed in 90 days and inquiries up 180%. Inside the rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
     images: ["https://cloverfield.studio/og-image.jpeg"],
   },
 };
@@ -126,7 +126,7 @@ export default function InnovativeAluminumCaseStudy() {
         "headline":
           "Two weeks after launch, Claude recommends Innovative Aluminum by name.",
         "description":
-          "How Cloverfield Studio rebuilt Innovative Aluminum's website so AI assistants like Claude recommend them by name. Two weeks. New leads. A new referral source on their dealer application form.",
+          "How Cloverfield Studio rebuilt Innovative Aluminum's website: $5M+ in dealer lifetime value signed in 90 days, inquiries up 180%, and AI assistants like Claude recommending them by name.",
         "image": "https://cloverfield.studio/og-image.jpeg",
         "datePublished": "2026-05-18",
         "dateModified": "2026-05-20",
@@ -263,18 +263,18 @@ export default function InnovativeAluminumCaseStudy() {
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 border-t border-black/15 pt-8 md:pt-10">
           <div>
             <p className="font-[family-name:var(--font-outfit)] font-bold text-3xl md:text-4xl tracking-tight leading-[1.05] mb-3">
-              5/yr → 1 in 7 days
+              $5M+
             </p>
             <p className="text-sm text-black/55 font-[family-name:var(--font-geist-sans)]">
-              Dealer inquiries
+              Dealer lifetime value signed in 90 days
             </p>
           </div>
           <div>
             <p className="font-[family-name:var(--font-outfit)] font-bold text-3xl md:text-4xl tracking-tight leading-[1.05] mb-3">
-              Day 2
+              +180%
             </p>
             <p className="text-sm text-black/55 font-[family-name:var(--font-geist-sans)]">
-              First homeowner lead arrived
+              More inquiries than the old website brought in
             </p>
           </div>
           <div>
@@ -303,7 +303,7 @@ export default function InnovativeAluminumCaseStudy() {
                 Get the site to bring in more <span className="text-[#16a34a]">leads</span>.
               </h2>
               <p className="text-base md:text-lg text-black/70 leading-relaxed font-[family-name:var(--font-geist-sans)] max-w-[62ch]">
-                The old site brought in five dealer inquiries a year. Homeowners and dealers landed on the same homepage with the same generic copy. We had to fix both.
+                Dealers rarely reached out through the old site. Homeowners and dealers landed on the same homepage with the same generic copy. We had to fix both.
               </p>
             </section>
 
@@ -437,7 +437,7 @@ export default function InnovativeAluminumCaseStudy() {
             <section id="result" className="scroll-mt-32">
               <Eyebrow>The Result</Eyebrow>
               <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.8rem,3.5vw,2.8rem)] tracking-tight leading-[1.1] mb-10 max-w-[26ch]">
-                Two weeks after launch.
+                The first 90 days.
               </h2>
 
               <dl className="grid grid-cols-[auto_1fr] gap-x-8 md:gap-x-16 gap-y-5 md:gap-y-6 mb-16 md:mb-20">
@@ -450,12 +450,17 @@ export default function InnovativeAluminumCaseStudy() {
                   {
                     when: "Day 7",
                     event:
-                      "First dealer inquiry. Old site averaged 5 a year.",
+                      "First dealer inquiry through the new site.",
                   },
                   {
                     when: "Week 2",
                     event:
                       "Claude recommends Innovative Aluminum by name.",
+                  },
+                  {
+                    when: "Day 90",
+                    event:
+                      "$5M+ in dealer lifetime value signed. Inquiries up 180%.",
                   },
                 ].map(({ when, event }) => (
                   <div key={when} className="contents">

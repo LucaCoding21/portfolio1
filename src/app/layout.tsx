@@ -255,7 +255,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                         "worksFor": { "@type": "Organization", "name": "WrapCity" },
                       },
                       "reviewBody":
-                        "Just wanted to let you know I landed a $7000 job this morning because of the website. I didn't even advertise it. Also my Google Ads are working way better since the new site.",
+                        "Just wanted to let you know I landed a $7,000 job this morning because of the website. I didn't even advertise it. Also my Google Ads are working way better since the new site.",
                     },
                     {
                       "@type": "Review",
@@ -319,7 +319,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                         "worksFor": { "@type": "Organization", "name": "Njagih Studios" },
                       },
                       "reviewBody":
-                        "Best designers I've worked with, no exaggeration.",
+                        "I sent them my photos and answered one call. Nine days later the site was live. I did almost nothing.",
                     },
                   ],
                 },

@@ -24,7 +24,6 @@ const LOGOS = [
   { name: "Venues Quarterly", src: "/sight/clients/venues-quarterly.png", h: "h-11", white: true },
   { name: "Caddie Companion", src: "/sight/clients/caddie-companion.png", h: "h-12" },
   { name: "WrapCity", src: "/sight/clients/wrapcity.png", h: "h-12" },
-  { name: "League1v1", src: "/sight/clients/league1v1.webp", h: "h-16" },
   { name: "Real Estate 360", src: "/sight/clients/real-estate-360-v2.webp", h: "h-14" },
   { name: "Venue Series", src: "/sight/clients/venue-series-2.png", h: "h-16" },
 ];

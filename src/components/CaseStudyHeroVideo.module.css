@@ -1,0 +1,39 @@
+/* "Click to view": the same square white tag as the homepage Selected Works
+   cards (SelectedWorks.module.css), riding just below and right of the cursor
+   while the hero video link is hovered. Desktop with a mouse only. */
+.viewLabel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  display: none;
+  pointer-events: none;
+}
+
+.viewPill {
+  display: block;
+  padding: 9px 12px;
+  background: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  color: #1a1613;
+  opacity: 0;
+  transform: translate(22px, 30px) scale(0.9);
+  transform-origin: top left;
+  transition:
+    opacity 0.2s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .viewLabel {
+    display: block;
+  }
+  .link:hover ~ .viewLabel .viewPill {
+    opacity: 1;
+    transform: translate(22px, 30px) scale(1);
+  }
+}

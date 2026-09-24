@@ -54,12 +54,6 @@ export const TESTIMONIAL_QUOTES: TextTestimonial[] = [
     quote: "Nice work, William! I love this. It feels fresh and interesting and keeps me scrolling.",
   },
   {
-    name: "Jacob Abraham",
-    role: "Co-founder, League1v1",
-    avatar: "/league1v1-headshot.webp",
-    quote: "What they quoted is what we paid. No surprise add-ons at the end.",
-  },
-  {
     name: "Gabrial Winkler",
     role: "Founder, Northwest Railing",
     avatar: "/testimonials/gabrial-winkler-poster.jpg",

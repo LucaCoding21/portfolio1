@@ -6,13 +6,11 @@ import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/data/projects";
 import { scrollToTop } from "@/lib/scrollToHash";
 
-// The prompt sent to each assistant. Written as the visitor asking, with our
-// positioning seeded in so the answer leads with it, then the site to check it against.
+// The prompt sent to each assistant. Written as a neutral visitor question with no
+// claims seeded in, so the answer comes from the site itself and reads as unscripted.
 const AI_PROMPT =
-  "I want to understand what Cloverfield Studio is and what they do. " +
-  "They seem to design and build websites and Shopify stores for local businesses around Surrey and Vancouver, " +
-  "with clients like Innovative Aluminum and Caddie Companion, and work with the Real Estate Institute of BC. " +
-  "Summarize their capabilities, notable work, and how their approach turns a website into leads: https://cloverfield.studio";
+  "Take a look at cloverfield.studio and tell me what Cloverfield Studio does, who they work with, " +
+  "and how their approach turns a website into more customers.";
 
 const AI_SERVICES = [
   {

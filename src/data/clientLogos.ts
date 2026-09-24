@@ -22,7 +22,6 @@ export const CLIENT_LOGOS: ClientLogo[] = [
   { name: "Venues Quarterly", src: "/sight/clients/venues-quarterly.png", height: 31, dark: true },
   { name: "Caddie Companion", src: "/sight/clients/caddie-companion.png", height: 34 },
   { name: "WrapCity", src: "/sight/clients/wrapcity.png", height: 34 },
-  { name: "League1v1", src: "/sight/clients/league1v1.webp", height: 45 },
   { name: "Real Estate 360", src: "/sight/clients/real-estate-360-v2.webp", height: 40 },
   // Pale gold art: greys out to nothing, so it is flattened to ink as well.
   { name: "Venue Series", src: "/sight/clients/venue-series-2.png", height: 45, dark: true },

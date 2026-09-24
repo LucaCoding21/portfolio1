@@ -24,12 +24,11 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { ScrambleTextPlugin } from "gsap/dist/ScrambleTextPlugin";
 import { SUCCESS_STORIES } from "@/data/successStories";
 import StoryDescription from "./StoryDescription";
 import s from "./SelectedWorks.module.css";
 
-gsap.registerPlugin(ScrollTrigger, ScrambleTextPlugin);
+gsap.registerPlugin(ScrollTrigger);
 // iOS shows and hides its address bar mid-scroll; without this each one
 // fires a resize, ScrollTrigger refreshes, and the pinned carousel jumps.
 ScrollTrigger.config({ ignoreMobileResize: true });
@@ -47,9 +46,8 @@ const CARDS = SUCCESS_STORIES.map((story, i) => ({
    2.5 for three cards, plus one per extra card. */
 const EXTRA = CARDS.length - 3;
 
-/* The desktop hover label and the characters it scrambles through. */
+/* The desktop hover label. */
 const VIEW_LABEL = "Click to view";
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+";
 
 /* Below desktop each card holds in front for a stretch of scroll before it
    lifts (the reference runs straight from arriving into leaving). In
@@ -239,25 +237,38 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       return tl;
     };
 
-    // Desktop hover: "Click to view" scrambles in over the card, letters
-    // cycling through random characters before they settle, left to right.
+    // Desktop hover: a "Click to view" tag rides just below and right of the cursor.
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const hoverOff: (() => void)[] = [];
-    if (fine && !reduced) {
+    if (fine) {
       elements.forEach((el) => {
         const link = el.querySelector<HTMLElement>(`.${s.plateLink}`);
-        const text = el.querySelector<HTMLElement>("[data-view-text]");
-        if (!link || !text) return;
-        const onViewEnter = () =>
-          gsap.to(text, {
-            duration: 0.7,
-            ease: "none",
-            overwrite: true,
-            scrambleText: { text: VIEW_LABEL, chars: SCRAMBLE_CHARS, speed: 0.6, revealDelay: 0.1 },
-          });
+        const label = el.querySelector<HTMLElement>(`.${s.viewLabel}`);
+        if (!link || !label) return;
+        const toX = gsap.quickTo(label, "x", { duration: 0.35, ease: "power3.out" });
+        const toY = gsap.quickTo(label, "y", { duration: 0.35, ease: "power3.out" });
+        // The plate is scaled while it moves; map the pointer back into its
+        // own unscaled box so the tag stays pinned to the cursor.
+        const local = (e: MouseEvent) => {
+          const r = link.getBoundingClientRect();
+          const k = link.offsetWidth / r.width || 1;
+          return [(e.clientX - r.left) * k, (e.clientY - r.top) * k];
+        };
+        const onViewEnter = (e: MouseEvent) => {
+          const [x, y] = local(e);
+          gsap.set(label, { x, y });
+        };
+        const onViewMove = (e: MouseEvent) => {
+          const [x, y] = local(e);
+          toX(x);
+          toY(y);
+        };
         link.addEventListener("mouseenter", onViewEnter);
-        hoverOff.push(() => link.removeEventListener("mouseenter", onViewEnter));
+        link.addEventListener("mousemove", onViewMove);
+        hoverOff.push(() => {
+          link.removeEventListener("mouseenter", onViewEnter);
+          link.removeEventListener("mousemove", onViewMove);
+        });
       });
     }
 
@@ -383,9 +394,11 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
                   aria-label={`Open the ${card.story.title} website in a new tab`}
                   className={s.plateLink}
                 />
-                {/* Desktop hover label; the text scrambles in (see onViewEnter). */}
+                {/* Desktop hover tag that follows the cursor (see onViewMove). */}
                 <span aria-hidden className={s.viewLabel}>
-                  <span data-view-text>{VIEW_LABEL}</span>
+                  <span className={s.viewPill}>
+                    {VIEW_LABEL}
+                  </span>
                 </span>
               </div>
             </div>
