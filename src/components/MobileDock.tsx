@@ -110,7 +110,7 @@ const MAIN = [
   { label: "Work", href: "/work", Icon: IconCloud },
   { label: "Approach", href: "/#how-we-do-it", Icon: IconFileLines },
   { label: "About", href: "/#about", Icon: IconUser },
-  { label: "Sight", href: "/sight", Icon: IconSparkle },
+  { label: "Sight", href: "/sight", Icon: IconSparkle, sight: true },
 ];
 
 type Geom = { side: number; bottom: number };
@@ -322,17 +322,18 @@ export default function MobileDock() {
         </div>
 
         <div id="dock-menu" className={s.grid} inert={!isOpen}>
-          {MAIN.map(({ label, href, Icon }) => (
+          {MAIN.map(({ label, href, Icon, sight }) => (
             <Link
               key={label}
               href={href}
-              className={s.link}
+              className={sight ? `${s.link} ${s.sight}` : s.link}
               aria-current={isActive(href) ? "page" : undefined}
               onClick={(e) => onLinkClick(e, href)}
             >
               <span className={s.linkInner}>
                 <Icon className={s.icon} />
-                <span className={s.linkText}>{label}</span>
+                {/* Sight shimmers blue like SiteNav's (.sight-nav-link) */}
+                <span className={sight ? `${s.linkText} sight-nav-link` : s.linkText}>{label}</span>
               </span>
               <span className={s.linkBg} />
             </Link>

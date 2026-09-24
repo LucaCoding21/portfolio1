@@ -76,7 +76,7 @@ export const WALL_CARDS: WallCard[] = [
     row: 1,
     col: 5,
     span: 2,
-    stat: { value: "+180%", lines: ["inquiries"] },
+    stat: { value: "60", lines: ["inquiries in", "3 months"] },
     href: "/case-studies/innovative-aluminum",
   },
   {

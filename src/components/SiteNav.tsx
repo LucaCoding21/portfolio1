@@ -376,15 +376,22 @@ export default function SiteNav() {
             onFocus={onItemEnter}
           >
             <span className={s.itemBg} />
+            {/* "Sight" shimmers blue once the nav is off the dark hero (and
+                always on pages without one). The class clips a moving
+                gradient to the letters, so it goes on the text, not the pill. */}
             <span className={s.label}>
               {/* Same roll as the call to action: two stacked copies in a
-                  clipped box, and hover slides the stack up one row. */}
+                  clipped box, and hover slides the stack up one row. The
+                  shimmer goes on each copy, since a moving child breaks a
+                  text clip set on its parent. */}
               <span className={s.flip}>
                 {[0, 1].map((copy) => (
                   <span
                     key={copy}
                     aria-hidden={copy === 1 || undefined}
-                    className={s.flipRow}
+                    className={`${s.flipRow} ${
+                      item.href === "/sight" && effectiveTheme === "light" ? "sight-nav-link" : ""
+                    }`}
                   >
                     {item.label}
                   </span>
@@ -457,7 +464,7 @@ export default function SiteNav() {
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={`${s.panelLink} ${s.panelLinkRuled}`}
               >
-                {item.label}
+                <span className="sight-nav-link">{item.label}</span>
               </Link>
             ))}
             <a

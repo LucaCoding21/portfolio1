@@ -23,6 +23,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import SightPeek from "./SightPeek";
 import { CustomEase } from "gsap/dist/CustomEase";
 import { LOADER_HANDOFF_EVENT, MOBILE_MEDIA, POSTER, POSTER_MOBILE, REEL, REEL_MOBILE } from "./LoadingScreen";
 import { INTRO_EVENT } from "@/lib/intro";
@@ -182,6 +183,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
       const sx = (W - 2 * pad) / (W + 2 * o);
       const sy = (H - 2 * pad) / (H + 2 * o);
       hero.style.setProperty("--o", `${o}px`);
+      hero.style.setProperty("--pad", `${pad}px`);
       hero.style.setProperty("--sx", String(sx));
       hero.style.setProperty("--sy", String(sy));
       hero.style.setProperty("--rx", `${rad / sx}px`);
@@ -401,6 +403,11 @@ export default function HomeHero({ ready }: { ready: boolean }) {
         </div>
       </div>
 
+      {/* The Sight card lives in the hero so it scrolls away with it, and
+          follows the plate's edge in when the plate shrinks. */}
+      <div className={s.peekSlot}>
+        <SightPeek ready={ready} />
+      </div>
     </section>
   );
 }

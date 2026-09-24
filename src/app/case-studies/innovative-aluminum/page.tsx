@@ -23,7 +23,7 @@ const SECTIONS = [
 export const metadata: Metadata = {
   title: "Innovative Aluminum Systems Case Study | Cloverfield Studio",
   description:
-    "How Cloverfield Studio rebuilt Innovative Aluminum's website: $5M+ in dealer lifetime value signed in 90 days, inquiries up 180%, and Claude recommending them by name.",
+    "How Cloverfield Studio rebuilt Innovative Aluminum's website: 60 inquiries in the first 3 months, up from about 7 a year, new dealers worth an estimated $5M+ over their lifetime, and Claude recommending them by name.",
   keywords: [
     "aluminum railing website design",
     "manufacturer web design case study",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title:
       "Innovative Aluminum Systems Case Study | Cloverfield Studio",
     description:
-      "$5M+ in dealer lifetime value signed in 90 days and inquiries up 180%. Inside Cloverfield Studio's rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
+      "60 inquiries in the first 3 months, up from about 7 a year. Inside Cloverfield Studio's rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
     url: "https://cloverfield.studio/case-studies/innovative-aluminum",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title:
       "Innovative Aluminum Systems Case Study | Cloverfield Studio",
     description:
-      "$5M+ in dealer lifetime value signed in 90 days and inquiries up 180%. Inside the rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
+      "60 inquiries in the first 3 months, up from about 7 a year. Inside the rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
     images: ["https://cloverfield.studio/og-image.jpeg"],
   },
 };
@@ -126,7 +126,7 @@ export default function InnovativeAluminumCaseStudy() {
         "headline":
           "Two weeks after launch, Claude recommends Innovative Aluminum by name.",
         "description":
-          "How Cloverfield Studio rebuilt Innovative Aluminum's website: $5M+ in dealer lifetime value signed in 90 days, inquiries up 180%, and AI assistants like Claude recommending them by name.",
+          "How Cloverfield Studio rebuilt Innovative Aluminum's website: 60 inquiries in the first 3 months, up from about 7 a year, new dealers worth an estimated $5M+ over their lifetime, and AI assistants like Claude recommending them by name.",
         "image": "https://cloverfield.studio/og-image.jpeg",
         "datePublished": "2026-05-18",
         "dateModified": "2026-05-20",
@@ -266,15 +266,15 @@ export default function InnovativeAluminumCaseStudy() {
               $5M+
             </p>
             <p className="text-sm text-black/55 font-[family-name:var(--font-geist-sans)]">
-              Dealer lifetime value signed in 90 days
+              Estimated lifetime value of the dealers signed in 90 days
             </p>
           </div>
           <div>
             <p className="font-[family-name:var(--font-outfit)] font-bold text-3xl md:text-4xl tracking-tight leading-[1.05] mb-3">
-              +180%
+              60
             </p>
             <p className="text-sm text-black/55 font-[family-name:var(--font-geist-sans)]">
-              More inquiries than the old website brought in
+              Inquiries in the first 3 months, up from about 7 a year
             </p>
           </div>
           <div>
@@ -460,7 +460,7 @@ export default function InnovativeAluminumCaseStudy() {
                   {
                     when: "Day 90",
                     event:
-                      "$5M+ in dealer lifetime value signed. Inquiries up 180%.",
+                      "60 inquiries since launch, 40 from homeowners and 20 from dealers. The dealers signed are worth an estimated $5M+ over their lifetime.",
                   },
                 ].map(({ when, event }) => (
                   <div key={when} className="contents">

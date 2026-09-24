@@ -328,6 +328,11 @@
     bottom 0.4s var(--spring);
 }
 
+/* Sight: blue icon beside the shimmering label */
+.sight .linkInner {
+  color: #3b7cf6;
+}
+
 /* ---- call to action: full width, solid ink ---- */
 
 .cta {

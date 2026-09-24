@@ -221,3 +221,36 @@
   display: inline-flex;
   margin-right: 3px;
 }
+
+/* The Sight card's corner. It sits 20px inside the full-bleed plate, and when
+   the plate shrinks (--pad in from each edge) it moves in by the same amount,
+   on the plate's own curve, so it stays inside the rounded frame. */
+.peekSlot {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 30;
+  transition:
+    right 1s cubic-bezier(0.22, 1, 0.36, 1),
+    bottom 1s cubic-bezier(0.22, 1, 0.36, 1),
+    left 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plate.isZoomed ~ .peekSlot {
+  right: calc(20px + var(--pad, 32px));
+  bottom: calc(20px + var(--pad, 32px));
+}
+
+/* Phones: the bar spans the width, inset from both edges. */
+@media (max-width: 767px) {
+  .peekSlot {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+  .plate.isZoomed ~ .peekSlot {
+    left: calc(12px + var(--pad, 16px));
+    right: calc(12px + var(--pad, 16px));
+    bottom: calc(12px + var(--pad, 16px));
+  }
+}

@@ -64,7 +64,6 @@ function stats() {
       "Some client projects are confidential, so not every result is listed under Work.",
     "Conversion lift is the average increase in the share of visitors who become inquiries. " +
       "More inquiries is the average increase in total inquiries per client.",
-    "For a typical small local business, inquiries go from 1 to 2 a month to about 5.",
   ].join("\n\n");
   return `## Results across our work\n\n${lines.join("\n")}\n\n${note}`;
 }

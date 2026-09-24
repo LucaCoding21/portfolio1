@@ -218,9 +218,9 @@ export default function Testimonials() {
             They said it better than we could.
           </h2>
           <p className={s.body} data-rise>
-            The people behind the businesses we build for, on camera, in their
-            own words. No scripts, no studio, just what changed once the site
-            went live.
+            These are some of the owners we&apos;ve worked with, sharing in their
+            own words what it was like to work with us and what changed after
+            their site went live.
           </p>
         </div>
 

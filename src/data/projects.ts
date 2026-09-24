@@ -81,10 +81,10 @@ export const projects: Project[] = [
     id: 12,
     name: "Innovative Aluminum",
     description: "Website rebuild for a Canadian aluminum railing manufacturer with 70+ dealers.",
-    kpis: ["$5M+ dealer lifetime value signed in 90 days", "+180% inquiries"],
+    kpis: ["Dealers signed in 90 days worth an estimated $5M+ over their lifetime", "60 inquiries in the first 3 months, up from about 7 a year"],
     metrics: [
-      { value: "$5M+", label: "Dealer lifetime value signed in 90 days" },
-      { value: "+180%", label: "Inquiries" },
+      { value: "$5M+", label: "Estimated lifetime value of the dealers signed in 90 days" },
+      { value: "60", label: "Inquiries in the first 3 months, up from about 7 a year" },
     ],
     tags: ["Trades & Manufacturing"],
     image: "/success/innovative-aluminum.webp",

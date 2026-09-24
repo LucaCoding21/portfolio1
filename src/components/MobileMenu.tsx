@@ -143,7 +143,11 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             ref={(el) => { navItemsRef.current[i] = el; }}
             href={item.href}
             onClick={(e) => handleNavClick(e, item.href)}
-            className="block font-[family-name:var(--font-outfit)] font-bold text-[12.5vw] leading-[0.95] pb-[0.18em] -mb-[0.18em] text-[#111113] transition-colors duration-300 hover:text-[#111113]/60"
+            className={`block font-[family-name:var(--font-outfit)] font-bold text-[12.5vw] leading-[0.95] pb-[0.18em] -mb-[0.18em] transition-colors duration-300 ${
+              item.href === "/sight"
+                ? "sight-nav-link"
+                : "text-[#111113] hover:text-[#111113]/60"
+            }`}
             style={{ opacity: 0 }}
           >
             {item.label}
