@@ -1,0 +1,153 @@
+/*
+ * The Sight card: a picture card, the painting edge to edge with a soft ink
+ * shade from the top so the white copy reads, and the paper ArrowCta in the
+ * bottom corner. Shown over the hero only; it rises and fades in, and sinks
+ * away as the hero scrolls off.
+ */
+
+.peek {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: min(300px, calc(100vw - 32px));
+  aspect-ratio: 3 / 2;
+  padding: 18px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #1a1613;
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.peek[data-shown] {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.img {
+  object-fit: cover;
+  /* the lookout and the peak both stay in frame */
+  object-position: 60% 40%;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Ink from the top, clearing towards the bottom, so the painting still shows. */
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 22, 19, 0.62) 0%,
+    rgba(26, 22, 19, 0.2) 55%,
+    rgba(26, 22, 19, 0.1) 100%
+  );
+  pointer-events: none;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 15rem;
+  margin: 0;
+  padding-right: 24px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: #fff;
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ArrowCta flipped to paper, a size down. The label stays white: it is
+   blended with difference, so it reads as ink on the paper pill. */
+.peek .cta {
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+  --ink: #f9f8f5;
+  --paper: #111113;
+  --label: #fff;
+  --h: 42px;
+  --chip: 30px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.close svg {
+  width: 11px;
+  height: 11px;
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .peek:hover .img {
+    transform: scale(1.04);
+  }
+}
+
+@media (max-width: 479px) {
+  .peek {
+    right: 16px;
+    bottom: 16px;
+    width: min(280px, calc(100vw - 32px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .peek,
+  .img {
+    transition: opacity 0.2s linear;
+    transform: none;
+  }
+}

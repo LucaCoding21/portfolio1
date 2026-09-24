@@ -615,6 +615,12 @@ function GridCard({ item, rank, over }: { item: WorkGalleryItem; rank?: number; 
         {item.result && (
           <div className={s.caption}>
             <Result result={item.result} className={s.captionResult} />
+            {item.caseStudy && (
+              <a href={item.caseStudy} className={s.caseStudyLink}>
+                <span className={s.caseStudyText}>View case study</span>
+                <ArrowOut />
+              </a>
+            )}
           </div>
         )}
       </div>

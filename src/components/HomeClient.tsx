@@ -9,6 +9,7 @@ import SelectedWorks from "@/components/SelectedWorks";
 import ClientWall from "@/components/ClientWall";
 import TeamIntro from "@/components/TeamIntro";
 import MoreWork from "@/components/MoreWork";
+import SightPeek from "@/components/SightPeek";
 
 // Lives in module memory, so it resets on every full page load (refresh, hard
 // refresh, typed URL) and the intro plays again. It only survives client-side
@@ -116,6 +117,7 @@ export default function HomeClient() {
       </div>
       {/* The footer is pinned underneath; the white block above lifts off it. */}
       <HomeFooter />
+      <SightPeek ready={ready} />
     </div>
   );
 }

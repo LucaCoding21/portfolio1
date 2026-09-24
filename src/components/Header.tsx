@@ -139,12 +139,8 @@ export default function Header({ solid }: { solid?: boolean }) {
                 href={item.href}
                 onMouseEnter={(e) => movePill(e.currentTarget)}
                 onFocus={(e) => movePill(e.currentTarget)}
-                className={`relative z-10 px-4 py-2 font-[family-name:var(--font-outfit)] text-[15px] font-medium tracking-tight ${
-                  item.href === "/sight" && condensed ? "sight-nav-link" : ""
-                }`}
+                className="relative z-10 px-4 py-2 font-[family-name:var(--font-outfit)] text-[15px] font-medium tracking-tight"
                 style={{
-                  // Sight only shimmers in the condensed pill; over the hero it
-                  // is plain white like the rest.
                   textShadow: condensed || menuOpen ? "none" : "0 1px 2px rgba(0,0,0,0.35)",
                   transition: `text-shadow 0.4s ${EASE}`,
                 }}

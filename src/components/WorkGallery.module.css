@@ -124,7 +124,8 @@
   list-style: none;
 }
 
-/* Plain words. The chosen one is set in ink and a weight up; the rest sit back. */
+/* Plain words, no underline. The chosen one is set in ink and a weight
+   up; the rest sit back. Under 992px the chosen one is also underlined. */
 .filterItem {
   display: flex;
   align-items: baseline;
@@ -141,6 +142,9 @@
   letter-spacing: -0.005em;
   text-align: left;
   color: var(--muted);
+  text-decoration: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
   cursor: pointer;
   transition: color 0.25s ease;
 }
@@ -157,8 +161,6 @@
 .filterItem:focus-visible {
   outline: none;
   color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 
 /* ---------- right column ---------- */
@@ -303,9 +305,12 @@
   display: contents;
 }
 
-/* the result, at the far end of the row */
+/* the result, at the far end of the row, with any case study link under it */
 .caption {
   display: flex;
+  flex-flow: column;
+  align-items: flex-end;
+  gap: 0.35em;
   flex: none;
   min-width: 0;
   margin-left: auto;
@@ -331,6 +336,49 @@
   inset: 0;
   z-index: 2;
   border-radius: var(--media-radius);
+}
+
+/* Under the result; sits above the card-wide link. */
+.caseStudyLink {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  font-size: 1em;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.caseStudyLink:hover {
+  color: var(--ink);
+}
+
+.caseStudyLink svg {
+  width: 0.85em;
+  height: 0.85em;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The underline draws in from the left on hover and runs back out on leave. */
+.caseStudyText {
+  background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0% 1px;
+  padding-bottom: 0.08em;
+  transition: background-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.caseStudyLink:hover .caseStudyText,
+.caseStudyLink:focus-visible .caseStudyText {
+  background-position: 0% 100%;
+  background-size: 100% 1px;
+}
+
+.caseStudyLink:hover svg,
+.caseStudyLink:focus-visible svg {
+  transform: translate(0.15em, -0.15em);
 }
 
 /* ---------- shared: headline result and the owner's line ---------- */
@@ -651,6 +699,9 @@
     width: auto;
     padding: 0.3em 0;
   }
+  .filterItem.isActive {
+    text-decoration: underline;
+  }
 }
 
 @media screen and (max-width: 767px) {
@@ -803,6 +854,7 @@
   }
   .caption {
     order: 2;
+    align-items: flex-start;
     width: 100%;
     margin-left: 0;
     font-size: 1em;
@@ -850,6 +902,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .filterItem,
+  .caseStudyText,
+  .caseStudyLink svg,
   .viewLink,
   .num,
   .rowArrow svg {

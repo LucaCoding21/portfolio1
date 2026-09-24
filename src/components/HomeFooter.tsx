@@ -2,7 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/data/projects";
+import { scrollToTop } from "@/lib/scrollToHash";
 
 // The prompt sent to each assistant. Written as the visitor asking, with our
 // positioning seeded in so the answer leads with it, then the site to check it against.
@@ -41,6 +43,17 @@ const AI_SERVICES = [
 
 export default function HomeFooter() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const pathname = usePathname();
+
+  /* The wordmark, like the nav logo: on the homepage it scrolls back up to
+     the hero, elsewhere it's a plain link home. Modified clicks (new tab)
+     are left alone. */
+  const onWordmarkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/" || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    if (window.location.hash) history.pushState(null, "", "/");
+    scrollToTop();
+  };
 
   // Only play the reel while the footer is on screen.
   useEffect(() => {
@@ -142,12 +155,14 @@ export default function HomeFooter() {
             </div>
 
             <div>
-              <span
-                aria-hidden="true"
-                className="block select-none whitespace-nowrap text-[calc((100vw_-_48px)/4.54)] md:text-[calc((100vw_-_80px)/4.54)] font-extrabold leading-[0.8] tracking-[-0.045em] text-white"
+              <Link
+                href="/"
+                aria-label="Cloverfield home"
+                onClick={onWordmarkClick}
+                className="block select-none whitespace-nowrap text-[calc((100vw_-_48px)/4.54)] md:text-[calc((100vw_-_80px)/4.54)] font-extrabold leading-[0.8] tracking-[-0.045em] text-white transition-opacity duration-300 hover:opacity-80"
               >
                 cloverfield
-              </span>
+              </Link>
 
               <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t border-white/20 pt-4 text-sm text-white/60 md:mt-6">
                 <p>Surrey, BC</p>

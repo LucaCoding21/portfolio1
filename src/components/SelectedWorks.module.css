@@ -281,7 +281,9 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.3;
-  color: var(--ink);
+  /* grey at rest; on hover it darkens to ink as the underline draws in */
+  color: var(--muted);
+  transition: color 0.35s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .caseStudyLabel {
@@ -308,6 +310,9 @@
 }
 
 @media (hover: hover) {
+  .caseStudy:hover {
+    color: var(--ink);
+  }
   .caseStudy:hover .caseStudyLabel::after {
     transform: scaleX(1);
     transform-origin: left;
@@ -315,6 +320,10 @@
   .caseStudy:hover .caseStudyArrow {
     transform: translate(2px, -2px);
   }
+}
+
+.caseStudy:focus-visible {
+  color: var(--ink);
 }
 
 .caseStudy:focus-visible .caseStudyLabel::after {

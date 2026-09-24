@@ -49,6 +49,8 @@ export interface WorkGalleryItem {
   /** Grid card shows `description` in the quote slot when there is no quote. */
   showDescription?: boolean;
   href: string;
+  /** In-site case study, linked under the grid card. */
+  caseStudy?: string;
 }
 
 /** The headline, one entry per line; the page breaks between them. */
@@ -105,7 +107,20 @@ function headline(p: Project): WorkResult | undefined {
   return undefined;
 }
 
-export const WORK_ITEMS: WorkGalleryItem[] = projects.map((p) => {
+/** Case studies by project id. */
+const CASE_STUDIES: Record<number, string> = {
+  12: "/case-studies/innovative-aluminum",
+};
+
+/** These lead the gallery in this order (Innovative Aluminum, WrapCity,
+    Northwest Railing); the rest follow in projects.ts order. */
+const LEAD_IDS = [12, 8, 14];
+const ordered = [
+  ...LEAD_IDS.map((id) => projects.find((p) => p.id === id)).filter((p): p is Project => !!p),
+  ...projects.filter((p) => !LEAD_IDS.includes(p.id)),
+];
+
+export const WORK_ITEMS: WorkGalleryItem[] = ordered.map((p) => {
   const reel = REELS[p.id];
   return {
     id: p.id,
@@ -122,6 +137,7 @@ export const WORK_ITEMS: WorkGalleryItem[] = projects.map((p) => {
     quote: p.quote,
     showDescription: p.showDescription,
     href: p.url ?? "/work",
+    caseStudy: CASE_STUDIES[p.id],
   };
 });
 
