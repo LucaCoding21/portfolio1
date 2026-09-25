@@ -14,16 +14,11 @@
 import { useId, useState } from "react";
 import ArrowCta from "@/components/ArrowCta";
 import { REVIEW_CAL_URL } from "@/data/projects";
+import { track } from "@/lib/track";
 import s from "./ReviewField.module.css";
 
 const LOOKS_LIKE_A_SITE = /^(https?:\/\/)?[^\s./]+(\.[^\s./]+)+(\/\S*)?$/i;
 const NOTE = "Free review of your current website.";
-
-declare global {
-  interface Window {
-    gtag?: (...args: unknown[]) => void;
-  }
-}
 
 export default function ReviewField({
   source,
@@ -63,7 +58,7 @@ export default function ReviewField({
       body: JSON.stringify({ website, source, company: data.get("company") }),
       keepalive: true,
     }).catch(() => {});
-    window.gtag?.("event", "review_url_submit", { placement: source });
+    track("review_url_submit", { placement: source });
     setState("sent");
   };
 

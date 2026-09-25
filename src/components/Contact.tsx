@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { track } from "@/lib/track";
 
 const CalEmbed = dynamic(
   () => import("@calcom/embed-react").then((mod) => mod.default),
@@ -103,6 +104,12 @@ export default function Contact() {
           },
         },
         hideEventTypeDetails: false,
+      });
+      // The only booking we can see finish: the inline embed. Link CTAs open
+      // cal.com in a new tab, where the page can't follow.
+      cal("on", {
+        action: "bookingSuccessfulV2",
+        callback: () => track("booking_complete", { placement: "homepage-embed", cal_event: "30min" }),
       });
     })();
   }, [visible]);

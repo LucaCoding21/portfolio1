@@ -319,7 +319,7 @@ export default function Hero() {
   });
 
   return (
-    <section id="top" ref={scope} className="relative overflow-x-clip">
+    <section id="top" data-track="sight-hero" ref={scope} className="relative overflow-x-clip">
       <p className="sr-only">
         Product demo: Sight shows your whole business on one screen and
         answers questions like “Who owes us money past 45 days?” with live

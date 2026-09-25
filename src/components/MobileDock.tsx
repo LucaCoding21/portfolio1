@@ -339,7 +339,7 @@ export default function MobileDock() {
             </Link>
           ))}
 
-          <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.cta} onClick={close}>
+          <a href={CAL_URL} data-track="mobile-dock" target="_blank" rel="noopener noreferrer" className={s.cta} onClick={close}>
             <IconMessageDots className={s.icon} />
             <span className={s.linkText}>Book A Free Call</span>
           </a>

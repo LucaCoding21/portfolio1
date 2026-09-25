@@ -126,7 +126,7 @@ export default function QuestionsWall() {
   const rows = TRADES[shown].rows;
 
   return (
-    <section ref={sectionRef} id="questions" className="scroll-mt-24 pb-14 pt-10 md:pb-20 md:pt-40">
+    <section ref={sectionRef} id="questions" data-track="sight-questions" className="scroll-mt-24 pb-14 pt-10 md:pb-20 md:pt-40">
       <Cinematic className="mx-auto max-w-[52rem] px-6 text-center md:px-10">
         <Words
           className="font-semibold leading-[1.12] tracking-[-0.02em] text-[var(--ink)]"

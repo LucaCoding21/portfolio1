@@ -5,6 +5,7 @@ import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollToTop from "@/components/ScrollToTop";
+import Analytics from "@/components/Analytics";
 
 // Preloaded: Outfit (the main face), DM Sans (the nav) and Inter (the phone
 // dock), which every page shows at once. The rest load when a page first
@@ -135,10 +136,22 @@ export default function RootLayout({
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5"
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
-        <Script id="gtag-init" strategy="lazyOnload">
-          {`window.dataLayer = window.dataLayer || [];
+        {/* Only the live domain reports. Open any page with ?internal=1 once on
+            your own devices to stop counting yourself (?internal=0 undoes it). */}
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`(function(){
+var q = new URLSearchParams(location.search).get('internal');
+try {
+  if (q === '1') localStorage.setItem('cf_internal', '1');
+  if (q === '0') localStorage.removeItem('cf_internal');
+  var me = localStorage.getItem('cf_internal') === '1';
+} catch (e) {}
+var live = /(^|\\.)cloverfield\\.studio$/.test(location.hostname);
+if (!live || me) window['ga-disable-G-KHS5MBDWV5'] = true;
+})();
+window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-KHS5MBDWV5');`}
@@ -351,6 +364,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
         className={`${geistSans.variable} ${outfit.variable} ${script.variable} ${sometype.variable} ${reenie.variable} ${dmSans.variable} ${marist.variable} ${inter.variable} antialiased`}
       >
         <ScrollToTop />
+        <Analytics />
         <SiteNav />
         <MobileDock />
         {children}

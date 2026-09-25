@@ -327,7 +327,7 @@ export default function HowItWorks() {
   });
 
   return (
-    <section ref={scope} className="hiw" aria-labelledby="hiw-heading">
+    <section ref={scope} data-track="sight-how-it-works" className="hiw" aria-labelledby="hiw-heading">
       <div className="hiw-container">
         <Cinematic className="hiw-head">
           <Words

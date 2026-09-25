@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useWakeMedia } from "@/lib/useWakeMedia";
+import { track } from "@/lib/track";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { TESTIMONIAL_VIDEOS } from "@/data/testimonials";
@@ -100,6 +101,7 @@ export default function Testimonials() {
       }
     });
     setLoud(next);
+    if (next !== null) track("video_unmute", { video: REELS[next].name, placement: "testimonials" });
   };
 
   return (

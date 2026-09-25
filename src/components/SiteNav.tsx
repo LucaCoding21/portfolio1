@@ -403,6 +403,7 @@ export default function SiteNav() {
 
         <a
           href={CAL_URL}
+          data-track="nav-bar"
           target="_blank"
           rel="noopener noreferrer"
           className={`${s.item} ${s.isCta} ${rowLabelsHidden ? s.rowHidden : ""}`}
@@ -469,6 +470,7 @@ export default function SiteNav() {
             ))}
             <a
               href={CAL_URL}
+              data-track="nav-menu"
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMenu}

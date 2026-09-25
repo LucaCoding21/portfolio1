@@ -128,7 +128,7 @@ export default function FinalCta() {
   });
 
   return (
-    <section ref={scope} className="relative overflow-hidden">
+    <section ref={scope} data-track="sight-final" className="relative overflow-hidden">
       <div className="absolute inset-0">
         <SkyCanvas />
       </div>

@@ -241,6 +241,7 @@ export default function Faq() {
     <section
       ref={scope}
       id="faq"
+      data-track="sight-faq"
       className="scroll-mt-24 pb-24 pt-16 md:pb-36 md:pt-24"
     >
       <div className="mx-auto w-[95%] max-w-[1280px]">

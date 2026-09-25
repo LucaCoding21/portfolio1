@@ -159,6 +159,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       <a
         ref={ctaRef}
         href={CAL_URL}
+        data-track="mobile-menu"
         target="_blank"
         rel="noopener noreferrer"
         onClick={onClose}
