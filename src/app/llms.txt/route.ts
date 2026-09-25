@@ -42,7 +42,7 @@ const OUTRO = `## Pages
 
 - [Homepage](${SITE}): Overview of Cloverfield Studio's services, recent work, and free consultation booking.
 - [Work](${SITE}/work): Full portfolio of recent projects.
-- [Sight](${SITE}/sight): Sight by Cloverfield, one dashboard and AI for the whole business. Demos book through a 15-minute call.
+- [Sight](${SITE}/sight): Sight by Cloverfield, one dashboard and AI for the whole business. Demos book through a 30-minute call.
 - [Book a free consultation](${CAL_URL}): 30-minute call via Cal.com.
 
 ## Contact

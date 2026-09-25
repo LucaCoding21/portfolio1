@@ -14,7 +14,10 @@
  * with a small spring, the subline drops 14px and the task row drops in,
  * all inside ~0.35s, with the nav sliding down on the same beat
  * (INTRO_EVENT). The scrim behind the copy eases in from clear over 1.4s
- * underneath it all, so the shade never snaps on.
+ * underneath it all, so the shade never snaps on. It runs as CSS keyframes
+ * (data-intro, see the stylesheet), which play on the compositor: the page
+ * is busiest exactly at the handoff (every section measures itself for its
+ * scroll triggers), and a script-driven entrance dropped frames there.
  *
  * Copy is Cloverfield's: headline, subline, rotating wins. The reference's
  * bottom email form was removed; the nav carries "Book a call".
@@ -37,7 +40,6 @@ const TASK_INTERVAL_MS = 2500;
 
 /* calebwu.ca's motion: --ease-fast for anything structural, the sticker
    overshoot for the one line that should feel physical. */
-const EASE_FAST = "cf-ease-fast";
 const RECOIL = "cf-recoil";
 
 const HEADLINE = ["We make websites", "that bring in customers."];
@@ -78,40 +80,23 @@ export default function HomeHero({ ready }: { ready: boolean }) {
   const heroRef = useRef<HTMLElement>(null);
   const tasksRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
-  const headlineRef = useRef<HTMLHeadingElement>(null);
-  const subRef = useRef<HTMLParagraphElement>(null);
-  const scrimRef = useRef<HTMLDivElement>(null);
   const [tasksOn, setTasksOn] = useState(false);
 
-  /* entrance: hidden before first paint, built in on the loader's handoff
+  /* entrance: hidden before first paint, played on the loader's handoff
      (or on `ready` when the loader was skipped) */
   useLayoutEffect(() => {
-    const headline = headlineRef.current;
-    const sub = subRef.current;
-    const tasks = tasksRef.current;
-    if (!headline || !sub || !tasks) return;
-    if (!CustomEase.get(EASE_FAST)) CustomEase.create(EASE_FAST, "0.62, 0.61, 0.02, 1");
-    if (!CustomEase.get(RECOIL)) CustomEase.create(RECOIL, "0.34, 1.56, 0.64, 1");
-
-    const lines = Array.from(headline.querySelectorAll<HTMLElement>(`.${s.line}`)).map((l) =>
-      Array.from(l.querySelectorAll<HTMLElement>(`.${s.word}`))
-    );
-    const words = lines.flat();
+    const hero = heroRef.current;
+    if (!hero) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setTasksOn(true);
       return;
     }
     // Everything starts above its place and drops in, the same way the nav
-    // slides down.
-    gsap.set(words, { autoAlpha: 0, y: "-0.45em" });
-    gsap.set(sub, { autoAlpha: 0, y: -14 });
-    gsap.set(tasks, { autoAlpha: 0, y: -12, scale: 0.9 });
-    // The loader's reel has no scrim; starting clear makes the handoff
-    // invisible, and the shade then eases in under the words.
-    const scrim = scrimRef.current;
-    if (scrim) gsap.set(scrim, { opacity: 0 });
+    // slides down. The loader's reel has no scrim; starting clear makes the
+    // handoff invisible, and the shade then eases in under the words.
+    hero.dataset.intro = "wait";
     return () => {
-      gsap.set([...words, sub, tasks, scrim], { clearProps: "all" });
+      delete hero.dataset.intro;
     };
   }, []);
 
@@ -121,26 +106,10 @@ export default function HomeHero({ ready }: { ready: boolean }) {
     if (playedRef.current) return;
     playedRef.current = true;
     window.dispatchEvent(new CustomEvent(INTRO_EVENT));
-    const headline = headlineRef.current;
-    const sub = subRef.current;
-    const tasks = tasksRef.current;
-    if (!headline || !sub || !tasks) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const [first = [], second = []] = Array.from(headline.querySelectorAll<HTMLElement>(`.${s.line}`)).map((l) =>
-      Array.from(l.querySelectorAll<HTMLElement>(`.${s.word}`))
-    );
-    // Everything overlaps, as on calebwu.ca: the nav, both headline lines,
-    // the subline and the task row all start inside the first ~0.35s, so the
-    // page reads as one move with a ripple through it, not a queue.
-    gsap
-      .timeline()
-      .to(scrimRef.current, { opacity: 1, duration: 1.4, ease: "sine.inOut" }, 0)
-      .to(first, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.05, ease: EASE_FAST }, 0)
-      .to(second, { autoAlpha: 1, duration: 0.5, stagger: 0.05, ease: "power1.out" }, 0.12)
-      .to(second, { y: 0, duration: 0.7, stagger: 0.05, ease: RECOIL }, 0.12)
-      .to(sub, { autoAlpha: 1, y: 0, duration: 0.6, ease: EASE_FAST }, 0.25)
-      .to(tasks, { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: EASE_FAST }, 0.35)
-      .call(() => setTasksOn(true), [], 0.55);
+    const hero = heroRef.current;
+    if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    hero.dataset.intro = "play";
+    window.setTimeout(() => setTasksOn(true), 550);
   };
 
   useEffect(() => {
@@ -179,10 +148,15 @@ export default function HomeHero({ ready }: { ready: boolean }) {
         const d = L - 2 * pad - 2 * rad;
         return d > 0 ? (rad * L) / d : 128;
       };
-      const o = Math.ceil(Math.max(need(W), need(H), rad)) + 8;
+      // The stylesheet's overhang (48px, 136px from 1280px up) covers any
+      // normal window, so the plate is laid out at its final size from the
+      // server render and never shifts; only very short windows need more.
+      const base = desktop ? 136 : 48;
+      const o = Math.max(base, Math.ceil(Math.max(need(W), need(H), rad)) + 8);
       const sx = (W - 2 * pad) / (W + 2 * o);
       const sy = (H - 2 * pad) / (H + 2 * o);
-      hero.style.setProperty("--o", `${o}px`);
+      if (o > base) hero.style.setProperty("--o", `${o}px`);
+      else hero.style.removeProperty("--o");
       hero.style.setProperty("--pad", `${pad}px`);
       hero.style.setProperty("--sx", String(sx));
       hero.style.setProperty("--sy", String(sy));
@@ -283,6 +257,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
   useEffect(() => {
     const wrap = tasksRef.current;
     if (!wrap || !tasksOn) return;
+    if (!CustomEase.get(RECOIL)) CustomEase.create(RECOIL, "0.34, 1.56, 0.64, 1");
     const items = gsap.utils.toArray<HTMLElement>("[data-task-item]", wrap);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (items.length <= 1) return;
@@ -342,10 +317,13 @@ export default function HomeHero({ ready }: { ready: boolean }) {
         <div className={s.inner}>
           {/* The video carries no poster attribute: it would paint the
               landscape still over this responsive one on phones. Until the
-              first frame decodes the video is transparent and this shows. */}
+              first frame decodes the video is transparent and this shows.
+              Low priority: the loader covers this screen until the reel is
+              playing, so it is only a fallback and shouldn't hold up the
+              first paint's fonts and scripts. */}
           <picture>
             <source srcSet={POSTER_MOBILE} media={MOBILE_MEDIA} />
-            <img src={POSTER} alt="" aria-hidden="true" fetchPriority="high" decoding="async" className={s.poster} />
+            <img src={POSTER} alt="" aria-hidden="true" fetchPriority="low" decoding="async" className={s.poster} />
           </picture>
           {/* autoPlay lets iOS start the muted reel natively. Left to play()
               alone, Safari drew its own play button over the paused video
@@ -366,24 +344,26 @@ export default function HomeHero({ ready }: { ready: boolean }) {
           </video>
           {/* scrim: darkens only the band behind the copy and the top edge
               under the nav; the frame edges stay bright so the reel reads */}
-          <div ref={scrimRef} aria-hidden="true" className={s.scrim} />
+          <div aria-hidden="true" className={s.scrim} />
         </div>
       </div>
 
       <div className={s.content}>
-        <h1 ref={headlineRef} className={s.headline} aria-label={HEADLINE.join(" ")}>
+        <h1 className={s.headline} aria-label={HEADLINE.join(" ")}>
           {HEADLINE.map((line, i) => (
             <span key={line} aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
               {line.split(" ").map((word, j) => (
                 <span key={j}>
                   {j > 0 ? " " : null}
-                  <span className={s.word}>{word}</span>
+                  <span className={s.word} style={{ "--i": j } as React.CSSProperties}>
+                    {word}
+                  </span>
                 </span>
               ))}
             </span>
           ))}
         </h1>
-        <p ref={subRef} className={`${s.bodyMd} ${s.sub}`}>
+        <p className={`${s.bodyMd} ${s.sub}`}>
           Our work has generated more than 3,000 inquiries for local businesses.
           {/* The break is hidden on phones, so the sentences need a real space between them. */}
           <br />{" "}

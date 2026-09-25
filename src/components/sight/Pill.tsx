@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, type MouseEvent } from "react";
+import { useRef, type MouseEvent } from "react";
 import { gsap, reducedMotion } from "./motion";
 
 /**
@@ -82,17 +82,6 @@ export default function Pill({
       : "px-7 py-3.5 text-[0.95rem]";
   const label = typeof children === "string" ? children : null;
 
-  /* the second copy of the label waits below the slot */
-  useLayoutEffect(() => {
-    if (!lineB.current) return;
-    const ctx = gsap.context(() => {
-      gsap.set(lineB.current!.querySelectorAll("[data-letter]"), {
-        yPercent: 110,
-      });
-    });
-    return () => ctx.revert();
-  }, [label]);
-
   /* where the cursor is, relative to the pill's box */
   const local = (e: MouseEvent) => {
     const r = root.current!.getBoundingClientRect();
@@ -144,6 +133,10 @@ export default function Pill({
       const a = lineA.current.querySelectorAll("[data-letter]");
       const b = lineB.current.querySelectorAll("[data-letter]");
       gsap.killTweensOf([a, b]);
+      // The second copy stays hidden until the first hover (placing it
+      // with GSAP on mount forced a layout of the whole page); fromTo
+      // parks it below the slot before it shows.
+      lineB.current.style.visibility = "";
       gsap.to(a, {
         yPercent: -110,
         duration: 0.45,
@@ -207,6 +200,8 @@ export default function Pill({
     <a
       ref={root}
       href={href}
+      // Off-site links (the Cal.com demo) open in a new tab, so the page stays put.
+      {...(/^https?:/.test(href) && { target: "_blank", rel: "noopener noreferrer" })}
       onMouseEnter={enter}
       onMouseMove={move}
       onMouseLeave={leave}
@@ -226,6 +221,7 @@ export default function Pill({
           <span
             ref={lineB}
             className="absolute inset-0 flex"
+            style={{ visibility: "hidden" }}
             aria-hidden="true"
           >
             {letters(label, true)}

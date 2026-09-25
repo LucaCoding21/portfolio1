@@ -56,6 +56,7 @@ function wantsLite() {
  */
 export default function CaddieExplodedView() {
   const pinRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const [mode, setMode] = useState<"pending" | "live" | "lite">("pending");
@@ -86,35 +87,72 @@ export default function CaddieExplodedView() {
     return () => io.disconnect();
   }, [mode]);
 
-  // Pin the panel centred in the viewport and scrub the explosion.
+  // The sticky top centres the panel, so it needs the panel's height.
   useEffect(() => {
-    if (mode !== "live") return;
-    const el = pinRef.current;
-    if (!el) return;
+    const panel = stickyRef.current;
+    if (!panel) return;
+    const ro = new ResizeObserver(() =>
+      panel.style.setProperty("--panel-h", `${panel.offsetHeight}px`)
+    );
+    ro.observe(panel);
+    return () => ro.disconnect();
+  }, []);
+
+  // Scrub the explosion while the panel is stuck. The pin itself is CSS
+  // sticky (see the markup), not a GSAP pin: on phones a JS pin flips to
+  // position: fixed a frame behind the compositor's scroll, so the panel
+  // overshoots and snaps back, and the address bar resizing the viewport
+  // moves its start and end. Sticky is handled by the browser and stays put.
+  useEffect(() => {
+    if (mode === "lite") return;
+    const track = pinRef.current;
+    const panel = stickyRef.current;
+    if (!track || !panel) return;
     const st = ScrollTrigger.create({
-      trigger: el,
-      start: "center center",
-      end: "+=110%",
-      pin: true,
-      anticipatePin: 1,
-      scrub: true,
+      trigger: track,
+      // Starts when the panel reaches its sticky top, ends when it unsticks.
+      start: () => `top ${parseFloat(getComputedStyle(panel).top) || 0}px`,
+      end: () => `+=${track.offsetHeight - panel.offsetHeight}`,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
         progress.current = self.progress;
         if (hintRef.current) hintRef.current.style.opacity = self.progress < 0.03 ? "1" : "0";
       },
     });
-    // Images above the panel settle their height as they load; re-measure then.
-    const refresh = () => ScrollTrigger.refresh();
-    window.addEventListener("load", refresh);
+    // Lazy images, videos and fonts above the panel keep settling after the
+    // `load` event, which moves the panel. Re-measure whenever the page
+    // height actually changes.
+    let lastH = document.body.scrollHeight;
+    let t: ReturnType<typeof setTimeout> | undefined;
+    const ro = new ResizeObserver(() => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        const h = document.body.scrollHeight;
+        if (h === lastH) return;
+        lastH = h;
+        ScrollTrigger.refresh();
+      }, 150);
+    });
+    ro.observe(document.body);
     return () => {
-      window.removeEventListener("load", refresh);
+      clearTimeout(t);
+      ro.disconnect();
       st.kill();
     };
   }, [mode]);
 
   return (
+    // The track is the panel plus 110svh of scroll (the spacer below); the
+    // panel sticks centred in the small viewport (svh), so the address bar
+    // showing or hiding can't shift it.
     <div ref={pinRef} className="w-full">
       <div
+        ref={stickyRef}
+        style={
+          mode === "lite"
+            ? undefined
+            : { position: "sticky", top: "max(0px, calc(50svh - var(--panel-h, 0px) / 2))" }
+        }
         className="relative w-full overflow-hidden rounded-xl border border-black/10 bg-[#0e0e11] aspect-[4/5] md:aspect-[16/10]"
         role="img"
         aria-label="3D exploded view of the Caddie Companion: scrolling takes the six-in-one tool apart piece by piece."
@@ -153,6 +191,7 @@ export default function CaddieExplodedView() {
           </>
         )}
       </div>
+      {mode !== "lite" && <div aria-hidden style={{ height: "110svh" }} />}
     </div>
   );
 }

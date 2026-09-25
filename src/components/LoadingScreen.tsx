@@ -118,7 +118,10 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
     }
 
     const vw = () => root.clientWidth;
-    const gapWidth = () => Math.min(vw() * 0.14, 260);
+    /* Phones get a wider plate: at 14% it was a ~55px sliver next to the
+       44px word and barely read as video. */
+    const gapWidth = () =>
+      window.matchMedia(MOBILE_MEDIA).matches ? vw() * 0.22 : Math.min(vw() * 0.14, 260);
 
     gsap.set([left, right], { autoAlpha: 1 });
     gsap.set(letters, { autoAlpha: 0, y: "0.35em" });

@@ -6,8 +6,13 @@ import SiteNav from "@/components/SiteNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollToTop from "@/components/ScrollToTop";
 
+// Preloaded: Outfit (the main face), DM Sans (the nav) and Inter (the phone
+// dock), which every page shows at once. The rest load when a page first
+// lays out text in them (the CSS is inlined, so that is immediate), and
+// pages that never use a face never download it.
 const geistSans = Geist({
   variable: "--font-geist-sans",
+  preload: false,
   subsets: ["latin"],
 });
 
@@ -22,6 +27,7 @@ const outfit = Outfit({
 // spans pick from the axis.
 const script = Caveat({
   variable: "--font-script",
+  preload: false,
   subsets: ["latin"],
 });
 
@@ -30,6 +36,7 @@ const script = Caveat({
 // Variable (wght 400-700), so no `weight`; consumers pick off the axis.
 const sometype = Sometype_Mono({
   variable: "--font-sometype",
+  preload: false,
   subsets: ["latin"],
 });
 
@@ -42,21 +49,23 @@ const dmSans = DM_Sans({
 
 const marist = Cormorant_Garamond({
   variable: "--font-marist",
+  preload: false,
   subsets: ["latin"],
   weight: ["400", "500"],
   style: ["normal", "italic"],
 });
 
-// The mobile dock, cloned from a Framer template set in Inter.
+// The mobile dock (cloned from a Framer template set in Inter), /work and
+// the Sight product mockups. Variable, so every weight comes from one file.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500"],
 });
 
 // Handwritten face for the partner labels and names in Why Cloverfield.
 const reenie = Reenie_Beanie({
   variable: "--font-reenie",
+  preload: false,
   subsets: ["latin"],
   weight: "400",
 });
@@ -126,9 +135,9 @@ export default function RootLayout({
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="gtag-init" strategy="afterInteractive">
+        <Script id="gtag-init" strategy="lazyOnload">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());

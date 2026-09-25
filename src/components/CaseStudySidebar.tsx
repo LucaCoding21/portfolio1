@@ -132,6 +132,7 @@ export default function CaseStudySidebar({ sections }: Props) {
                 return (
                   <div
                     aria-hidden={!expanded}
+                    inert={!expanded}
                     style={{
                       maxHeight: expanded
                         ? `${childCount * 48 + 24}px`

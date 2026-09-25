@@ -24,6 +24,7 @@ import gsap from "gsap";
 import { Draggable } from "gsap/dist/Draggable";
 import { InertiaPlugin } from "gsap/dist/InertiaPlugin";
 import { WALL_CARDS, WALL_COLUMNS, WALL_LABEL, type WallCard } from "@/data/clientWall";
+import { LOGO_SIZES } from "@/data/clientLogos";
 import s from "./ClientWall.module.css";
 
 gsap.registerPlugin(Draggable, InertiaPlugin);
@@ -55,6 +56,8 @@ function Card({ card }: { card: WallCard }) {
         <img
           src={logo.src}
           alt={logo.name}
+          width={LOGO_SIZES[logo.src]?.[0]}
+          height={LOGO_SIZES[logo.src]?.[1]}
           loading="eager"
           className={`${s.logo} ${logo.dark ? s.logoDark : ""}`}
           style={

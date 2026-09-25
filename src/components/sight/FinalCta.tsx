@@ -183,14 +183,14 @@ export default function FinalCta() {
               data-blur
               className="mx-auto mt-7 max-w-[26rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
             >
-              Fifteen minutes. We&apos;ll show you Sight answering them about a
+              Thirty minutes. We&apos;ll show you Sight answering them about a
               business like yours, in seconds, not Thursday.
             </p>
           </Cinematic>
 
           <div className="mt-8">
             <Pill href={BOOK_URL} variant="primary">
-              Book a 15-minute demo
+              Book a 30-minute demo
             </Pill>
           </div>
         </div>

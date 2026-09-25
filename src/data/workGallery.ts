@@ -68,22 +68,24 @@ export const WORK_HEADLINE_LINES_SHORT = ["Websites and brands,", "built for cla
  * recorded frame by frame with Playwright. Files ending in -work are /work
  * only: the homepage Success Stories keep their original storyboarded reels.
  */
+// Posters are 1480px WebP cuts of the covers (the cards show at 738px at
+// most, so twice that stays sharp on retina) instead of the full originals.
 const REELS: Record<number, { video: string; poster: string }> = {
   8: { video: "/success/wrapcity.mp4", poster: "/wrapcity-cover.webp" },
-  14: { video: "/success/northwest-railing.mp4", poster: "/northwest-railing/northwest-railing-cover.jpg" },
+  14: { video: "/success/northwest-railing.mp4", poster: "/northwest-railing/northwest-railing-cover-card.webp" },
   12: { video: "/success/innovative-aluminum-work.mp4", poster: "/success/innovative-aluminum.webp" },
-  13: { video: "/success/caddie-companion-work.mp4", poster: "/success/caddie-companion-cover.jpg" },
+  13: { video: "/success/caddie-companion-work.mp4", poster: "/success/caddie-companion-cover-card.webp" },
   9: { video: "/success/transforming-landscapes-work.mp4", poster: "/success/transforming-landscapes.webp" },
-  11: { video: "/success/afterparty.mp4", poster: "/afterparty/afterparty-cover.jpg" },
+  11: { video: "/success/afterparty.mp4", poster: "/afterparty/afterparty-cover-card.webp" },
   1: { video: "/success/ace-work.mp4", poster: "/success/ace.webp" },
-  15: { video: "/success/shoobydoo.mp4", poster: "/shoobydoo/shoobydoo-cover.jpg" },
-  16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover.jpg" },
-  17: { video: "/success/dreamhouse.mp4", poster: "/dreamhouse/dreamhouse-cover.jpg" },
-  18: { video: "/success/re360.mp4", poster: "/re360/re360-cover.jpg" },
-  19: { video: "/success/flowstate.mp4", poster: "/flowstate/flowstate-cover.jpg" },
-  10: { video: "/success/bloomkey.mp4", poster: "/bloomkey/bloomkey-cover.jpeg" },
-  4: { video: "/success/njagih.mp4", poster: "/Njagih/njagih-cover.jpg" },
-  6: { video: "/success/nancy-tran.mp4", poster: "/sophia/sophia-cover2.jpg" },
+  15: { video: "/success/shoobydoo.mp4", poster: "/shoobydoo/shoobydoo-cover-card.webp" },
+  16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover-card.webp" },
+  17: { video: "/success/dreamhouse.mp4", poster: "/dreamhouse/dreamhouse-cover-card.webp" },
+  18: { video: "/success/re360.mp4", poster: "/re360/re360-cover-card.webp" },
+  19: { video: "/success/flowstate.mp4", poster: "/flowstate/flowstate-cover-card.webp" },
+  10: { video: "/success/bloomkey.mp4", poster: "/bloomkey/bloomkey-cover-card.webp" },
+  4: { video: "/success/njagih.mp4", poster: "/Njagih/njagih-cover-card.webp" },
+  6: { video: "/success/nancy-tran.mp4", poster: "/sophia/sophia-cover2-card.webp" },
 };
 
 /**

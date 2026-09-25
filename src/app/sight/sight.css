@@ -8,11 +8,11 @@
   --bg: #ffffff;
   --ink: #202124;
   --ink-soft: #5f6368;
-  --ink-faint: #9aa0a6;
+  --ink-faint: #71757a; /* 4.6:1 on white */
   --surface: #f4f5f7;
   --surface-2: #fafbfc;
   --line: #e8eaed;
-  --blue: #3b7cf6;
+  --blue: #3570df; /* 4.6:1 on white, and white text on it */
   --blue-deep: #2563eb;
   --amber-bg: rgba(245, 158, 11, 0.12);
   --amber-ink: #b45309;
@@ -148,7 +148,7 @@
    cv11/ss01, frost canvas, blue primary.
    ================================ */
 .sight-app {
-  font-family: var(--font-inter-sight), -apple-system, BlinkMacSystemFont,
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
   font-feature-settings: "cv11", "ss01";
   -webkit-font-smoothing: antialiased;
@@ -982,5 +982,62 @@
   }
   .sight-wall-rows[data-fading] {
     transform: none;
+  }
+}
+
+/* Cinematic's entrance as CSS, for the block on the first screen (see
+   Cinematic's atLoad): it starts with the first paint instead of after the
+   scripts. Same moves as the GSAP version: words rise out of their slots
+   (0.95s, power4.out, 0.05s apart), the paragraph sharpens out of a blur
+   from 0.35s, the small things lift from 0.6s. */
+.cine-load [data-word] {
+  animation: cine-word 0.95s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.05s);
+}
+
+.cine-load [data-blur] {
+  animation: cine-blur 1s cubic-bezier(0.215, 0.61, 0.355, 1) 0.35s both;
+}
+
+.cine-load [data-slide] {
+  animation: cine-slide 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) 0.6s both;
+}
+
+@keyframes cine-word {
+  from {
+    transform: translateY(115%);
+  }
+}
+
+@keyframes cine-blur {
+  from {
+    transform: translateY(16px);
+    opacity: 0.01;
+    filter: blur(10px);
+  }
+}
+
+@keyframes cine-slide {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-load [data-word],
+  .cine-load [data-blur],
+  .cine-load [data-slide] {
+    animation: none;
+  }
+
+  .cine-load {
+    animation: cine-fade 0.7s ease both;
+  }
+
+  @keyframes cine-fade {
+    from {
+      opacity: 0;
+    }
   }
 }

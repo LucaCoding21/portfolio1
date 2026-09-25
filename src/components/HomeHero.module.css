@@ -6,6 +6,8 @@
 
 .hero {
   --ink: #1a1613;
+  /* the plate's overhang; must match `base` in HomeHero's setVars */
+  --o: 48px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -14,6 +16,12 @@
   height: 100svh;
   overflow: hidden;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+@media (min-width: 1280px) {
+  .hero {
+    --o: 136px;
+  }
 }
 
 /* the media plate: an oversized rounded frame that scales down once you have
@@ -133,6 +141,76 @@
 .word {
   display: inline-block;
   will-change: transform, opacity;
+}
+
+/* The entrance (see HomeHero). "wait" holds everything above its place,
+   hidden, until the loader hands over; "play" drops it in. Same timings and
+   curves as the old GSAP timeline: the first line 0.9s on calebwu.ca's fast
+   ease, 0.05s a word; the italic line fades 0.5s and lands 0.7s on his
+   sticker spring from 0.12s; the subline from 0.25s; the task row from
+   0.35s; the scrim eases in over 1.4s. */
+.hero[data-intro="wait"] .word,
+.hero[data-intro="wait"] .sub,
+.hero[data-intro="wait"] .tasks,
+.hero[data-intro="wait"] .scrim {
+  opacity: 0;
+}
+
+.hero[data-intro="play"] .line:not(.italic) .word {
+  animation: hero-drop 0.9s cubic-bezier(0.62, 0.61, 0.02, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.05s);
+}
+
+.hero[data-intro="play"] .italic .word {
+  animation:
+    hero-fade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both,
+    hero-spring 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(0.12s + var(--i, 0) * 0.05s);
+}
+
+.hero[data-intro="play"] .sub {
+  animation: hero-sub 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.25s both;
+}
+
+.hero[data-intro="play"] .tasks {
+  animation: hero-tasks 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.35s both;
+}
+
+.hero[data-intro="play"] .scrim {
+  animation: hero-fade 1.4s cubic-bezier(0.37, 0, 0.63, 1) both;
+}
+
+@keyframes hero-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-0.45em);
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-spring {
+  from {
+    transform: translateY(-0.45em);
+  }
+}
+
+@keyframes hero-sub {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes hero-tasks {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.9);
+  }
 }
 
 /* text-body-md */

@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { projects } from "@/data/projects";
 
-// Stand-in for the reference's licensed Neue Haas Grotesk Text Pro (pass 1
-// only; the Cloverfield pass swaps this for Outfit).
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], weight: ["400"] });
 
 export const metadata: Metadata = {
   title: "Our Work | Cloverfield Studio, Web Design Surrey BC",
@@ -79,7 +75,7 @@ export default function WorkLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className={inter.variable}>{children}</div>
+      <div>{children}</div>
     </>
   );
 }

@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // Ship the stylesheet inside the HTML: the first paint no longer waits on
+  // a separate CSS request (about 30KB compressed, so the trade is cheap).
+  experimental: {
+    inlineCss: true,
+  },
   // The standalone /approach page was removed (Sep 2026); it was indexed, so
   // send old links to the process section on the homepage.
   // The Caddie case study's 3D model, decoder and stills rarely change; let

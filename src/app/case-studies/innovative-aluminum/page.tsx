@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/45 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
+    <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/55 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
       {children}
     </p>
   );
@@ -83,7 +83,7 @@ function ClaudeMention() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Claude by Anthropic"
-      className="inline-flex items-center gap-1.5 text-[#cc785c] font-medium align-[-0.05em] whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 text-[#a8634c] font-medium align-[-0.05em] whitespace-nowrap"
     >
       <img
         src="/claude123.svg"
@@ -183,7 +183,7 @@ export default function InnovativeAluminumCaseStudy() {
   return (
     <div className="min-h-screen bg-[#f9f8f5] text-black">
       {/* The white block lifts off the pinned footer, as on the homepage. */}
-      <div className="relative z-10 rounded-b-[28px] bg-white md:rounded-b-[48px]">
+      <main className="relative z-10 rounded-b-[28px] bg-white md:rounded-b-[48px]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -193,7 +193,7 @@ export default function InnovativeAluminumCaseStudy() {
       <section className="pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-10">
         <nav
           aria-label="Breadcrumb"
-          className="max-w-[1100px] mx-auto text-[13px] font-[family-name:var(--font-geist-sans)] text-black/50"
+          className="max-w-[1100px] mx-auto text-[13px] font-[family-name:var(--font-geist-sans)] text-black/55"
         >
           <ol className="flex items-center gap-2">
             <li>
@@ -319,7 +319,7 @@ export default function InnovativeAluminumCaseStudy() {
                 </p>
 
                 <div className="border-t border-black/15 pt-8 md:pt-10">
-                  <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/45 font-medium font-[family-name:var(--font-geist-sans)] mb-6">
+                  <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/55 font-medium font-[family-name:var(--font-geist-sans)] mb-6">
                     Lighthouse · innovativealuminum.com
                   </p>
                   <img
@@ -464,7 +464,7 @@ export default function InnovativeAluminumCaseStudy() {
                   },
                 ].map(({ when, event }) => (
                   <div key={when} className="contents">
-                    <dt className="font-[family-name:var(--font-outfit)] font-medium text-xs md:text-sm tracking-[0.18em] uppercase text-black/45 pt-1.5">
+                    <dt className="font-[family-name:var(--font-outfit)] font-medium text-xs md:text-sm tracking-[0.18em] uppercase text-black/55 pt-1.5">
                       {when}
                     </dt>
                     <dd className="font-[family-name:var(--font-outfit)] font-light text-lg md:text-2xl tracking-tight leading-snug text-black/85">
@@ -531,7 +531,7 @@ export default function InnovativeAluminumCaseStudy() {
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 items-end">
             <div className="md:col-span-8">
-              <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/45 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
+              <p className="text-[11px] md:text-xs uppercase tracking-[0.24em] text-black/55 font-medium font-[family-name:var(--font-geist-sans)] mb-5">
                 Next move
               </p>
               <h2 className="font-[family-name:var(--font-outfit)] font-bold text-[clamp(2rem,4.5vw,3.6rem)] tracking-tight leading-[1.05] max-w-[22ch]">
@@ -550,7 +550,7 @@ export default function InnovativeAluminumCaseStudy() {
             </div>
           </div>
 
-          <div className="mt-16 md:mt-24 pt-8 border-t border-black/10 flex items-center justify-between text-xs text-black/40 font-[family-name:var(--font-geist-sans)] tracking-wide">
+          <div className="mt-16 md:mt-24 pt-8 border-t border-black/10 flex items-center justify-between text-xs text-black/55 font-[family-name:var(--font-geist-sans)] tracking-wide">
             <span>Cloverfield Studio · 2026</span>
             <Link
               href="/work"
@@ -561,7 +561,7 @@ export default function InnovativeAluminumCaseStudy() {
           </div>
         </div>
       </section>
-      </div>
+      </main>
 
       <HomeFooter />
     </div>

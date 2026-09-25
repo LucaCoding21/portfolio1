@@ -68,6 +68,10 @@
   color: #b9b4aa;
 }
 
+.rowLight .word::before {
+  content: attr(data-word);
+}
+
 /* The deck sits over the rows. Its width sets the fan's spread. */
 .deck {
   position: absolute;

@@ -330,7 +330,7 @@ export default function Hero() {
         <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-x-14 lg:gap-x-20">
           {/* Hero copy — first viewport, left */}
           <div className="flex flex-col justify-center pt-32 md:col-start-1 md:row-start-1 md:min-h-screen md:pt-0 md:-ml-16 lg:-ml-28">
-            <Cinematic>
+            <Cinematic atLoad>
               <Words
                 as="h1"
                 className="font-semibold leading-[1.1] tracking-[-0.02em] text-[var(--ink)]"
@@ -345,11 +345,20 @@ export default function Hero() {
                 data-blur
                 className="mt-6 max-w-[37rem] text-[1rem] leading-[1.6] text-[var(--ink-soft)] md:text-[1.0625rem]"
               >
-                Who owes me money right now? How much cash is stuck in
-                inventory? Today that&apos;s a call to the bookkeeper and
-                three tabs.{" "}
-                <span className="font-medium text-[var(--blue)]">Sight</span>{" "}
-                connects the tools you already use and just answers.
+                {/* Phones get one short line; the headline already asks the
+                    questions and the wall below shows them. */}
+                <span className="md:hidden">
+                  <span className="font-medium text-[var(--blue)]">Sight</span>{" "}
+                  connects the tools you already use, so the answer comes
+                  straight back instead of a call to the bookkeeper.
+                </span>
+                <span className="hidden md:inline">
+                  Who owes me money right now? How much cash is stuck in
+                  inventory? Today that&apos;s a call to the bookkeeper and
+                  three tabs.{" "}
+                  <span className="font-medium text-[var(--blue)]">Sight</span>{" "}
+                  connects the tools you already use and just answers.
+                </span>
               </p>
 
               {/* On phones the credit sits centred right under the button; from
@@ -367,7 +376,9 @@ export default function Hero() {
           <div className="mt-14 md:col-start-2 md:row-start-1 md:row-span-2 md:mt-0">
             <div className="flex items-center justify-center md:sticky md:top-0 md:h-screen md:justify-end md:-mr-[8%] md:pt-[24vh]">
               <div data-hero-drift className="relative w-full max-w-[484px]">
-                {/* Branding panels, tucked away on scroll */}
+                {/* Branding panels, tucked away on scroll. Hidden on phones, but
+                    priority still preloads them there: the 1px size makes
+                    phones fetch the smallest file instead of three 1920w ones. */}
                 <div
                   data-tuck-bottom
                   className="absolute -bottom-[11rem] left-[32px] z-0 hidden h-[300px] w-[420px] overflow-hidden rounded-md shadow-[0_16px_40px_-18px_rgba(20,24,33,0.4)] md:block"
@@ -376,7 +387,7 @@ export default function Hero() {
                     src="/sight/12323.png"
                     alt=""
                     fill
-                    sizes="420px"
+                    sizes="(max-width: 767px) 1px, 420px"
                     className="object-cover -scale-y-100"
                     priority
                   />
@@ -389,7 +400,7 @@ export default function Hero() {
                     src="/sight/abstract-blue-oil-painting.webp"
                     alt="Abstract oil painting with blue, white and yellow brushstrokes on canvas"
                     fill
-                    sizes="372px"
+                    sizes="(max-width: 767px) 1px, 372px"
                     className="object-cover"
                     priority
                   />
@@ -402,7 +413,7 @@ export default function Hero() {
                     src="/sight/blue-sky-cumulus-clouds.webp"
                     alt="White cumulus clouds building against a deep blue sky"
                     fill
-                    sizes="288px"
+                    sizes="(max-width: 767px) 1px, 288px"
                     className="object-cover"
                     priority
                   />

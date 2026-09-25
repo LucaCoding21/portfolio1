@@ -16,16 +16,16 @@ import { counterTween, gsap, ScrollTrigger, useSightGsap } from "./motion";
 
 const LOGOS = [
   { name: "Innovative Aluminum Systems", src: "/ias-newgold.svg", h: "h-14" },
-  { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.png", h: "h-12" },
-  { name: "Greater Vancouver REALTORS", src: "/transforming/gvr-logo.png", h: "h-14" },
-  { name: "Ondek", src: "/sight/clients/ondek.png", h: "h-14" },
+  { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.webp", h: "h-12" },
+  { name: "Greater Vancouver REALTORS", src: "/transforming/gvr-logo.webp", h: "h-14" },
+  { name: "Ondek", src: "/sight/clients/ondek.webp", h: "h-14" },
   { name: "Transforming Landscapes", src: "/transforming-landscapes.svg", h: "h-14" },
-  { name: "Northwest Railing", src: "/sight/clients/northwest-railing.png", h: "h-20" },
-  { name: "Venues Quarterly", src: "/sight/clients/venues-quarterly.png", h: "h-11", white: true },
-  { name: "Caddie Companion", src: "/sight/clients/caddie-companion.png", h: "h-12" },
-  { name: "WrapCity", src: "/sight/clients/wrapcity.png", h: "h-12" },
+  { name: "Northwest Railing", src: "/sight/clients/northwest-railing.webp", h: "h-20" },
+  { name: "Venues Quarterly", src: "/sight/clients/venues-quarterly.webp", h: "h-11", white: true },
+  { name: "Caddie Companion", src: "/sight/clients/caddie-companion.webp", h: "h-12" },
+  { name: "WrapCity", src: "/sight/clients/wrapcity.webp", h: "h-12" },
   { name: "Real Estate 360", src: "/sight/clients/real-estate-360-v2.webp", h: "h-14" },
-  { name: "Venue Series", src: "/sight/clients/venue-series-2.png", h: "h-16" },
+  { name: "Venue Series", src: "/sight/clients/venue-series-2.webp", h: "h-16" },
 ];
 
 /** Two rows: the first drifts left, the second drifts right. */

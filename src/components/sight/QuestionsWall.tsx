@@ -203,7 +203,7 @@ export default function QuestionsWall() {
       </Reveal>
 
       {/* The ask, right under the wall, for the reader who just saw their
-          own question go by. One path on this page: fifteen minutes with
+          own question go by. One path on this page: thirty minutes with
           us, where we show it on a business like theirs. */}
       <Reveal
         selector="[data-reveal]"
@@ -211,7 +211,7 @@ export default function QuestionsWall() {
       >
         <div data-reveal>
           <Button href={BOOK_URL} variant="primary">
-            Book a 15-minute demo
+            Book a 30-minute demo
           </Button>
         </div>
         <p data-reveal className="mt-4 text-[0.95rem] leading-[1.6] text-[var(--ink-faint)]">

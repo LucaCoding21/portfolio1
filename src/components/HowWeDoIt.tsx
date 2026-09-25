@@ -25,6 +25,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SplitText } from "gsap/dist/SplitText";
 import s from "./HowWeDoIt.module.css";
@@ -90,6 +91,7 @@ function Headline() {
 
 export default function HowWeDoIt() {
   const sectionRef = useRef<HTMLElement>(null);
+  useWakeMedia(sectionRef);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -135,6 +137,9 @@ export default function HowWeDoIt() {
             type: "lines",
             mask: "lines",
             autoSplit: true,
+            // Whole lines of whole words read fine as they are; the default
+            // puts aria-label on the <p>, which isn't allowed there.
+            aria: "none",
             onSplit: (self) =>
               gsap.from(self.lines, {
                 yPercent: 110,
@@ -189,11 +194,11 @@ export default function HowWeDoIt() {
                 <video
                   data-reel
                   src={phase.video}
-                  poster={phase.poster}
+                  data-poster={phase.poster}
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-hidden
                 />
               </div>

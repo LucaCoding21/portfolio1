@@ -7,7 +7,7 @@
 
 .section {
   --ink: #1a1613;
-  --muted: #7a756d;
+  --muted: #757069; /* 4.6:1 on the paper */
   --paper: #f9f8f5;
   /* Uniform scale for the whole grid: tracks, rows, padding, type and logo
      heights all multiply by it, so phones fit more cells across without

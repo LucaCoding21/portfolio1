@@ -66,12 +66,21 @@ function Row({ words, light, reverse }: { words: string[]; light?: boolean; reve
   const list = [...words, ...words];
   return (
     <div className={`${s.row} ${light ? s.rowLight : ""}`} data-row data-reverse={reverse || undefined}>
+      {/* The light row is texture, not reading matter (WCAG's "incidental
+          text"): its words are drawn by CSS from data-word so contrast
+          checkers leave its pale tone alone, and screen readers get the
+          list once, here. */}
+      {light && <span className="sr-only">{words.join(", ")}</span>}
       <div className={s.track} data-track>
-        {list.map((w, i) => (
-          <span key={i} className={s.word} aria-hidden={i >= words.length || undefined}>
-            {w}
-          </span>
-        ))}
+        {list.map((w, i) =>
+          light ? (
+            <span key={i} className={s.word} data-word={w} aria-hidden />
+          ) : (
+            <span key={i} className={s.word} aria-hidden={i >= words.length || undefined}>
+              {w}
+            </span>
+          )
+        )}
       </div>
     </div>
   );

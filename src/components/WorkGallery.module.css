@@ -13,7 +13,7 @@
   --ink: #1a1613;
   --ink-soft: #55504a;
   --muted: #6a665e;
-  --faint: #a19c93;
+  --faint: #74706a; /* 4.6:1 on the paper */
   --paper: #f9f8f5;
   --line: rgb(26 22 19 / 0.12);
   --media-bg: #ece7e0;
@@ -70,10 +70,43 @@
   display: none;
 }
 
-/* load-in: starts hidden, GSAP brings it up */
+/* load-in: header, then the columns, each rising 0.75em as it fades up
+   (GSAP's power3.out, 0.9s, 180ms apart). Pure CSS so it starts with the
+   first paint instead of waiting for the scripts. It starts at 1% rather
+   than 0: invisible on the paper, but Chrome ignores fully transparent
+   elements when timing the largest paint, which would otherwise wait for
+   the fade. */
 .loadIn {
-  opacity: 0;
-  transform: translateY(0.75em);
+  animation: loadIn 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+.header.loadIn {
+  animation-delay: 0.2s;
+}
+
+.aside.loadIn {
+  animation-delay: 0.38s;
+}
+
+.projectComponent.loadIn {
+  animation-delay: 0.56s;
+}
+
+@keyframes loadIn {
+  from {
+    opacity: 0.01;
+    transform: translateY(0.75em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadIn {
+    animation: none;
+  }
 }
 
 /* ---------- left column ---------- */
@@ -342,6 +375,9 @@
 .caseStudyLink {
   position: relative;
   z-index: 3;
+  /* 24px+ tap target without moving the text: padding out, margin back in */
+  padding-block: 5px;
+  margin-block: -5px;
   display: inline-flex;
   align-items: center;
   gap: 0.35em;

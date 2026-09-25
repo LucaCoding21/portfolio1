@@ -64,14 +64,14 @@ export const projects: Project[] = [
     id: 14,
     name: "Northwest Railing",
     description: "Custom glass, aluminum and cable railings installed across Washington State.",
-    kpis: ["+33% inquiries in 3 months"],
-    metrics: [{ value: "+33%", label: "Inquiries in 3 months" }],
+    kpis: ["+39% inquiries in 3 months"],
+    metrics: [{ value: "+39%", label: "Inquiries in 3 months" }],
     tags: ["Trades & Manufacturing"],
     image: "/northwest-railing/northwest-railing-cover.jpg",
     url: "https://www.northwestrailing.com/",
     quote: {
       texts: [
-        "Inquiries were up 33% in the first three months. It paid for itself faster than anything else I've spent on.",
+        "I'm getting about a third more inquiries since the new site went up.",
       ],
       author: "Gabrial Winkler",
       role: "Founder, Northwest Railing",
@@ -109,10 +109,10 @@ export const projects: Project[] = [
       role: "Executive Director, Real Estate Institute of BC",
     },
     partnerLogos: [
-      { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.png" },
+      { name: "Real Estate Institute of BC", src: "/transforming/reibc-logo.webp" },
       {
         name: "Greater Vancouver REALTORS",
-        src: "/transforming/gvr-logo.png",
+        src: "/transforming/gvr-logo.webp",
         className: "h-9 md:h-11 w-auto object-contain",
       },
     ],

@@ -272,7 +272,7 @@ export default function AskWindow() {
             <span
               data-idle
               className="col-start-1 row-start-1 rounded-[5px] px-2.5 py-1 leading-none"
-              style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN }}
+              style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN_INK }}
             >
               Up to date
             </span>

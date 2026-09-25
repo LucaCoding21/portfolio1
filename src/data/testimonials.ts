@@ -1,6 +1,7 @@
 /**
- * Homepage testimonials: the two client videos and the written quotes that
- * cycle in the third card. Every quote is the client's own words, the same
+ * Homepage testimonials: the three client videos. The written quotes below
+ * are no longer shown in that section (a video took their card) but are
+ * kept as the reference copy. Every quote is the client's own words, the same
  * text used elsewhere on the site (projects.ts, clientWall.ts); keep them in
  * step.
  */
@@ -37,6 +38,13 @@ export const TESTIMONIAL_VIDEOS: VideoTestimonial[] = [
     poster: "/testimonials/flowstate-paula-poster.jpg",
     position: "center 35%",
   },
+  {
+    name: "Taylor Paige",
+    role: "Founder, WrapCity",
+    video: "/testimonials/wrapcity-taylor.mp4",
+    poster: "/testimonials/wrapcity-taylor-poster.jpg",
+    position: "center 30%",
+  },
 ];
 
 export const TESTIMONIAL_QUOTES: TextTestimonial[] = [
@@ -57,8 +65,9 @@ export const TESTIMONIAL_QUOTES: TextTestimonial[] = [
     name: "Gabrial Winkler",
     role: "Founder, Northwest Railing",
     avatar: "/testimonials/gabrial-winkler-poster.jpg",
+    stat: { value: "+39%", label: "inquiries in 3 months" },
     quote:
-      "Inquiries were up 33% in the first three months. It paid for itself faster than anything else I've spent on.",
+      "I'm getting about a third more inquiries since the new site went up.",
   },
   {
     name: "Ace Suasola",

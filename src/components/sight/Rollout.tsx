@@ -75,7 +75,7 @@ export default function Rollout() {
       gsap.set(rows, { opacity: 1 });
       gsap.set(live, { autoAlpha: 1, scale: 1 });
       gsap.set(liveDay, { autoAlpha: 0 });
-      gsap.set(dayPill, { backgroundColor: `${T.GREEN}14`, color: T.GREEN });
+      gsap.set(dayPill, { backgroundColor: `${T.GREEN}14`, color: T.GREEN_INK });
       setDay(TOTAL);
       return;
     }
@@ -112,7 +112,7 @@ export default function Rollout() {
         tl.to(done[i], { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(2.2)" }, t);
         tl.to(liveDay, { autoAlpha: 0, duration: 0.15 }, t);
         tl.to(live, { autoAlpha: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)" }, t + 0.05);
-        tl.to(dayPill, { backgroundColor: `${T.GREEN}14`, color: T.GREEN, duration: 0.3 }, t);
+        tl.to(dayPill, { backgroundColor: `${T.GREEN}14`, color: T.GREEN_INK, duration: 0.3 }, t);
       } else {
         // this one is in hand until the next one's day
         const next = start + dayAt(MILESTONES[i + 1].day);
@@ -232,7 +232,7 @@ export default function Rollout() {
                     <span
                       data-live
                       className="absolute inset-y-0 right-0 flex items-center whitespace-nowrap rounded-[5px] px-2.5 text-[11px] font-medium"
-                      style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN }}
+                      style={{ backgroundColor: `${T.GREEN}1f`, color: T.GREEN_INK }}
                     >
                       Live
                     </span>

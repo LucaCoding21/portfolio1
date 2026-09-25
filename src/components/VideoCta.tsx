@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import ReviewField from "@/components/ReviewField";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -28,6 +29,7 @@ export default function VideoCta({
 } = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  useWakeMedia(sectionRef);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -80,14 +82,14 @@ export default function VideoCta({
             carries none so it cannot paint the landscape still over it. */}
         <picture>
           <source srcSet="/closing-reel-poster-mobile.jpg?v=3" media="(max-width: 767px)" />
-          <img src="/closing-reel-poster.jpg" alt="" aria-hidden className={s.video} />
+          <img src="/closing-reel-poster.jpg" alt="" aria-hidden loading="lazy" className={s.video} />
         </picture>
         <video
           ref={videoRef}
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           className={s.video}
           aria-hidden
         >

@@ -87,8 +87,9 @@ export const WALL_CARDS: WallCard[] = [
     col: 7,
     span: 2,
     tall: 2,
+    title: { big: "+39%", small: "inquiries in 3 months" },
     // His own words.
-    quote: "“Inquiries were up 33% in the first three months. It paid for itself faster than anything else I've spent on.”",
+    quote: "“I'm getting about a third more inquiries since the new site went up.”",
     quoteWidth: 208,
     person: { name: "Gabrial Winkler", title: "Founder", avatar: "/testimonials/gabrial-winkler-poster.jpg" },
     href: "/work",

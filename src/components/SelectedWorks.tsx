@@ -55,18 +55,27 @@ const VIEW_LABEL = "Click to view";
    the same share so the moves themselves keep their pace. */
 const HOLD = 1.2;
 
+/* The first card is already in front as the section pins on a phone, so
+   its hold is shorter; the scroll distances drop by the same amount. */
+const FIRST_HOLD = 0.5;
+
 /* Both run only on a change of state (see setLive), never per frame: a
    play() on a phone reports `paused` for a moment while it starts, and
    resetting the time on every scrub frame kept the reel stuck on frame 0. */
+/* A seek makes a video load, so only rewind one that has moved: resetting
+   the cards that never played would pull every reel in on page load. */
+const rewind = (v: HTMLVideoElement) => {
+  if (v.currentTime !== 0) v.currentTime = 0;
+};
 const play = (v: HTMLVideoElement | null) => {
   if (!v) return;
-  v.currentTime = 0;
+  rewind(v);
   v.play().catch(() => {});
 };
 const pause = (v: HTMLVideoElement | null) => {
   if (!v) return;
   v.pause();
-  v.currentTime = 0;
+  rewind(v);
 };
 
 export default function SelectedWorks({ ready }: { ready: boolean }) {
@@ -76,6 +85,27 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
   useEffect(() => {
     if (ready) ScrollTrigger.refresh(true);
   }, [ready]);
+
+  /* The reels buffer in full, but only once the section is about a screen
+     and a half away: early enough that the first frames are there the moment a card
+     goes live, late enough that they don't compete with the first screen. */
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        el.querySelectorAll("video").forEach((v) => {
+          v.preload = "auto";
+          if (v.readyState === 0) v.load();
+        });
+      },
+      { rootMargin: "150% 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const carousel = carouselRef.current;
@@ -88,7 +118,12 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
     const vh = () => window.innerHeight;
     // Set once at build: the hold is baked into the timeline's positions.
     const hold = w() < BP.tablet ? HOLD : 0;
+    const firstHold = w() < BP.tablet ? FIRST_HOLD : 0;
     const stretch = (2 + hold) / 2;
+    // Viewport heights saved by the shorter first hold (a timeline unit is
+    // half a viewport height of scroll).
+    const trim = (hold - firstHold) / 2;
+    const holdFor = (k: number) => (k === 0 ? firstHold : hold);
 
     // Called on every scrub frame by the timelines below, so it only does
     // work when the state actually flips.
@@ -229,10 +264,10 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       // exactly as the one in front of it starts to lift.
       for (let k = 0; k < i; k++) {
         tl.add(back(el, i, k), k === 0 ? 0 : undefined);
-        if (hold) tl.to({}, { duration: hold });
+        if (holdFor(k)) tl.to({}, { duration: holdFor(k) });
       }
       tl.add(enter(el), i === 0 ? 0 : undefined);
-      if (hold) tl.to({}, { duration: hold });
+      if (holdFor(i)) tl.to({}, { duration: holdFor(i) });
       if (i < elements.length - 1) tl.add(leave(el));
       return tl;
     };
@@ -283,7 +318,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
             ? `+=${(2.2 + EXTRA) * vh()}`
             : w() >= BP.tablet
               ? `+=${(3 + EXTRA) * vh() * stretch}`
-              : `+=${(2.5 + EXTRA) * vh() * stretch}`,
+              : `+=${((2.5 + EXTRA) * stretch - trim) * vh()}`,
         pin: true,
         // Pin a frame early so a fast flick on a phone doesn't show the
         // carousel scroll past before it locks.
@@ -299,7 +334,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
         scrollTrigger: {
           trigger: carousel,
           start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
-          end: () => `+=${(3 + EXTRA) * vh() * stretch}`,
+          end: () => `+=${((3 + EXTRA) * stretch - trim) * vh()}`,
           scrub: touch ? true : 0.25,
           invalidateOnRefresh: true,
         },
@@ -381,8 +416,8 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
                 <div className={s.reelSlot}>
                   <div className={s.reel}>
                     <div className={s.reelVideo}>
-                      {/* Buffered up front so the first frames are there the moment a card goes live. */}
-                      <video src={card.story.video} loop muted playsInline preload="auto" />
+                      {/* Buffered as the section approaches (see above). */}
+                      <video src={card.story.video} loop muted playsInline preload="none" />
                     </div>
                   </div>
                 </div>

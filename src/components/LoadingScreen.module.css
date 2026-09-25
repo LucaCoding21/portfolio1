@@ -51,6 +51,13 @@
   height: 0.72em;
 }
 
+/* taller on phones to go with the wider gap (see gapWidth) */
+@media (max-width: 767px) {
+  .gap {
+    height: 0.95em;
+  }
+}
+
 .plate {
   position: absolute;
   inset: 0 0.08em;

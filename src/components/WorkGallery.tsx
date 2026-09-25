@@ -249,28 +249,7 @@ export default function WorkGallery() {
     );
   }, [shown]);
 
-  /* load-in: header, then the columns */
-  useEffect(() => {
-    const targets = [
-      headerRef.current,
-      asideRef.current,
-      projectRef.current,
-    ].filter(Boolean) as HTMLElement[];
-    targets.forEach((el, i) => {
-      gsap.fromTo(
-        el,
-        { autoAlpha: 0, y: "0.75em" },
-        {
-          autoAlpha: 1,
-          y: "0em",
-          duration: 0.9,
-          delay: 0.2 + i * 0.18,
-          ease: "power3.out",
-          overwrite: true,
-        },
-      );
-    });
-  }, []);
+  /* load-in: header, then the columns (CSS, see .loadIn) */
 
   /* filter */
   useEffect(() => {
@@ -526,8 +505,22 @@ function GridCard({ item, rank, over }: { item: WorkGalleryItem; rank?: number; 
       ([e]) => (e.isIntersecting ? reel.play().catch(() => {}) : reel.pause()),
       { threshold: 0.1 },
     );
+    // Cards about a screen away buffer their reel, so it is already
+    // playing when the card arrives; the rest wait.
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        near.disconnect();
+        reel.preload = "auto";
+      },
+      { rootMargin: "100% 0px" },
+    );
     io.observe(reel);
-    return () => io.disconnect();
+    near.observe(reel);
+    return () => {
+      io.disconnect();
+      near.disconnect();
+    };
   }, []);
 
   const finePointer = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -567,7 +560,8 @@ function GridCard({ item, rank, over }: { item: WorkGalleryItem; rank?: number; 
             src={item.poster}
             alt=""
             className={s.cardPoster}
-            loading="lazy"
+            loading={rank !== undefined && rank < 2 ? "eager" : "lazy"}
+            fetchPriority={rank === 0 ? "high" : undefined}
             style={
               item.posterPosition
                 ? { objectPosition: item.posterPosition }
@@ -582,7 +576,7 @@ function GridCard({ item, rank, over }: { item: WorkGalleryItem; rank?: number; 
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               aria-hidden
             >
               <source src={item.video} />
@@ -887,7 +881,7 @@ function ListRow({
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-hidden
                 >
                   <source src={item.video} />

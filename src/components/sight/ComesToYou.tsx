@@ -286,10 +286,17 @@ export default function ComesToYou() {
             data-blur
             className="mx-auto mt-5 max-w-[40rem] text-[1.06rem] leading-[1.6] text-[var(--ink-soft)]"
           >
-            Small things slip when you&apos;re busy, like a job that never got
-            invoiced, a quote nobody followed up, or a supplier price that
-            crept up. Sight keeps an eye on all of it and tells you the week
-            it happens.
+            {/* Phones get one short line; the cards below carry the examples. */}
+            <span className="md:hidden">
+              Sight keeps an eye on the small things that slip when you&apos;re
+              busy and tells you the week they happen.
+            </span>
+            <span className="hidden md:inline">
+              Small things slip when you&apos;re busy, like a job that never got
+              invoiced, a quote nobody followed up, or a supplier price that
+              crept up. Sight keeps an eye on all of it and tells you the week
+              it happens.
+            </span>
           </p>
         </Cinematic>
 

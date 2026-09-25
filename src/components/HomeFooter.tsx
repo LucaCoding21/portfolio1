@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/data/projects";
@@ -41,6 +42,7 @@ const AI_SERVICES = [
 
 export default function HomeFooter() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  useWakeMedia(videoRef);
   const pathname = usePathname();
 
   /* The wordmark, like the nav logo: on the homepage it scrolls back up to
@@ -90,11 +92,11 @@ export default function HomeFooter() {
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover"
-            poster="/footer/footer-rain-poster.jpg"
+            data-poster="/footer/footer-rain-poster.jpg"
             muted
             loop
             playsInline
-            preload="metadata"
+            preload="none"
             aria-hidden="true"
           >
             <source

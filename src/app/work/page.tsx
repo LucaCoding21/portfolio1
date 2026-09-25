@@ -9,11 +9,11 @@ export default function WorkPage() {
     <div className="min-h-screen bg-[#f9f8f5] text-[#1a1613]">
       {/* overflow-clip, not hidden: it rounds the closing section's own
           square background without breaking the gallery's sticky parts */}
-      <div className="relative z-10 overflow-clip rounded-b-[28px] bg-[#f9f8f5] md:rounded-b-[48px]">
+      <main className="relative z-10 overflow-clip rounded-b-[28px] bg-[#f9f8f5] md:rounded-b-[48px]">
         <WorkGallery />
         {/* The homepage's closing reel and review field, tagged "work". */}
         <VideoCta source="work" onPaper />
-      </div>
+      </main>
       {/* The homepage's footer, pinned underneath; the block above lifts off it. */}
       <HomeFooter />
     </div>

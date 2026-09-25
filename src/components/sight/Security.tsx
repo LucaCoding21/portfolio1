@@ -169,18 +169,31 @@ function Glyph({
     key: string;
     diag: number;
     cells: [number, number][];
+    cx: number;
+    cy: number;
   }[] = [];
   for (let br = 0; br < n; br += 2) {
     for (let bc = 0; bc < n; bc += 2) {
       const cells: [number, number][] = [];
       for (let r = br; r < br + 2; r++)
         for (let c = bc; c < bc + 2; c++) if (grid[r]?.[c]) cells.push([r, c]);
-      if (cells.length)
+      if (cells.length) {
+        // The block's centre, from its cells' bounds (what getBBox would
+        // say), so the scatter never has to measure the page.
+        const rs = cells.map(([r]) => r);
+        const cs = cells.map(([, c]) => c);
+        const x0 = Math.min(...cs) * step;
+        const x1 = Math.max(...cs) * step + cell;
+        const y0 = Math.min(...rs) * step;
+        const y1 = Math.max(...rs) * step + cell;
         blocks.push({
           key: `${br}-${bc}`,
           diag: br / 2 + bc / 2,
           cells,
+          cx: +((x0 + x1) / 2).toFixed(3),
+          cy: +((y0 + y1) / 2).toFixed(3),
         });
+      }
     }
   }
 
@@ -193,7 +206,7 @@ function Glyph({
       fill={color}
     >
       {blocks.map((b) => (
-        <g key={b.key} data-block data-diag={b.diag}>
+        <g key={b.key} data-block data-diag={b.diag} data-cx={b.cx} data-cy={b.cy}>
           {b.cells.map(([r, c]) => (
             <rect
               key={`${r}-${c}`}
@@ -264,25 +277,57 @@ export default function Security() {
        out of it and lock into place to form the mark, one mark a beat
        after the last. Tied to the scrollbar, so the reader builds the
        seals by scrolling, and can scrub them back into the point. */
+    /* This is the equivalent of a gsap.from() on each block (0.5s,
+       power2.out, 0.006s random stagger, from 0.35 scale, spun, faded), but
+       one tween drives them all and writes each block's transform straight
+       to the SVG. Tweening ~650 blocks one by one had GSAP measure every
+       block between writes, about 1,300 forced layouts on load. */
+    const EACH = 0.006;
+    const DUR = 0.5;
     perGlyph.forEach((blocks, i) => {
       const glyph = glyphs[i];
       const size = glyph.viewBox.baseVal.width;
       const origin = { x: size / 2, y: size + 26 };
-      const centre = (el: SVGGElement) => {
-        const b = el.getBBox();
-        return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+      const order = gsap.utils.shuffle(blocks.map((_, k) => k));
+      const parts = blocks.map((el, k) => {
+        const cx = Number(el.dataset.cx);
+        const cy = Number(el.dataset.cy);
+        return {
+          el,
+          cx,
+          cy,
+          dx: origin.x - cx + gsap.utils.random(-2, 2),
+          dy: origin.y - cy + gsap.utils.random(-2, 2),
+          rot: gsap.utils.random(-270, 270),
+          start: order[k] * EACH,
+          last: -1,
+        };
+      });
+      const total = DUR + EACH * (blocks.length - 1);
+      const clock = { t: 0 };
+      const render = () => {
+        for (const b of parts) {
+          const local = Math.min(1, Math.max(0, (clock.t - b.start) / DUR));
+          if (local === b.last) continue;
+          b.last = local;
+          const p = 1 - (1 - local) * (1 - local); // power2.out
+          const q = 1 - p;
+          const s = 0.35 + 0.65 * p;
+          b.el.setAttribute(
+            "transform",
+            local === 1
+              ? ""
+              : `translate(${b.dx * q} ${b.dy * q}) translate(${b.cx} ${b.cy}) rotate(${b.rot * q}) scale(${s}) translate(${-b.cx} ${-b.cy})`,
+          );
+          b.el.style.opacity = local === 1 ? "" : String(p);
+        }
       };
-      gsap.from(blocks, {
-        x: (_, el: SVGGElement) =>
-          origin.x - centre(el).x + gsap.utils.random(-2, 2),
-        y: (_, el: SVGGElement) =>
-          origin.y - centre(el).y + gsap.utils.random(-2, 2),
-        rotation: () => gsap.utils.random(-270, 270),
-        scale: 0.35,
-        transformOrigin: "center",
-        opacity: 0,
-        ease: "power2.out",
-        stagger: { each: 0.006, from: "random" },
+      render();
+      gsap.to(clock, {
+        t: total,
+        duration: total,
+        ease: "none",
+        onUpdate: render,
         scrollTrigger: {
           trigger: row,
           start: `top+=${i * 16} 100%`,

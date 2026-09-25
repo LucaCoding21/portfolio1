@@ -23,7 +23,7 @@ import {
 /* ---------- product tokens (hex from the app's CSS variables) ---------- */
 
 const INK = "#212630";
-const MUTED = "#6b7280";
+const MUTED = "#656b79";
 const LINE = "#d4d7de";
 const BLUE = "#2563eb";
 const AMBER = "#c76c05";
@@ -222,7 +222,7 @@ function AnswerCard({
         <p
           data-item
           className="mt-auto border-t pt-3 text-[11px]"
-          style={{ borderColor: `${LINE}b3`, color: "#9aa0a6" }}
+          style={{ borderColor: `${LINE}b3`, color: "#6b6f73" }}
         >
           {footer}
         </p>
@@ -448,7 +448,7 @@ export default function SightAppCard({ className = "" }: { className?: string })
             <span
               data-placeholder
               className="pointer-events-none absolute left-10 right-11 truncate text-[13px]"
-              style={{ color: "#9aa0a6" }}
+              style={{ color: "#6b6f73" }}
             >
               Ask anything about the business…
             </span>

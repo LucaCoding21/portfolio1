@@ -43,6 +43,8 @@ type Card = {
   title: string;
   highlight: string;
   body: string;
+  /** One-sentence version of `body` shown on phones. */
+  short: string;
   /** Small label above the rotating lines, saying what they are. */
   label: string;
   /** Three lines. Shown in order 0, 2, 1: the back tile comes to the front. */
@@ -62,6 +64,7 @@ const CARDS: Card[] = [
     title: "Plugs into the tools",
     highlight: "you already use",
     body: "QuickBooks, Jobber, your calendar, the spreadsheet with the price list in it. Sight connects to each one once, reads what's already there, and keeps it current from then on. Nothing to re-enter, and nothing changes about how you work.",
+    short: "Sight connects once to QuickBooks, Jobber and the rest, and keeps itself current without you re-entering anything.",
     label: "What it reads",
     quotes: [
       {
@@ -92,6 +95,7 @@ const CARDS: Card[] = [
     title: "Checks every number",
     highlight: "against every other one",
     body: "Quotes against bookings, invoices against payments, hours against what was quoted. Sight reads the lot and lines it all up, so it knows a job finished but never got billed without anyone telling it to look.",
+    short: "Sight lines up quotes, invoices and hours, so it spots a finished job that never got billed on its own.",
     label: "Now it catches things",
     // One reassurance among the findings, so checks read as routine,
     // not as alarms.
@@ -124,6 +128,7 @@ const CARDS: Card[] = [
     title: "Ask it anything,",
     highlight: "or let it tell you",
     body: "Type a question the way you'd say it out loud and the number comes back in a sentence, pulled from the tools it just checked. The things you didn't think to ask about arrive on their own, the week they happen.",
+    short: "Ask the way you'd say it out loud and the number comes back in a sentence.",
     label: "Now you can ask",
     quotes: [
       // Each answer needs at least two tools crossed, and the three
@@ -159,6 +164,7 @@ const CARDS: Card[] = [
     title: "We build it.",
     highlight: "Live in 45 days, or you don't pay.",
     body: "Nothing to set up on your end. We connect your tools, learn how the business actually runs, and work out with you which checks matter for your trade. Your team gets trained on it, and if it isn't live by day 45, you don't pay.",
+    short: "We connect your tools and set it up around your trade, and if it isn't live by day 45, you don't pay.",
     label: "How the 45 days go",
     quotes: [
       {
@@ -361,7 +367,10 @@ export default function HowItWorks() {
                         {card.title} <span>{card.highlight}</span>
                       </h3>
                       <div className="hiw-desc">
-                        <p>{card.body}</p>
+                        <p>
+                          <span className="md:hidden">{card.short}</span>
+                          <span className="hidden md:inline">{card.body}</span>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -388,7 +397,7 @@ export default function HowItWorks() {
                     </div>
 
                     <div className="hiw-buttons">
-                      <a href={BOOK_URL} className="hiw-btn hiw-btn--dark">
+                      <a href={BOOK_URL} target="_blank" rel="noopener noreferrer" className="hiw-btn hiw-btn--dark">
                         <span>{card.primary}</span>
                         <span className="hiw-icon-track" aria-hidden="true">
                           <span className="hiw-icon hiw-icon--abs">

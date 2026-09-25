@@ -17,14 +17,16 @@ import type { ReactNode } from "react";
 
 export const T = {
   INK: "#212630",
-  MUTED: "#6b7280",
-  FAINT: "#9aa0a6",
+  MUTED: "#656b79",
+  FAINT: "#6b6f73",
   LINE: "#d4d7de",
   CANVAS: "#f4f5f7",
   SURFACE2: "#fafbfc",
   WELL: "#eeeff2",
   BLUE: "#2563eb",
   GREEN: "#199a48",
+  /* the green for text on a green-tinted pill (4.6:1 there) */
+  GREEN_INK: "#147b3a",
   AMBER: "#c76c05",
   RED: "#ca2121",
 } as const;
