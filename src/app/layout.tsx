@@ -110,7 +110,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://cloverfield.studio/og-image.jpeg",
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
         width: 1200,
         height: 630,
         alt: "Cloverfield Studio, web design in Surrey BC",
@@ -122,7 +122,7 @@ export const metadata: Metadata = {
     title: "Web Design Surrey BC | Cloverfield Studio",
     description:
       "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
-    images: ["https://cloverfield.studio/og-image.jpeg"],
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
 
@@ -170,8 +170,8 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "description":
                     "Web design and development studio in Surrey BC. We make websites that bring in customers for local businesses, designed around what their customers are looking for. Our work has generated more than 3,000 inquiries.",
                   "url": "https://cloverfield.studio",
-                  "logo": "https://cloverfield.studio/og-image.jpeg",
-                  "image": "https://cloverfield.studio/og-image.jpeg",
+                  "logo": "https://cloverfield.studio/og-image-v2.jpeg",
+                  "image": "https://cloverfield.studio/og-image-v2.jpeg",
                   "address": {
                     "@type": "PostalAddress",
                     "addressLocality": "Surrey",

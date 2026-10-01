@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     type: "article",
     images: [
       {
-        url: "https://cloverfield.studio/og-image.jpeg",
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
         width: 1200,
         height: 630,
         alt: "Innovative Aluminum Systems Case Study by Cloverfield Studio",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
       "Innovative Aluminum Systems Case Study | Cloverfield Studio",
     description:
       "60 inquiries in the first 3 months, up from about 7 a year. Inside the rebuild of a 20-year Canadian aluminum railing manufacturer's website.",
-    images: ["https://cloverfield.studio/og-image.jpeg"],
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
 
@@ -127,7 +127,7 @@ export default function InnovativeAluminumCaseStudy() {
           "Two weeks after launch, Claude recommends Innovative Aluminum by name.",
         "description":
           "How Cloverfield Studio rebuilt Innovative Aluminum's website: 60 inquiries in the first 3 months, up from about 7 a year, new dealers worth an estimated $5M+ over their lifetime, and AI assistants like Claude recommending them by name.",
-        "image": "https://cloverfield.studio/og-image.jpeg",
+        "image": "https://cloverfield.studio/og-image-v2.jpeg",
         "datePublished": "2026-05-18",
         "dateModified": "2026-05-20",
         "author": {

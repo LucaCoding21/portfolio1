@@ -89,6 +89,17 @@ export const projects: Project[] = [
     tags: ["Trades & Manufacturing"],
     image: "/success/innovative-aluminum.webp",
     url: "https://www.innovativealuminum.com/",
+    // From Mike's written testimonial (October 2026), cut at sentence breaks:
+    // "Google" capitalised and a trailing "etc." dropped, nothing else changed.
+    quote: {
+      texts: [
+        "The web search game has largely moved past Google, and onto ChatGPT or Claude.",
+        "Cloverfield expertly tunes their sites to have all the answers AI agents look for, and as a result, their sites get recommended.",
+      ],
+      author: "Mike Victory",
+      role: "Director of Sales and Marketing, Innovative Aluminum Systems",
+      avatar: "/testimonials/mike-victory.webp",
+    },
   },
   {
     id: 9,

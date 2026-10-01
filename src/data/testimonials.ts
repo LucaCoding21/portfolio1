@@ -49,6 +49,14 @@ export const TESTIMONIAL_VIDEOS: VideoTestimonial[] = [
 
 export const TESTIMONIAL_QUOTES: TextTestimonial[] = [
   {
+    name: "Mike Victory",
+    role: "Director of Sales and Marketing, Innovative Aluminum Systems",
+    avatar: "/testimonials/mike-victory.webp",
+    stat: { value: "60", label: "inquiries in 3 months, up from about 7 a year" },
+    quote:
+      "The web search game has largely moved past Google, and onto ChatGPT or Claude. Cloverfield expertly tunes their sites to have all the answers AI agents look for, and as a result, their sites get recommended.",
+  },
+  {
     name: "Taylor Paige",
     role: "Founder, WrapCity",
     avatar: "/wrapcity-headshot-v3.webp",

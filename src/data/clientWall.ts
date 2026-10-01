@@ -52,6 +52,12 @@ const logo = (name: string): ClientLogo => {
 export const WALL_LABEL = "Sites we've built";
 
 export const WALL_CARDS: WallCard[] = [
+  /*
+   * Seventeen columns: the four tall quote cards sit two to three columns
+   * apart (1-2, 5-6, 10-11, 14-15) and the gaps between them hold the logos,
+   * stats and horizontal quotes.
+   */
+
   /* strip 1 */
   {
     logo: logo("WrapCity"),
@@ -72,19 +78,41 @@ export const WALL_CARDS: WallCard[] = [
   {
     logo: logo("Innovative Aluminum Systems"),
     logoHeight: 34,
-    variant: "hstat",
+    variant: "quote",
     row: 1,
     col: 5,
     span: 2,
-    stat: { value: "60", lines: ["inquiries in", "3 months"] },
+    tall: 2,
+    title: { big: "60", small: "inquiries in 3 months, up from about 7 a year" },
+    // Mike's written testimonial (October 2026), the same line as on /work.
+    quote: "“Cloverfield expertly tunes their sites to have all the answers AI agents look for, and as a result, their sites get recommended.”",
+    quoteWidth: 280,
+    person: {
+      name: "Mike Victory",
+      title: "Director of Sales and Marketing",
+      avatar: "/testimonials/mike-victory.webp",
+    },
     href: "/case-studies/innovative-aluminum",
+  },
+  {
+    logo: logo("Bloomkey"),
+    variant: "hquote",
+    row: 1,
+    col: 7,
+    // Three wide so both strips stay gap-free around the four tall cards.
+    span: 3,
+    // Mishele's words on pricing, cleared with her for this card (September 2026).
+    quote: "“What they quoted is what we paid. No surprise add-ons at the end.”",
+    person: { name: "Mishele", title: "Founder" },
+    quoteMaxWidth: 260,
+    href: "/work",
   },
   {
     logo: logo("Northwest Railing"),
     logoHeight: 52,
     variant: "quote",
     row: 1,
-    col: 7,
+    col: 10,
     span: 2,
     tall: 2,
     title: { big: "+39%", small: "inquiries in 3 months" },
@@ -94,25 +122,14 @@ export const WALL_CARDS: WallCard[] = [
     person: { name: "Gabrial Winkler", title: "Founder", avatar: "/testimonials/gabrial-winkler-poster.jpg" },
     href: "/work",
   },
-  { logo: logo("Venue Series"), variant: "logo", row: 1, col: 9 },
-  {
-    logo: logo("Bloomkey"),
-    variant: "hquote",
-    row: 1,
-    col: 10,
-    span: 2,
-    // Mishele's words on pricing, cleared with her for this card (September 2026).
-    quote: "“What they quoted is what we paid. No surprise add-ons at the end.”",
-    person: { name: "Mishele", title: "Founder" },
-    quoteMaxWidth: 190,
-    href: "/work",
-  },
+  { logo: logo("Venue Series"), variant: "logo", row: 1, col: 12 },
+  { logo: logo("Greater Vancouver REALTORS"), variant: "logo", row: 1, col: 13 },
   {
     logo: logo("Njagih Studios"),
     logoHeight: 26,
     variant: "quote",
     row: 1,
-    col: 12,
+    col: 14,
     span: 2,
     tall: 2,
     // His own words.
@@ -121,42 +138,40 @@ export const WALL_CARDS: WallCard[] = [
     person: { name: "Israel Njagih", title: "Owner", avatar: "/Njagih/njagih-headshot-v2.webp" },
     href: "/work",
   },
-  { logo: logo("Greater Vancouver REALTORS"), variant: "logo", row: 1, col: 14 },
   // Tall narrow art: runs the full content height of the cell.
-  { logo: logo("Shoobydoo"), logoHeight: 48, variant: "logo", row: 1, col: 15 },
-  { logo: logo("Southbound Sips"), logoHeight: 48, variant: "logo", row: 1, col: 16 },
+  { logo: logo("Shoobydoo"), logoHeight: 48, variant: "logo", row: 1, col: 16 },
+  { logo: logo("Southbound Sips"), logoHeight: 48, variant: "logo", row: 1, col: 17 },
 
   /* strip 2 */
-  {
-    logo: logo("Afterparty"),
-    logoHeight: 40,
-    variant: "hquote",
-    row: 2,
-    col: 14,
-    // Three wide so the bottom strip stays gap-free after Bloomkey moved up.
-    span: 3,
-    // Vien's own words, the same quote as on /work.
-    quote: "“It was one of the smoothest processes I've ever had for any project.”",
-    person: { name: "Vien", title: "Co-founder" },
-    quoteMaxWidth: 260,
-    href: "/work",
-  },
-  { logo: logo("Real Estate 360"), variant: "logo", row: 2, col: 5 },
-  { logo: logo("Caddie Companion"), variant: "logo", row: 2, col: 6 },
+  { logo: logo("Venues Quarterly"), logoHeight: 26, variant: "logo", row: 2, col: 3 },
+  { logo: logo("Dreamhouse Printing"), logoHeight: 38, variant: "logo", row: 2, col: 4 },
+  { logo: logo("Real Estate 360"), variant: "logo", row: 2, col: 7 },
   {
     logo: logo("Ace Suasola"),
     logoHeight: 36,
     variant: "hstat",
     row: 2,
-    col: 9,
+    col: 8,
     span: 2,
     stat: { value: "3x", lines: ["monthly", "bookings"] },
     person: { name: "Ace Suasola", title: "Owner", avatar: "/ACE/ace-headshot-v5.webp" },
     href: "/work",
   },
-  { logo: logo("Real Estate Institute of BC"), logoHeight: 30, variant: "logo", row: 2, col: 11 },
-  { logo: logo("Venues Quarterly"), logoHeight: 26, variant: "logo", row: 2, col: 3 },
-  { logo: logo("Dreamhouse Printing"), logoHeight: 38, variant: "logo", row: 2, col: 4 },
+  { logo: logo("Caddie Companion"), variant: "logo", row: 2, col: 12 },
+  { logo: logo("Real Estate Institute of BC"), logoHeight: 30, variant: "logo", row: 2, col: 13 },
+  {
+    logo: logo("Afterparty"),
+    logoHeight: 40,
+    variant: "hquote",
+    row: 2,
+    col: 16,
+    span: 2,
+    // Vien's own words, the same quote as on /work.
+    quote: "“It was one of the smoothest processes I've ever had for any project.”",
+    person: { name: "Vien", title: "Co-founder" },
+    quoteMaxWidth: 200,
+    href: "/work",
+  },
 ];
 
 /** Number of grid columns the cards actually use, so no empty tracks trail the wall. */

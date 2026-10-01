@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     type: "article",
     images: [
       {
-        url: "https://cloverfield.studio/og-image.jpeg",
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
         width: 1200,
         height: 630,
         alt: "Caddie Companion Case Study by Cloverfield Studio",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     title: "Caddie Companion Case Study | Cloverfield Studio",
     description:
       "21% more visitors turned into buyers. Inside the rebuild of a six-in-one golf multi-tool store, and the six weeks after launch.",
-    images: ["https://cloverfield.studio/og-image.jpeg"],
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
 
@@ -87,7 +87,7 @@ export default function CaddieCompanionCaseStudy() {
           "Caddie Companion: 21% more visitors turned into buyers.",
         "description":
           "How Cloverfield Studio rebuilt Caddie Companion's store on headless Shopify and stayed on for six weeks after launch to improve conversions: 21% more visitors turned into buyers, enough for the owner to confidently scale up his ads.",
-        "image": "https://cloverfield.studio/og-image.jpeg",
+        "image": "https://cloverfield.studio/og-image-v2.jpeg",
         "datePublished": "2026-09-23",
         "dateModified": "2026-09-23",
         "author": {

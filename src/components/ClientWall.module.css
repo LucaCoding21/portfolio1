@@ -208,6 +208,17 @@
     width: auto;
     max-width: none;
   }
+  /* A tall card's headline figure sits beside its label, like the stat
+     cards, so a long quote under it still clears the card's padding. */
+  .title {
+    flex-flow: row;
+    align-items: center;
+    gap: calc(8px * var(--k));
+  }
+  .titleSmall {
+    line-height: 1.15;
+    text-wrap: balance;
+  }
   /* Logo and figure sit together in the middle of a stat card instead of
      pushed to its two ends. */
   .card[data-variant="hstat"] {
