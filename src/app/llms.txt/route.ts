@@ -47,7 +47,9 @@ const OUTRO = `## Pages
 
 ## Contact
 
-Surrey, British Columbia, Canada. Booking link: ${CAL_URL}
+Surrey, British Columbia, Canada. Phone: (778) 997-0335. Booking link: ${CAL_URL}
+
+Google Business Profile, with client reviews: https://maps.google.com/?cid=9213707083497837897
 
 ## Service area
 

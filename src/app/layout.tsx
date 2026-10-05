@@ -250,18 +250,21 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   },
                   "priceRange": "$$",
                   "inLanguage": "en-CA",
+                  // Same number as the Google Business Profile, so the two match.
+                  "telephone": "+1-778-997-0335",
+                  // The Google Business Profile: its Maps listing (by CID) and
+                  // its Knowledge Graph entry.
+                  "hasMap": "https://maps.google.com/?cid=9213707083497837897",
                   "sameAs": [
+                    "https://maps.google.com/?cid=9213707083497837897",
+                    "https://www.google.com/search?kgmid=/g/11yzw8bm3p",
                     "https://www.instagram.com/cloverfield.studio/",
                     "https://www.linkedin.com/company/cloverfieldstudio/",
                   ],
-                  "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": "5",
-                    "bestRating": "5",
-                    "worstRating": "1",
-                    "ratingCount": "5",
-                    "reviewCount": "7",
-                  },
+                  // No aggregateRating: Google ignores star ratings a business
+                  // marks up about itself, and it can't be filled with the
+                  // Google Business Profile's own rating. Those stars come from
+                  // the profile, which `sameAs` links to.
                   "review": [
                     {
                       "@type": "Review",
