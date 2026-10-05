@@ -276,7 +276,7 @@ All motion is quick, soft, and physical. Nothing bounces except toasts. Nothing 
 
 Two signature shimmer effects (both in `globals.css`, great for an "AI thinking" landing animation):
 
-- **`.shimmer-text`** — AI thinking state. Muted grey text (`hsl(220 9% 64%)`) with a darker band (`hsl(222 20% 28%)`) sweeping through the letters via background-clip:text, `2.2s linear infinite`, background-size 200%. "The motion lives inside the letters, nothing jumps."
+- **`.shimmer-text`** — AI thinking state. Muted grey text (`hsl(220 9% 64%)`) with a darker band (`hsl(222 20% 28%)`) sweeping through the letters via background-clip:text, `2.2s inear infinite`, background-size 200%. "The motion lives inside the letters, nothing jumps."
 - **`.shimmer-surface`** — skeleton loading. A `white/0.55` gradient band sweeps left→right across a `bg-secondary` block, `1.6s ease-in-out infinite`.
 
 Rule of thumb: entrances 120–220ms ease-out, hovers 150ms, one springy exception (toast), infinite loops only for "alive" states (sync dot, AI thinking, skeletons).
