@@ -11,6 +11,7 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
@@ -105,7 +106,14 @@ export default function TeamIntro() {
           <p className={s.body} data-rise>
             We make your business look as established online as it is in real
             life. Then we make it easier for the right customers to understand
-            why you&rsquo;re worth choosing.
+            why you&rsquo;re worth choosing.{" "}
+            {/* The homepage's link to the service page, in the words people
+                search with, so Google sends those searches there. */}
+            Read how our{" "}
+            <Link href="/web-design-surrey" className={s.inlineLink}>
+              web design in Surrey
+            </Link>{" "}
+            works.
           </p>
 
           <dl className={s.stats} data-rise>

@@ -165,7 +165,9 @@ export default function HomeFooter() {
               </Link>
 
               <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t border-white/20 pt-4 text-sm text-white/60 md:mt-6">
-                <p>Surrey, BC</p>
+                <Link href="/web-design-surrey" className="transition-colors duration-300 hover:text-white">
+                  Web design in Surrey, BC
+                </Link>
                 <p>© {new Date().getFullYear()} Cloverfield Studio</p>
               </div>
             </div>

@@ -32,7 +32,7 @@ How we work:
 
 ## Services
 
-- [Web Design](${SITE}): Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.
+- [Web Design in Surrey, BC](${SITE}/web-design-surrey): Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.
 - [Web Development](${SITE}): Fast, modern websites built with Next.js.
 - [Lead-Generating Landing Pages](${SITE}): Conversion-focused landing pages that turn visitors into booked calls and customers.
 - [Shopify Stores](${SITE}/work): Shopify stores designed and built for local brands selling online.
@@ -41,6 +41,7 @@ How we work:
 const OUTRO = `## Pages
 
 - [Homepage](${SITE}): Overview of Cloverfield Studio's services, recent work, and free consultation booking.
+- [Web design in Surrey](${SITE}/web-design-surrey): What a website project includes, how it runs, what changes the price, recent local work, and common questions.
 - [Work](${SITE}/work): Full portfolio of recent projects.
 - [Sight](${SITE}/sight): Sight by Cloverfield, one dashboard and AI for the whole business. Demos book through a 30-minute call.
 - [Book a free consultation](${CAL_URL}): 30-minute call via Cal.com.

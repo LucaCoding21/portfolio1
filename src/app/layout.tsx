@@ -71,10 +71,13 @@ const reenie = Reenie_Beanie({
   weight: "400",
 });
 
+// The homepage is the brand page. "Web design surrey" and its variants are
+// targeted by /web-design-surrey, so this title leads with the name instead
+// of competing with that page for the same searches.
 export const metadata: Metadata = {
-  title: "Web Design Surrey BC | Cloverfield Studio",
+  title: "Cloverfield Studio | Websites That Bring In Customers",
   description:
-    "Web design in Surrey BC for local businesses that want more customers. Our sites have generated 3,000+ inquiries for our clients. Book a free call.",
+    "Cloverfield Studio is a two-person web design studio in Surrey BC. Our sites have generated 3,000+ inquiries for local businesses. Book a free call.",
   keywords: [
     "web design surrey bc",
     "web design companies in surrey bc",
@@ -101,7 +104,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Web Design Surrey BC | Cloverfield Studio",
+    title: "Cloverfield Studio | Websites That Bring In Customers",
     description:
       "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
     url: "https://cloverfield.studio",
@@ -119,7 +122,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Web Design Surrey BC | Cloverfield Studio",
+    title: "Cloverfield Studio | Websites That Bring In Customers",
     description:
       "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
     images: ["https://cloverfield.studio/og-image-v2.jpeg"],
@@ -215,6 +218,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                         "itemOffered": {
                           "@type": "Service",
                           "name": "Web Design",
+                          "url": "https://cloverfield.studio/web-design-surrey",
                           "description":
                             "Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.",
                         },

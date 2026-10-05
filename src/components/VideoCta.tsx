@@ -22,8 +22,8 @@ export default function VideoCta({
   source = "closing",
   onPaper = false,
 }: {
-  /** Which placement the review field reports as: the homepage or /work. */
-  source?: "closing" | "work";
+  /** Which placement the review field reports as: the homepage, /work or /web-design-surrey. */
+  source?: "closing" | "work" | "web-design";
   /** On a paper page (/work): paper ground and room above the plate. */
   onPaper?: boolean;
 } = {}) {

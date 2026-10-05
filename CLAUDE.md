@@ -50,6 +50,10 @@ The user often asks to copy a section from another site "pixel for pixel", inclu
 6. **Rebuild** as a client component with a CSS module (fluid tokens as `clamp()`) or Tailwind, GSAP with the same eases (`CustomEase` for cubic-beziers), and the same trigger points. Licensed fonts get the closest Google font, loaded via `next/font`, and say so. Keep the reference copy verbatim on the first pass; assets come from `public/`.
 7. **Verify against numbers**, not just looks: compare section padding, container widths, element rects and font sizes between the reference tab and localhost at the same viewport. Then restyle to Cloverfield only when asked.
 
+## Service page and SEO (October 2026)
+
+`/web-design-surrey` is the page for "web design surrey" and its variants. The homepage title is brand-led on purpose so the two pages don't compete; don't put "Web Design Surrey" back in the homepage title. The homepage (TeamIntro) and footer link to it with "web design in Surrey". Don't build city clone pages (Vancouver, Burnaby...) by swapping names; Google treats them as doorway pages. FAQ answers on the page are repeated word for word in its FAQPage schema, so edit both together.
+
 ## Homepage state (September 2026)
 
 Order in `HomeClient.tsx`: `Hero` → `LogoStrip` (Rulebase-style trust bar) → `GridNumbers` (Tresmares-style sticky stats, `id="about"`) → `SuccessStories` (Monolog-style hover-reel list, `id="work"`) → `WhyCloverfield` (portrait, hand labels, Lunchline-style plus boxes with bio panels) → `Philosophy` (Lunchline FAQ clone) → `Blackboard` (Lunchline formula board, `id="approach"`) → `Contact` → `Footer`. The old Work grid still renders on `/work`. Copy in the new sections is placeholder and marked as such at the top of each file. Fonts: Outfit for nearly everything, Reenie Beanie for handwriting, Geist for the tracked eyebrow. No Sometype Mono in new homepage work, no em dashes in copy, no tan or lime as brand colours.
