@@ -25,7 +25,7 @@ export default function ReviewField({
   tone = "light",
   className = "",
 }: {
-  source: "team" | "closing" | "work" | "case-caddie" | "web-design";
+  source: "team" | "closing" | "work" | "case-caddie";
   tone?: "light" | "dark";
   className?: string;
 }) {

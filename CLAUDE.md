@@ -50,9 +50,9 @@ The user often asks to copy a section from another site "pixel for pixel", inclu
 6. **Rebuild** as a client component with a CSS module (fluid tokens as `clamp()`) or Tailwind, GSAP with the same eases (`CustomEase` for cubic-beziers), and the same trigger points. Licensed fonts get the closest Google font, loaded via `next/font`, and say so. Keep the reference copy verbatim on the first pass; assets come from `public/`.
 7. **Verify against numbers**, not just looks: compare section padding, container widths, element rects and font sizes between the reference tab and localhost at the same viewport. Then restyle to Cloverfield only when asked.
 
-## Service page and SEO (October 2026)
+## Local SEO (October 2026)
 
-`/web-design-surrey` is the page for "web design surrey" and its variants. The homepage title is brand-led on purpose so the two pages don't compete; don't put "Web Design Surrey" back in the homepage title. The homepage (TeamIntro) and footer link to it with "web design in Surrey". Don't build city clone pages (Vancouver, Burnaby...) by swapping names; Google treats them as doorway pages. FAQ answers on the page are repeated word for word in its FAQPage schema, so edit both together.
+The `/web-design-surrey` service page was removed in October 2026 and 301s to `/`. Always write "Surrey, BC", never bare "Surrey": searches for the studio otherwise return agencies in Surrey, England. The LocalBusiness/ProfessionalService JSON-LD in `layout.tsx` carries the founders, the cities served (tied to Wikipedia so Surrey reads as BC) and the $4,500 CAD starting price; the price is schema only and is not shown on any page yet. Don't build city clone pages (Vancouver, Burnaby...) by swapping names; Google treats them as doorway pages.
 
 ## Homepage state (September 2026)
 

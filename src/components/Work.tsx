@@ -402,7 +402,7 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
         {isMobile ? (
           <Image
             src={project.hoverImage || project.image}
-            alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
+            alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio, Surrey, BC`}
             fill
             loading="lazy"
             sizes="100vw"
@@ -413,7 +413,7 @@ function ProjectCard({ project, isMobile }: { project: (typeof projects)[number]
           <>
             <Image
               src={project.image}
-              alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio Surrey BC`}
+              alt={`${project.name} — ${project.description} | Custom web design by Cloverfield Studio, Surrey, BC`}
               fill
               loading="lazy"
               sizes="50vw"

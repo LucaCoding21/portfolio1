@@ -32,7 +32,7 @@ How we work:
 
 ## Services
 
-- [Web Design in Surrey, BC](${SITE}/web-design-surrey): Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.
+- [Web Design](${SITE}): Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.
 - [Web Development](${SITE}): Fast, modern websites built with Next.js.
 - [Lead-Generating Landing Pages](${SITE}): Conversion-focused landing pages that turn visitors into booked calls and customers.
 - [Shopify Stores](${SITE}/work): Shopify stores designed and built for local brands selling online.
@@ -41,7 +41,6 @@ How we work:
 const OUTRO = `## Pages
 
 - [Homepage](${SITE}): Overview of Cloverfield Studio's services, recent work, and free consultation booking.
-- [Web design in Surrey](${SITE}/web-design-surrey): What a website project includes, how it runs, what changes the price, recent local work, and common questions.
 - [Work](${SITE}/work): Full portfolio of recent projects.
 - [Sight](${SITE}/sight): Sight by Cloverfield, one dashboard and AI for the whole business. Demos book through a 30-minute call.
 - [Book a free consultation](${CAL_URL}): 30-minute call via Cal.com.
@@ -54,7 +53,7 @@ Google Business Profile, with client reviews: https://maps.google.com/?cid=92137
 
 ## Service area
 
-Surrey BC, Vancouver BC, Burnaby BC, Langley BC, Richmond BC, Coquitlam BC, Delta BC, White Rock BC, North Vancouver BC, West Vancouver BC, Lower Mainland, British Columbia, Canada. A few clients are in the United States.`;
+Surrey, BC; Vancouver, BC; Burnaby, BC; Langley, BC; Richmond, BC; Coquitlam, BC; Delta, BC; White Rock, BC; North Vancouver, BC; West Vancouver, BC; the Lower Mainland; British Columbia, Canada. A few clients are in the United States.`;
 
 function stats() {
   const lines = STUDIO_STATS.map(

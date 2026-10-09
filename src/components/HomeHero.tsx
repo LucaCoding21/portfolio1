@@ -23,7 +23,7 @@
  * bottom email form was removed; the nav carries "Book a call".
  */
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import SightPeek from "./SightPeek";
@@ -351,7 +351,10 @@ export default function HomeHero({ ready }: { ready: boolean }) {
       <div className={s.content}>
         <h1 className={s.headline} aria-label={HEADLINE.join(" ")}>
           {HEADLINE.map((line, i) => (
-            <span key={line} aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
+            <Fragment key={line}>
+              {/* The lines are blocks, so crawlers need a real space between them. */}
+              {i > 0 && " "}
+            <span aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
               {line.split(" ").map((word, j) => (
                 <span key={j}>
                   {j > 0 ? " " : null}
@@ -361,6 +364,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
                 </span>
               ))}
             </span>
+            </Fragment>
           ))}
         </h1>
         <p className={`${s.bodyMd} ${s.sub}`}>

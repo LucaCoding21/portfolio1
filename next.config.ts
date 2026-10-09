@@ -24,7 +24,11 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [{ source: "/approach", destination: "/#how-we-do-it", permanent: true }];
+    return [
+      { source: "/approach", destination: "/#how-we-do-it", permanent: true },
+      // The service page was folded back into the homepage.
+      { source: "/web-design-surrey", destination: "/", permanent: true },
+    ];
   },
 };
 
