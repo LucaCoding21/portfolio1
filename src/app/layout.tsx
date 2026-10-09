@@ -71,13 +71,10 @@ const reenie = Reenie_Beanie({
   weight: "400",
 });
 
-// The homepage is the brand page. "Web design surrey" and its variants are
-// targeted by /web-design-surrey, so this title leads with the name instead
-// of competing with that page for the same searches.
 export const metadata: Metadata = {
   title: "Cloverfield Studio | Websites That Bring In Customers",
   description:
-    "Cloverfield Studio is a two-person web design studio in Surrey BC. Our sites have generated 3,000+ inquiries for local businesses. Book a free call.",
+    "Cloverfield Studio is a two-person web design studio in Surrey, BC. Our sites have generated 3,000+ inquiries for local businesses. Book a free call.",
   keywords: [
     "web design surrey bc",
     "web design companies in surrey bc",
@@ -106,7 +103,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Cloverfield Studio | Websites That Bring In Customers",
     description:
-      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
+      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey, BC and the Lower Mainland.",
     url: "https://cloverfield.studio",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -116,7 +113,7 @@ export const metadata: Metadata = {
         url: "https://cloverfield.studio/og-image-v2.jpeg",
         width: 1200,
         height: 630,
-        alt: "Cloverfield Studio, web design in Surrey BC",
+        alt: "Cloverfield Studio, web design in Surrey, BC",
       },
     ],
   },
@@ -124,10 +121,30 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Cloverfield Studio | Websites That Bring In Customers",
     description:
-      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey and the Lower Mainland.",
+      "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey, BC and the Lower Mainland.",
     images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
+
+/** Schema: cities served, first four in the order people search them. */
+const SERVICE_CITIES: [string, string][] = [
+  ["Surrey", "Surrey,_British_Columbia"],
+  ["Vancouver", "Vancouver"],
+  ["Burnaby", "Burnaby"],
+  ["Richmond", "Richmond,_British_Columbia"],
+  ["Langley", "Langley,_British_Columbia_(city)"],
+  ["Coquitlam", "Coquitlam"],
+  ["Delta", "Delta,_British_Columbia"],
+  ["White Rock", "White_Rock,_British_Columbia"],
+  ["North Vancouver", "North_Vancouver_(city)"],
+  ["West Vancouver", "West_Vancouver"],
+];
+
+/** Schema: the two founders, as on the Sight page. */
+const FOUNDERS = [
+  { id: "william", name: "William Nguyen", role: "Founder" },
+  { id: "irish", name: "Irish Catungal", role: "Co-founder" },
+];
 
 export default function RootLayout({
   children,
@@ -171,7 +188,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "name": "Cloverfield Studio",
                   "alternateName": "Cloverfield",
                   "description":
-                    "Web design and development studio in Surrey BC. We make websites that bring in customers for local businesses, designed around what their customers are looking for. Our work has generated more than 3,000 inquiries.",
+                    "Web design and development studio in Surrey, BC. We make websites that bring in customers for local businesses, designed around what their customers are looking for. Our work has generated more than 3,000 inquiries.",
                   "url": "https://cloverfield.studio",
                   "logo": "https://cloverfield.studio/og-image-v2.jpeg",
                   "image": "https://cloverfield.studio/og-image-v2.jpeg",
@@ -181,21 +198,27 @@ gtag('config', 'G-KHS5MBDWV5');`}
                     "addressRegion": "BC",
                     "addressCountry": "CA",
                   },
+                  // Cities are typed and tied to their Wikipedia pages so
+                  // "Surrey" can't be read as Surrey, England.
                   "areaServed": [
-                    "Surrey BC",
-                    "Vancouver BC",
-                    "Burnaby BC",
-                    "Langley BC",
-                    "Richmond BC",
-                    "Coquitlam BC",
-                    "Delta BC",
-                    "White Rock BC",
-                    "North Vancouver BC",
-                    "West Vancouver BC",
-                    "Lower Mainland",
-                    "British Columbia",
-                    "Canada",
+                    ...SERVICE_CITIES.map(([name, wiki]) => ({
+                      "@type": "City",
+                      "name": `${name}, BC`,
+                      "sameAs": `https://en.wikipedia.org/wiki/${wiki}`,
+                      "containedInPlace": {
+                        "@type": "AdministrativeArea",
+                        "name": "British Columbia, Canada",
+                      },
+                    })),
+                    { "@type": "AdministrativeArea", "name": "Lower Mainland, BC" },
                   ],
+                  "founder": FOUNDERS.map((f) => ({
+                    "@type": "Person",
+                    "@id": `https://cloverfield.studio/#${f.id}`,
+                    "name": f.name,
+                    "jobTitle": f.role,
+                    "worksFor": { "@id": "https://cloverfield.studio/#business" },
+                  })),
                   "knowsAbout": [
                     "Web design",
                     "Web development",
@@ -215,10 +238,15 @@ gtag('config', 'G-KHS5MBDWV5');`}
                     "itemListElement": [
                       {
                         "@type": "Offer",
+                        // Schema only for now; the page doesn't show prices yet.
+                        "priceSpecification": {
+                          "@type": "PriceSpecification",
+                          "minPrice": 4500,
+                          "priceCurrency": "CAD",
+                        },
                         "itemOffered": {
                           "@type": "Service",
                           "name": "Web Design",
-                          "url": "https://cloverfield.studio/web-design-surrey",
                           "description":
                             "Websites designed around what your customers are looking for, so more visitors call, book, or ask for a quote. For local businesses in Surrey, Vancouver, and the Lower Mainland.",
                         },
@@ -358,7 +386,7 @@ gtag('config', 'G-KHS5MBDWV5');`}
                   "url": "https://cloverfield.studio",
                   "name": "Cloverfield Studio",
                   "description":
-                    "Web design studio in Surrey BC. We make websites that bring in customers for local businesses.",
+                    "Web design studio in Surrey, BC. We make websites that bring in customers for local businesses.",
                   "publisher": { "@id": "https://cloverfield.studio/#business" },
                   "inLanguage": "en-CA",
                 },

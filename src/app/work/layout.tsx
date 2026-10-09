@@ -3,16 +3,16 @@ import { projects } from "@/data/projects";
 
 
 export const metadata: Metadata = {
-  title: "Our Work | Cloverfield Studio, Web Design Surrey BC",
+  title: "Our Work | Cloverfield Studio, Web Design in Surrey, BC",
   description:
-    "Websites we've built for local businesses in Surrey BC, Vancouver, and across the Lower Mainland, and the customers they brought in. Trades, real estate, clinics, hospitality, ecommerce, and photography.",
+    "Websites we've built for local businesses in Surrey, BC, Vancouver, and across the Lower Mainland, and the customers they brought in. Trades, real estate, clinics, hospitality, ecommerce, and photography.",
   alternates: {
     canonical: "https://cloverfield.studio/work",
   },
   openGraph: {
     title: "Our Work | Cloverfield Studio",
     description:
-      "Websites that bring in customers, for trades, real estate, clinics, hospitality, ecommerce, and photography businesses in Surrey BC and Vancouver.",
+      "Websites that bring in customers, for trades, real estate, clinics, hospitality, ecommerce, and photography businesses in Surrey, BC and Vancouver.",
     url: "https://cloverfield.studio/work",
     siteName: "Cloverfield Studio",
     locale: "en_CA",
@@ -50,7 +50,7 @@ export default function WorkLayout({
         "@id": "https://cloverfield.studio/work#collection",
         "name": "Cloverfield Studio · Work",
         "description":
-          "Websites Cloverfield Studio has built for local businesses, a web design studio in Surrey BC.",
+          "Websites Cloverfield Studio has built for local businesses, a web design studio in Surrey, BC.",
         "url": "https://cloverfield.studio/work",
         "isPartOf": { "@id": "https://cloverfield.studio/#website" },
         "publisher": { "@id": "https://cloverfield.studio/#business" },

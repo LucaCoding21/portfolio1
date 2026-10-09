@@ -27,7 +27,7 @@
  * and grows if the review card needs the room.
  */
 
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HeroReview, { type HeroPreview } from "./HeroReview";
@@ -265,16 +265,20 @@ export default function HomeHero({ ready, preview }: { ready: boolean; preview?:
         <div className={s.copy} data-flip="">
           <h1 className={s.headline} aria-label={HEADLINE.join(" ")}>
             {HEADLINE.map((line, i) => (
-              <span key={line} aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
-                {line.split(" ").map((word, j) => (
-                  <span key={j}>
-                    {j > 0 ? " " : null}
-                    <span className={s.word} style={{ "--i": j } as React.CSSProperties}>
-                      {word}
+              <Fragment key={line}>
+                {/* The lines are blocks, so crawlers need a real space between them. */}
+                {i > 0 && " "}
+                <span aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
+                  {line.split(" ").map((word, j) => (
+                    <span key={j}>
+                      {j > 0 ? " " : null}
+                      <span className={s.word} style={{ "--i": j } as React.CSSProperties}>
+                        {word}
+                      </span>
                     </span>
-                  </span>
-                ))}
-              </span>
+                  ))}
+                </span>
+              </Fragment>
             ))}
           </h1>
           <p className={s.sub}>

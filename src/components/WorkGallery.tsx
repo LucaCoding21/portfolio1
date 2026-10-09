@@ -307,25 +307,24 @@ export default function WorkGallery() {
         <div className={s.container}>
           <header ref={headerRef} className={`${s.header} ${s.loadIn}`}>
             <p className={s.eyebrow}>{EYEBROW}</p>
-            <h1 className={s.headline}>
-              {/* The full line, and a shorter one that swaps in on phones. */}
-              <span className={s.headlineFull}>
-                {WORK_HEADLINE_LINES.map((line, i) => (
-                  <span key={line} className={s.headlineLine}>
-                    {i > 0 && <br />}
-                    {line}
-                  </span>
-                ))}
-              </span>
-              <span className={s.headlineShort}>
-                {WORK_HEADLINE_LINES_SHORT.map((line, i) => (
-                  <span key={line} className={s.headlineLine}>
-                    {i > 0 && <br />}
-                    {line}
-                  </span>
-                ))}
-              </span>
+            {/* One H1 with the full line. Phones see the shorter copy instead;
+                the H1 stays in the page for search and screen readers. */}
+            <h1 className={`${s.headline} ${s.headlineFull}`}>
+              {WORK_HEADLINE_LINES.map((line, i) => (
+                <span key={line} className={s.headlineLine}>
+                  {i > 0 && <>{" "}<br /></>}
+                  {line}
+                </span>
+              ))}
             </h1>
+            <p aria-hidden="true" className={`${s.headline} ${s.headlineShort}`}>
+              {WORK_HEADLINE_LINES_SHORT.map((line, i) => (
+                <span key={line} className={s.headlineLine}>
+                  {i > 0 && <>{" "}<br /></>}
+                  {line}
+                </span>
+              ))}
+            </p>
           </header>
 
           <div className={`${s.component} ${view === "list" ? s.isList : ""}`}>

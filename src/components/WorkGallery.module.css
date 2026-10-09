@@ -752,11 +752,18 @@
   .header {
     margin-bottom: 2em;
   }
+  /* Visually hidden, not display: none, so the H1 still counts. */
   .headlineFull {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .headlineShort {
-    display: inline;
+    display: block;
   }
   /* each short line stays whole ("Websites and brands," never splits);
      it fits with room to spare down to 320px */

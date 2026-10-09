@@ -39,7 +39,7 @@ const PROOF = proofProject?.quote && {
 };
 
 type Step = "site" | "contact" | "done";
-type Source = "team" | "closing" | "work" | "case-caddie" | "web-design";
+type Source = "team" | "closing" | "work" | "case-caddie";
 type Problem = "site" | "email" | "phone" | "send";
 
 function ArrowUpRight() {

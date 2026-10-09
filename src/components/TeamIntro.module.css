@@ -48,19 +48,6 @@
   letter-spacing: -0.01em;
 }
 
-.inlineLink {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: rgb(17 17 19 / 0.3);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color 0.2s ease;
-}
-
-.inlineLink:hover {
-  text-decoration-color: currentColor;
-}
-
 /* Four stats in a row straight on the paper, no plate, no rules between. */
 .stats {
   display: grid;
