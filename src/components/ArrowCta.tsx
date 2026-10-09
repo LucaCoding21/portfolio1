@@ -12,7 +12,8 @@
  *
  * `live` adds a pulsing green dot before the label (an availability signal).
  * `note` prints a small Outfit line under the button. No magnetism.
- * Without `href` it renders a submit button, for use inside a form.
+ * Without `href` it renders a submit button, for use inside a form. `full`
+ * stretches it to its container, label left and chip at the far end.
  */
 
 import { useEffect, useRef } from "react";
@@ -39,6 +40,7 @@ export default function ArrowCta({
   children,
   note,
   live = false,
+  full = false,
   className = "",
 }: {
   /** Omit to render a submit button (for a form) instead of a link. */
@@ -48,6 +50,8 @@ export default function ArrowCta({
   note?: string;
   /** Pulsing green dot before the label. */
   live?: boolean;
+  /** Full width of its container (a form's submit row). */
+  full?: boolean;
   className?: string;
 }) {
   const btnRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
@@ -117,7 +121,7 @@ export default function ArrowCta({
   );
 
   return (
-    <div className={`${s.block} ${className}`}>
+    <div className={`${s.block} ${full ? s.full : ""} ${className}`}>
       {href ? (
         <Link
           ref={btnRef}

@@ -19,7 +19,11 @@
 .plate {
   position: relative;
   overflow: hidden;
-  height: clamp(480px, 82svh, 820px);
+  /* A floor, not a fixed height: the review card that follows the pill is
+     taller, and the plate grows around it instead of clipping it. */
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(480px, 82svh, 820px);
   border-radius: 30px;
   background: #1a1613;
   transform-origin: center;
@@ -50,7 +54,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 1.5rem;
-  height: 100%;
+  flex: 1;
   /* The pair sits along the bottom of the plate. */
   padding: 2rem 2rem clamp(4rem, 13svh, 8rem);
   text-align: center;
@@ -79,11 +83,12 @@
     --edge: 0.75rem;
   }
   .plate {
-    height: 62svh;
+    min-height: 62svh;
     border-radius: 22px;
   }
-  /* The line and field sit lower on phones, closer to the plate's edge. */
+  /* The line and field sit lower on phones, closer to the plate's edge, and
+     narrower side padding leaves the review card room for its fields. */
   .content {
-    padding-bottom: 1.5rem;
+    padding: 2rem 1rem 1.5rem;
   }
 }

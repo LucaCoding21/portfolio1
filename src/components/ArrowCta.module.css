@@ -35,6 +35,21 @@
   transition: transform 0.18s ease;
 }
 
+/* Full width (a form's submit row): label left, chip at the far end. */
+.full {
+  display: flex;
+  width: 100%;
+}
+
+.full .btn {
+  width: 100%;
+}
+
+.full .content {
+  flex: 1;
+  justify-content: space-between;
+}
+
 /* Button reset for the form variant. */
 .asButton {
   margin: 0;

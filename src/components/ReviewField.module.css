@@ -1,18 +1,30 @@
 /*
  * The review field: a paper pill holding the input, with the studio's ink
- * ArrowCta seated in its right end, and the Outfit note under it.
+ * ArrowCta seated in its right end, and the Outfit note under it. After the
+ * site, the pill opens into a paper card (name, email, optional phone), and
+ * then into a short confirmation of what the review will show them.
  */
 
 .form {
   --ink: #111113;
+  --paper: #f9f8f5;
   --muted: #6a665e;
+  --line: rgba(17, 17, 19, 0.18);
+  --hair: rgba(17, 17, 19, 0.12);
+  --error: #b4452f;
+  width: 100%;
+  max-width: 30rem;
+}
+
+.step {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.65rem;
   width: 100%;
-  max-width: 30rem;
 }
+
+/* ---- Step 1: the site pill ---- */
 
 .field {
   display: flex;
@@ -20,7 +32,7 @@
   gap: 6px;
   width: 100%;
   padding: 5px;
-  border: 1px solid rgba(17, 17, 19, 0.18);
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: #fff;
   transition: border-color 0.2s ease;
@@ -31,7 +43,7 @@
 }
 
 .field[data-invalid] {
-  border-color: #b4452f;
+  border-color: var(--error);
 }
 
 .input {
@@ -59,15 +71,19 @@
 
 .input:-webkit-autofill,
 .input:-webkit-autofill:hover,
-.input:-webkit-autofill:focus {
+.input:-webkit-autofill:focus,
+.box:-webkit-autofill,
+.box:-webkit-autofill:hover,
+.box:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 1000px #fff inset;
   -webkit-text-fill-color: var(--ink);
   caret-color: var(--ink);
   transition: background-color 9999s ease-out;
 }
 
-.input::placeholder {
-  color: #9a958c;
+.input::placeholder,
+.box::placeholder {
+  color: #a9a49b;
 }
 
 /* The pill sits inside the field, so it is a touch shorter than on its own. */
@@ -87,7 +103,374 @@
 }
 
 .field[data-invalid] + .note {
-  color: #b4452f;
+  color: var(--error);
+}
+
+/* ---- The card (steps 2 and 3) ---- */
+
+.card {
+  container-type: inline-size;
+  align-items: stretch;
+  gap: 0;
+  padding: 22px 24px 24px;
+  border: 1px solid rgba(17, 17, 19, 0.08);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(17, 17, 19, 0.04),
+    0 14px 36px -14px rgba(17, 17, 19, 0.16);
+  text-align: left;
+}
+
+/* The confirmation takes focus so screen readers announce it; no ring. */
+.card:focus {
+  outline: 0;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.site {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.change {
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: rgba(106, 102, 94, 0.4);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.change:hover {
+  color: var(--ink);
+}
+
+.title {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1.3125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+  margin-top: 1.25rem;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.control {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #3a3833;
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.box {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(17, 17, 19, 0.14);
+  border-radius: 12px;
+  outline: 0;
+  background: #fff;
+  /* 16px so iOS doesn't zoom the page when the field is tapped. */
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.box:hover {
+  border-color: rgba(17, 17, 19, 0.28);
+}
+
+.box:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(17, 17, 19, 0.07);
+}
+
+.control[data-invalid] .box {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(180, 69, 47, 0.1);
+}
+
+.submit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-top: 1.4rem;
+}
+
+/* Only errors show under the button, so the note is red, and gone when empty. */
+.cardNote {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--error);
+}
+
+.cardNote:empty {
+  display: none;
+}
+
+/* Narrow cards (phones, the case study's column): one field per row. */
+@container (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Step 3: sent, and what the review will show them ---- */
+
+/* "Sent": a small ink chip where step 2 had "Change". */
+.sent {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px 3px 6px;
+  border-radius: 999px;
+  background: var(--ink);
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.checkPath {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawCheck 0.45s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+@keyframes drawCheck {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sub {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.inside {
+  margin-top: 1.1rem;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.insideLabel {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #3a3833;
+}
+
+.tick {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(17, 17, 19, 0.12);
+  color: var(--ink);
+}
+
+/* The call, set off under a hairline: the link and (on the confirmation)
+   a client's words. */
+.callOption {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--hair);
+}
+
+/* The question, then the link under it, at every width. */
+.callLead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.proof {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0.9rem 0 0;
+}
+
+.proof img {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.proof blockquote {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: #3a3833;
+}
+
+.proof figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  margin-top: 4px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* A small chip to the client's live site, so the quote can be checked. */
+.visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px 2px 8px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.visit svg {
+  width: 10px;
+  height: 10px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.visit:hover {
+  border-color: rgba(17, 17, 19, 0.3);
+  background: var(--paper);
+}
+
+.visit:hover svg {
+  transform: translate(1px, -1px);
+}
+
+.call {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgba(17, 17, 19, 0.25);
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.call svg {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.call:hover {
+  text-decoration-color: currentColor;
+}
+
+.call:hover svg {
+  transform: translate(2px, -2px);
 }
 
 .srOnly,
@@ -103,10 +486,19 @@
 }
 
 /* On footage (the closing reel): centred, a clearer edge on the pill, and the
-   note in white. */
+   note in white. The card stays paper, with a deeper shadow. */
 .dark {
-  align-items: center;
   margin: 0 auto;
+}
+
+.dark .step {
+  align-items: center;
+}
+
+.dark .card {
+  align-items: stretch;
+  border-color: transparent;
+  box-shadow: 0 18px 48px -16px rgba(0, 0, 0, 0.35);
 }
 
 .dark .field {
@@ -128,8 +520,15 @@
   color: #ffc2b4;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .checkPath {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Small phones: no room for both on one line. The input becomes its own pill
-   and the button sits under it. */
+   and the button sits under it. The card just tightens its padding. */
 @media screen and (max-width: 479px) {
   .field {
     flex-direction: column;
@@ -145,14 +544,14 @@
     /* A touch smaller than the desktop pill; the text stays 16px so iOS
        doesn't zoom the page when the field is tapped. */
     height: 46px;
-    border: 1px solid rgba(17, 17, 19, 0.18);
+    border: 1px solid var(--line);
     background: #fff;
   }
   .input:focus {
     border-color: var(--ink);
   }
   .field[data-invalid] .input {
-    border-color: #b4452f;
+    border-color: var(--error);
   }
   .field .cta {
     align-self: flex-start;
@@ -161,6 +560,13 @@
   }
   .note {
     margin-left: 0.25rem;
+  }
+  .card {
+    padding: 18px 18px 20px;
+    border-radius: 18px;
+  }
+  .title {
+    font-size: 1.1875rem;
   }
   /* Centred on footage, so the stacked button centres too. */
   .dark .field .cta {
