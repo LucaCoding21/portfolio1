@@ -1,7 +1,7 @@
 /*
  * The review field: a paper pill holding the input, with the studio's ink
  * ArrowCta seated in its right end, and the Outfit note under it. After the
- * site, the pill opens into a paper card (name, email, optional phone), and
+ * site, the pill opens into a paper card (name, email, phone), and
  * then into a short confirmation of what the review will show them.
  */
 
@@ -206,11 +206,6 @@
   font-weight: 500;
   line-height: 1.2;
   color: #3a3833;
-}
-
-.optional {
-  font-weight: 400;
-  color: var(--muted);
 }
 
 .box {

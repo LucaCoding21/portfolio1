@@ -6,8 +6,7 @@
  *
  *   1. site     the visitor types their site into the pill.
  *   2. contact  the pill opens into a card asking where to send the review:
- *               name, email, and a phone number if they like (only the email
- *               is required).
+ *               name (optional), email and phone.
  *   3. done     the card confirms it's sent and where, lists what the review
  *               will show them, and offers an optional call.
  *
@@ -165,7 +164,8 @@ export default function ReviewField({
       setError("email");
       return;
     }
-    if (number && number.replace(/\D/g, "").length < 7) {
+    // Ten digits: a North American number with its area code.
+    if (number.replace(/\D/g, "").length < 10) {
       setError("phone");
       return;
     }
@@ -193,7 +193,7 @@ export default function ReviewField({
       return;
     }
 
-    track("review_contact_submit", { placement: source, has_phone: Boolean(number) });
+    track("review_contact_submit", { placement: source });
     setName(who);
     setEmail(address);
     setPhone(number);
@@ -323,7 +323,7 @@ export default function ReviewField({
             </div>
             <div className={`${s.control} ${s.wide}`} data-invalid={error === "phone" || undefined}>
               <label htmlFor={`${id}-phone`} className={s.label}>
-                Phone <span className={s.optional}>· optional</span>
+                Phone
               </label>
               <input
                 id={`${id}-phone`}
@@ -350,7 +350,7 @@ export default function ReviewField({
               {error === "email"
                 ? "Add your email so we know where to send it."
                 : error === "phone"
-                  ? "That number looks short. Leave it blank if you'd rather."
+                  ? "Add your phone number, with the area code."
                   : error === "send"
                     ? "That didn't go through. Try again, or email william@cloverfield.studio."
                     : null}

@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 
 /**
  * The free website review ("See what we'd fix") emails us twice:
@@ -8,12 +8,48 @@ import { NextResponse } from "next/server";
  *                   away, so a lead who stops before giving an email is not
  *                   lost (the site usually lists a way to reach them).
  *   step "contact"  they told us where to send the review (name, email and
- *                   maybe a phone). Reply-to is set to them, so replying to
- *                   this email sends the review.
+ *                   phone). Reply-to is set to them, so replying to this
+ *                   email sends the review. William's phone also buzzes, so a
+ *                   lead can be answered within minutes.
  */
 
 const LOOKS_LIKE_A_SITE = /^(https?:\/\/)?[^\s./]+(\.[^\s./]+)+(\/\S*)?$/i;
 const LOOKS_LIKE_AN_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * Buzzes William's phone through ntfy (the ntfy app, subscribed to the topic
+ * in NTFY_TOPIC). No account or keys: the topic name is the password, so keep
+ * it long and out of the repo. Quiet when unset, and a failed alert never
+ * fails the lead, since the email is the record. Tapping the alert opens a
+ * text to the lead.
+ */
+async function alertWilliam(lead: { name: string; email: string; phone: string; website: string }) {
+  const topic = process.env.NTFY_TOPIC;
+  if (!topic) return;
+
+  const digits = lead.phone.replace(/\D/g, "");
+  const dial = digits.length === 10 ? `+1${digits}` : `+${digits}`;
+  try {
+    const res = await fetch("https://ntfy.sh/", {
+      method: "POST",
+      body: JSON.stringify({
+        topic,
+        title: `Review lead: ${lead.name || lead.website}`,
+        message: `${lead.website}\n${lead.phone} · ${lead.email}`,
+        priority: 4,
+        tags: ["four_leaf_clover"],
+        click: `sms:${dial}`,
+        actions: [
+          { action: "view", label: "Call", url: `tel:${dial}` },
+          { action: "view", label: "Email", url: `mailto:${lead.email}` },
+        ],
+      }),
+    });
+    if (!res.ok) console.error("review-lead: alert not sent:", res.status, await res.text());
+  } catch (err) {
+    console.error("review-lead: alert not sent:", err);
+  }
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -32,11 +68,18 @@ export async function POST(request: Request) {
   if (contact && !LOOKS_LIKE_AN_EMAIL.test(email)) {
     return NextResponse.json({ error: "That doesn't look like an email." }, { status: 400 });
   }
+  if (contact && phone.replace(/\D/g, "").length < 10) {
+    return NextResponse.json({ error: "That doesn't look like a phone number." }, { status: 400 });
+  }
 
   const where =
     ({ team: "homepage team section", closing: "homepage closing video", work: "/work page", "case-caddie": "Caddie Companion case study", "web-design": "/web-design-surrey page" } as Record<string, string>)[
       body?.source
     ] ?? "homepage";
+
+  if (contact) {
+    after(() => alertWilliam({ name, email, phone, website }));
+  }
 
   const key = process.env.RESEND_API_KEY;
   if (!key) {
@@ -56,11 +99,11 @@ export async function POST(request: Request) {
             "",
             `Name: ${name || "(not given)"}`,
             `Email: ${email}`,
-            `Phone: ${phone || "(not given)"}`,
+            `Phone: ${phone}`,
             `Website: ${website}`,
             "",
             "They asked for the written review rather than a call. Reply to this email to send it to them.",
-            ...(phone ? ["They left a number, so a quick text when it's sent is fair game."] : []),
+            "They left a number, so a quick text when it's sent is fair game.",
           ].join("\n"),
         }
       : {
