@@ -19,12 +19,12 @@
  * is busiest exactly at the handoff (every section measures itself for its
  * scroll triggers), and a script-driven entrance dropped frames there.
  *
- * Layout, sizes, overlay, review field and ticker are 1:1 from the
- * "Cloverfield Hero + Lead Form" design (option A, Oct 2026): the 1440px
- * artboard on desktop, the 390px one on phones, where the copy sits at the
- * bottom. The free site review (HeroReview) sits under the subline and the
- * win ticker under that; the Sight card left the hero with it. The hero is
- * at least a screen tall and grows if the review card needs the room.
+ * Layout, sizes, overlay and review field are 1:1 from the "Cloverfield
+ * Hero + Lead Form" design (option A, Oct 2026): the 1440px artboard on
+ * desktop, the 390px one on phones, where the copy sits at the bottom. The
+ * free site review (HeroReview) sits under the subline. The design's win
+ * ticker and the old Sight card are gone. The hero is at least a screen tall
+ * and grows if the review card needs the room.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
@@ -38,25 +38,6 @@ import s from "./HomeHero.module.css";
 gsap.registerPlugin(ScrollTrigger);
 
 const HEADLINE = ["We make websites", "that bring in customers."];
-
-/* The ticker's lines, in the design's order. The first comes back at the end
-   so the loop wraps without a jump. */
-const WINS = [
-  "Estimate request from Langley",
-  "New quote request from Surrey",
-  "Consultation booked from Google",
-  "New customer from White Rock",
-  "New inquiry from Delta",
-];
-
-function Mail() {
-  return (
-    <svg className={s.tickIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="m3 7 9 6 9-6" />
-    </svg>
-  );
-}
 
 export default function HomeHero({ ready, preview }: { ready: boolean; preview?: HeroPreview }) {
   const heroRef = useRef<HTMLElement>(null);
@@ -305,19 +286,6 @@ export default function HomeHero({ ready, preview }: { ready: boolean; preview?:
         </div>
 
         <HeroReview className={s.review} preview={preview} />
-
-        <div className={s.tickerSlot} data-flip="">
-          <div className={s.ticker} data-hero-ticker="">
-            <div className={s.tickerTrack}>
-              {[...WINS, WINS[0]].map((win, i) => (
-                <p key={i} className={s.tick} aria-hidden={i === WINS.length || undefined}>
-                  <Mail />
-                  {win}
-                </p>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

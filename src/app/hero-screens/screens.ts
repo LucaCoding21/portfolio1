@@ -92,7 +92,7 @@ export const GROUPS: Group[] = [
       {
         key: "contact-phone",
         title: "Step 2 · Where to send it",
-        note: "Fields stack. The hero grows, so the ticker sits just below the fold.",
+        note: "Fields stack in one column.",
         size: "phone",
         preview: { step: "contact", website: SITE },
       },

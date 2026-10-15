@@ -1,6 +1,6 @@
 /*
   Homepage hero. The plate and its zoom are cloned from a reference; the copy,
-  overlay, review field and ticker are 1:1 from the "Cloverfield Hero + Lead
+  overlay and review field are 1:1 from the "Cloverfield Hero + Lead
   Form" design: its 1440px artboard on desktop, its 390px one at 767px down.
 */
 
@@ -83,7 +83,7 @@
 }
 
 /* The column fills the hero, framed by the design's padding (more at the top
-   for the nav), and centres the copy, the review field and the ticker. */
+   for the nav), and centres the copy and the review field. */
 .content {
   position: relative;
   z-index: 1;
@@ -135,17 +135,12 @@
    curves as the old GSAP timeline: the first line 0.9s on calebwu.ca's fast
    ease, 0.05s a word; the italic line fades 0.5s and lands 0.7s on his
    sticker spring from 0.12s; the subline from 0.25s; the review field from
-   0.35s and the ticker from 0.45s; the scrim eases in over 1.4s. */
+   0.35s; the scrim eases in over 1.4s. */
 .hero[data-intro="wait"] .word,
 .hero[data-intro="wait"] .sub,
 .hero[data-intro="wait"] .review,
-.hero[data-intro="wait"] .ticker,
 .hero[data-intro="wait"] .scrim {
   opacity: 0;
-}
-
-.hero[data-intro="wait"] .tickerTrack {
-  animation-play-state: paused;
 }
 
 .hero[data-intro="play"] .line:not(.italic) .word {
@@ -166,10 +161,6 @@
 
 .hero[data-intro="play"] .review {
   animation: hero-rise 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.35s both;
-}
-
-.hero[data-intro="play"] .ticker {
-  animation: hero-rise 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.45s both;
 }
 
 .hero[data-intro="play"] .scrim {
@@ -217,77 +208,6 @@
   text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
-/* The win ticker: one 24px line showing, stepping up a line every 3s (15s
-   for the five), each step 0.45s on the design's ease-in-out. */
-.tickerSlot {
-  margin-top: 30px;
-}
-
-.ticker {
-  --row: 24px;
-  width: 480px;
-  max-width: 100%;
-  height: var(--row);
-  overflow: hidden;
-}
-
-.tickerTrack {
-  display: flex;
-  flex-direction: column;
-  animation: hero-ticker 15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-@keyframes hero-ticker {
-  0%,
-  17% {
-    transform: translateY(0);
-  }
-  20%,
-  37% {
-    transform: translateY(calc(-1 * var(--row)));
-  }
-  40%,
-  57% {
-    transform: translateY(calc(-2 * var(--row)));
-  }
-  60%,
-  77% {
-    transform: translateY(calc(-3 * var(--row)));
-  }
-  80%,
-  97% {
-    transform: translateY(calc(-4 * var(--row)));
-  }
-  100% {
-    transform: translateY(calc(-5 * var(--row)));
-  }
-}
-
-.tick {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  height: var(--row);
-  margin: 0;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.9);
-  white-space: nowrap;
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
-}
-
-.tickIcon {
-  flex: none;
-  width: 18px;
-  height: 18px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .tickerTrack {
-    animation: none;
-  }
-}
-
 /* Phones: the 390px artboard. The copy sits at the bottom of the screen,
    left-aligned, over a lighter shade that darkens toward the bottom. */
 @media (max-width: 767px) {
@@ -320,21 +240,5 @@
      stray short line in the middle. */
   .sub br {
     display: none;
-  }
-  .tickerSlot {
-    margin-top: 20px;
-  }
-  .ticker {
-    --row: 22px;
-    width: 100%;
-  }
-  .tick {
-    gap: 8px;
-    font-size: 14px;
-    text-shadow: none;
-  }
-  .tickIcon {
-    width: 16px;
-    height: 16px;
   }
 }

@@ -279,7 +279,7 @@ export default function HeroReview({ className = "", preview }: { className?: st
             <SubmitButton>Get my free site review</SubmitButton>
           </div>
           <p id={noteId} className={s.note} data-hero-note="" data-error={error === "site" || undefined} role="status">
-            {error === "site" ? PROBLEMS.site : "We'll go through your site the way a customer would, from the Google search to the quote."}
+            {error === "site" ? PROBLEMS.site : "We'll go through your site the way a customer would."}
           </p>
         </form>
       )}
