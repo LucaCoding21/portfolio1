@@ -16,9 +16,9 @@
  * stretches it to its container, label left and chip at the far end.
  */
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Link from "next/link";
-import gsap from "gsap";
+import { useChipFill } from "@/lib/useChipFill";
 import s from "./ArrowCta.module.css";
 
 function Arrow() {
@@ -59,49 +59,7 @@ export default function ArrowCta({
   const arrowRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    const btn = btnRef.current;
-    const fill = fillRef.current;
-    const arrow = arrowRef.current;
-    const label = labelRef.current;
-    if (!btn || !fill || !arrow || !label) return;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const ctx = gsap.context(() => {
-      /* Scale that takes the chip from its corner to the far edge of the pill. */
-      const coverScale = () => {
-        const r = btn.getBoundingClientRect();
-        // Measured, not assumed: --chip can be overridden (the review field
-        // seats a smaller pill), and a stale size stops the wipe short.
-        const chip = fill.offsetWidth;
-        const cx = r.width - (r.height - chip) / 2 - chip / 2;
-        const reach = Math.hypot(cx, r.height / 2);
-        return (reach * 2 + 4) / chip;
-      };
-
-      const onEnter = () => {
-        gsap.to(fill, { scale: coverScale(), duration: 0.75, ease: "expo.out", overwrite: true });
-        gsap.to(arrow, { rotate: -45, x: 1, y: -1, duration: 0.55, ease: "back.out(1.8)", overwrite: true });
-        gsap.to(label, { x: 3, duration: 0.6, ease: "expo.out", overwrite: true });
-      };
-
-      const onLeave = () => {
-        gsap.to(fill, { scale: 1, duration: 0.55, ease: "power3.inOut", overwrite: true });
-        gsap.to(arrow, { rotate: 0, x: 0, y: 0, duration: 0.45, ease: "power3.inOut", overwrite: true });
-        gsap.to(label, { x: 0, duration: 0.5, ease: "power3.inOut", overwrite: true });
-      };
-
-      btn.addEventListener("mouseenter", onEnter);
-      btn.addEventListener("mouseleave", onLeave);
-      return () => {
-        btn.removeEventListener("mouseenter", onEnter);
-        btn.removeEventListener("mouseleave", onLeave);
-      };
-    }, btn);
-
-    return () => ctx.revert();
-  }, []);
+  useChipFill({ btn: btnRef, fill: fillRef, arrow: arrowRef, label: labelRef });
 
   const inner = (
     <>

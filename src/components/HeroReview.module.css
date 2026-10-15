@@ -101,15 +101,18 @@
 }
 
 .btn {
+  position: relative;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   height: 52px;
-  padding: 0 22px 0 26px;
-  border: 0;
+  /* the design's 22/26px, less the 1px border */
+  padding: 0 21px 0 25px;
+  border: 1px solid var(--ink);
   border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--ink);
   color: #fff;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
@@ -117,15 +120,51 @@
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: transform 0.18s ease;
 }
 
-.btn:hover {
-  background: #000;
+.btn:active {
+  transform: scale(0.97);
 }
 
 .btn:disabled {
   cursor: progress;
+}
+
+/* The hover's paper circle. useChipFill centres it on the arrow and scales
+   it from 0 over the button; it must own no other transform. */
+.btnFill {
+  position: absolute;
+  top: calc(50% - 12px);
+  right: 18px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #faf8f4;
+  transform: scale(0);
+  transform-origin: center;
+  will-change: transform;
+  pointer-events: none;
+}
+
+/* White on ink reads as white; white on the paper circle reads as ink. */
+.btnContent {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  mix-blend-mode: difference;
+}
+
+.btnLabel,
+.btnArrow {
+  display: block;
+  will-change: transform;
+}
+
+.btnArrow > svg {
+  display: block;
 }
 
 .note {

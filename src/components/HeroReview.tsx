@@ -24,6 +24,7 @@ import { useId, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { track } from "@/lib/track";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@/lib/reviewLead";
+import { useChipFill } from "@/lib/useChipFill";
 import s from "./HeroReview.module.css";
 
 export type Step = "site" | "contact" | "done";
@@ -53,6 +54,31 @@ function Arrow() {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M5 12h14M13 6l6 6-6 6" />
     </svg>
+  );
+}
+
+/** The ink submit button, with the studio buttons' hover (useChipFill): a
+ *  paper circle swells from the arrow over the button, the label flips to
+ *  ink, and the arrow turns up and right. Plain ink at rest, as designed. */
+function SubmitButton({ children, disabled }: { children: string; disabled?: boolean }) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const fillRef = useRef<HTMLSpanElement>(null);
+  const arrowRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  useChipFill({ btn: btnRef, fill: fillRef, arrow: arrowRef, label: labelRef }, { rest: 0, place: true });
+
+  return (
+    <button ref={btnRef} type="submit" className={s.btn} disabled={disabled}>
+      <span ref={fillRef} aria-hidden className={s.btnFill} />
+      <span className={s.btnContent}>
+        <span ref={labelRef} className={s.btnLabel}>
+          {children}
+        </span>
+        <span ref={arrowRef} className={s.btnArrow}>
+          <Arrow />
+        </span>
+      </span>
+    </button>
   );
 }
 
@@ -250,10 +276,7 @@ export default function HeroReview({ className = "", preview }: { className?: st
             </div>
             {/* Honeypot: hidden from people, filled in by bots. */}
             <input name="company" tabIndex={-1} autoComplete="off" className={s.honeypot} aria-hidden />
-            <button type="submit" className={s.btn}>
-              Get my free site review
-              <Arrow />
-            </button>
+            <SubmitButton>Get my free site review</SubmitButton>
           </div>
           <p id={noteId} className={s.note} data-hero-note="" data-error={error === "site" || undefined} role="status">
             {error === "site" ? PROBLEMS.site : "We'll go through your site the way a customer would, from the Google search to the quote."}
@@ -296,10 +319,7 @@ export default function HeroReview({ className = "", preview }: { className?: st
             <p id={noteId} className={s.cardNote} data-error={error || undefined} role="status">
               {error && PROBLEMS[error]}
             </p>
-            <button type="submit" className={s.btn} disabled={sending}>
-              {sending ? "Sending" : "Send my free review"}
-              <Arrow />
-            </button>
+            <SubmitButton disabled={sending}>{sending ? "Sending" : "Send my free review"}</SubmitButton>
           </div>
         </form>
       )}
