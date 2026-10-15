@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { NextResponse, after } from "next/server";
+import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
 
 /**
  * The free website review ("See what we'd fix") emails us twice:
@@ -12,9 +13,6 @@ import { NextResponse, after } from "next/server";
  *                   email sends the review. William's phone also buzzes, so a
  *                   lead can be answered within minutes.
  */
-
-const LOOKS_LIKE_A_SITE = /^(https?:\/\/)?[^\s./]+(\.[^\s./]+)+(\/\S*)?$/i;
-const LOOKS_LIKE_AN_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
  * Buzzes William's phone through ntfy (the ntfy app, subscribed to the topic
@@ -68,12 +66,12 @@ export async function POST(request: Request) {
   if (contact && !LOOKS_LIKE_AN_EMAIL.test(email)) {
     return NextResponse.json({ error: "That doesn't look like an email." }, { status: 400 });
   }
-  if (contact && phone.replace(/\D/g, "").length < 10) {
+  if (contact && !looksLikeAPhone(phone)) {
     return NextResponse.json({ error: "That doesn't look like a phone number." }, { status: 400 });
   }
 
   const where =
-    ({ team: "homepage team section", closing: "homepage closing video", work: "/work page", "case-caddie": "Caddie Companion case study", "web-design": "/web-design-surrey page" } as Record<string, string>)[
+    ({ hero: "homepage hero", team: "homepage team section", closing: "homepage closing video", work: "/work page", "case-caddie": "Caddie Companion case study", "web-design": "/web-design-surrey page" } as Record<string, string>)[
       body?.source
     ] ?? "homepage";
 

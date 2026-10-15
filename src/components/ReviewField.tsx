@@ -24,10 +24,8 @@ import gsap from "gsap";
 import ArrowCta from "@/components/ArrowCta";
 import { REVIEW_CAL_URL, projects } from "@/data/projects";
 import { track } from "@/lib/track";
+import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@/lib/reviewLead";
 import s from "./ReviewField.module.css";
-
-const LOOKS_LIKE_A_SITE = /^(https?:\/\/)?[^\s./]+(\.[^\s./]+)+(\/\S*)?$/i;
-const LOOKS_LIKE_AN_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Next to the call on the confirmation: Mike's line from the Innovative
  *  Aluminum testimonial, read from projects.ts so the two never drift. */
@@ -43,9 +41,6 @@ const PROOF = proofProject?.quote && {
 type Step = "site" | "contact" | "done";
 type Source = "team" | "closing" | "work" | "case-caddie" | "web-design";
 type Problem = "site" | "email" | "phone" | "send";
-
-/** "https://www.acme.ca/" reads as "acme.ca" in the copy. */
-const bare = (site: string) => site.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/$/, "");
 
 function ArrowUpRight() {
   return (
@@ -164,8 +159,7 @@ export default function ReviewField({
       setError("email");
       return;
     }
-    // Ten digits: a North American number with its area code.
-    if (number.replace(/\D/g, "").length < 10) {
+    if (!looksLikeAPhone(number)) {
       setError("phone");
       return;
     }

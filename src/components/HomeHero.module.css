@@ -1,7 +1,7 @@
 /*
-  Homepage hero, cloned from a reference. Reference root is 10px; rem values are written as px.
-  Type scales are the reference's clamp() formulas with rem converted to px.
-  Breakpoints: tablet 1024, desktop 1280, desktopLarge 1440.
+  Homepage hero. The plate and its zoom are cloned from a reference; the copy,
+  overlay, review field and ticker are 1:1 from the "Cloverfield Hero + Lead
+  Form" design: its 1440px artboard on desktop, its 390px one at 767px down.
 */
 
 .hero {
@@ -10,10 +10,8 @@
   --o: 48px;
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100vw;
-  height: 100svh;
+  min-height: 100svh;
   overflow: hidden;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
@@ -72,61 +70,50 @@
   z-index: 1;
 }
 
-/* The reel is bright (white sky, pale water) and the copy is white, so a
-   soft radial pool sits behind the text block and a short fade sits under
-   the nav. Tune with --scrim (pool) and --scrim-top (nav band). Lives inside
-   .inner so it clips and scales with the plate. */
+/* The design's overlay: a flat shade over the reel and a soft pool behind
+   the copy. Lives inside .inner so it clips and scales with the plate. */
 .scrim {
-  --scrim: 0.5;
-  --scrim-top: 0.35;
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(
-      ellipse 54% 50% at 50% 50%,
-      rgba(26, 22, 19, var(--scrim)) 0%,
-      rgba(26, 22, 19, calc(var(--scrim) * 0.6)) 40%,
-      rgba(26, 22, 19, 0) 100%
-    ),
-    linear-gradient(to bottom, rgba(26, 22, 19, var(--scrim-top)) 0%, rgba(26, 22, 19, 0) 22%);
+    radial-gradient(ellipse 50% 48% at 50% 55%, rgba(12, 9, 7, 0.32), rgba(12, 9, 7, 0) 72%),
+    rgba(18, 14, 11, 0.42);
 }
 
+/* The column fills the hero, framed by the design's padding (more at the top
+   for the nav), and centres the copy, the review field and the ticker. */
 .content {
   position: relative;
   z-index: 1;
   display: flex;
-  flex-flow: column;
+  flex: 1;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  padding: 0 20px;
+  padding: 104px 48px 32px;
+  text-align: center;
+  line-height: normal;
 }
 
-/* text-heading-xl */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 100px on the 1440 x 900 artboard; scales down with narrower or shorter
+   windows so the copy and the review card still fit one screen. */
 .headline {
-  margin: 0 0 40px;
+  margin: 0;
   font-family: var(--font-marist), Georgia, serif;
   font-weight: 500;
-  font-size: clamp(40px, 12.69vw, 64px);
+  font-size: clamp(52px, min(6.95vw, 11.1svh), 100px);
   line-height: 0.95;
   letter-spacing: -0.02em;
-  text-align: center;
   color: #fff;
-  text-shadow: 0 2px 24px rgba(26, 22, 19, 0.35);
-}
-
-@media (min-width: 1024px) {
-  .headline {
-    font-size: clamp(74px, 7.22vw, 76.9px);
-  }
-}
-
-@media (min-width: 1280px) {
-  .headline {
-    font-size: clamp(76.9px, 6.01vw, 104px);
-  }
+  text-shadow: 0 2px 30px rgba(0, 0, 0, 0.3);
 }
 
 .italic {
@@ -147,13 +134,18 @@
    hidden, until the loader hands over; "play" drops it in. Same timings and
    curves as the old GSAP timeline: the first line 0.9s on calebwu.ca's fast
    ease, 0.05s a word; the italic line fades 0.5s and lands 0.7s on his
-   sticker spring from 0.12s; the subline from 0.25s; the task row from
-   0.35s; the scrim eases in over 1.4s. */
+   sticker spring from 0.12s; the subline from 0.25s; the review field from
+   0.35s and the ticker from 0.45s; the scrim eases in over 1.4s. */
 .hero[data-intro="wait"] .word,
 .hero[data-intro="wait"] .sub,
-.hero[data-intro="wait"] .tasks,
+.hero[data-intro="wait"] .review,
+.hero[data-intro="wait"] .ticker,
 .hero[data-intro="wait"] .scrim {
   opacity: 0;
+}
+
+.hero[data-intro="wait"] .tickerTrack {
+  animation-play-state: paused;
 }
 
 .hero[data-intro="play"] .line:not(.italic) .word {
@@ -172,8 +164,12 @@
   animation: hero-sub 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.25s both;
 }
 
-.hero[data-intro="play"] .tasks {
-  animation: hero-tasks 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.35s both;
+.hero[data-intro="play"] .review {
+  animation: hero-rise 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.35s both;
+}
+
+.hero[data-intro="play"] .ticker {
+  animation: hero-rise 0.6s cubic-bezier(0.62, 0.61, 0.02, 1) 0.45s both;
 }
 
 .hero[data-intro="play"] .scrim {
@@ -206,129 +202,139 @@
   }
 }
 
-@keyframes hero-tasks {
+@keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translateY(-12px) scale(0.9);
-  }
-}
-
-/* text-body-md */
-.bodyMd {
-  margin: 0;
-  font-size: 14px;
-  line-height: 16px;
-  letter-spacing: 0;
-}
-
-@media (min-width: 1024px) {
-  .bodyMd {
-    font-size: 16px;
-    line-height: 20px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .bodyMd {
-    line-height: 24px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .bodyMd {
-    font-size: 17px;
+    transform: translateY(-12px) scale(0.96);
   }
 }
 
 .sub {
-  margin-bottom: 8px;
-  text-align: center;
-  color: #fff;
-  text-shadow: 0 1px 12px rgba(26, 22, 19, 0.35);
+  margin: 28px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
-/* On phones the two sentences wrap on their own; the forced break would
-   leave a stray short line in the middle. A size up from the reference's
-   14px so it reads at arm's length. */
-@media (max-width: 767px) {
-  /* The pool read as a visible dark blob on phones, so it runs lighter
-     than desktop there; the nav band stays heavier for the bright sky. */
-  .scrim {
-    --scrim: 0.38;
-    --scrim-top: 0.45;
-  }
-  .sub {
-    margin-bottom: 12px;
-    font-size: 16px;
-    line-height: 22px;
-  }
-  .sub br {
-    display: none;
-  }
+/* The win ticker: one 24px line showing, stepping up a line every 3s (15s
+   for the five), each step 0.45s on the design's ease-in-out. */
+.tickerSlot {
+  margin-top: 30px;
 }
 
-/* rotating task line */
-.tasks {
-  position: relative;
-  width: 100%;
-  height: 30px;
+.ticker {
+  --row: 24px;
+  width: 480px;
+  max-width: 100%;
+  height: var(--row);
   overflow: hidden;
 }
 
-.task {
-  position: absolute;
-  inset: 0;
+.tickerTrack {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  white-space: nowrap;
-  opacity: 0;
+  flex-direction: column;
+  animation: hero-ticker 15s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
-.taskText {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  color: #fff;
-  opacity: 0.7;
-}
-
-.taskIcon {
-  display: inline-flex;
-  margin-right: 3px;
-}
-
-/* The Sight card's corner. It sits 20px inside the full-bleed plate, and when
-   the plate shrinks (--pad in from each edge) it moves in by the same amount,
-   on the plate's own curve, so it stays inside the rounded frame. */
-.peekSlot {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  z-index: 30;
-  transition:
-    right 1s cubic-bezier(0.22, 1, 0.36, 1),
-    bottom 1s cubic-bezier(0.22, 1, 0.36, 1),
-    left 1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.plate.isZoomed ~ .peekSlot {
-  right: calc(20px + var(--pad, 32px));
-  bottom: calc(20px + var(--pad, 32px));
-}
-
-/* Phones: the bar spans the width, inset from both edges. */
-@media (max-width: 767px) {
-  .peekSlot {
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
+@keyframes hero-ticker {
+  0%,
+  17% {
+    transform: translateY(0);
   }
-  .plate.isZoomed ~ .peekSlot {
-    left: calc(12px + var(--pad, 16px));
-    right: calc(12px + var(--pad, 16px));
-    bottom: calc(12px + var(--pad, 16px));
+  20%,
+  37% {
+    transform: translateY(calc(-1 * var(--row)));
+  }
+  40%,
+  57% {
+    transform: translateY(calc(-2 * var(--row)));
+  }
+  60%,
+  77% {
+    transform: translateY(calc(-3 * var(--row)));
+  }
+  80%,
+  97% {
+    transform: translateY(calc(-4 * var(--row)));
+  }
+  100% {
+    transform: translateY(calc(-5 * var(--row)));
+  }
+}
+
+.tick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: var(--row);
+  margin: 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+}
+
+.tickIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickerTrack {
+    animation: none;
+  }
+}
+
+/* Phones: the 390px artboard. The copy sits at the bottom of the screen,
+   left-aligned, over a lighter shade that darkens toward the bottom. */
+@media (max-width: 767px) {
+  .scrim {
+    background:
+      linear-gradient(rgba(12, 9, 7, 0) calc(100% - 520px), rgba(12, 9, 7, 0.45)),
+      rgba(18, 14, 11, 0.25);
+  }
+  .content {
+    justify-content: flex-end;
+    align-items: stretch;
+    padding: 96px 20px 36px;
+    text-align: left;
+  }
+  .copy {
+    align-items: stretch;
+  }
+  .headline {
+    font-size: clamp(40px, 12.3vw, 48px);
+    line-height: 0.98;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
+  }
+  .sub {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.5;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+  }
+  /* The two sentences wrap on their own; the forced break would leave a
+     stray short line in the middle. */
+  .sub br {
+    display: none;
+  }
+  .tickerSlot {
+    margin-top: 20px;
+  }
+  .ticker {
+    --row: 22px;
+    width: 100%;
+  }
+  .tick {
+    gap: 8px;
+    font-size: 14px;
+    text-shadow: none;
+  }
+  .tickIcon {
+    width: 16px;
+    height: 16px;
   }
 }

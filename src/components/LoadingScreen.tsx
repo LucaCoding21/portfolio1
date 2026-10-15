@@ -26,6 +26,8 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/dist/CustomEase";
 import s from "./LoadingScreen.module.css";
 
+gsap.registerPlugin(CustomEase);
+
 /** The hero reel: 1080p landscape, and a 9:16 crop from the same 1080p
  *  source for phones (a landscape 720p file blown up by object-fit: cover
  *  showed only a ~400px sliver, stretched 3x, and read blurry). HomeHero

@@ -19,78 +19,55 @@
  * is busiest exactly at the handoff (every section measures itself for its
  * scroll triggers), and a script-driven entrance dropped frames there.
  *
- * Copy is Cloverfield's: headline, subline, rotating wins. The reference's
- * bottom email form was removed; the nav carries "Book a call".
+ * Layout, sizes, overlay, review field and ticker are 1:1 from the
+ * "Cloverfield Hero + Lead Form" design (option A, Oct 2026): the 1440px
+ * artboard on desktop, the 390px one on phones, where the copy sits at the
+ * bottom. The free site review (HeroReview) sits under the subline and the
+ * win ticker under that; the Sight card left the hero with it. The hero is
+ * at least a screen tall and grows if the review card needs the room.
  */
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import SightPeek from "./SightPeek";
-import { CustomEase } from "gsap/dist/CustomEase";
+import HeroReview, { type HeroPreview } from "./HeroReview";
 import { LOADER_HANDOFF_EVENT, MOBILE_MEDIA, POSTER, POSTER_MOBILE, REEL, REEL_MOBILE } from "./LoadingScreen";
 import { INTRO_EVENT } from "@/lib/intro";
 import s from "./HomeHero.module.css";
 
-gsap.registerPlugin(ScrollTrigger, CustomEase);
-
-const DURATION_SLOW = 1;
-const EASE_OUT = "expo.out";
-const TASK_INTERVAL_MS = 2500;
-
-/* calebwu.ca's motion: --ease-fast for anything structural, the sticker
-   overshoot for the one line that should feel physical. */
-const RECOIL = "cf-recoil";
+gsap.registerPlugin(ScrollTrigger);
 
 const HEADLINE = ["We make websites", "that bring in customers."];
 
-/* Each message carries the icon for what happened. */
-type TaskIcon = "mail" | "calendar" | "bell" | "user";
-const TASKS: { label: string; icon: TaskIcon }[] = [
-  { label: "New quote request from Surrey", icon: "mail" },
-  { label: "Booking confirmed for Thursday", icon: "calendar" },
-  { label: "3 new leads came in overnight", icon: "bell" },
-  { label: "Estimate request from Langley", icon: "mail" },
-  { label: "Consultation booked from Google", icon: "calendar" },
-  { label: "New customer from White Rock", icon: "user" },
-  { label: "New inquiry from Delta", icon: "mail" },
+/* The ticker's lines, in the design's order. The first comes back at the end
+   so the loop wraps without a jump. */
+const WINS = [
+  "Estimate request from Langley",
+  "New quote request from Surrey",
+  "Consultation booked from Google",
+  "New customer from White Rock",
+  "New inquiry from Delta",
 ];
 
-/* 24px line icons on the same 1.5px white stroke, drawn in the calendar's
-   style so the set reads as one family. */
-const ICON_PATHS: Record<TaskIcon, string> = {
-  calendar:
-    "M3.75 9.75H20.25M7.75 4.75V2.75M16.25 4.75V2.75M6.75 20.25H17.25C18.9069 20.25 20.25 18.9069 20.25 17.25V7.75C20.25 6.09315 18.9069 4.75 17.25 4.75H6.75C5.09315 4.75 3.75 6.09315 3.75 7.75V17.25C3.75 18.9069 5.09315 20.25 6.75 20.25Z",
-  mail: "M3.75 7.25L11.4 12.35C11.76 12.59 12.24 12.59 12.6 12.35L20.25 7.25M6.75 19.25H17.25C18.9069 19.25 20.25 17.9069 20.25 16.25V7.75C20.25 6.09315 18.9069 4.75 17.25 4.75H6.75C5.09315 4.75 3.75 6.09315 3.75 7.75V16.25C3.75 17.9069 5.09315 19.25 6.75 19.25Z",
-  bell: "M9.75 19.25C10.2 20.1 11.03 20.75 12 20.75C12.97 20.75 13.8 20.1 14.25 19.25M5.75 16.25H18.25L17.25 14.75V10C17.25 7.1 14.9 4.75 12 4.75C9.1 4.75 6.75 7.1 6.75 10V14.75L5.75 16.25Z",
-  user: "M12 11.25C13.7949 11.25 15.25 9.79493 15.25 8C15.25 6.20507 13.7949 4.75 12 4.75C10.2051 4.75 8.75 6.20507 8.75 8C8.75 9.79493 10.2051 11.25 12 11.25ZM5.75 19.25C6.4 16.4 8.95 14.25 12 14.25C15.05 14.25 17.6 16.4 18.25 19.25",
-};
-
-function TaskGlyph({ icon }: { icon: TaskIcon }) {
+function Mail() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <g opacity="0.7">
-        <path d={ICON_PATHS[icon]} stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </g>
+    <svg className={s.tickIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
     </svg>
   );
 }
 
-export default function HomeHero({ ready }: { ready: boolean }) {
+export default function HomeHero({ ready, preview }: { ready: boolean; preview?: HeroPreview }) {
   const heroRef = useRef<HTMLElement>(null);
-  const tasksRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
-  const [tasksOn, setTasksOn] = useState(false);
 
   /* entrance: hidden before first paint, played on the loader's handoff
      (or on `ready` when the loader was skipped) */
   useLayoutEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setTasksOn(true);
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // Everything starts above its place and drops in, the same way the nav
     // slides down. The loader's reel has no scrim; starting clear makes the
     // handoff invisible, and the shade then eases in under the words.
@@ -101,26 +78,23 @@ export default function HomeHero({ ready }: { ready: boolean }) {
   }, []);
 
   const playedRef = useRef(false);
-  const introRef = useRef<() => void>(() => {});
-  introRef.current = () => {
+  const playIntro = useCallback(() => {
     if (playedRef.current) return;
     playedRef.current = true;
     window.dispatchEvent(new CustomEvent(INTRO_EVENT));
     const hero = heroRef.current;
     if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     hero.dataset.intro = "play";
-    window.setTimeout(() => setTasksOn(true), 550);
-  };
-
-  useEffect(() => {
-    const onHandoff = () => introRef.current();
-    window.addEventListener(LOADER_HANDOFF_EVENT, onHandoff);
-    return () => window.removeEventListener(LOADER_HANDOFF_EVENT, onHandoff);
   }, []);
 
   useEffect(() => {
-    if (ready) introRef.current();
-  }, [ready]);
+    window.addEventListener(LOADER_HANDOFF_EVENT, playIntro);
+    return () => window.removeEventListener(LOADER_HANDOFF_EVENT, playIntro);
+  }, [playIntro]);
+
+  useEffect(() => {
+    if (ready) playIntro();
+  }, [ready, playIntro]);
 
   /* nav theme, plate zoom, video gating */
   useEffect(() => {
@@ -163,8 +137,22 @@ export default function HomeHero({ ready }: { ready: boolean }) {
       hero.style.setProperty("--rx", `${rad / sx}px`);
       hero.style.setProperty("--ry", `${rad / sy}px`);
     };
-    setVars();
-    window.addEventListener("resize", setVars);
+    // Re-measured whenever the hero changes size: a resize, or the review
+    // card making it taller. A change of height alone moves every section
+    // below, so their scroll triggers are refreshed too.
+    let lastW = 0;
+    let lastH = 0;
+    const ro = new ResizeObserver(() => {
+      const W = hero.clientWidth;
+      const H = hero.clientHeight;
+      if (W === lastW && H === lastH) return;
+      const grew = lastH !== 0 && W === lastW;
+      lastW = W;
+      lastH = H;
+      setVars();
+      if (grew) ScrollTrigger.refresh();
+    });
+    ro.observe(hero);
 
     // Play as soon as the hero is on screen and no zoom is in flight. The
     // video is transparent until its first frame decodes, so the poster
@@ -238,7 +226,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
       });
     });
     return () => {
-      window.removeEventListener("resize", setVars);
+      ro.disconnect();
       window.removeEventListener(LOADER_HANDOFF_EVENT, onHandoff);
       plate.removeEventListener("transitionstart", onTrStart);
       plate.removeEventListener("transitionend", onTrDone);
@@ -252,64 +240,6 @@ export default function HomeHero({ ready }: { ready: boolean }) {
   useEffect(() => {
     if (ready) ScrollTrigger.refresh(true);
   }, [ready]);
-
-  /* task rotator: RafInterval at 2.5s, slide up 100% with expo.out over 1s */
-  useEffect(() => {
-    const wrap = tasksRef.current;
-    if (!wrap || !tasksOn) return;
-    if (!CustomEase.get(RECOIL)) CustomEase.create(RECOIL, "0.34, 1.56, 0.64, 1");
-    const items = gsap.utils.toArray<HTMLElement>("[data-task-item]", wrap);
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (items.length <= 1) return;
-
-    let prev: HTMLElement | null = null;
-    let next: HTMLElement | null = items[0];
-    let idx = 0;
-
-    const step = () => {
-      if (!next) return;
-      gsap.fromTo(
-        next,
-        { yPercent: 100 },
-        { yPercent: 0, autoAlpha: 1, duration: DURATION_SLOW, ease: EASE_OUT }
-      );
-      // The icon lands a beat after its line, with calebwu.ca's sticker
-      // recoil: past full size with a small twist, then back.
-      const icon = next.querySelector<HTMLElement>(`.${s.taskIcon}`);
-      if (icon && !reduced) {
-        gsap.fromTo(
-          icon,
-          { scale: 0, rotate: -14 },
-          { scale: 1, rotate: 0, duration: 0.55, delay: 0.12, ease: RECOIL }
-        );
-      }
-      if (prev) {
-        gsap.fromTo(prev, { yPercent: 0 }, { yPercent: -100, duration: DURATION_SLOW, ease: EASE_OUT });
-      }
-      if (++idx >= items.length) idx = 0;
-      prev = next;
-      next = items[idx] ?? null;
-    };
-
-    gsap.set(items, { yPercent: 100, autoAlpha: 0 });
-    step();
-
-    // rAF-driven interval, like the reference's RafInterval
-    let raf = 0;
-    let last: number | null = null;
-    const loop = (t: number) => {
-      if (last === null) last = t;
-      const dt = t - last;
-      if (dt >= TASK_INTERVAL_MS) {
-        const n = Math.floor(dt / TASK_INTERVAL_MS);
-        last += n * TASK_INTERVAL_MS;
-        step();
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [tasksOn]);
 
   return (
     <section ref={heroRef} aria-label="Hero section" className={s.hero} data-nav-theme="dark">
@@ -349,44 +279,45 @@ export default function HomeHero({ ready }: { ready: boolean }) {
       </div>
 
       <div className={s.content}>
-        <h1 className={s.headline} aria-label={HEADLINE.join(" ")}>
-          {HEADLINE.map((line, i) => (
-            <span key={line} aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
-              {line.split(" ").map((word, j) => (
-                <span key={j}>
-                  {j > 0 ? " " : null}
-                  <span className={s.word} style={{ "--i": j } as React.CSSProperties}>
-                    {word}
+        {/* data-flip: HeroReview glides these to their new places when a
+            step swap changes its height. */}
+        <div className={s.copy} data-flip="">
+          <h1 className={s.headline} aria-label={HEADLINE.join(" ")}>
+            {HEADLINE.map((line, i) => (
+              <span key={line} aria-hidden="true" className={`${s.line} ${i === 1 ? s.italic : ""}`}>
+                {line.split(" ").map((word, j) => (
+                  <span key={j}>
+                    {j > 0 ? " " : null}
+                    <span className={s.word} style={{ "--i": j } as React.CSSProperties}>
+                      {word}
+                    </span>
                   </span>
-                </span>
-              ))}
-            </span>
-          ))}
-        </h1>
-        <p className={`${s.bodyMd} ${s.sub}`}>
-          Our work has generated more than 3,000 inquiries for local businesses.
-          {/* The break is hidden on phones, so the sentences need a real space between them. */}
-          <br />{" "}
-          We design every site to make you more money.
-        </p>
-        <div ref={tasksRef} className={s.tasks} aria-live="polite">
-          {TASKS.map(({ label, icon }, i) => (
-            <div key={`${label}-${i}`} data-task-item="" className={s.task}>
-              <p className={`${s.bodyMd} ${s.taskText}`}>
-                <span className={s.taskIcon}>
-                  <TaskGlyph icon={icon} />
-                </span>
-                {label}
-              </p>
-            </div>
-          ))}
+                ))}
+              </span>
+            ))}
+          </h1>
+          <p className={s.sub}>
+            Our work has generated more than 3,000 inquiries for local businesses.
+            {/* The break is hidden on phones, so the sentences need a real space between them. */}
+            <br />{" "}
+            We design every site to make you more money.
+          </p>
         </div>
-      </div>
 
-      {/* The Sight card lives in the hero so it scrolls away with it, and
-          follows the plate's edge in when the plate shrinks. */}
-      <div className={s.peekSlot}>
-        <SightPeek ready={ready} />
+        <HeroReview className={s.review} preview={preview} />
+
+        <div className={s.tickerSlot} data-flip="">
+          <div className={s.ticker} data-hero-ticker="">
+            <div className={s.tickerTrack}>
+              {[...WINS, WINS[0]].map((win, i) => (
+                <p key={i} className={s.tick} aria-hidden={i === WINS.length || undefined}>
+                  <Mail />
+                  {win}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
