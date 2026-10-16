@@ -15,7 +15,7 @@
   --edge: 16px;
   position: relative;
   z-index: 2;
-  height: 100svh;
+  height: calc(var(--svh, 1svh) * 100);
   padding: var(--edge);
   overflow: hidden;
   border-radius: 0 0 24px 24px;
@@ -173,13 +173,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 3svh;
+  padding-bottom: calc(var(--svh, 1svh) * 3);
   pointer-events: none;
 }
 
 .stage {
   position: relative;
-  width: min(48vw, 78svh * 1.5, 760px);
+  width: min(48vw, calc(var(--svh, 1svh) * 78) * 1.5, 760px);
   aspect-ratio: 3 / 2;
   perspective: 1600px;
 }
@@ -248,7 +248,7 @@
 @media (max-width: 1023px) {
   .wrap {
     height: auto;
-    min-height: 100svh;
+    min-height: calc(var(--svh, 1svh) * 100);
     display: grid;
     grid-template-rows: auto auto 1fr auto auto;
     row-gap: 24px;
@@ -275,7 +275,7 @@
     justify-content: start;
   }
   .stage {
-    width: min(100%, 78svh * 1.5);
+    width: min(100%, calc(var(--svh, 1svh) * 78) * 1.5);
     margin: 0 auto;
     align-self: center;
   }

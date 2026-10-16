@@ -145,6 +145,13 @@ export default function ClientWall() {
     let offset = 0;
     let lastTime = 0;
     let dragging = false;
+    // Off screen the ticker idles, so the wall isn't restyling every frame
+    // while the hero above it is busy.
+    let onScreen = false;
+    const io = new IntersectionObserver(([e]) => {
+      onScreen = e.isIntersecting;
+    });
+    io.observe(wrap);
     const speed = { scale: 1 };
 
     const layout = () => {
@@ -226,7 +233,7 @@ export default function ClientWall() {
 
       lastTime = 0;
       tickerFn = () => {
-        if (dragging) {
+        if (dragging || !onScreen) {
           lastTime = 0;
           return;
         }
@@ -313,6 +320,7 @@ export default function ClientWall() {
 
     return () => {
       disposed = true;
+      io.disconnect();
       window.removeEventListener("resize", onResize);
       teardown();
     };

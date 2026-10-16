@@ -262,7 +262,13 @@ export default function ReviewField({
           <p id={noteId} className={s.note} role="status">
             {error === "site"
               ? "Add your website first, like yourbusiness.com."
-              : "A free review of your current website, sent to your inbox."}
+              : (
+                  <>
+                    {/* Phones get the short line; it fits on one. */}
+                    <span className={s.noteLong}>A free review of your current website, sent to your inbox.</span>
+                    <span className={s.noteShort}>Free site review, sent to your inbox.</span>
+                  </>
+                )}
           </p>
         </form>
       )}

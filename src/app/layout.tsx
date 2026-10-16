@@ -6,6 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollToTop from "@/components/ScrollToTop";
 import Analytics from "@/components/Analytics";
+import { STEADY_VH_SCRIPT } from "@/lib/viewport";
 
 // Preloaded: Outfit (the main face), DM Sans (the nav) and Inter (the phone
 // dock), which every page shows at once. The rest load when a page first
@@ -154,6 +155,9 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <head>
+        {/* Before first paint: a viewport height that holds still in in-app
+            browsers (see lib/viewport). */}
+        <script dangerouslySetInnerHTML={{ __html: STEADY_VH_SCRIPT }} />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5"
           strategy="afterInteractive"

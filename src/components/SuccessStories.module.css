@@ -46,7 +46,7 @@
   margin-top: -1px;
   display: flex;
   flex-flow: column;
-  min-height: 100svh;
+  min-height: calc(var(--svh, 1svh) * 100);
   padding: var(--section-large) var(--margin) 0;
   border-radius: var(--radius-section);
   background-color: var(--ground);

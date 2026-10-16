@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 100svh;
+  min-height: calc(var(--svh, 1svh) * 100);
   overflow: hidden;
   padding: clamp(5rem, 12vh, 9rem) 0 clamp(6rem, 12vh, 9rem);
   border-radius: 0 0 clamp(2rem, 5vw, 4.5rem) clamp(2rem, 5vw, 4.5rem);

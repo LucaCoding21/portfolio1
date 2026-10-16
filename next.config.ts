@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Let phones on the local network load the dev server (dev only).
-  allowedDevOrigins: ["192.168.1.*"],
+  allowedDevOrigins: ["192.168.1.*", "10.0.0.*"],
   images: {
     formats: ["image/avif", "image/webp"],
   },

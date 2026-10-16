@@ -38,6 +38,8 @@ No test framework is configured.
 
 **Path alias:** `@/*` maps to `./src/*`.
 
+**Viewport height:** never write raw `svh`/`vh` for full-screen sections. Use `calc(var(--svh, 1svh) * N)` (and `steadyVh()` from `src/lib/viewport.ts` in JS). Instagram and other in-app browsers resize the page while scrolling; `--svh` is measured once in `<head>` and holds still on phones.
+
 ## Cloning a reference section 1:1 (playbook)
 
 The user often asks to copy a section from another site "pixel for pixel", including motion, then restyle it to Cloverfield in a second pass. Do it from the source, not from screenshots.

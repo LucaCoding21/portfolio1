@@ -11,7 +11,7 @@
   position: relative;
   display: flex;
   width: 100vw;
-  min-height: 100svh;
+  min-height: calc(var(--svh, 1svh) * 100);
   overflow: hidden;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
@@ -208,25 +208,39 @@
   text-shadow: 0 1px 14px rgba(0, 0, 0, 0.35);
 }
 
-/* Phones: the 390px artboard. The copy sits at the bottom of the screen,
-   left-aligned, over a lighter shade that darkens toward the bottom. */
+/* Phones: the 390px artboard. The headline and subline sit centred in the
+   upper part of the screen, the review field near the bottom with some air
+   under it, over a lighter shade that darkens toward both ends. */
 @media (max-width: 767px) {
   .scrim {
     background:
+      linear-gradient(rgba(12, 9, 7, 0.4), rgba(12, 9, 7, 0) 45%),
       linear-gradient(rgba(12, 9, 7, 0) calc(100% - 520px), rgba(12, 9, 7, 0.45)),
       rgba(18, 14, 11, 0.25);
   }
+  /* 28px sides: scrolled, the plate sits 16px in from the screen edge, so
+     this keeps the copy and the review card 12px inside it rather than
+     brushing its edge. The copy's auto bottom margin holds the review
+     field down; both gaps shrink on short phones. */
   .content {
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: stretch;
-    padding: 96px 20px 36px;
-    text-align: left;
+    padding: 96px 28px max(60px, calc(var(--svh, 1svh) * 12.5));
+    text-align: center;
   }
   .copy {
-    align-items: stretch;
+    align-items: center;
+    margin-top: clamp(12px, calc(var(--svh, 1svh) * 10), 100px);
+    margin-bottom: auto;
   }
+  /* the card keeps its own left-aligned text */
+  .review {
+    text-align: left;
+  }
+  /* Sized to the column, so "We make websites" holds one line from a 320px
+     phone up and never crowds the gutter. */
   .headline {
-    font-size: clamp(40px, 12.3vw, 48px);
+    font-size: clamp(32px, calc((100vw - 56px) / 8.3), 48px);
     line-height: 0.98;
     text-shadow: 0 2px 24px rgba(0, 0, 0, 0.3);
   }

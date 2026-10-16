@@ -151,7 +151,7 @@ export default function CaddieExplodedView() {
         style={
           mode === "lite"
             ? undefined
-            : { position: "sticky", top: "max(0px, calc(50svh - var(--panel-h, 0px) / 2))" }
+            : { position: "sticky", top: "max(0px, calc(var(--svh, 1svh) * 50 - var(--panel-h, 0px) / 2))" }
         }
         className="relative w-full overflow-hidden rounded-xl border border-black/10 bg-[#0e0e11] aspect-[4/5] md:aspect-[16/10]"
         role="img"
@@ -191,7 +191,7 @@ export default function CaddieExplodedView() {
           </>
         )}
       </div>
-      {mode !== "lite" && <div aria-hidden style={{ height: "110svh" }} />}
+      {mode !== "lite" && <div aria-hidden style={{ height: "calc(var(--svh, 1svh) * 110)" }} />}
     </div>
   );
 }

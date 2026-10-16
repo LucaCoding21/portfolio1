@@ -16,13 +16,13 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 64px;
   line-height: normal;
 }
 
 .root[data-step="contact"],
 .root[data-step="done"] {
-  margin-top: 36px;
+  margin-top: 56px;
 }
 
 .srOnly,
@@ -389,32 +389,25 @@
   }
 
   .siteForm {
-    gap: 12px;
+    gap: 10px;
   }
 
-  /* The pill stacks into a card: the URL row over a full-width button. */
+  /* Still one pill while the button fits beside the URL; just shorter. */
   .pill {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    width: 100%;
-    height: auto;
-    padding: 6px;
-    border-radius: 20px;
-    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.22);
+    gap: 8px;
+    height: 56px;
+    padding: 5px 5px 5px 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
   }
 
   .urlRow {
-    flex: none;
     gap: 10px;
-    height: 52px;
-    padding: 0 14px;
   }
 
   .btn {
-    height: 54px;
-    padding: 0;
-    border-radius: 15px;
+    height: 46px;
+    padding: 0 17px 0 21px;
+    font-size: 15px;
   }
 
   .note {
@@ -477,5 +470,40 @@
 
   .again {
     width: 100%;
+  }
+}
+
+/* Narrow phones: no room for both on one line. The pill stacks into a slim
+   card, the URL row over the button, kept light so it doesn't outweigh the
+   headline. The URL stays 16px so iOS doesn't zoom the page on tap. */
+@media (max-width: 539px) {
+  .pill {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+    height: auto;
+    padding: 4px;
+    border-radius: 18px;
+  }
+
+  .urlRow {
+    flex: none;
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .urlInput {
+    font-size: 16px;
+  }
+
+  .btn {
+    height: 46px;
+    padding: 0;
+    border-radius: 14px;
+  }
+
+  .note {
+    font-size: 12.5px;
   }
 }

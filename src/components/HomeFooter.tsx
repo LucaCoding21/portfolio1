@@ -84,7 +84,7 @@ export default function HomeFooter() {
     // grows past 100svh. The track above it (twice the footer's height)
     // gives the sticky room to ride up from.
     <div
-      className="relative -mt-[28px] h-[calc(60svh+28px)] md:-mt-[48px] md:h-[calc(80svh+48px)]"
+      className="relative -mt-[28px] h-[calc(var(--svh,1svh)*60+28px)] md:-mt-[48px] md:h-[calc(var(--svh,1svh)*80+48px)]"
       style={{ clipPath: "polygon(0% 0, 100% 0%, 100% 100%, 0 100%)" }}
     >
       <div className="absolute inset-x-0 bottom-0 flex h-[200%] flex-col justify-end">

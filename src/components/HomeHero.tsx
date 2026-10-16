@@ -120,7 +120,9 @@ export default function HomeHero({ ready, preview }: { ready: boolean; preview?:
     };
     // Re-measured whenever the hero changes size: a resize, or the review
     // card making it taller. A change of height alone moves every section
-    // below, so their scroll triggers are refreshed too.
+    // below, so their scroll triggers are refreshed too. In-app browsers fire
+    // resize all through a scroll as their toolbars slide; the hero holds its
+    // size (lib/viewport), so those are skipped rather than restyle it mid-zoom.
     let lastW = 0;
     let lastH = 0;
     const ro = new ResizeObserver(() => {

@@ -26,6 +26,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { SUCCESS_STORIES } from "@/data/successStories";
 import StoryDescription from "./StoryDescription";
+import { steadyVh } from "@/lib/viewport";
 import s from "./SelectedWorks.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -80,6 +81,7 @@ const pause = (v: HTMLVideoElement | null) => {
 
 export default function SelectedWorks({ ready }: { ready: boolean }) {
   const carouselRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
@@ -109,13 +111,15 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
 
   useEffect(() => {
     const carousel = carouselRef.current;
+    const track = trackRef.current;
     // sequence order: index 0 = DOM last
     const els = [...cardRefs.current].reverse();
-    if (!carousel || els.some((e) => !e)) return;
+    if (!carousel || !track || els.some((e) => !e)) return;
     const elements = els as HTMLDivElement[];
 
     const w = () => window.innerWidth;
-    const vh = () => window.innerHeight;
+    // The same height the stylesheet sizes the carousel with (lib/viewport).
+    const vh = steadyVh;
     // Set once at build: the hold is baked into the timeline's positions.
     const hold = w() < BP.tablet ? HOLD : 0;
     const firstHold = w() < BP.tablet ? FIRST_HOLD : 0;
@@ -189,7 +193,31 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
        timeline option, which GSAP ignores, so these tweens run on the default
        power1.out: the lift starts fast and settles. Measured, not assumed.
        Phones come out of a hold, so there the lift starts gently too. */
-    const leave = (el: HTMLElement) => {
+    const leave = (el: HTMLElement) => (w() < BP.tablet ? fadeAway(el) : lift(el));
+
+    /* Phones: the card doesn't travel a full screen up. It rises a little
+       and fades, the copy first, so the next card shows through behind it.
+       It stays live until it has faded: switching it off mid-move sent the
+       reel back down on its own CSS transition while the plate scrubbed up
+       with the finger, so the video trailed the card. Padded to the full
+       lift's length so every later card keeps its place in the scroll. */
+    const fadeAway = (el: HTMLElement) => {
+      const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
+      const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
+      const tl = gsap.timeline({
+        defaults: { ease: "power1.in" },
+        onUpdate: () => setLive(el, tl.time() < 1.4),
+      });
+      if (!plate || !desc) return tl;
+      tl.to(el, { scale: 1, y: 0 }, 0);
+      tl.to(desc, { y: "-40%", opacity: 0, duration: 0.6 }, 0);
+      tl.to(plate, { y: "-22%", scale: 0.96, duration: 1.4 }, 0);
+      tl.to(plate, { opacity: 0, duration: 1.1 }, 0.3);
+      tl.to({}, { duration: 3 }, 0);
+      return tl;
+    };
+
+    const lift = (el: HTMLElement) => {
       const plate = el.querySelector<HTMLElement>(`.${s.plate}`);
       const desc = el.querySelector<HTMLElement>(`.${s.descriptionAnim}`);
       const tl = gsap.timeline({
@@ -307,24 +335,68 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       });
     }
 
+    // Below tablet each card's copy sits above its plate, and the copy runs
+    // to different heights. Measure them so the stylesheet can clear the
+    // menu for the tallest (--copy-h) and centre every card on the same
+    // line (--dy moves a card up by half of what its copy is short by).
+    // Runs before each ScrollTrigger measure, so fonts landing or a
+    // rotation are picked up.
+    // Not parentElement: once pinned, that is GSAP's pin-spacer.
+    const section = carousel.closest<HTMLElement>(`.${s.section}`);
+    const fitCopy = () => {
+      if (!section) return;
+      const heights = elements.map(
+        (el) => el.querySelector<HTMLElement>(`.${s.description}`)?.offsetHeight ?? 0
+      );
+      if (w() >= BP.tablet || heights.some((h) => h === 0)) {
+        section.style.removeProperty("--copy-h");
+        elements.forEach((el) => el.style.removeProperty("--dy"));
+        return;
+      }
+      const tallest = Math.max(...heights);
+      section.style.setProperty("--copy-h", `${tallest + 25}px`);
+      elements.forEach((el, i) => el.style.setProperty("--dy", `${-(tallest - heights[i]) / 2}px`));
+    };
+    fitCopy();
+    ScrollTrigger.addEventListener("refreshInit", fitCopy);
+
+    // Below tablet the carousel holds still with CSS sticky instead of a
+    // GSAP pin. A pin is moved by script, a frame behind iOS's own scrolling,
+    // so the cards jerked as it caught and let go, worst on a flick; sticky
+    // is placed by the browser in step with the finger. The track is the
+    // pin's spacer: the carousel's height plus the distance it holds for,
+    // and the carousel sticks with its centre on the screen's centre, where
+    // the pin started ("center center"). Set once at build, like the hold.
+    const sticky = w() < BP.tablet;
+    const holdDistance = () =>
+      w() >= BP.desktop
+        ? (2.2 + EXTRA) * vh()
+        : w() >= BP.tablet
+          ? (3 + EXTRA) * vh() * stretch
+          : ((2.5 + EXTRA) * stretch - trim) * vh();
+    const sizeTrack = () => {
+      track.style.height = `${carousel.offsetHeight + holdDistance()}px`;
+      carousel.style.top = `${(vh() - carousel.offsetHeight) / 2}px`;
+    };
+    if (sticky) {
+      track.dataset.sticky = "";
+      sizeTrack();
+      ScrollTrigger.addEventListener("refreshInit", sizeTrack);
+    }
+
     const ctx = gsap.context(() => {
       const initial = start();
 
-      ScrollTrigger.create({
-        trigger: carousel,
-        start: "center center",
-        end: () =>
-          w() >= BP.desktop
-            ? `+=${(2.2 + EXTRA) * vh()}`
-            : w() >= BP.tablet
-              ? `+=${(3 + EXTRA) * vh() * stretch}`
-              : `+=${((2.5 + EXTRA) * stretch - trim) * vh()}`,
-        pin: true,
-        // Pin a frame early so a fast flick on a phone doesn't show the
-        // carousel scroll past before it locks.
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      });
+      if (!sticky) {
+        ScrollTrigger.create({
+          trigger: carousel,
+          start: "center center",
+          end: () => `+=${holdDistance()}`,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        });
+      }
 
       // Touch screens scrub straight off the finger; a mouse wheel gets the
       // reference's short smoothing.
@@ -332,7 +404,9 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
       const master = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
-          trigger: carousel,
+          // A stuck carousel moves with the screen, so measure from the
+          // track, which starts where the carousel rests.
+          trigger: sticky ? track : carousel,
           start: () => (w() < BP.tablet ? "top center-=100" : "top center+=100"),
           end: () => `+=${((3 + EXTRA) * stretch - trim) * vh()}`,
           scrub: touch ? true : 0.25,
@@ -344,6 +418,11 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
     }, carousel);
 
     return () => {
+      ScrollTrigger.removeEventListener("refreshInit", fitCopy);
+      ScrollTrigger.removeEventListener("refreshInit", sizeTrack);
+      delete track.dataset.sticky;
+      track.style.removeProperty("height");
+      carousel.style.removeProperty("top");
       hoverOff.forEach((off) => off());
       ctx.revert();
     };
@@ -359,87 +438,89 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
         </h2>
       </section>
 
-      <section ref={carouselRef} className={s.carousel}>
-        {/* DOM order is reversed so the first card up sits on top of the stack */}
-        {[...CARDS].reverse().map((card, domIndex) => (
-          <div
-            key={card.story.title}
-            ref={(el) => {
-              cardRefs.current[domIndex] = el;
-            }}
-            className={s.card}
-            style={{ pointerEvents: "none" }}
-          >
-            <div className={s.inner}>
-              <article className={`${s.description} ${card.align === "right" ? s.isRight : ""}`}>
-                <div className={s.descriptionAnim}>
-                  <h3 className={s.cardTitle}>{card.story.title}</h3>
-                  <p className={s.cardBody}>
-                    <StoryDescription description={card.story.description} />
-                  </p>
-                  <p className={s.cardResult}>
-                    <span className={s.resultValue}>{card.story.resultValue}</span>
-                    <span className={s.resultLabel}>{card.story.resultLabel}</span>
-                  </p>
-                  {card.story.caseStudy && (
-                    <Link href={card.story.caseStudy} className={s.caseStudy}>
-                      <span className={s.caseStudyLabel}>View case study</span>
-                      <svg
-                        viewBox="0 0 12 12"
-                        aria-hidden
-                        className={s.caseStudyArrow}
-                      >
-                        <path
-                          d="M3 9 9 3M4.5 3H9v4.5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </Link>
-                  )}
-                </div>
-              </article>
+      <div ref={trackRef} className={s.track}>
+        <section ref={carouselRef} className={s.carousel}>
+          {/* DOM order is reversed so the first card up sits on top of the stack */}
+          {[...CARDS].reverse().map((card, domIndex) => (
+            <div
+              key={card.story.title}
+              ref={(el) => {
+                cardRefs.current[domIndex] = el;
+              }}
+              className={s.card}
+              style={{ pointerEvents: "none" }}
+            >
+              <div className={s.inner}>
+                <article className={`${s.description} ${card.align === "right" ? s.isRight : ""}`}>
+                  <div className={s.descriptionAnim}>
+                    <h3 className={s.cardTitle}>{card.story.title}</h3>
+                    <p className={s.cardBody}>
+                      <StoryDescription description={card.story.description} />
+                    </p>
+                    <p className={s.cardResult}>
+                      <span className={s.resultValue}>{card.story.resultValue}</span>
+                      <span className={s.resultLabel}>{card.story.resultLabel}</span>
+                    </p>
+                    {card.story.caseStudy && (
+                      <Link href={card.story.caseStudy} className={s.caseStudy}>
+                        <span className={s.caseStudyLabel}>View case study</span>
+                        <svg
+                          viewBox="0 0 12 12"
+                          aria-hidden
+                          className={s.caseStudyArrow}
+                        >
+                          <path
+                            d="M3 9 9 3M4.5 3H9v4.5"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </Link>
+                    )}
+                  </div>
+                </article>
 
-              <div className={s.plate}>
-                <div className={s.media}>
-                  <Image
-                    src={card.story.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 1023px) 100vw, 1100px"
-                  />
-                </div>
-                <div className={s.overlay} />
-                <div className={s.reelSlot}>
-                  <div className={s.reel}>
-                    <div className={s.reelVideo}>
-                      {/* Buffered as the section approaches (see above). */}
-                      <video src={card.story.video} loop muted playsInline preload="none" />
+                <div className={s.plate}>
+                  <div className={s.media}>
+                    <Image
+                      src={card.story.image}
+                      alt=""
+                      fill
+                      sizes="(max-width: 1023px) 100vw, 1100px"
+                    />
+                  </div>
+                  <div className={s.overlay} />
+                  <div className={s.reelSlot}>
+                    <div className={s.reel}>
+                      <div className={s.reelVideo}>
+                        {/* Buffered as the section approaches (see above). */}
+                        <video src={card.story.video} loop muted playsInline preload="none" />
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* The whole plate opens the live site; only the card in front takes the click. */}
-                <a
-                  href={card.story.site}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open the ${card.story.title} website in a new tab`}
-                  className={s.plateLink}
-                />
-                {/* Desktop hover tag that follows the cursor (see onViewMove). */}
-                <span aria-hidden className={s.viewLabel}>
-                  <span className={s.viewPill}>
-                    {VIEW_LABEL}
+                  {/* The whole plate opens the live site; only the card in front takes the click. */}
+                  <a
+                    href={card.story.site}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open the ${card.story.title} website in a new tab`}
+                    className={s.plateLink}
+                  />
+                  {/* Desktop hover tag that follows the cursor (see onViewMove). */}
+                  <span aria-hidden className={s.viewLabel}>
+                    <span className={s.viewPill}>
+                      {VIEW_LABEL}
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </section>
+      </div>
     </section>
   );
 }

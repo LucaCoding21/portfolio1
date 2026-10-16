@@ -522,9 +522,19 @@
   }
 }
 
+.noteShort {
+  display: none;
+}
+
 /* Small phones: no room for both on one line. The input becomes its own pill
    and the button sits under it. The card just tightens its padding. */
 @media screen and (max-width: 479px) {
+  .noteLong {
+    display: none;
+  }
+  .noteShort {
+    display: inline;
+  }
   .field {
     flex-direction: column;
     align-items: stretch;

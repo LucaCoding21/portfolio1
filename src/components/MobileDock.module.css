@@ -145,63 +145,77 @@
   user-select: none;
 }
 
-/* The logo's clover, four ink leaves, that becomes an X. Each leaf
-   sits on its own diagonal (--a): a square turned 45deg on that ray, fully
-   rounded except the corner that points at the centre. Opening slims each
-   leaf into an arm reaching the centre while the group spins a quarter
-   turn; closing shrinks the arms back to leaves first, then unspins.
-   The transform lists match in both states so they interpolate cleanly.
-   The X is up from the tap (widening) until the close starts (shrinking). */
-.dots {
+/* Three bars, the middle one shorter and set to the right. Opening
+   draws the middle one in toward the right, then the outer two meet on the
+   centre line and turn into an X; closing turns them back first, then
+   parts them, and the middle one draws back out. Hovering with a mouse
+   evens the middle bar out to full length. The X is up from the tap
+   (widening) until the close starts (shrinking). */
+.bars {
   position: relative;
   z-index: 2;
   width: 20px;
-  height: 20px;
-  transition: rotate 0.4s var(--spring) 0.05s;
+  height: 14px;
 }
 
-.dot {
+.bar {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 7.5px;
-  height: 7.5px;
-  border-radius: 50% 50% 50% 0.5px;
-  background: currentColor;
-  transform: rotate(var(--a)) translateX(5.75px) rotate(45deg) translate(-50%, -50%);
-  transform-origin: 0 0;
-  transition:
-    width 0.2s var(--spring),
-    height 0.2s var(--spring),
-    border-radius 0.2s var(--spring),
-    transform 0.2s var(--spring);
-}
-
-.dot:nth-child(1) {
-  --a: 45deg;
-}
-.dot:nth-child(2) {
-  --a: 135deg;
-}
-.dot:nth-child(3) {
-  --a: 225deg;
-}
-.dot:nth-child(4) {
-  --a: 315deg;
-}
-
-.dock:is([data-state="widening"], [data-state="open"]) .dots {
-  rotate: 90deg;
-  transition-delay: 0s;
-}
-
-.dock:is([data-state="widening"], [data-state="open"]) .dot {
-  width: 10px;
+  right: 0;
+  width: 20px;
   height: 2px;
-  border-radius: 1px;
-  transform: rotate(var(--a)) translateX(5px) rotate(0deg) translate(-50%, -50%);
-  transition-duration: 0.3s;
-  transition-delay: 0.15s;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: center;
+  /* closing: unturn first, then part */
+  transition:
+    rotate 0.3s var(--spring),
+    translate 0.25s var(--spring) 0.15s,
+    width 0.35s var(--spring),
+    scale 0.3s var(--spring) 0.2s,
+    opacity 0.2s ease 0.2s;
+}
+
+.bar:nth-child(1) {
+  top: 0;
+}
+.bar:nth-child(2) {
+  top: calc(50% - 1px);
+  width: 12px;
+  transform-origin: right center;
+}
+.bar:nth-child(3) {
+  bottom: 0;
+}
+
+@media (hover: hover) {
+  .toggle:hover .bar:nth-child(2) {
+    width: 20px;
+  }
+}
+
+/* opening: meet on the centre line, then turn */
+.dock:is([data-state="widening"], [data-state="open"]) .bar {
+  transition:
+    translate 0.25s var(--spring),
+    rotate 0.35s var(--spring) 0.15s,
+    width 0.35s var(--spring),
+    scale 0.2s var(--spring),
+    opacity 0.15s ease;
+}
+
+.dock:is([data-state="widening"], [data-state="open"]) .bar:nth-child(1) {
+  translate: 0 6px;
+  rotate: 45deg;
+}
+
+.dock:is([data-state="widening"], [data-state="open"]) .bar:nth-child(2) {
+  scale: 0 1;
+  opacity: 0;
+}
+
+.dock:is([data-state="widening"], [data-state="open"]) .bar:nth-child(3) {
+  translate: 0 -6px;
+  rotate: -45deg;
 }
 
 .toggleBg {

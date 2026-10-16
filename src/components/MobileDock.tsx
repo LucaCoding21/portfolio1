@@ -12,8 +12,8 @@
  * The button moves closed -> widening; 400ms later the dock moves on to open
  * by itself. Close runs open -> shrinking -> (400ms) -> closed. The button
  * ignores taps mid-way, as in the reference. Each step is Framer's spring
- * { duration: 0.4, bounce: 0 }. The toggle's four clover leaves spin and
- * slim into an X as soon as it is tapped (see .dots in the stylesheet).
+ * { duration: 0.4, bounce: 0 }. The toggle's three lines fold into an X
+ * as soon as it is tapped (see .bars in the stylesheet).
  *
  * Framer runs these as layout animations: nothing reflows, boxes move and
  * scale on the GPU. The dock does the same with its own means. Its content
@@ -311,11 +311,10 @@ export default function MobileDock() {
             aria-disabled={busy || undefined}
             onClick={isOpen ? close : open}
           >
-            <span className={s.dots} aria-hidden="true">
-              <span className={s.dot} />
-              <span className={s.dot} />
-              <span className={s.dot} />
-              <span className={s.dot} />
+            <span className={s.bars} aria-hidden="true">
+              <span className={s.bar} />
+              <span className={s.bar} />
+              <span className={s.bar} />
             </span>
             <span className={s.toggleBg} />
           </button>

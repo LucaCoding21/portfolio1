@@ -77,9 +77,15 @@
   height: 100vw;
 }
 
+/* Below tablet the carousel sticks inside its track instead of being pinned
+   (see sizeTrack in the component, which sets both heights and the top). */
+.track[data-sticky] .carousel {
+  position: sticky;
+}
+
 @media (min-width: 1024px) {
   .carousel {
-    height: 75svh;
+    height: calc(var(--svh, 1svh) * 75);
     max-height: 700px;
     margin-bottom: 200px;
   }
@@ -201,6 +207,8 @@
 .descriptionAnim {
   position: relative;
   opacity: 0;
+  /* Scrubbed every frame, like the plate. */
+  will-change: transform, opacity;
 }
 
 /* text-heading-sm */
@@ -513,23 +521,27 @@
    pair is centred in the viewport while the carousel is pinned. The pinned
    carousel starts at 50svh - 50vw, the plate is the inner box's height
    (width capped at 468px, aspect 362/346) and --copy-h covers the tallest
-   description (160px at 390) plus the 25px gap. The block sits 48px above
-   true centre (it reads better under the nav); on short phones the copy
-   instead starts just under the nav (76px). --card-top is where the plate
-   starts, so --copy-h is added on top of the block's start. */
+   description plus the 25px gap (measured by the component; 185px is the
+   fallback). The block is centred in the space under the floating menu
+   (80px tall, so 40px below true centre); on short phones the copy instead
+   starts just under the menu (--nav-clear). --card-top is where the plate
+   starts, so --copy-h is added on top of the block's start. Each card then
+   moves by its own --dy (set by the component) so a shorter description
+   stays centred too, instead of leaving its title lower than the last. */
 @media (max-width: 1023px) {
   .section {
     --plate-h: calc(min(100vw - 32px, 468px) * 0.956);
     --copy-h: 185px;
+    --nav-clear: 96px;
     /* Where the first card sits above the carousel's top edge (negative on
        most phones). */
     --card-top: max(
-      calc(76px - 50svh + 50vw + var(--copy-h)),
-      calc(50vw - (var(--plate-h) - var(--copy-h)) / 2 - 48px)
+      calc(var(--nav-clear) - calc(var(--svh, 1svh) * 50) + 50vw + var(--copy-h)),
+      calc(50vw - (var(--plate-h) - var(--copy-h)) / 2 + 40px)
     );
   }
   .card {
-    top: var(--card-top);
+    top: calc(var(--card-top) + var(--dy, 0px));
   }
   /* The card overhangs the carousel by that much plus the copy above the
      plate, so the intro keeps at least that plus a small gap under the
