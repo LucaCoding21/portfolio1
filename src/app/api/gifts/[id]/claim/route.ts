@@ -75,7 +75,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         lines: [
           `${cardName} just claimed the $500 gift you sent. Thank you for passing our name along.`,
           "",
-          `I'll be in touch with ${cardName} within a day. If they sign for a new site, you get $500 off your hosting, SEO or future upgrades, and I'll let you know when that happens.`,
+          `I'll be in touch with ${cardName} within a day. If they sign for a new site, you get $500 off your hosting or any future work with us, and I'll let you know when that happens.`,
         ],
       }),
     );

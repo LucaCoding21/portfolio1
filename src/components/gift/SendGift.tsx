@@ -312,7 +312,7 @@ export default function SendGift({
             {[
               "Share your link with a friend.",
               `They claim it by ${claimDay}, and we reach out.`,
-              "When they become a client, you get $500 toward your hosting, SEO or upgrades.",
+              "When they become a client, you get $500 toward your hosting or any future work with us.",
             ].map((step, i) => (
               <li key={step} className={s.step}>
                 <span className={s.stepNum} aria-hidden="true">

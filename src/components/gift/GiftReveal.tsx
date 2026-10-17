@@ -513,8 +513,8 @@ export default function GiftReveal({
                 <div className={s.panelText}>
                   <h2 className={s.panelTitle}>Pass it on</h2>
                   <p className={s.panelBody}>
-                    Know someone who needs a website? Send them $500 off, and you&rsquo;ll get $500 toward your hosting,
-                    SEO or upgrades.
+                    Know someone who needs a website? Send them $500 off, and you&rsquo;ll get $500 toward your hosting
+                    or any future work with us.
                   </p>
                 </div>
               </div>
