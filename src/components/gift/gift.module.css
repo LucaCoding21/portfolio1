@@ -479,6 +479,29 @@ textarea.input {
   margin-top: 28px;
 }
 
+/* Until the envelope's photos are in (see GiftReveal), it and the tap hint
+   wait unseen, then fade in together. Backwards fill only: once it has
+   played it leaves opacity to GSAP, which fades the hint when it opens. */
+.envWaiting {
+  opacity: 0;
+}
+
+.envIn {
+  animation: env-in 0.35s ease backwards;
+}
+
+@keyframes env-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .envIn {
+    animation: none;
+  }
+}
+
 /* The card waits inside the pocket, a little smaller than the envelope. */
 .cardSlot {
   position: absolute;

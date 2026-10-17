@@ -57,10 +57,21 @@ const at = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
 const ENV_SIZES = "(max-width: 480px) 100vw, 440px";
 
+// The envelope shows once its back, pocket and flap photos are in, so a cold
+// load never flashes the card (its type is HTML and paints first) or half an
+// envelope. A slow photo can't hold it back for longer than this.
+const ENV_LAYERS = 3;
+const ENV_WAIT_MS = 3000;
+
 const possessive = (name: string) => (/s$/i.test(name) ? `${name}’` : `${name}’s`);
 
 const daysLeftLine = (n: number) =>
   n <= 0 ? "Last day to claim" : n === 1 ? "1 day left to claim" : `${n} days left to claim`;
+
+/** Where the page starts: on the envelope, unless the gift is past that. */
+function phase0(state: GiftState, preview?: GiftPreview): Phase {
+  return state === "sealed" && !preview?.open ? "sealed" : "open";
+}
 
 /** Not William's (?internal=1, see layout.tsx) and not the phone that sent it. */
 function isFriendsDevice(giftId: string) {
@@ -96,8 +107,10 @@ export default function GiftReveal({
   notified?: boolean;
   preview?: GiftPreview;
 }) {
-  const [phase, setPhase] = useState<Phase>(state === "sealed" && !preview?.open ? "sealed" : "open");
+  const [phase, setPhase] = useState<Phase>(phase0(state, preview));
   const [sheen, setSheen] = useState(false);
+  const [envReady, setEnvReady] = useState(phase0(state, preview) === "open");
+  const envLoaded = useRef(0);
   const [claim, setClaim] = useState<Claim>(preview?.claim ?? "idle");
   const [details, setDetails] = useState<ClaimFields | null>(preview?.details ?? null);
   const [passing, setPassing] = useState(false);
@@ -118,6 +131,18 @@ export default function GiftReveal({
   const focusTitle = useRef(false);
 
   useEffect(() => () => void tlRef.current?.kill(), []);
+
+  useEffect(() => {
+    if (envReady) return;
+    const t = setTimeout(() => setEnvReady(true), ENV_WAIT_MS);
+    return () => clearTimeout(t);
+  }, [envReady]);
+
+  // Counted on error too: a missing photo shouldn't keep the envelope hidden.
+  function envLayerIn() {
+    envLoaded.current += 1;
+    if (envLoaded.current >= ENV_LAYERS) setEnvReady(true);
+  }
 
   // The timeline ends exactly where the open layout puts the card, so the
   // inline styles can go before the browser paints the swap.
@@ -212,6 +237,7 @@ export default function GiftReveal({
   }
 
   const sealed = phase !== "open";
+  const envFade = envReady ? s.envIn : s.envWaiting;
   const from = `${client.firstName}, ${client.business}`;
   const claimed = state === "claimed" || claim === "done";
   const cardStatus: CardStatus =
@@ -278,10 +304,22 @@ export default function GiftReveal({
       <main className={s.main}>
         <GiftHeader />
 
-        <div ref={stageRef} className={`${s.stage} ${sealed ? "" : s.stageOpen}`}>
+        <div
+          ref={stageRef}
+          className={`${s.stage} ${sealed ? envFade : s.stageOpen}`}
+        >
           {sealed && (
             <span ref={backRef} className={s.envBack}>
-              <Image src="/gift/env-green-back.webp" alt="" fill sizes={ENV_SIZES} className={s.envArt} priority />
+              <Image
+                src="/gift/env-green-back.webp"
+                alt=""
+                fill
+                sizes={ENV_SIZES}
+                className={s.envArt}
+                priority
+                onLoad={envLayerIn}
+                onError={envLayerIn}
+              />
             </span>
           )}
           <div ref={cardRef} className={s.cardSlot}>
@@ -298,7 +336,16 @@ export default function GiftReveal({
           {sealed && (
             <>
               <span ref={pocketRef} className={s.envPocket}>
-                <Image src="/gift/env-green-pocket.webp" alt="" fill sizes={ENV_SIZES} className={s.envArt} priority />
+                <Image
+                  src="/gift/env-green-pocket.webp"
+                  alt=""
+                  fill
+                  sizes={ENV_SIZES}
+                  className={s.envArt}
+                  priority
+                  onLoad={envLayerIn}
+                  onError={envLayerIn}
+                />
                 <span className={s.envFrom}>
                   From {client.firstName}
                   <br />
@@ -307,7 +354,16 @@ export default function GiftReveal({
               </span>
               <span ref={flapRef} className={s.envFlap}>
                 <span ref={flapOutRef} className={s.flapOut}>
-                  <Image src="/gift/env-green-flap-out.webp" alt="" fill sizes={ENV_SIZES} className={s.envArt} priority />
+                  <Image
+                    src="/gift/env-green-flap-out.webp"
+                    alt=""
+                    fill
+                    sizes={ENV_SIZES}
+                    className={s.envArt}
+                    priority
+                    onLoad={envLayerIn}
+                    onError={envLayerIn}
+                  />
                   <span className={s.envName}>For {friendName}</span>
                 </span>
                 <span ref={flapInRef} className={s.flapIn}>
@@ -329,7 +385,7 @@ export default function GiftReveal({
         </div>
 
         {sealed && (
-          <p ref={hintRef} className={s.tapHint}>
+          <p ref={hintRef} className={`${s.tapHint} ${envFade}`}>
             <span className={s.touch}>Tap</span>
             <span className={s.mouse}>Click</span> to open
           </p>
