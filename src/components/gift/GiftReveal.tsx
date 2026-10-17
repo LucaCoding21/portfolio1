@@ -365,7 +365,7 @@ export default function GiftReveal({
               You&rsquo;re all set, {friendName}
             </h1>
             <p className={`${s.body} ${s.lateBody} ${s.rise}`} style={at(1)}>
-              William will reach out within a day
+              William will reach out
               {details?.phone && (
                 <>
                   {" "}
