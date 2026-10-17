@@ -2,7 +2,7 @@
 
 /**
  * The friend's gift page (/gift/<id>). It opens on a sealed envelope with
- * their name on it. A tap breaks the seal, swings the flap open and draws the
+ * their name on it. A tap swings the flap open and draws the
  * card up out of the envelope; the envelope drops away, the card settles at
  * the top and a sheen crosses it, then the message and the claim button
  * arrive below. With reduced motion the tap goes straight to the card. Once
@@ -55,12 +55,16 @@ export type GiftPreview = {
 
 const at = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
-const ENV_SIZES = "(max-width: 480px) 100vw, 440px";
+// The envelope fills the page column: the screen less 40px of margin, 400px at most.
+const ENV_SIZES = "(max-width: 480px) calc(100vw - 40px), 400px";
 
-// The envelope shows once its back, pocket and flap photos are in, so a cold
-// load never flashes the card (its type is HTML and paints first) or half an
-// envelope. A slow photo can't hold it back for longer than this.
-const ENV_LAYERS = 3;
+// The envelope shows once its back, pocket and flap photos and the
+// handwriting font are in, so a cold load never flashes the card (its type
+// is HTML and paints first), half an envelope or a font swap. The font isn't
+// preloaded (it would ride along to the send page too, which shares the
+// gift stylesheet), but the hidden name starts its download at first
+// layout. Something slow can't hold the envelope back longer than this.
+const ENV_LAYERS = 4;
 const ENV_WAIT_MS = 3000;
 
 const possessive = (name: string) => (/s$/i.test(name) ? `${name}’` : `${name}’s`);
@@ -111,6 +115,7 @@ export default function GiftReveal({
   const [sheen, setSheen] = useState(false);
   const [envReady, setEnvReady] = useState(phase0(state, preview) === "open");
   const envLoaded = useRef(0);
+  const nameRef = useRef<HTMLSpanElement>(null);
   const [claim, setClaim] = useState<Claim>(preview?.claim ?? "idle");
   const [details, setDetails] = useState<ClaimFields | null>(preview?.details ?? null);
   const [passing, setPassing] = useState(false);
@@ -122,7 +127,6 @@ export default function GiftReveal({
   const flapRef = useRef<HTMLSpanElement>(null);
   const flapOutRef = useRef<HTMLSpanElement>(null);
   const flapInRef = useRef<HTMLSpanElement>(null);
-  const sealRef = useRef<HTMLSpanElement>(null);
   const hintRef = useRef<HTMLParagraphElement>(null);
   const doneRef = useRef<HTMLHeadingElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -134,8 +138,24 @@ export default function GiftReveal({
 
   useEffect(() => {
     if (envReady) return;
+    let live = true;
+    const name = nameRef.current;
+    const font =
+      name && document.fonts
+        ? document.fonts.load(`600 40px ${getComputedStyle(name).fontFamily}`)
+        : Promise.resolve();
+    font
+      .catch(() => {})
+      .then(() => {
+        if (!live) return;
+        envLoaded.current += 1;
+        if (envLoaded.current >= ENV_LAYERS) setEnvReady(true);
+      });
     const t = setTimeout(() => setEnvReady(true), ENV_WAIT_MS);
-    return () => clearTimeout(t);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
   }, [envReady]);
 
   // Counted on error too: a missing photo shouldn't keep the envelope hidden.
@@ -180,14 +200,16 @@ export default function GiftReveal({
 
     const stage = stageRef.current!;
     const card = cardRef.current!;
-    const envelope = [backRef.current, pocketRef.current, flapRef.current, sealRef.current];
+    const envelope = [backRef.current, pocketRef.current, flapRef.current];
     const w = stage.offsetWidth;
+    // The stage rises by a transform, not its margin, so no frame needs a
+    // layout. The open layout's 28px margin takes over in the same frame the
+    // inline styles are cleared.
+    const rise = parseFloat(getComputedStyle(stage).marginTop) - 28;
 
     tlRef.current = gsap
       .timeline({ onComplete: () => setPhase("open") })
       .to(hintRef.current, { opacity: 0, duration: 0.25 }, 0)
-      // the seal lifts away
-      .to(sealRef.current, { opacity: 0, scale: 0.82, duration: 0.3, ease: "power2.in" }, 0)
       // the flap swings up on its hinge: the outside darkens as it turns
       // edge-on, then the inside comes round and catches the light; once past
       // upright it tucks behind the card
@@ -203,7 +225,7 @@ export default function GiftReveal({
       .set(card, { zIndex: 6 }, 1.35)
       // the card settles at full size where the open layout keeps it
       .to(card, { y: 0, scale: 1, duration: 0.7, ease: "power3.inOut" }, 1.25)
-      .to(stage, { height: w / 1.4, marginTop: 28, duration: 0.7, ease: "power3.inOut" }, 1.25)
+      .to(stage, { y: -rise, duration: 0.7, ease: "power3.inOut" }, 1.25)
       .call(() => setSheen(true), [], 1.65);
   }
 
@@ -330,6 +352,7 @@ export default function GiftReveal({
               sheen={sheen}
               status={cardStatus}
               priority
+              deferBack={!envReady}
               startFlipped={preview?.flipped}
             />
           </div>
@@ -364,14 +387,13 @@ export default function GiftReveal({
                     onLoad={envLayerIn}
                     onError={envLayerIn}
                   />
-                  <span className={s.envName}>For {friendName}</span>
+                  <span ref={nameRef} className={s.envName}>
+                    For {friendName}
+                  </span>
                 </span>
                 <span ref={flapInRef} className={s.flapIn}>
                   <Image src="/gift/env-green-flap-in.webp" alt="" fill sizes={ENV_SIZES} className={s.envArt} loading="eager" />
                 </span>
-              </span>
-              <span ref={sealRef} className={s.seal}>
-                <WaxSeal />
               </span>
               <button
                 type="button"
@@ -579,59 +601,6 @@ function MessageIcon() {
       strokeLinejoin="round"
     >
       <path d="M21 12a8 8 0 0 1-11.8 7.05L4 20l1.1-4.4A8 8 0 1 1 21 12z" />
-    </svg>
-  );
-}
-
-// A wax blob with a soft scalloped rim: 18 points on two radii, joined with
-// curves through their midpoints. Fixed numbers, so server and client agree.
-const SEAL_RIM = (() => {
-  const n = 18;
-  const pts = Array.from({ length: n }, (_, i) => {
-    const a = (i / n) * Math.PI * 2;
-    const r = i % 2 ? 29.2 : 31;
-    return [32 + r * Math.cos(a), 32 + r * Math.sin(a)];
-  });
-  const f = (v: number) => v.toFixed(2);
-  const mid = (i: number) => {
-    const [p, q] = [pts[i % n], pts[(i + 1) % n]];
-    return `${f((p[0] + q[0]) / 2)} ${f((p[1] + q[1]) / 2)}`;
-  };
-  let d = `M${mid(0)}`;
-  for (let i = 1; i <= n; i++) d += `Q${f(pts[i % n][0])} ${f(pts[i % n][1])} ${mid(i)}`;
-  return `${d}Z`;
-})();
-
-/** The seal, pressed with the Cloverfield mark: the C and its four-leaf clover. */
-function WaxSeal() {
-  const mark = (
-    <>
-      <path d="M40.92 23.97A12 12 0 1 0 40.92 40.03" fill="none" strokeWidth="5.4" />
-      <circle cx="33" cy="29.7" r="2.55" stroke="none" />
-      <circle cx="37.6" cy="29.7" r="2.55" stroke="none" />
-      <circle cx="33" cy="34.3" r="2.55" stroke="none" />
-      <circle cx="37.6" cy="34.3" r="2.55" stroke="none" />
-    </>
-  );
-  return (
-    <svg viewBox="0 0 64 64" aria-hidden="true">
-      <defs>
-        <radialGradient id="gift-wax" cx="38%" cy="32%" r="75%">
-          <stop offset="0" stopColor="#4b4d53" />
-          <stop offset="0.55" stopColor="#26272b" />
-          <stop offset="1" stopColor="#151619" />
-        </radialGradient>
-      </defs>
-      <path d={SEAL_RIM} fill="url(#gift-wax)" />
-      <circle cx="32" cy="32" r="22.5" fill="none" stroke="rgb(0 0 0 / 0.35)" strokeWidth="1.6" />
-      <circle cx="32" cy="32.8" r="22.5" fill="none" stroke="rgb(255 255 255 / 0.1)" />
-      {/* pressed in: a dark edge below, the raised face above */}
-      <g transform="translate(0 0.8)" fill="rgb(0 0 0 / 0.4)" stroke="rgb(0 0 0 / 0.4)">
-        {mark}
-      </g>
-      <g fill="rgb(255 255 255 / 0.2)" stroke="rgb(255 255 255 / 0.2)">
-        {mark}
-      </g>
     </svg>
   );
 }

@@ -518,8 +518,8 @@ textarea.input {
   transform: none;
 }
 
-/* Layers, back to front: the back (z 1), the card (2), the pocket (3), the
-   flap (4) and the seal (5). Every image shares the envelope's frame. */
+/* Layers, back to front: the back (z 1), the card (2), the pocket (3) and
+   the flap (4). Every image shares the envelope's frame. */
 .envBack,
 .envPocket {
   position: absolute;
@@ -606,24 +606,6 @@ textarea.input {
   font-weight: 500;
   line-height: 1.1;
   color: rgb(59 71 36 / 0.9);
-}
-
-/* Pressed onto the flap's tip. */
-.seal {
-  position: absolute;
-  top: calc(64% - 9cqw);
-  left: calc(50% - 9cqw);
-  z-index: 5;
-  display: block;
-  width: 18cqw;
-  height: 18cqw;
-  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.3));
-}
-
-.seal svg {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* The whole envelope is the button. */

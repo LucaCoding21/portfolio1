@@ -33,6 +33,9 @@ import s from "./GiftCard.module.css";
  * it back up, for the dev screens board (/gift-screens).
  */
 
+// The card fills the page column: the screen less 40px of margin, 400px at most.
+const CARD_SIZES = "(max-width: 480px) calc(100vw - 40px), 400px";
+
 // design px to cqw (the design's card is 350 px wide)
 const cq = (px: number) => `${((px * 100) / CARD_BASE).toFixed(4)}cqw`;
 const type = (key: keyof typeof CARD_TYPE) => cardTypeStyle(CARD_TYPE[key], cq);
@@ -46,6 +49,7 @@ export default function GiftCard({
   sheen = false,
   status = "open",
   priority = false,
+  deferBack = false,
   startFlipped = false,
 }: {
   friendName: string;
@@ -56,6 +60,9 @@ export default function GiftCard({
   sheen?: boolean;
   status?: CardStatus;
   priority?: boolean;
+  /** Hold off the back's image: inside the envelope it can't be seen yet, so
+   *  it shouldn't compete with the envelope's own photos. */
+  deferBack?: boolean;
   startFlipped?: boolean;
 }) {
   const turnRef = useRef<HTMLSpanElement>(null);
@@ -119,7 +126,7 @@ export default function GiftCard({
             src="/gift/card-front.webp"
             alt=""
             fill
-            sizes="(max-width: 480px) 100vw, 440px"
+            sizes={CARD_SIZES}
             className={s.art}
             priority={priority}
           />
@@ -171,7 +178,7 @@ export default function GiftCard({
           </span>
         </span>
         <span className={`${s.back} ${faceMod}`} aria-hidden="true">
-          <Image src="/gift/card-back.webp" alt="" fill sizes="(max-width: 480px) 100vw, 440px" className={s.art} />
+          {!deferBack && <Image src="/gift/card-back.webp" alt="" fill sizes={CARD_SIZES} className={s.art} />}
         </span>
       </span>
     </button>

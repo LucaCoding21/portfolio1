@@ -1,5 +1,5 @@
 import { cert, getApps, initializeApp } from "firebase-admin/app";
-import { getFirestore, type Firestore } from "firebase-admin/firestore";
+import { getFirestore, initializeFirestore, type Firestore } from "firebase-admin/firestore";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
@@ -30,6 +30,13 @@ export function firestore(): Firestore {
   if (db) return db;
   const sa = loadServiceAccount();
   const app = getApps()[0] ?? initializeApp({ credential: cert(sa), projectId: sa.project_id });
-  db = getFirestore(app);
+  // HTTPS instead of gRPC: a cold serverless function starts much faster,
+  // and nothing here uses the live listeners that need gRPC.
+  try {
+    db = initializeFirestore(app, { preferRest: true });
+  } catch {
+    // A dev reload, in a process that already set Firestore up differently.
+    db = getFirestore(app);
+  }
   return db;
 }
