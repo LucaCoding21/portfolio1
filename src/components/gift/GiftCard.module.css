@@ -1,0 +1,191 @@
+/* The gift card: the blank Cloverfield artwork, 2100 x 1500, with the gift's
+   details set in Outfit. Sizes live in cardLayout.ts and are applied inline
+   in cqw, so the card is its own container. An element can't size against
+   itself, so the corner radius is a percentage, written per axis (the
+   design's 16px on its 350 x 250 card) so the corners stay round.
+
+   The whole card is a button that turns it over: .turn spins in 3D (GSAP
+   sets rotateY on it), the front face (.card) sits in flow and the back
+   (.back) lies on top of it, already turned away. */
+
+.flip {
+  display: block;
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 4.5714% / 6.4%;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  perspective: 1400px;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .flip:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.turn {
+  display: block;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.card,
+.back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.card {
+  container-type: inline-size;
+  display: block;
+  position: relative;
+  isolation: isolate; /* lets Safari clip the sheen to the corners */
+  width: 100%;
+  aspect-ratio: 2100 / 1500;
+  overflow: hidden;
+  border-radius: 4.5714% / 6.4%;
+  background: #fbfcef;
+  box-shadow:
+    0 1px 2px rgb(20 22 18 / 0.06),
+    0 14px 34px rgb(20 22 18 / 0.13);
+  font-family: var(--font-outfit), system-ui, -apple-system, sans-serif;
+  color: #22231f;
+}
+
+.back {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 4.5714% / 6.4%;
+  background: #55b52a;
+  box-shadow:
+    0 1px 2px rgb(20 22 18 / 0.06),
+    0 14px 34px rgb(20 22 18 / 0.13);
+  transform: rotateY(180deg);
+}
+
+/* a faint edge, so the cream reads as card stock on the grey page */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(43 42 41 / 0.06);
+  pointer-events: none;
+}
+
+.art {
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* The printed lines, as the design stacks them: the logo band, the amount
+   block, then who it's for and the date, spread top to bottom. */
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.when {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Names and businesses that run long end in an ellipsis. */
+.clip {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* One sweep of light across the card, once it is out of the envelope. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    105deg,
+    transparent 32%,
+    rgb(255 255 255 / 0.55) 50%,
+    transparent 68%
+  );
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+
+.sheen::after {
+  animation: gift-sheen 1.15s cubic-bezier(0.25, 0.7, 0.25, 1) forwards;
+}
+
+@keyframes gift-sheen {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+.muted {
+  filter: grayscale(1);
+}
+
+/* "Claimed" or "Redeemed", in the date's place. */
+.pill {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  border-radius: 999px;
+  background: #ddefcf;
+  color: #1f4a10;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen::after {
+    animation: none;
+  }
+}
+
+/* The card read out as a sentence, for screen readers only. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

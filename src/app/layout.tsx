@@ -6,6 +6,7 @@ import SiteNav from "@/components/SiteNav";
 import MobileDock from "@/components/MobileDock";
 import ScrollToTop from "@/components/ScrollToTop";
 import Analytics from "@/components/Analytics";
+import ChromeGate from "@/components/ChromeGate";
 import { STEADY_VH_SCRIPT } from "@/lib/viewport";
 
 // Preloaded: Outfit (the main face), DM Sans (the nav) and Inter (the phone
@@ -404,8 +405,10 @@ gtag('config', 'G-KHS5MBDWV5');`}
       >
         <ScrollToTop />
         <Analytics />
-        <SiteNav />
-        <MobileDock />
+        <ChromeGate>
+          <SiteNav />
+          <MobileDock />
+        </ChromeGate>
         {children}
       </body>
     </html>
