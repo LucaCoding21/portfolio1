@@ -2,8 +2,9 @@
 
 /**
  * Sits straight under the logo strip: headline, a line of studio copy, a row
- * of stats and the "See what we'd fix" button on the left; the two of us on the
- * right with the hand labels landing on the arrows already drawn in the photo.
+ * of stats and the "Get free homepage design" button on the left; the two
+ * of us on the right with the hand labels landing on the arrows already
+ * drawn in the photo.
  *
  * Text rises in on scroll and the stat figures count up from zero; the labels
  * write themselves in through HandLabel's own trigger.
@@ -14,7 +15,8 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import HandLabel, { type HandLabelSpec } from "@/components/HandLabel";
-import ReviewField from "@/components/ReviewField";
+import ArrowCta from "@/components/ArrowCta";
+import { FREE_DESIGN_URL } from "@/data/freeDesign";
 import { STUDIO_STATS as STATS } from "@/data/projects";
 import s from "./TeamIntro.module.css";
 
@@ -125,8 +127,8 @@ export default function TeamIntro() {
             ))}
           </dl>
 
-          <div data-rise>
-            <ReviewField source="team" />
+          <div data-rise data-track="team">
+            <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
           </div>
         </div>
 

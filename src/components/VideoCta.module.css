@@ -1,6 +1,6 @@
 /*
  * Closing call. A rounded video plate inset from the edges on paper, copy
- * and the review field dead centre.
+ * and the button dead centre.
  */
 .wrap {
   --paper: #f9f8f5;
@@ -19,8 +19,8 @@
 .plate {
   position: relative;
   overflow: hidden;
-  /* A floor, not a fixed height: the review card that follows the pill is
-     taller, and the plate grows around it instead of clipping it. */
+  /* A floor, not a fixed height: the plate grows around its content
+     instead of clipping it. */
   display: flex;
   flex-direction: column;
   min-height: clamp(480px, calc(var(--svh, 1svh) * 82), 820px);
@@ -72,12 +72,6 @@
   text-wrap: balance;
 }
 
-/* The review field, capped so it reads as one control over the footage. */
-.form {
-  width: 100%;
-  max-width: 30rem;
-}
-
 @media (max-width: 767px) {
   .wrap {
     --edge: 0.75rem;
@@ -86,8 +80,7 @@
     min-height: calc(var(--svh, 1svh) * 62);
     border-radius: 22px;
   }
-  /* The line and field sit lower on phones, closer to the plate's edge, and
-     narrower side padding leaves the review card room for its fields. */
+  /* The line and button sit lower on phones, closer to the plate's edge. */
   .content {
     padding: 2rem 1rem 1.5rem;
   }

@@ -1,7 +1,7 @@
 /**
- * The free website review's checks, shared by the forms (ReviewField,
- * HeroReview) and the lead route, so a value the form lets through is never
- * refused by the server.
+ * The lead forms' checks (the free website review's ReviewField, the free
+ * home page design quiz) shared with their routes, so a value a form lets
+ * through is never refused by the server.
  */
 
 export const LOOKS_LIKE_A_SITE = /^(https?:\/\/)?[^\s./]+(\.[^\s./]+)+(\/\S*)?$/i;

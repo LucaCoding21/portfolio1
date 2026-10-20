@@ -342,11 +342,6 @@
     bottom 0.4s var(--spring);
 }
 
-/* Sight: blue icon beside the shimmering label */
-.sight .linkInner {
-  color: #3b7cf6;
-}
-
 /* ---- call to action: full width, solid ink ---- */
 
 .cta {
@@ -370,12 +365,30 @@
   background: #000;
 }
 
+/* "Get free homepage design": white above the ink "Start project" */
+.cta + .cta {
+  margin-top: 8px;
+}
+
+.ctaLight {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(26, 22, 19, 0.08);
+  color: var(--ink);
+}
+
+.ctaLight:active {
+  background: #f1efea;
+}
+
 @media (hover: hover) {
   .link:hover {
     color: var(--bright);
   }
   .cta:hover {
     background: #2c2723;
+  }
+  .ctaLight:hover {
+    background: #f6f5f2;
   }
   .link:hover .linkBg {
     opacity: 1;

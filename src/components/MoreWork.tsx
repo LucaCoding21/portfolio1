@@ -2,85 +2,62 @@
 
 /**
  * The bridge from the four featured works to the full list, above How Do We
- * Do It. Two rows of big type run through the middle in opposite directions,
- * every project's name in ink on top and the industries we have built for a
- * tone lighter underneath, and they take their
- * speed from the scroll: coast at rest, rush when you scroll, reverse when
- * you scroll back. Over the rows, a loose deck of the other project covers
- * fans out from a stack as the section arrives, drifts on its own, and tilts
- * toward the cursor. A hand note points at it. Then breathing room, one line
- * of copy, and the arrow button to the work page.
+ * Do It. It opens with one line and the arrow button to the work page. Two
+ * rows of site reels run through the middle in opposite directions, every
+ * reel from /work split between them, and they take their speed from the
+ * scroll: coast at rest, rush when you scroll, reverse when you scroll back.
+ * Then breathing room and the close: a line about the free home page design
+ * and its button.
  *
- * Reduced motion: the rows sit still, the deck is laid out fanned.
+ * The rows don't duplicate their cards to loop: each card is moved on its
+ * own and wraps from one end of the row to the other (as ClientWall does),
+ * so there is one video per reel. Posters load as the section nears; a reel
+ * downloads only once it first comes on screen and plays only while visible.
+ *
+ * PLACEHOLDER: the closing line is a first pass (Oct 2026).
+ *
+ * Reduced motion: the rows sit still and show their posters.
  */
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { projects } from "@/data/projects";
-import { SUCCESS_STORIES } from "@/data/successStories";
+import { WORK_ITEMS } from "@/data/workGallery";
 import ArrowCta from "@/components/ArrowCta";
+import { FREE_DESIGN_URL } from "@/data/freeDesign";
 import s from "./MoreWork.module.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const NAMES = projects.map((p) => p.name);
-/* Industries we have shipped for, in the owner's words. Each one maps to a
-   business on the client wall, so the row reads as a track record. */
-const CRAFT = [
-  "Railings",
-  "Landscaping",
-  "Manufacturing",
-  "Realtors",
-  "Photographers",
-  "Events",
-  "Vehicle wraps",
-  "Apps",
-];
+/* Every reel on /work, in its order, dealt alternately into the two rows so
+   each gets a share of the lead projects. */
+const REELS = WORK_ITEMS.filter((item): item is (typeof WORK_ITEMS)[number] & { video: string } => !!item.video);
+const ROWS = [REELS.filter((_, i) => i % 2 === 0), REELS.filter((_, i) => i % 2 === 1)];
 
-/* Covers of projects that are not already on a card above. Pinned by name so
-   reordering /work (projects.ts order) does not reshuffle the homepage. */
-const featured = new Set(SUCCESS_STORIES.map((story) => story.title));
-const DECK_NAMES = ["Bloomkey", "Afterparty", "WrapCity", "Njagih Studios", "Nancy Tran"];
-const DECK = DECK_NAMES.map((name) => projects.find((p) => p.name === name)).filter(
-  (p): p is (typeof projects)[number] => !!p && !featured.has(p.name),
-);
-
-/* Resting pose per card: x and y offsets as a share of the deck width, and a
-   tilt. Written as a loose fan, heaviest in the middle. */
-const POSES = [
-  { x: -0.42, y: 0.08, r: -7 },
-  { x: -0.2, y: -0.05, r: -3 },
-  { x: 0, y: 0.02, r: 1 },
-  { x: 0.21, y: -0.06, r: 4 },
-  { x: 0.43, y: 0.07, r: 8 },
-];
-
-/* One full loop of a row at rest, in seconds, and the most a fast scroll can
-   multiply that. */
-const LOOP_SECONDS = 70;
+/* At rest a row moves one card width every this many seconds, and the most a
+   fast scroll can multiply that. */
+const SECONDS_PER_CARD = 9;
 const MAX_TIMESCALE = 2.2;
 
-function Row({ words, light, reverse }: { words: string[]; light?: boolean; reverse?: boolean }) {
-  const list = [...words, ...words];
+function Row({ reels, reverse }: { reels: typeof REELS; reverse?: boolean }) {
   return (
-    <div className={`${s.row} ${light ? s.rowLight : ""}`} data-row data-reverse={reverse || undefined}>
-      {/* The light row is texture, not reading matter (WCAG's "incidental
-          text"): its words are drawn by CSS from data-word so contrast
-          checkers leave its pale tone alone, and screen readers get the
-          list once, here. */}
-      {light && <span className="sr-only">{words.join(", ")}</span>}
-      <div className={s.track} data-track>
-        {list.map((w, i) =>
-          light ? (
-            <span key={i} className={s.word} data-word={w} aria-hidden />
-          ) : (
-            <span key={i} className={s.word} aria-hidden={i >= words.length || undefined}>
-              {w}
-            </span>
-          )
-        )}
+    <div className={s.row} data-row data-reverse={reverse || undefined}>
+      <div className={s.track}>
+        {reels.map((item) => (
+          <div key={item.id} className={s.cell} data-cell>
+            <video
+              data-reel
+              data-poster={item.poster}
+              src={item.video}
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-label={`${item.name} website`}
+              className={s.video}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -93,165 +70,130 @@ export default function MoreWork() {
     const section = sectionRef.current;
     if (!section) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const videos = Array.from(section.querySelectorAll<HTMLVideoElement>("[data-reel]"));
+
+    /* Rows: each card sits at i * W in the flow and is shifted so it lands
+       at its wrapped place, (i * W + offset) kept within [-W, total - W). */
+    const rows = Array.from(section.querySelectorAll<HTMLElement>("[data-row]")).map((row) => {
+      const cells = Array.from(row.querySelectorAll<HTMLElement>("[data-cell]"));
+      const r = {
+        dir: row.dataset.reverse === "true" ? 1 : -1,
+        offset: 0,
+        W: 0,
+        wrap: (v: number) => v,
+        measure() {
+          r.W = cells.length > 1 ? cells[1].offsetLeft - cells[0].offsetLeft : cells[0]?.offsetWidth ?? 0;
+          r.wrap = gsap.utils.wrap(-r.W, r.W * (cells.length - 1));
+        },
+        render() {
+          cells.forEach((cell, i) => {
+            const x = r.wrap(i * r.W + r.offset) - i * r.W;
+            cell.style.transform = `translate3d(${x}px, 0, 0)`;
+          });
+        },
+      };
+      return r;
+    });
+    const measure = () => rows.forEach((r) => (r.measure(), r.render()));
+    measure();
+    window.addEventListener("resize", measure);
+
+    /* Posters once the section is about a screen away. */
+    const near = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        videos.forEach((v) => (v.poster = v.dataset.poster ?? ""));
+        near.disconnect();
+      },
+      { rootMargin: "100% 0px" }
+    );
+    near.observe(section);
+
+    if (reduce) {
+      return () => {
+        window.removeEventListener("resize", measure);
+        near.disconnect();
+      };
+    }
+
+    /* Each reel plays while it is on screen, or about to slide on. */
+    const visible = new IntersectionObserver(
+      (entries) =>
+        entries.forEach((e) => {
+          const v = e.target as HTMLVideoElement;
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }),
+      { rootMargin: "0px 15%" }
+    );
+    videos.forEach((v) => visible.observe(v));
+
+    /* The drift runs on the ticker while the section is near the screen. */
+    const speed = { ts: 1 };
+    const tick = (_time: number, deltaMs: number) => {
+      const dt = Math.min(deltaMs, 50) / 1000;
+      rows.forEach((r) => {
+        r.offset += (r.dir * speed.ts * dt * r.W) / SECONDS_PER_CARD;
+        r.render();
+      });
+    };
+    let running = false;
+    const onScreen = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !running) gsap.ticker.add(tick);
+      if (!e.isIntersecting && running) gsap.ticker.remove(tick);
+      running = e.isIntersecting;
+    });
+    onScreen.observe(section);
 
     const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>("[data-card]");
-      const deck = section.querySelector<HTMLElement>("[data-deck]");
-      const note = section.querySelector<HTMLElement>("[data-note]");
-
-      /* Rows: an endless slide, one row each way, whose speed follows the
-         scroll velocity. */
-      const rows = gsap.utils.toArray<HTMLElement>("[data-row]").map((row) => {
-        const track = row.querySelector<HTMLElement>("[data-track]")!;
-        const reverse = row.dataset.reverse === "true";
-        const tween = gsap.fromTo(
-          track,
-          { xPercent: reverse ? -50 : 0 },
-          { xPercent: reverse ? 0 : -50, duration: LOOP_SECONDS, ease: "none", repeat: -1 }
-        );
-        if (reduce) tween.pause();
-        return tween;
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          // px/s of scroll, mapped to a speed multiplier; sign follows direction.
+          const v = self.getVelocity();
+          const scale = gsap.utils.clamp(-MAX_TIMESCALE, MAX_TIMESCALE, 1 + v / 900);
+          const target = v < 0 ? Math.min(-1, scale) : Math.max(1, scale);
+          gsap.to(speed, { ts: target, duration: 0.2, overwrite: true });
+          // Then ease back to a forward coast.
+          gsap.to(speed, { ts: 1, duration: 1.4, ease: "power2.out", delay: 0.2 });
+        },
       });
-
-      if (!reduce) {
-        let settle: gsap.core.Tween | null = null;
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          onUpdate: (self) => {
-            // px/s of scroll, mapped to a speed multiplier; sign follows direction.
-            const v = self.getVelocity();
-            const scale = gsap.utils.clamp(-MAX_TIMESCALE, MAX_TIMESCALE, 1 + v / 900);
-            const target = v < 0 ? Math.min(-1, scale) : Math.max(1, scale);
-            settle?.kill();
-            rows.forEach((t) => {
-              gsap.to(t, { timeScale: target, duration: 0.2, overwrite: true });
-            });
-            // Then ease back to a forward coast.
-            settle = gsap.to(rows, { timeScale: 1, duration: 1.4, ease: "power2.out", delay: 0.2 });
-          },
-        });
-      }
-
-      /* Deck: fans out from a stack as the section comes up, then floats. */
-      if (deck && cards.length) {
-        const w = () => deck.offsetWidth;
-        cards.forEach((card, i) => {
-          const pose = POSES[i] ?? POSES[2];
-          gsap.set(card, { zIndex: i === 2 ? 3 : 2 - Math.abs(i - 2) });
-          if (reduce) {
-            gsap.set(card, { x: () => pose.x * w(), y: () => pose.y * w(), rotation: pose.r });
-            return;
-          }
-          gsap.fromTo(
-            card,
-            { x: 0, y: 0, rotation: 0, scale: 0.86 },
-            {
-              x: () => pose.x * w(),
-              y: () => pose.y * w(),
-              rotation: pose.r,
-              scale: 1,
-              ease: "power2.out",
-              scrollTrigger: { trigger: section, start: "top 85%", end: "top 25%", scrub: 0.6, invalidateOnRefresh: true },
-            }
-          );
-          // A slow independent bob so the deck never sits dead still.
-          gsap.to(card.firstElementChild, {
-            y: () => gsap.utils.random(-8, 8),
-            rotation: () => gsap.utils.random(-1.5, 1.5),
-            duration: () => gsap.utils.random(3, 4.5),
-            ease: "sine.inOut",
-            repeat: -1,
-            yoyo: true,
-            repeatRefresh: true,
-            delay: i * 0.3,
-          });
-        });
-
-        if (note && !reduce) {
-          gsap.from(note, {
-            opacity: 0,
-            y: 12,
-            duration: 0.8,
-            ease: "power3.out",
-            scrollTrigger: { trigger: section, start: "top 40%", once: true },
-          });
-        }
-
-        /* Cursor tilt on the whole deck, on a fine pointer only. */
-        if (finePointer && !reduce) {
-          const rx = gsap.quickTo(deck, "rotationX", { duration: 0.9, ease: "power3.out" });
-          const ry = gsap.quickTo(deck, "rotationY", { duration: 0.9, ease: "power3.out" });
-          const onMove = (e: MouseEvent) => {
-            const r = section.getBoundingClientRect();
-            const px = (e.clientX - r.left) / r.width - 0.5;
-            const py = (e.clientY - r.top) / r.height - 0.5;
-            ry(px * 16);
-            rx(-py * 12);
-          };
-          const onLeave = () => {
-            rx(0);
-            ry(0);
-          };
-          section.addEventListener("mousemove", onMove);
-          section.addEventListener("mouseleave", onLeave);
-          return () => {
-            section.removeEventListener("mousemove", onMove);
-            section.removeEventListener("mouseleave", onLeave);
-          };
-        }
-      }
     }, section);
 
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener("resize", measure);
+      near.disconnect();
+      visible.disconnect();
+      onScreen.disconnect();
+      gsap.ticker.remove(tick);
+      gsap.killTweensOf(speed);
+      ctx.revert();
+    };
   }, []);
 
   return (
     <section ref={sectionRef} className={s.wrap} aria-label="More of our work">
-      <div className={s.stage}>
-        <Row words={NAMES} />
-        <Row words={CRAFT} light reverse />
-
-        <div className={s.deck} data-deck aria-hidden>
-          {DECK.map((p, i) => (
-            <div key={p.id} className={s.card} data-card style={{ ["--i" as string]: i }}>
-              <div className={s.cardInner}>
-                <Image
-                  src={p.image}
-                  alt=""
-                  fill
-                  sizes="(max-width: 767px) 30vw, 14vw"
-                  className={s.cardImg}
-                  style={p.imagePosition ? { objectPosition: p.imagePosition } : undefined}
-                />
-              </div>
-            </div>
-          ))}
-          <span className={s.note} data-note>
-            and the rest of them
-            <svg viewBox="0 0 64 40" className={s.noteArrow} aria-hidden>
-              {/* Up and to the left, at the nearest card. */}
-              <path
-                d="M62 38C44 34 24 22 8 6M6 16 8 6l10 2"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-        </div>
-      </div>
-
-      <div className={s.foot}>
+      <div className={s.head}>
         <p className={s.copy}>
           A few of our favourites. There&rsquo;s plenty more where these came
           from.
         </p>
         <ArrowCta href="/work">See all projects</ArrowCta>
+      </div>
+
+      <div className={s.rows}>
+        <Row reels={ROWS[0]} />
+        <Row reels={ROWS[1]} reverse />
+      </div>
+
+      <div className={s.foot} data-track="more-work">
+        <p className={s.copy}>
+          Like what you see? We&rsquo;ll design your new home page for free,
+          so you can see what we&rsquo;d make for you.
+        </p>
+        <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
       </div>
     </section>
   );

@@ -99,12 +99,18 @@
   transition: background-color 0.3s ease;
 }
 
-/* the call to action is the only solid pill in the row */
+/* the calls to action are the only solid pills in the row: the main one,
+   "Start project", in ink, "Get free homepage design" in white beside it */
 .item.isCta .itemBg {
   background: var(--ink);
 }
 .item.isCta:hover .itemBg {
   background: #2c2723;
+}
+.item.isCtaLight .itemBg,
+.item.isCtaLight:hover .itemBg {
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(26, 22, 19, 0.08);
 }
 
 /* press feedback */
@@ -113,6 +119,9 @@
 }
 .item.isCta:active .itemBg {
   background: #000;
+}
+.item.isCtaLight:active .itemBg {
+  background: #f1efea;
 }
 
 .label {
@@ -142,12 +151,17 @@
   color: var(--ink);
 }
 
-/* white type on the black call to action, in every state */
+/* white type on the black call to action, ink on the white one, in every state */
 .item.isCta .label,
 .item.isCta:hover .label,
 .item.isCta[data-hover="1"] .label {
   color: #fff;
   padding: 0 16px;
+}
+.item.isCtaLight .label,
+.item.isCtaLight:hover .label,
+.item.isCtaLight[data-hover="1"] .label {
+  color: var(--ink);
 }
 
 .item:focus-visible .itemBg {

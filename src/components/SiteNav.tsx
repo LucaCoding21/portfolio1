@@ -4,7 +4,9 @@
  * Nav cloned from a reference site: a centred row of items on one sheet of glass.
  * Items are plain text at rest; on hover one white pill slides under the
  * pointer (0.3s expo.out) and the label rolls: it slides out the top as a
- * copy slides in from below, on calebwu.ca's ease. The call to action is the only solid (black) pill.
+ * copy slides in from below, on calebwu.ca's ease. Two calls to action end
+ * the row: "Get free homepage design" (a white pill, to /free-homepage-design)
+ * and the main one, "Start project" (the one black pill, the Cal booking).
  * Over the hero the nav runs a "dark" theme (slightly more opaque bar), after
  * it a "light" one. Past 400px of scroll the wordmark folds away and only the
  * mark stays (0.6s power4.out).
@@ -31,6 +33,7 @@ import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { CAL_URL, NAV_ITEMS } from "@/data/projects";
+import { FREE_DESIGN_URL } from "@/data/freeDesign";
 import { scrollToHash, scrollToTop } from "@/lib/scrollToHash";
 import { INTRO_EVENT } from "@/lib/intro";
 import s from "./SiteNav.module.css";
@@ -376,23 +379,12 @@ export default function SiteNav() {
             onFocus={onItemEnter}
           >
             <span className={s.itemBg} />
-            {/* "Sight" shimmers blue once the nav is off the dark hero (and
-                always on pages without one). The class clips a moving
-                gradient to the letters, so it goes on the text, not the pill. */}
             <span className={s.label}>
-              {/* Same roll as the call to action: two stacked copies in a
-                  clipped box, and hover slides the stack up one row. The
-                  shimmer goes on each copy, since a moving child breaks a
-                  text clip set on its parent. */}
+              {/* Same roll as the calls to action: two stacked copies in a
+                  clipped box, and hover slides the stack up one row. */}
               <span className={s.flip}>
                 {[0, 1].map((copy) => (
-                  <span
-                    key={copy}
-                    aria-hidden={copy === 1 || undefined}
-                    className={`${s.flipRow} ${
-                      item.href === "/sight" && effectiveTheme === "light" ? "sight-nav-link" : ""
-                    }`}
-                  >
+                  <span key={copy} aria-hidden={copy === 1 || undefined} className={s.flipRow}>
                     {item.label}
                   </span>
                 ))}
@@ -400,6 +392,26 @@ export default function SiteNav() {
             </span>
           </Link>
         ))}
+
+        <Link
+          href={FREE_DESIGN_URL}
+          data-track="nav-bar"
+          className={`${s.item} ${s.isCta} ${s.isCtaLight} ${s.desktopOnly}`}
+          onMouseEnter={onItemEnter}
+          onFocus={onItemEnter}
+        >
+          <span className={s.itemBg} />
+          <span className={s.label}>
+            {/* Two stacked copies in a clipped box: hover slides the stack up
+                one row, so the label flips out the top and back in from below. */}
+            <span className={s.flip}>
+              <span className={s.flipRow}>Get free homepage design</span>
+              <span className={s.flipRow} aria-hidden>
+                Get free homepage design
+              </span>
+            </span>
+          </span>
+        </Link>
 
         <a
           href={CAL_URL}
@@ -413,12 +425,10 @@ export default function SiteNav() {
         >
           <span className={s.itemBg} />
           <span className={s.label}>
-            {/* Two stacked copies in a clipped box: hover slides the stack up
-                one row, so the label flips out the top and back in from below. */}
             <span className={s.flip}>
-              <span className={s.flipRow}>Book A Free Call</span>
+              <span className={s.flipRow}>Start project</span>
               <span className={s.flipRow} aria-hidden>
-                Book A Free Call
+                Start project
               </span>
             </span>
           </span>
@@ -465,7 +475,7 @@ export default function SiteNav() {
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={`${s.panelLink} ${s.panelLinkRuled}`}
               >
-                <span className="sight-nav-link">{item.label}</span>
+                {item.label}
               </Link>
             ))}
             <a
@@ -476,7 +486,7 @@ export default function SiteNav() {
               onClick={closeMenu}
               className={s.panelCta}
             >
-              Book A Free Call
+              Start project
             </a>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { NextResponse, after } from "next/server";
+import { alertWilliam } from "@/lib/alertWilliam";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
 
 /**
@@ -13,41 +14,6 @@ import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/r
  *                   email sends the review. William's phone also buzzes, so a
  *                   lead can be answered within minutes.
  */
-
-/**
- * Buzzes William's phone through ntfy (the ntfy app, subscribed to the topic
- * in NTFY_TOPIC). No account or keys: the topic name is the password, so keep
- * it long and out of the repo. Quiet when unset, and a failed alert never
- * fails the lead, since the email is the record. Tapping the alert opens a
- * text to the lead.
- */
-async function alertWilliam(lead: { name: string; email: string; phone: string; website: string }) {
-  const topic = process.env.NTFY_TOPIC;
-  if (!topic) return;
-
-  const digits = lead.phone.replace(/\D/g, "");
-  const dial = digits.length === 10 ? `+1${digits}` : `+${digits}`;
-  try {
-    const res = await fetch("https://ntfy.sh/", {
-      method: "POST",
-      body: JSON.stringify({
-        topic,
-        title: `Review lead: ${lead.name || lead.website}`,
-        message: `${lead.website}\n${lead.phone} · ${lead.email}`,
-        priority: 4,
-        tags: ["four_leaf_clover"],
-        click: `sms:${dial}`,
-        actions: [
-          { action: "view", label: "Call", url: `tel:${dial}` },
-          { action: "view", label: "Email", url: `mailto:${lead.email}` },
-        ],
-      }),
-    });
-    if (!res.ok) console.error("review-lead: alert not sent:", res.status, await res.text());
-  } catch (err) {
-    console.error("review-lead: alert not sent:", err);
-  }
-}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -76,7 +42,14 @@ export async function POST(request: Request) {
     ] ?? "homepage";
 
   if (contact) {
-    after(() => alertWilliam({ name, email, phone, website }));
+    after(() =>
+      alertWilliam({
+        title: `Review lead: ${name || website}`,
+        message: `${website}\n${phone} · ${email}`,
+        phone,
+        email,
+      })
+    );
   }
 
   const key = process.env.RESEND_API_KEY;

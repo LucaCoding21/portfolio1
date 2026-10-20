@@ -1,9 +1,11 @@
 /**
  * GA4 events. Names are fixed because the GA key events and reports point
  * at them: book_call_click, booking_complete, review_url_submit, video_unmute,
- * and the referral gift funnel: gift_sent, gift_link_shared, gift_opened,
+ * the referral gift funnel: gift_sent, gift_link_shared, gift_opened,
  * gift_claim_start, gift_claimed, gift_site_click, gift_text_william,
- * gift_pass_on.
+ * gift_pass_on; and the free home page design: free_design_click (any link
+ * to the page, by placement), design_quiz_start, design_quiz_type,
+ * design_lead.
  */
 
 type Params = Record<string, string | number | boolean | undefined>;

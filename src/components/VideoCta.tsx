@@ -2,16 +2,17 @@
 
 /**
  * The closing call: a full-width reel in a rounded plate with a margin of
- * paper around it, one line and the website-review field in the middle
- * (the same field as the team section, tagged "closing"). The reel plays
- * only while it is on screen; the line and field rise in with it.
+ * paper around it, one line and the "Get free homepage design" button in
+ * the middle (tagged "closing", or "work" on /work). The reel plays only
+ * while it is on screen; the line and button rise in with it.
  *
  * PLACEHOLDER: the line is a first pass.
  */
 
 import { useEffect, useRef } from "react";
 import { useWakeMedia } from "@/lib/useWakeMedia";
-import ReviewField from "@/components/ReviewField";
+import ArrowCta from "@/components/ArrowCta";
+import { FREE_DESIGN_URL } from "@/data/freeDesign";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import s from "./VideoCta.module.css";
@@ -22,7 +23,7 @@ export default function VideoCta({
   source = "closing",
   onPaper = false,
 }: {
-  /** Which placement the review field reports as: the homepage or /work. */
+  /** Which placement the button reports as: the homepage or /work. */
   source?: "closing" | "work";
   /** On a paper page (/work): paper ground and room above the plate. */
   onPaper?: boolean;
@@ -102,8 +103,8 @@ export default function VideoCta({
           <p className={s.line} data-rise>
             Your site could be next.
           </p>
-          <div data-rise className={s.form}>
-            <ReviewField source={source} tone="dark" />
+          <div data-rise data-track={source}>
+            <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
           </div>
         </div>
       </div>

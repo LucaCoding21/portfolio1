@@ -21,9 +21,11 @@
  * current shape, a separate blurred plate behind it follows that shape, and
  * the logo and toggle slide with the side edges. One tween drives all four.
  *
- * Content and colours are ours: four links in two columns and a full-width
- * call button, on a light frosted plate matching SiteNav's palette. The
- * reference's icons (Framer's stroke set) are kept.
+ * Content and colours are ours: four links in two columns and, like SiteNav,
+ * two full-width buttons under them: "Get free homepage design" (white) and
+ * the main one, "Start project" (ink, the Cal booking), on a light frosted plate
+ * matching SiteNav's palette. The reference's icons (Framer's stroke set)
+ * are kept.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -33,6 +35,7 @@ import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { CAL_URL } from "@/data/projects";
+import { FREE_DESIGN_URL } from "@/data/freeDesign";
 import { scrollToHash, scrollToTop } from "@/lib/scrollToHash";
 import { INTRO_EVENT } from "@/lib/intro";
 import s from "./MobileDock.module.css";
@@ -99,6 +102,12 @@ const IconUser = (p: IconProps) => (
     <path d="M20 21c0-4.418-3.582-8-8-8s-8 3.582-8 8" />
   </Svg>
 );
+const IconLayout = (p: IconProps) => (
+  <Svg {...p}>
+    <rect x={3} y={3} width={18} height={18} rx={2} />
+    <path d="M3 9h18M9 21V9" />
+  </Svg>
+);
 const IconMessageDots = (p: IconProps) => (
   <Svg {...p}>
     <path d="M21 15c0 1.105-.895 2-2 2H7l-4 4V5c0-1.105.895-2 2-2h14c1.105 0 2 .895 2 2ZM8 10h0M12 10h0M16 10h0" />
@@ -110,7 +119,7 @@ const MAIN = [
   { label: "Work", href: "/work", Icon: IconCloud },
   { label: "Approach", href: "/#how-we-do-it", Icon: IconFileLines },
   { label: "About", href: "/#about", Icon: IconUser },
-  { label: "Sight", href: "/sight", Icon: IconSparkle, sight: true },
+  { label: "Sight", href: "/sight", Icon: IconSparkle },
 ];
 
 type Geom = { side: number; bottom: number };
@@ -321,26 +330,29 @@ export default function MobileDock() {
         </div>
 
         <div id="dock-menu" className={s.grid} inert={!isOpen}>
-          {MAIN.map(({ label, href, Icon, sight }) => (
+          {MAIN.map(({ label, href, Icon }) => (
             <Link
               key={label}
               href={href}
-              className={sight ? `${s.link} ${s.sight}` : s.link}
+              className={s.link}
               aria-current={isActive(href) ? "page" : undefined}
               onClick={(e) => onLinkClick(e, href)}
             >
               <span className={s.linkInner}>
                 <Icon className={s.icon} />
-                {/* Sight shimmers blue like SiteNav's (.sight-nav-link) */}
-                <span className={sight ? `${s.linkText} sight-nav-link` : s.linkText}>{label}</span>
+                <span className={s.linkText}>{label}</span>
               </span>
               <span className={s.linkBg} />
             </Link>
           ))}
 
+          <Link href={FREE_DESIGN_URL} data-track="mobile-dock" className={`${s.cta} ${s.ctaLight}`} onClick={close}>
+            <IconLayout className={s.icon} />
+            <span className={s.linkText}>Get free homepage design</span>
+          </Link>
           <a href={CAL_URL} data-track="mobile-dock" target="_blank" rel="noopener noreferrer" className={s.cta} onClick={close}>
             <IconMessageDots className={s.icon} />
-            <span className={s.linkText}>Book A Free Call</span>
+            <span className={s.linkText}>Start project</span>
           </a>
         </div>
       </div>
