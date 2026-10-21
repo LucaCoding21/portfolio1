@@ -50,6 +50,21 @@
   justify-content: space-between;
 }
 
+/* Outline: paper pill, ink edge and label, and an ink chip holding an
+   up-right arrow. The blended paper label reads as ink on the pill and paper
+   on the chip, which swells on hover as in the ink version. */
+.outline .btn {
+  background: var(--paper);
+}
+
+.outline .fill {
+  background: var(--ink);
+}
+
+.outline .arrow > svg {
+  transform: rotate(-45deg);
+}
+
 /* Button reset for the form variant. */
 .asButton {
   margin: 0;

@@ -1,0 +1,318 @@
+/*
+ * The quiz card on /free-homepage-design (Page A handoff). Outfit for the
+ * questions and options, the page's DM Sans for everything else.
+ */
+
+.card {
+  --ink: #1a1613;
+  --muted: #6a665e;
+  --soft: #55504a;
+  --paper: #f9f8f5;
+  --line: #e4dfd6;
+  --danger: #b42323;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  padding: clamp(28px, 3.4vw, 40px);
+  overflow: hidden;
+  /* The CTAs scroll here; leave a little air above the card. */
+  scroll-margin-top: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 10px 24px -18px rgb(26 22 19 / 0.14);
+}
+
+.card :focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* Questions take focus when the step changes; they aren't controls. */
+.card [tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* 6px along the top edge, filling a third per step. */
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: #e4e1d8;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.3s ease;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding-top: 16px;
+}
+
+.stepLabel {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 0 8px 10px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--soft);
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.question {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.centred {
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  text-align: center;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.choice {
+  min-height: 60px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+/* Yes, I do / Not yet. */
+.big {
+  gap: 16px;
+}
+
+.big .choice {
+  min-height: 72px;
+  padding: 16px;
+  font-size: 18px;
+}
+
+.choice:hover {
+  border-color: var(--ink);
+  background: #f3f0ea;
+}
+
+.choice:active {
+  transform: scale(0.98);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formQuestion {
+  margin-bottom: 6px;
+}
+
+.pair {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.pair > .field {
+  flex: 1 1 180px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.optional {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* 16px type, so iOS doesn't zoom in on focus. */
+.input {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.input::placeholder {
+  color: #a9a49a;
+}
+
+.input:focus,
+.input:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+  border-color: var(--ink);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--danger);
+}
+
+.error a {
+  color: inherit;
+}
+
+/* The studio's ink pill, a touch taller here (58px, as in the handoff). */
+.form .submit {
+  --h: 58px;
+  --chip: 42px;
+  margin-top: 6px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 8px 0;
+}
+
+.tick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #dcebd9;
+  color: #24481a;
+}
+
+.doneText {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--soft);
+}
+
+.restart {
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Each step rises in as it arrives. */
+.enter {
+  animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .enter {
+    animation: none;
+  }
+  .bar span {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .question {
+    font-size: 26px;
+  }
+  .centred {
+    font-size: 28px;
+  }
+}

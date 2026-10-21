@@ -1,110 +1,144 @@
 /*
- * The free home page design page. One centred column on paper under the
- * floating site nav. On the landing the column is one screen tall: intro,
- * the reel (which takes whatever height is left, up to its full 16:10 size)
- * and the first question. Once the quiz starts it is the question alone.
- * Form labels and errors stay left-aligned in their fields.
+ * The free home page design page (Page A handoff, Oct 2026). One container
+ * for every section: up to 1440px of content, sides growing from 24px on
+ * phones to 64px on wide screens. Outfit for headings,
+ * buttons and numbers, DM Sans for the rest. The handoff's hand-nudged pixel
+ * sizes (the h1's width, the avatar row, the photo, the statement) are
+ * written here as sizes that hold their desktop look and give way on phones.
  */
 
 .page {
   --ink: #1a1613;
+  --dark: #111113;
   --muted: #6a665e;
+  --soft: #55504a;
   --paper: #f9f8f5;
-  --line: #e2ded5;
-  --card: #fff;
-  --danger: #b42323;
-  min-height: calc(var(--svh, 1svh) * 100);
+  --line: #e4dfd6;
+  --divider: #e0dad0;
+  --grey-on-dark: #8a857d;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 .page :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid currentColor;
   outline-offset: 3px;
 }
 
-/* Questions take focus when the step changes, so screen readers follow.
-   They aren't controls: no ring. */
-.page [tabindex="-1"]:focus {
-  outline: none;
-}
-
-/* 40rem of content. The top padding clears the floating nav (16px down,
-   about 56px tall). The reel's row is the flexible one, so the landing
-   fills the screen exactly and the reel shrinks on short ones. */
-.fold {
-  display: grid;
-  grid-template-rows: auto minmax(8.5rem, 1fr) auto;
-  row-gap: clamp(1rem, 2.6vh, 1.75rem);
+.container {
   width: 100%;
-  max-width: 42.5rem;
-  min-height: calc(var(--svh, 1svh) * 100);
+  max-width: 1568px;
   margin: 0 auto;
-  padding: 5.75rem 1.25rem clamp(1.25rem, 3vh, 2rem);
-  text-align: center;
+  padding-left: clamp(24px, 4.5vw, 64px);
+  padding-right: clamp(24px, 4.5vw, 64px);
 }
 
-.fold[data-mode="quiz"] {
-  grid-template-rows: 1fr;
-}
+/* ---------- header ---------- */
 
-/* Headline, line, perks, trust. */
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: clamp(0.75rem, 1.8vh, 1.125rem);
-}
-
-.title {
-  margin: 0;
-  font-size: clamp(2.125rem, 4.4vw, 3.5rem);
-  font-weight: 500;
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-}
-
-.sub {
-  max-width: 34rem;
-  margin: 0;
-  font-size: clamp(1rem, 1.3vw, 1.125rem);
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.perks {
+.header {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem 1.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.perk {
-  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  white-space: nowrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
 }
 
-.perk svg {
-  flex: none;
-  color: var(--muted);
-}
-
-.trust {
+.brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 1rem;
+  gap: 10px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.brand img {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.callLink {
+  color: var(--ink);
+  text-underline-offset: 3px;
+}
+
+.header .callLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--soft);
+  text-decoration: none;
+}
+
+.callText {
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.callLink:hover,
+.callLink:hover .callText {
+  color: var(--soft);
+}
+
+/* ---------- hero ---------- */
+
+/* Narrower than the other sections, so the promise and the quiz sit
+   closer together. */
+.hero {
+  max-width: 1360px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(40px, 5vw, 72px);
+  padding-top: clamp(48px, 7vw, 104px);
+  padding-bottom: clamp(56px, 6vw, 88px);
+}
+
+.heroCopy {
+  display: flex;
+  flex: 1 1 480px;
+  flex-direction: column;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* Two lines, broken after "free"; sized so "home page design" fits its
+   column beside the quiz. */
+.h1 {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.lede {
+  max-width: 520px;
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.55;
   color: var(--muted);
+}
+
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  padding-top: 4px;
 }
 
 .faces {
@@ -112,9 +146,9 @@
 }
 
 .face {
-  width: 2.25rem;
-  height: 2.25rem;
-  margin-left: -0.6rem;
+  width: 36px;
+  height: 36px;
+  margin-left: -10px;
   border: 2px solid var(--paper);
   border-radius: 50%;
   object-fit: cover;
@@ -124,331 +158,516 @@
   margin-left: 0;
 }
 
-/* The reel fills its row's height, at 16:10 until the column's width stops
-   it (then it crops a little rather than overflow). */
-.reel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 0;
+.proofText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--soft);
 }
 
-/* Never taller than 16:10 at the column's width, so a tall phone centres
-   the reel in the spare room instead of cropping its sides. */
-.reelFrame {
-  position: relative;
-  height: 100%;
-  max-height: min(25rem, calc((min(100vw, 42.5rem) - 2.5rem) / 1.6));
-  max-width: 100%;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: clamp(14px, 1.6vw, 20px);
-  background: #e9e5dc;
-  box-shadow: 0 24px 50px -30px rgb(26 22 19 / 0.35);
+.proofText strong {
+  font-weight: 700;
+  color: var(--ink);
 }
 
-.reelVideo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.heroQuiz {
+  flex: 1 1 420px;
+  min-width: 0;
+  max-width: 580px;
 }
 
-/* The quiz. */
-.quiz {
+/* ---------- logo strip ---------- */
+
+.logos {
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  align-items: center;
+  gap: 24px;
+  padding-top: 36px;
+  padding-bottom: 36px;
 }
 
-.fold[data-mode="quiz"] .quiz {
-  align-self: start;
-  padding-top: clamp(0.5rem, 5vh, 3.5rem);
-}
-
-.eyebrow {
+.logosLabel {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--muted);
+  text-align: center;
 }
 
-/* Back on the left once there is somewhere to go back to; the bar and the
-   count centred. */
-.progress {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  min-height: 1.75rem;
-  font-size: 0.8125rem;
-  color: var(--muted);
+/* The logos drift left on a loop, fading out at both edges. */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
-.meter {
-  display: inline-flex;
-  grid-column: 2;
-  align-items: center;
-  gap: 0.75rem;
-  white-space: nowrap;
+.track {
+  display: flex;
+  width: max-content;
+  animation: drift 45s linear infinite;
 }
 
-.segments {
+/* Each copy carries the gap after its last logo, so the seam matches. */
+.logoRow {
+  --gap: 64px;
   display: flex;
   flex: none;
-  gap: 4px;
-  width: 7.5rem;
-}
-
-.segments span {
-  flex: 1;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--line);
-  transition: background-color 0.4s ease;
-}
-
-.segments span[data-on] {
-  background: var(--ink);
-}
-
-.back {
-  display: inline-flex;
-  grid-column: 1;
-  grid-row: 1;
-  justify-self: start;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--ink);
-  cursor: pointer;
+  gap: var(--gap);
+  padding-right: var(--gap);
+  opacity: 0.7;
 }
 
-.question {
-  margin: 0 0 0.875rem;
-  font-size: clamp(1.375rem, 2vw, 1.625rem);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-}
-
-.choices {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.625rem;
-}
-
-.two {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.choice {
-  min-height: 3.5rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--card);
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.2;
-  color: var(--ink);
-  text-align: center;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .choice:hover {
-    border-color: var(--ink);
-  }
-  .back:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.3em;
-  }
-}
-
-.choice:active {
-  transform: scale(0.98);
-}
-
-.choice[aria-pressed="true"] {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--paper);
-}
-
-/* Forms: "what do you do?" and the contact step. */
-.form,
-.other {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  text-align: left;
-}
-
-.other {
-  margin-top: 1rem;
-}
-
-.pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.label {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.optional {
-  font-weight: 400;
-  color: var(--muted);
-}
-
-/* 16px type, so iOS doesn't zoom in on focus. */
-.input {
-  width: 100%;
-  min-height: 3rem;
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--card);
-  font: inherit;
-  font-size: 1rem;
-  line-height: 1.4;
-  color: var(--ink);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-textarea.input {
-  min-height: 4.75rem;
-  resize: vertical;
-}
-
-.input::placeholder {
-  color: #a9a49a;
-}
-
-.input:focus,
-.input:focus-visible {
-  outline: none;
-  border-color: var(--ink);
-  box-shadow: 0 0 0 3px rgb(26 22 19 / 0.08);
-}
-
-.input[aria-invalid="true"] {
-  border-color: var(--danger);
-}
-
-.error {
-  margin: 0;
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  color: var(--danger);
-}
-
-.error a {
-  color: inherit;
-}
-
-.honeypot {
-  position: absolute;
-  left: -9999px;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-}
-
-.done {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.done .question {
-  margin: 0;
-}
-
-.home {
-  font-weight: 500;
-  color: var(--ink);
-  text-underline-offset: 0.3em;
-}
-
-/* Each step rises in as it arrives. */
-.enter {
-  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .enter {
+  .faqItem::details-content {
+    transition: none;
+  }
+  .faqItem[open] .faqA {
+    animation: none;
+  }
+  .track {
     animation: none;
   }
 }
 
-@media (max-width: 767px) {
-  .fold {
-    row-gap: 1rem;
-    padding-top: 5.25rem;
-  }
-  .title {
-    font-size: clamp(2rem, 9vw, 2.5rem);
-  }
-  .sub {
-    font-size: 1rem;
-    line-height: 1.45;
-  }
-  .perks {
-    gap: 0.4rem 1.1rem;
-  }
-  .perk {
-    font-size: 0.875rem;
-  }
-  .trust {
-    font-size: 0.9375rem;
-  }
-  .face {
-    width: 2rem;
-    height: 2rem;
-  }
-  .question {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-  }
-  .choices {
-    grid-template-columns: 1fr 1fr;
+.logo {
+  display: block;
+  width: auto;
+  height: var(--h);
+}
+
+/* ---------- how it works ---------- */
+
+.how {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 48px clamp(40px, 6vw, 96px);
+  padding-top: clamp(80px, 10vw, 144px);
+  padding-bottom: clamp(80px, 10vw, 144px);
+}
+
+/* Title at the top, photo at the bottom, level with the last row. */
+.howCopy {
+  display: flex;
+  flex: 1 1 440px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(72px, 7vw, 104px);
+  min-width: 0;
+}
+
+.howIntro {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.h2 {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(34px, 3.8vw, 52px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.howSub {
+  max-width: 460px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--soft);
+}
+
+/* Wider and taller than the handoff's 440 x 178. */
+.howPhoto {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.steps {
+  display: flex;
+  flex: 1 1 400px;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--divider);
+}
+
+.stepRow {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.stepNum {
+  flex: none;
+  width: 28px;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.stepText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stepTitle {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.stepBody {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--soft);
+}
+
+/* ---------- what you'll get ---------- */
+
+.dark {
+  background: var(--dark);
+  color: #fff;
+}
+
+.darkInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: clamp(88px, 11vw, 160px);
+  min-height: 640px;
+  padding-top: clamp(80px, 10vw, 144px);
+  padding-bottom: clamp(80px, 10vw, 144px);
+}
+
+.darkTop {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 880px;
+}
+
+.darkEyebrow {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--grey-on-dark);
+}
+
+.statement {
+  max-width: 754px;
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(24px, 2.5vw, 34px);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--grey-on-dark);
+}
+
+/* The note sits just after the clips rather than at the far edge, centred
+   on them. The clips take the room the note leaves, up to 340px each. */
+.darkBottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 36px clamp(64px, 8vw, 128px);
+}
+
+.clips {
+  display: flex;
+  flex: 1 1 640px;
+  flex-wrap: wrap;
+  gap: 16px;
+  max-width: 1052px;
+}
+
+.clip {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.clipVideo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  background: #1e1e22;
+  object-fit: cover;
+  object-position: top;
+}
+
+.clipName {
+  font-size: 13px;
+  color: var(--grey-on-dark);
+}
+
+.darkNote {
+  display: flex;
+  flex: 0 1 280px;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.darkNoteTitle {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.darkNoteBody {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #a8a39b;
+}
+
+/* An underlined link with the arrow on the same line. */
+.darkCta {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 6px;
+  color: #fff;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.darkCta span {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+
+.darkCta svg {
+  flex: none;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .darkCta:hover svg {
+    transform: rotate(-45deg);
   }
 }
 
-@media (max-width: 520px) {
-  .pair {
-    grid-template-columns: 1fr;
+/* ---------- questions ---------- */
+/* A dark band: the title on the left, a plain accordion on the right. */
+
+.faqBand {
+  background: var(--dark);
+  color: #fff;
+}
+
+.faq {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 72px;
+  /* Lets the answers' height ease to and from auto. */
+  interpolate-size: allow-keywords;
+  padding-top: clamp(88px, 11vw, 160px);
+  /* Short at the bottom: the closing plate follows on the same ground. */
+  padding-bottom: clamp(40px, 5vw, 72px);
+}
+
+.faqHead {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.faqTitle {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: clamp(34px, 3.8vw, 52px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.faqSub {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: #a8a39b;
+}
+
+.faqSub .callLink {
+  color: #fff;
+}
+
+.faqSub .callLink:hover {
+  color: #bdb8af;
+}
+
+.faqList {
+  flex: 2 1 520px;
+  min-width: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.faqItem {
+  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+}
+
+/* The answer eases open and shut where the browser can animate details;
+   elsewhere it opens at once and the text still fades in. */
+.faqItem::details-content {
+  height: 0;
+  overflow: hidden;
+  transition:
+    height 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    content-visibility 0.5s allow-discrete;
+}
+
+.faqItem[open]::details-content {
+  height: auto;
+}
+
+.faqItem[open] .faqA {
+  animation: faqIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes faqIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.faqQ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 24px 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  list-style: none;
+  cursor: pointer;
+}
+
+.faqQ::-webkit-details-marker {
+  display: none;
+}
+
+.plus {
+  flex: none;
+  color: #a8a39b;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease;
+}
+
+.faqQ:hover .plus {
+  color: #fff;
+}
+
+.faqItem[open] .plus {
+  transform: rotate(45deg);
+  color: #fff;
+}
+
+.faqA {
+  max-width: 640px;
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #bdb8af;
+}
+
+/* ---------- phones ---------- */
+
+@media (max-width: 640px) {
+  .lede {
+    font-size: 17px;
+  }
+  .heroQuiz {
+    flex-basis: 100%;
+    max-width: none;
+  }
+  .logoRow {
+    --gap: 40px;
+  }
+  .track {
+    animation-duration: 32s;
+  }
+  .logo {
+    height: calc(var(--h) * 0.8);
+  }
+  .howPhoto {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+  .stepRow {
+    padding: 22px 0;
+  }
+  .stepTitle {
+    font-size: 20px;
+  }
+  .darkInner {
+    min-height: 0;
+  }
+  .clip {
+    flex-basis: 100%;
+  }
+  .faqQ {
+    font-size: 18px;
   }
 }

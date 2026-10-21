@@ -14,6 +14,8 @@
  * `note` prints a small Outfit line under the button. No magnetism.
  * Without `href` it renders a submit button, for use inside a form. `full`
  * stretches it to its container, label left and chip at the far end.
+ * `outline` flips it: a paper pill with an ink edge and an ink chip holding
+ * an up-right arrow, which swells to fill the pill on hover.
  */
 
 import { useRef } from "react";
@@ -41,6 +43,7 @@ export default function ArrowCta({
   note,
   live = false,
   full = false,
+  outline = false,
   className = "",
 }: {
   /** Omit to render a submit button (for a form) instead of a link. */
@@ -52,6 +55,8 @@ export default function ArrowCta({
   live?: boolean;
   /** Full width of its container (a form's submit row). */
   full?: boolean;
+  /** Paper pill with an ink edge, filling with ink on hover. */
+  outline?: boolean;
   className?: string;
 }) {
   const btnRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
@@ -59,7 +64,10 @@ export default function ArrowCta({
   const arrowRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
 
-  useChipFill({ btn: btnRef, fill: fillRef, arrow: arrowRef, label: labelRef });
+  useChipFill(
+    { btn: btnRef, fill: fillRef, arrow: arrowRef, label: labelRef },
+    { turn: !outline },
+  );
 
   const inner = (
     <>
@@ -79,7 +87,7 @@ export default function ArrowCta({
   );
 
   return (
-    <div className={`${s.block} ${full ? s.full : ""} ${className}`}>
+    <div className={`${s.block} ${full ? s.full : ""} ${outline ? s.outline : ""} ${className}`}>
       {href ? (
         <Link
           ref={btnRef}

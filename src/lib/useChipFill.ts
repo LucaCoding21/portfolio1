@@ -12,7 +12,8 @@ import gsap from "gsap";
  * `rest` is the circle's scale at rest: 1 when it shows as a chip
  * (ArrowCta), 0 when the button is plain until hovered. `place` centres the
  * circle on the arrow on each hover, for buttons whose arrow moves with the
- * layout; otherwise the stylesheet places it.
+ * layout; otherwise the stylesheet places it. `turn: false` keeps the
+ * arrow's angle (for buttons whose arrow already points up and right).
  */
 export function useChipFill(
   refs: {
@@ -21,7 +22,7 @@ export function useChipFill(
     arrow: RefObject<HTMLElement | null>;
     label: RefObject<HTMLElement | null>;
   },
-  { rest = 1, place = false }: { rest?: number; place?: boolean } = {},
+  { rest = 1, place = false, turn = true }: { rest?: number; place?: boolean; turn?: boolean } = {},
 ) {
   useEffect(() => {
     const btn = refs.btn.current;
@@ -62,13 +63,13 @@ export function useChipFill(
           });
         }
         gsap.to(fill, { scale: coverScale(), duration: 0.75, ease: "expo.out", overwrite: true });
-        gsap.to(arrow, { rotate: -45, x: 1, y: -1, duration: 0.55, ease: "back.out(1.8)", overwrite: true });
+        gsap.to(arrow, { ...(turn && { rotate: -45 }), x: 1, y: -1, duration: 0.55, ease: "back.out(1.8)", overwrite: true });
         gsap.to(label, { x: 3, duration: 0.6, ease: "expo.out", overwrite: true });
       };
 
       const onLeave = () => {
         gsap.to(fill, { scale: rest, duration: 0.55, ease: "power3.inOut", overwrite: true });
-        gsap.to(arrow, { rotate: 0, x: 0, y: 0, duration: 0.45, ease: "power3.inOut", overwrite: true });
+        gsap.to(arrow, { ...(turn && { rotate: 0 }), x: 0, y: 0, duration: 0.45, ease: "power3.inOut", overwrite: true });
         gsap.to(label, { x: 0, duration: 0.5, ease: "power3.inOut", overwrite: true });
       };
 
@@ -81,5 +82,5 @@ export function useChipFill(
     }, btn);
 
     return () => ctx.revert();
-  }, [refs.btn, refs.fill, refs.arrow, refs.label, rest, place]);
+  }, [refs.btn, refs.fill, refs.arrow, refs.label, rest, place, turn]);
 }

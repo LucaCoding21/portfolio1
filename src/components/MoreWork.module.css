@@ -13,11 +13,12 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Content starts at the top; any spare height goes under the close. */
+  justify-content: flex-start;
   min-height: calc(var(--svh, 1svh) * 100);
   overflow: hidden;
   /* Selected Works already leaves air above, so the top is short. */
-  padding: clamp(1.5rem, 4vh, 3rem) 0 clamp(6rem, 12vh, 9rem);
+  padding: clamp(1rem, 2vh, 1.5rem) 0 clamp(6rem, 12vh, 9rem);
   border-radius: 0 0 clamp(2rem, 5vw, 4.5rem) clamp(2rem, 5vw, 4.5rem);
   /* A soft shadow under the card's edge, seen on the section it uncovers. */
   box-shadow: 0 16px 48px -28px rgb(26 22 19 / 0.14);
@@ -33,9 +34,50 @@
   align-items: center;
   gap: 2rem;
   /* A section's worth of air, so the reels read as their own block. */
-  margin-bottom: clamp(4rem, 12vh, 8rem);
+  margin-bottom: clamp(5.5rem, 16vh, 11rem);
   padding: 0 1.5rem;
   text-align: center;
+}
+
+/* The title and its subline over the rows, at their top left. The title is
+   set like "Our selected works" (SelectedWorks.module.css .title), the
+   subline like the free design page's (FreeDesign.module.css .sub). */
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.875rem;
+  margin: 0 0 clamp(1.25rem, 3vh, 2.5rem);
+  padding: 0 clamp(1.5rem, 4vw, 4rem);
+}
+
+.title {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(36px, 9.13vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+@media (min-width: 1024px) {
+  .title {
+    font-size: clamp(56px, 5.46vw, 66px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .title {
+    font-size: clamp(51.8px, 4.05vw, 70px);
+  }
+}
+
+.sub {
+  max-width: 34rem;
+  margin: 0;
+  font-size: clamp(1rem, 1.3vw, 1.125rem);
+  line-height: 1.5;
+  color: var(--muted);
 }
 
 /* The two rows of reels, full bleed. */
@@ -65,7 +107,7 @@
 .cell {
   position: relative;
   flex: none;
-  width: clamp(15rem, 26vw, 27rem);
+  width: clamp(12rem, 19vw, 20rem);
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: clamp(10px, 1vw, 16px);
@@ -82,25 +124,22 @@
 }
 
 /* Air, then the free design line and its button. */
+/* The close sits at the right, under the end of the rows. */
 .foot {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 2rem;
   margin-top: clamp(2rem, 6vh, 4.5rem);
-  padding: 0 1.5rem;
-  text-align: center;
+  padding: 0 clamp(1.5rem, 4vw, 4rem);
+  text-align: right;
 }
 
-.copy {
-  max-width: 34ch;
-  margin: 0;
-  font-size: clamp(1.125rem, 1.4vw, 1.375rem);
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
-  color: var(--ink);
-  text-wrap: balance;
+
+/* The closing line, set like the title's subline, runs to two lines,
+   broken after "for free,". */
+.footCopy {
+  max-width: none;
 }
 
 @media (max-width: 767px) {
@@ -113,11 +152,14 @@
     padding: 1.5rem 0 4.5rem;
   }
   .cell {
-    width: 64vw;
+    width: 50vw;
+  }
+  .sub {
+    line-height: 1.45;
   }
   .head {
     gap: 1.5rem;
-    margin-bottom: 3.5rem;
+    margin-bottom: 5rem;
   }
   .foot {
     margin-top: 1.5rem;

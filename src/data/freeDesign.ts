@@ -7,7 +7,7 @@
 
 export const FREE_DESIGN_URL = "/free-homepage-design";
 
-/** The quiz's "I'm a…" answers. The last one opens a short "what do you do?" field. */
+/** The quiz's "What kind of business do you run?" answers. */
 export const BUSINESS_TYPES = [
   "Trades business",
   "Realtor",

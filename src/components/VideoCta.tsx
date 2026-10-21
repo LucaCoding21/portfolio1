@@ -4,7 +4,8 @@
  * The closing call: a full-width reel in a rounded plate with a margin of
  * paper around it, one line and the "Get free homepage design" button in
  * the middle (tagged "closing", or "work" on /work). The reel plays only
- * while it is on screen; the line and button rise in with it.
+ * while it is on screen; the line and button rise in with it. The free home
+ * page design page passes its own line, a sub-line and a link to its quiz.
  *
  * PLACEHOLDER: the line is a first pass.
  */
@@ -22,11 +23,23 @@ gsap.registerPlugin(ScrollTrigger);
 export default function VideoCta({
   source = "closing",
   onPaper = false,
+  onDark = false,
+  line = "Your site could be next.",
+  sub,
+  href = FREE_DESIGN_URL,
+  label = "Get free homepage design",
 }: {
-  /** Which placement the button reports as: the homepage or /work. */
-  source?: "closing" | "work";
+  /** Which placement the button reports as: the homepage, /work or the free design page. */
+  source?: "closing" | "work" | "free-design";
   /** On a paper page (/work): paper ground and room above the plate. */
   onPaper?: boolean;
+  /** After a dark section (the free design page's FAQ): the same dark ground. */
+  onDark?: boolean;
+  line?: string;
+  /** A smaller line under the main one. */
+  sub?: string;
+  href?: string;
+  label?: string;
 } = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -75,7 +88,7 @@ export default function VideoCta({
   }, []);
 
   return (
-    <section ref={sectionRef} className={`${s.wrap} ${onPaper ? s.onPaper : ""}`} aria-label="Book a call">
+    <section ref={sectionRef} className={`${s.wrap} ${onPaper ? s.onPaper : ""} ${onDark ? s.onDark : ""}`} aria-label="Book a call">
       <div className={s.plate} data-plate>
         {/* Phones get a 9:16 crop of the 1080p source, panned right onto the
             bench, so the plate is not upscaling a sliver of the landscape
@@ -100,11 +113,12 @@ export default function VideoCta({
         </video>
         <div className={s.scrim} />
         <div className={s.content}>
-          <p className={s.line} data-rise>
-            Your site could be next.
-          </p>
+          <div className={s.copy} data-rise>
+            <p className={s.line}>{line}</p>
+            {sub && <p className={s.sub}>{sub}</p>}
+          </div>
           <div data-rise data-track={source}>
-            <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
+            <ArrowCta href={href}>{label}</ArrowCta>
           </div>
         </div>
       </div>

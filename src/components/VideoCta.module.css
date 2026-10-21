@@ -9,6 +9,20 @@
   background: #fff;
 }
 
+/* After a dark section (the free design page's FAQ): the same ground, a
+   narrower and shorter plate, and room below it for the footer, which rides up 28 to
+   48px over the section before it. */
+.onDark {
+  padding-bottom: calc(var(--edge) + clamp(72px, 9vw, 128px));
+  background: #111113;
+}
+
+.onDark .plate {
+  max-width: 1240px;
+  min-height: clamp(400px, calc(var(--svh, 1svh) * 60), 600px);
+  margin: 0 auto;
+}
+
 /* After a paper page's content (/work): match its ground, with a short gap
    above the plate (the grid's own bottom padding adds to it). */
 .onPaper {
@@ -60,6 +74,14 @@
   text-align: center;
 }
 
+/* The line and its optional sub-line. */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 /* The line, in the sections' sans, big and tight, in paper on the footage. */
 .line {
   margin: 0;
@@ -70,6 +92,14 @@
   letter-spacing: -0.03em;
   color: #fff;
   text-wrap: balance;
+}
+
+.sub {
+  margin: 0;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: clamp(1rem, 1.2vw, 1.125rem);
+  line-height: 1.45;
+  color: rgb(255 255 255 / 0.85);
 }
 
 @media (max-width: 767px) {

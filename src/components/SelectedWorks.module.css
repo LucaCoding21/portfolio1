@@ -87,7 +87,7 @@
   .carousel {
     height: calc(var(--svh, 1svh) * 75);
     max-height: 700px;
-    margin-bottom: 200px;
+    margin-bottom: 80px;
   }
 }
 
@@ -98,7 +98,7 @@
     max-width: 2050px;
     height: 36vw;
     max-height: 500px;
-    margin-bottom: 100px;
+    margin-bottom: 48px;
   }
 }
 

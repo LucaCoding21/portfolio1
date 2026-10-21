@@ -2,7 +2,7 @@
 
 /**
  * The bridge from the four featured works to the full list, above How Do We
- * Do It. It opens with one line and the arrow button to the work page. Two
+ * Do It. It opens with the outline arrow button to the work page. Two
  * rows of site reels run through the middle in opposite directions, every
  * reel from /work split between them, and they take their speed from the
  * scroll: coast at rest, rush when you scroll, reverse when you scroll back.
@@ -14,7 +14,8 @@
  * so there is one video per reel. Posters load as the section nears; a reel
  * downloads only once it first comes on screen and plays only while visible.
  *
- * PLACEHOLDER: the closing line is a first pass (Oct 2026).
+ * PLACEHOLDER: the title over the rows and the closing line are a first
+ * pass (Oct 2026).
  *
  * Reduced motion: the rows sit still and show their posters.
  */
@@ -36,8 +37,8 @@ const ROWS = [REELS.filter((_, i) => i % 2 === 0), REELS.filter((_, i) => i % 2 
 
 /* At rest a row moves one card width every this many seconds, and the most a
    fast scroll can multiply that. */
-const SECONDS_PER_CARD = 9;
-const MAX_TIMESCALE = 2.2;
+const SECONDS_PER_CARD = 16;
+const MAX_TIMESCALE = 1.5;
 
 function Row({ reels, reverse }: { reels: typeof REELS; reverse?: boolean }) {
   return (
@@ -153,7 +154,7 @@ export default function MoreWork() {
         onUpdate: (self) => {
           // px/s of scroll, mapped to a speed multiplier; sign follows direction.
           const v = self.getVelocity();
-          const scale = gsap.utils.clamp(-MAX_TIMESCALE, MAX_TIMESCALE, 1 + v / 900);
+          const scale = gsap.utils.clamp(-MAX_TIMESCALE, MAX_TIMESCALE, 1 + v / 1800);
           const target = v < 0 ? Math.min(-1, scale) : Math.max(1, scale);
           gsap.to(speed, { ts: target, duration: 0.2, overwrite: true });
           // Then ease back to a forward coast.
@@ -176,11 +177,21 @@ export default function MoreWork() {
   return (
     <section ref={sectionRef} className={s.wrap} aria-label="More of our work">
       <div className={s.head}>
-        <p className={s.copy}>
-          A few of our favourites. There&rsquo;s plenty more where these came
-          from.
+        <ArrowCta href="/work" outline>
+          See all projects
+        </ArrowCta>
+      </div>
+
+      <div className={s.titleBlock}>
+        <h2 className={s.title}>
+          Get your free
+          <br />
+          home page design
+        </h2>
+        <p className={s.sub}>
+          Answer three quick questions and we&rsquo;ll design a new home page
+          for your business, at no cost to you.
         </p>
-        <ArrowCta href="/work">See all projects</ArrowCta>
       </div>
 
       <div className={s.rows}>
@@ -189,8 +200,9 @@ export default function MoreWork() {
       </div>
 
       <div className={s.foot} data-track="more-work">
-        <p className={s.copy}>
+        <p className={`${s.sub} ${s.footCopy}`}>
           Like what you see? We&rsquo;ll design your new home page for free,
+          <br />
           so you can see what we&rsquo;d make for you.
         </p>
         <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>

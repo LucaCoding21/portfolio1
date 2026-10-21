@@ -1,464 +1,405 @@
 "use client";
 
 /**
- * The free home page design page (/free-homepage-design, Oct 2026), laid out
- * like a "Get your free sample kit" landing, centred, under the site nav.
- * One screen: the headline, one line, three perks with icons and "Trusted
- * by 15 businesses" with client faces at the top, one site reel playing in
- * the middle, and the quiz's first question under it. Answering hands the
- * screen to the quiz:
+ * The free home page design page (/free-homepage-design), rebuilt from the
+ * Page A handoff (Oct 2026). It stands on its own: no site nav, just the
+ * logo and "Book a free call" (see ChromeGate). Top to bottom:
  *
- *   site     Do you have a website? (Yes / Not yet)
- *   type     I'm a… (BUSINESS_TYPES; "Something else" asks what they do)
- *   contact  website (when they have one), name, phone and email, all
- *            required; business name (when they have no site) and a note,
- *            optional
- *   done     thanks, and where we'll reach them
+ *   hero          the promise and the trust line on the left, the quiz card
+ *                 (Quiz, id="quiz") on the right
+ *   logos         nine client logos in grey, scrolling sideways
+ *   how it works  title and the research clip on the left, four steps on
+ *                 the right
+ *   what you get  dark band: a statement, three site clips, a note and a
+ *                 link back to the quiz
+ *   owners        title top left, the three client videos bottom right
+ *                 (OwnerVideos)
+ *   questions     dark band: the title on the left, an accordion on the
+ *                 right
+ *   final CTA     the homepage's closing reel plate (VideoCta), its button
+ *                 scrolling back to the quiz
+ *   footer        the homepage's (HomeFooter)
  *
- * Nothing is sent before the contact step: /api/design-lead then emails
- * William and buzzes his phone.
+ * The copy is the handoff's, word for word, except the last question, which
+ * says "Surrey, BC" (see CLAUDE.md).
  *
- * PLACEHOLDER: the copy is a first pass and the reel is a sample.
+ * Motion, as on the homepage (Testimonials, VideoCta): the hero rises in on
+ * load; every other section, once 70% up the screen, rises its copy
+ * ([data-rise], 28px), then its cards ([data-card], 48px, one after
+ * another), and eases its photo plates ([data-plate]) up from 96%. Reduced
+ * motion: everything is simply there.
  */
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Link from "next/link";
-import ArrowCta from "@/components/ArrowCta";
-import { projects } from "@/data/projects";
-import { BUSINESS_TYPES, OTHER_TYPE, type BusinessType } from "@/data/freeDesign";
-import { WILLIAM_PHONE } from "@/lib/giftShared";
-import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
-import { track } from "@/lib/track";
+import { CAL_URL } from "@/data/projects";
+import HomeFooter from "@/components/HomeFooter";
+import VideoCta from "@/components/VideoCta";
+import OwnerVideos from "./OwnerVideos";
+import Quiz from "./Quiz";
 import s from "./FreeDesign.module.css";
 
-/** PLACEHOLDER: a sample site reel (Innovative Aluminum's, from /work). */
-const SAMPLE_REEL = {
-  video: "/success/innovative-aluminum-work.mp4",
-  poster: "/success/innovative-aluminum.webp",
-};
+gsap.registerPlugin(ScrollTrigger);
 
-const TRUSTED_COUNT = 15;
+/** Trust line faces: WrapCity, Innovative Aluminum, Flow State, ACE. */
+const FACES = [
+  "/wrapcity-headshot-v3.webp",
+  "/testimonials/mike-victory.webp",
+  "/flowstate/paula-headshot.jpg",
+  "/ACE/ace-headshot-v5.webp",
+];
 
-/** "+17789970335" reads as "778-997-0335". */
-const WILLIAM_PHONE_READ = WILLIAM_PHONE.replace(/^\+1(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3");
+/** Monochrome client logos, drawn at these heights (the files are 96px tall). */
+const LOGOS = [
+  { file: "wrapcity", alt: "WrapCity", w: 312, h: 30 },
+  { file: "caddie-companion", alt: "Caddie Companion", w: 284, h: 30 },
+  { file: "northwest-railing", alt: "Northwest Railing", w: 94, h: 44 },
+  { file: "gvr", alt: "Greater Vancouver REALTORS", w: 279, h: 32 },
+  { file: "dreamhouse-printing", alt: "Dreamhouse Printing", w: 319, h: 30 },
+  { file: "reibc", alt: "Real Estate Institute of BC", w: 266, h: 32 },
+  { file: "afterparty", alt: "Afterparty", w: 84, h: 44 },
+  { file: "ondek", alt: "Ondek", w: 204, h: 34 },
+  { file: "venues-quarterly", alt: "Venues Quarterly", w: 289, h: 30 },
+];
 
-/** Faces for the trust line, read from the client quotes in projects.ts. */
-const FACES = ["Innovative Aluminum", "WrapCity", "Flow State Therapy", "ACE"]
-  .map((name) => projects.find((p) => p.name === name)?.quote)
-  .filter((q): q is { author: string; avatar: string; texts: string[]; role: string } => !!q?.avatar);
-
-/* 24px line icons on a 1.5px stroke, like the hero's. */
-const PERKS: { label: string; icon: string }[] = [
+const STEPS = [
+  { title: "Answer three quick questions", body: "Takes a minute or two, right here on this page." },
+  { title: "We research your business", body: "Your industry, your competitors and what makes customers choose you." },
+  { title: "We design your home page", body: "Made for your business, not pulled from a template." },
   {
-    label: "Free, no obligation",
-    icon: "M4.75 10.25h14.5v8.5a1.5 1.5 0 0 1-1.5 1.5H6.25a1.5 1.5 0 0 1-1.5-1.5v-8.5ZM3.75 7.25h16.5v3H3.75v-3ZM12 7.25v13M12 7.25S10.9 3.75 8.6 3.75c-1.3 0-2.1.9-2.1 1.8 0 1.7 2.6 1.7 5.5 1.7ZM12 7.25s1.1-3.5 3.4-3.5c1.3 0 2.1.9 2.1 1.8 0 1.7-2.6 1.7-5.5 1.7Z",
-  },
-  {
-    label: "Made for your business",
-    icon: "M14.25 6.25l3.5 3.5M4.75 19.25l1-4.5 9.85-9.85a1.5 1.5 0 0 1 2.12 0l1.38 1.38a1.5 1.5 0 0 1 0 2.12L9.25 18.25l-4.5 1Z",
-  },
-  {
-    label: "Local to Surrey, BC",
-    icon: "M12 20.25s6.25-5.4 6.25-10.5a6.25 6.25 0 1 0-12.5 0c0 5.1 6.25 10.5 6.25 10.5ZM12 12a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z",
+    title: "You decide what’s next",
+    body: "Love it and we build it, usually live in 2–3 weeks. If not, no hard feelings.",
   },
 ];
 
-type Step = "site" | "type" | "contact" | "done";
-type Problem = "other" | "website" | "name" | "phone" | "email" | "send";
-type Fields = { website: string; business: string; name: string; phone: string; email: string; notes: string };
+/** Site clips in the dark band. `start` skips a black opening and loops from there. */
+const CLIPS = [
+  {
+    name: "Northwest Railing",
+    video: "/success/northwest-railing.mp4",
+    poster: "/free-homepage-design/clips/northwest-railing.jpg",
+    label: "Northwest Railing website, scrolling through the home page",
+  },
+  {
+    name: "WrapCity",
+    video: "/success/wrapcity.mp4",
+    poster: "/free-homepage-design/clips/wrapcity.jpg",
+    label: "WrapCity website, showing the before and after gallery",
+  },
+  {
+    name: "ACE",
+    video: "/success/ace-work.mp4",
+    poster: "/free-homepage-design/clips/ace.jpg",
+    label: "ACE photography website, scrolling through the portfolio",
+    start: 2.5,
+  },
+];
 
-const STEP_NUMBER: Record<Exclude<Step, "done">, number> = { site: 1, type: 2, contact: 3 };
-const EMPTY: Fields = { website: "", business: "", name: "", phone: "", email: "", notes: "" };
+const FAQS = [
+  {
+    q: "Is it actually free?",
+    a: "Yes. There’s no cost and no obligation to hire us. You get a custom home page design for your business either way.",
+  },
+  {
+    q: "What do I need to give you?",
+    a: "Just the three answers above. Colours you like, a site you love or photos of your work all help, but they’re optional.",
+  },
+  {
+    q: "What happens after I get my design?",
+    a: "If you love it, we can build it into a full website. Once a design is approved, sites are usually live in about 2–3 weeks. If not, you’re under no obligation.",
+  },
+  {
+    q: "Do you only work with Surrey, BC businesses?",
+    a: "We’re based in Surrey, BC and work with businesses across the Lower Mainland.",
+  },
+];
 
-function Glyph({ d }: { d: string }) {
+function Arrow() {
   return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none">
-      <path d={d} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+      <path d="M5 12h14M13 6l6 6-6 6" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function Field({
-  label,
-  optional,
-  error,
-  multiline,
-  ...input
-}: {
-  label: string;
-  optional?: boolean;
-  error?: string;
-  multiline?: boolean;
-} & React.InputHTMLAttributes<HTMLInputElement> &
-  React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  const id = useId();
-  const props = {
-    id,
-    className: s.input,
-    "aria-invalid": error ? true : undefined,
-    "aria-describedby": error ? `${id}-error` : undefined,
-    ...input,
-  };
+function BookCall({ children }: { children: React.ReactNode }) {
   return (
-    <div className={s.field}>
-      <label htmlFor={id} className={s.label}>
-        {label}
-        {optional && <span className={s.optional}> (optional)</span>}
-      </label>
-      {multiline ? <textarea rows={2} {...props} /> : <input {...props} />}
-      {error && (
-        <p id={`${id}-error`} className={s.error}>
-          {error}
-        </p>
-      )}
-    </div>
+    <a href={CAL_URL} target="_blank" rel="noopener noreferrer" className={s.callLink}>
+      {children}
+    </a>
+  );
+}
+
+/** A site clip: muted, looping, and only playing while on screen. */
+function Clip({ clip }: { clip: (typeof CLIPS)[number] }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => {});
+      else v.pause();
+    });
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
+  const fromStart = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    if (clip.start) e.currentTarget.currentTime = clip.start;
+  };
+
+  return (
+    <figure className={s.clip} data-card>
+      <video
+        ref={ref}
+        src={clip.video}
+        poster={clip.poster}
+        muted
+        playsInline
+        loop={!clip.start}
+        preload="none"
+        aria-label={clip.label}
+        className={s.clipVideo}
+        onLoadedMetadata={fromStart}
+        onEnded={(e) => {
+          fromStart(e);
+          e.currentTarget.play().catch(() => {});
+        }}
+      />
+      <figcaption className={s.clipName}>{clip.name}</figcaption>
+    </figure>
   );
 }
 
 export default function FreeDesign() {
-  const [step, setStep] = useState<Step>("site");
-  const [hasSite, setHasSite] = useState<boolean | null>(null);
-  const [type, setType] = useState<BusinessType | null>(null);
-  const [typeOther, setTypeOther] = useState("");
-  const [fields, setFields] = useState<Fields>(EMPTY);
-  const [error, setError] = useState<Problem | null>(null);
-  const [sending, setSending] = useState(false);
+  const pageRef = useRef<HTMLDivElement>(null);
 
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const firstRender = useRef(true);
-
-  // Each new step starts at the top of the screen, with its question
-  // focused so screen readers follow. The landing keeps the page's own focus.
+  /* Entry motion; see the note at the top. */
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    window.scrollTo(0, 0);
-    headingRef.current?.focus({ preventScroll: true });
-  }, [step]);
-
-  const set = (key: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFields((f) => ({ ...f, [key]: e.target.value }));
-    if (error === key) setError(null);
-  };
-
-  const answerSite = (yes: boolean) => {
-    setHasSite(yes);
-    setError(null);
-    track("design_quiz_start", { has_site: yes });
-    setStep("type");
-  };
-
-  const answerType = (t: BusinessType) => {
-    setType(t);
-    setError(null);
-    if (t === OTHER_TYPE) return;
-    track("design_quiz_type", { business_type: t });
-    setStep("contact");
-  };
-
-  const submitOther = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!typeOther.trim()) {
-      setError("other");
-      return;
-    }
-    track("design_quiz_type", { business_type: OTHER_TYPE });
-    setStep("contact");
-  };
-
-  const submitContact = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (sending) return;
-    const form = e.currentTarget;
-    const website = fields.website.trim().replace(/\s+/g, "");
-    const problem: Problem | null =
-      hasSite && !LOOKS_LIKE_A_SITE.test(website)
-        ? "website"
-        : !fields.name.trim()
-          ? "name"
-          : !looksLikeAPhone(fields.phone)
-            ? "phone"
-            : !LOOKS_LIKE_AN_EMAIL.test(fields.email.trim())
-              ? "email"
-              : null;
-    if (problem) {
-      setError(problem);
-      (form.elements.namedItem(problem) as HTMLElement | null)?.focus();
-      return;
-    }
-
-    setSending(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/design-lead", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          hasSite,
-          type,
-          typeOther,
-          website,
-          business: fields.business,
-          name: fields.name,
-          phone: fields.phone,
-          email: fields.email,
-          notes: fields.notes,
-          company: new FormData(form).get("company"),
-        }),
+    const page = pageRef.current;
+    if (!page || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.from("[data-hero]", { y: 28, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.1, delay: 0.1 });
+      gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((section) => {
+        const at = () => ({ trigger: section, start: "top 70%", once: true });
+        const rise = section.querySelectorAll("[data-rise]");
+        const cards = section.querySelectorAll("[data-card]");
+        if (rise.length) {
+          gsap.from(rise, { y: 28, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.1, scrollTrigger: at() });
+        }
+        if (cards.length) {
+          gsap.from(cards, {
+            y: 48,
+            opacity: 0,
+            duration: 1.1,
+            ease: "power3.out",
+            stagger: 0.12,
+            delay: 0.15,
+            scrollTrigger: at(),
+          });
+        }
+        section.querySelectorAll("[data-plate]").forEach((plate) => {
+          gsap.from(plate, {
+            scale: 0.96,
+            opacity: 0,
+            duration: 1.2,
+            ease: "power3.out",
+            scrollTrigger: { trigger: plate, start: "top 85%", once: true },
+          });
+        });
       });
-      if (!res.ok) throw new Error(String(res.status));
-    } catch {
-      setSending(false);
-      setError("send");
-      return;
-    }
+    }, page);
+    return () => ctx.revert();
+  }, []);
 
-    track("design_lead", { has_site: !!hasSite, business_type: type ?? "" });
-    setSending(false);
-    setStep("done");
-  };
-
-  const back = () => {
-    setError(null);
-    setStep(step === "contact" ? "type" : "site");
-  };
-
-  const number = step === "done" ? null : STEP_NUMBER[step];
-  const firstName = fields.name.trim().split(/\s+/)[0];
-
-  const progress = number ? (
-    <div className={s.progress}>
-      {step !== "site" && (
-        <button type="button" className={s.back} onClick={back}>
-          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden fill="none">
-            <path
-              d="M13.5 8h-11M7 3.5 2.5 8 7 12.5"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Back
-        </button>
-      )}
-      <span className={s.meter}>
-        <span className={s.segments} aria-hidden>
-          {[1, 2, 3].map((i) => (
-            <span key={i} data-on={i <= number || undefined} />
-          ))}
-        </span>
-        Step {number} of 3
-      </span>
-    </div>
-  ) : null;
 
   return (
-    <main className={s.page}>
-      <div className={s.fold} data-mode={step === "site" ? "landing" : "quiz"}>
-        {step === "site" && (
-          <>
-            <section className={s.intro} aria-labelledby="free-design-title">
-              <h1 id="free-design-title" className={s.title}>
-                Get your free home page design
-              </h1>
-              <p className={s.sub}>
-                Answer three quick questions and we&rsquo;ll design a new home
-                page for your business, at no cost to you.
-              </p>
-              <ul className={s.perks}>
-                {PERKS.map((perk) => (
-                  <li key={perk.label} className={s.perk}>
-                    <Glyph d={perk.icon} />
-                    {perk.label}
-                  </li>
+    <div ref={pageRef} className={s.page}>
+      <header className={`${s.container} ${s.header}`}>
+        <Link href="/" aria-label="Cloverfield Studio home" className={s.brand}>
+          <Image src="/brand-mark.png" alt="" width={30} height={30} priority />
+          <span>cloverfield</span>
+        </Link>
+        <BookCall>
+          <span className={s.callLead}>Prefer to talk?</span> <span className={s.callText}>Book a free call</span>
+        </BookCall>
+      </header>
+
+      <main>
+        {/* Hero: the promise on the left, the quiz on the right. */}
+        <section className={`${s.container} ${s.hero}`}>
+          <div className={s.heroCopy}>
+            <h1 className={s.h1} data-hero>
+              Get your free
+              <br />
+              home page design
+            </h1>
+            <p className={s.lede} data-hero>
+              Answer three quick questions and we&rsquo;ll design a custom home page for your business. Free, no
+              obligation.
+            </p>
+            <div className={s.proof} data-hero>
+              <span className={s.faces} aria-hidden>
+                {FACES.map((src) => (
+                  <Image key={src} src={src} alt="" width={72} height={72} className={s.face} />
                 ))}
-              </ul>
-              <div className={s.trust}>
-                <span className={s.faces} aria-hidden>
-                  {FACES.map((face) => (
-                    <Image key={face.author} src={face.avatar} alt="" width={64} height={64} className={s.face} />
-                  ))}
-                </span>
-                Trusted by {TRUSTED_COUNT} businesses
-              </div>
-            </section>
-
-            <div className={s.reel}>
-              <div className={s.reelFrame}>
-                <video
-                  src={SAMPLE_REEL.video}
-                  poster={SAMPLE_REEL.poster}
-                  muted
-                  loop
-                  playsInline
-                  autoPlay
-                  preload="auto"
-                  aria-label="A home page we designed, scrolling"
-                  className={s.reelVideo}
-                />
-              </div>
+              </span>
+              <p className={s.proofText}>
+                <strong>3,000+ inquiries</strong> generated for local
+                <br />
+                businesses by sites we&rsquo;ve built
+              </p>
             </div>
-          </>
-        )}
-
-        <section className={s.quiz} aria-label="Free home page design questions">
-          {step !== "site" && <p className={s.eyebrow}>Free home page design</p>}
-          {progress}
-
-          {/* Keyed by step, so each question rises in fresh. */}
-          <div key={step} className={s.enter}>
-            {step === "site" && (
-              <>
-                <h2 ref={headingRef} tabIndex={-1} className={s.question}>
-                  Do you have a website?
-                </h2>
-                <div className={`${s.choices} ${s.two}`}>
-                  <button type="button" className={s.choice} aria-pressed={hasSite === true} onClick={() => answerSite(true)}>
-                    Yes, I do
-                  </button>
-                  <button type="button" className={s.choice} aria-pressed={hasSite === false} onClick={() => answerSite(false)}>
-                    Not yet
-                  </button>
-                </div>
-              </>
-            )}
-
-            {step === "type" && (
-              <>
-                <h2 ref={headingRef} tabIndex={-1} className={s.question}>
-                  I&rsquo;m a&hellip;
-                </h2>
-                <div className={s.choices}>
-                  {BUSINESS_TYPES.map((t) => (
-                    <button key={t} type="button" className={s.choice} aria-pressed={type === t} onClick={() => answerType(t)}>
-                      {t}
-                    </button>
-                  ))}
-                </div>
-                {type === OTHER_TYPE && (
-                  <form className={s.other} onSubmit={submitOther} noValidate>
-                    <Field
-                      label="What do you do?"
-                      name="other"
-                      autoFocus
-                      value={typeOther}
-                      placeholder="A bakery, a law office, a gym…"
-                      onChange={(e) => {
-                        setTypeOther(e.target.value);
-                        if (error === "other") setError(null);
-                      }}
-                      error={error === "other" ? "Tell us in a few words." : undefined}
-                    />
-                    <ArrowCta full>Continue</ArrowCta>
-                  </form>
-                )}
-              </>
-            )}
-
-            {step === "contact" && (
-              <>
-                <h2 ref={headingRef} tabIndex={-1} className={s.question}>
-                  Where should we send your design?
-                </h2>
-                <form className={s.form} onSubmit={submitContact} noValidate>
-                  {hasSite ? (
-                    <Field
-                      label="Your website"
-                      name="website"
-                      inputMode="url"
-                      autoComplete="url"
-                      autoCapitalize="none"
-                      spellCheck={false}
-                      placeholder="yourbusiness.ca"
-                      value={fields.website}
-                      onChange={set("website")}
-                      error={error === "website" ? "Add your website, like yourbusiness.ca." : undefined}
-                    />
-                  ) : (
-                    <Field
-                      label="Business name"
-                      optional
-                      name="business"
-                      autoComplete="organization"
-                      value={fields.business}
-                      onChange={set("business")}
-                    />
-                  )}
-                  <Field
-                    label="Your name"
-                    name="name"
-                    autoComplete="name"
-                    value={fields.name}
-                    onChange={set("name")}
-                    error={error === "name" ? "Add your name." : undefined}
-                  />
-                  <div className={s.pair}>
-                    <Field
-                      label="Phone"
-                      name="phone"
-                      type="tel"
-                      inputMode="tel"
-                      autoComplete="tel"
-                      value={fields.phone}
-                      onChange={set("phone")}
-                      error={error === "phone" ? "Add a phone number with its area code." : undefined}
-                    />
-                    <Field
-                      label="Email"
-                      name="email"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      autoCapitalize="none"
-                      spellCheck={false}
-                      value={fields.email}
-                      onChange={set("email")}
-                      error={error === "email" ? "Add an email we can reach you at." : undefined}
-                    />
-                  </div>
-                  <Field
-                    label="Anything we should know?"
-                    optional
-                    multiline
-                    name="notes"
-                    placeholder="Colours you like, a site you love, what customers should do first"
-                    value={fields.notes}
-                    onChange={set("notes")}
-                  />
-                  {/* Honeypot: hidden from people, so anything in it is a bot. */}
-                  <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden className={s.honeypot} />
-                  <ArrowCta full>{sending ? "Sending…" : "Get my free design"}</ArrowCta>
-                  {error === "send" && (
-                    <p className={s.error} role="alert">
-                      That didn&rsquo;t send. Try again, or text William at{" "}
-                      <a href={`sms:${WILLIAM_PHONE}`}>{WILLIAM_PHONE_READ}</a>.
-                    </p>
-                  )}
-                </form>
-              </>
-            )}
-
-            {step === "done" && (
-              <div className={s.done}>
-                <h2 ref={headingRef} tabIndex={-1} className={s.question}>
-                  Thanks{firstName ? `, ${firstName}` : ""}. We&rsquo;re on it.
-                </h2>
-                <p className={s.sub}>
-                  We&rsquo;ll design your new home page and be in touch at{" "}
-                  {fields.email.trim()}.
-                </p>
-                <Link href="/" className={s.home}>
-                  Back to the homepage
-                </Link>
-              </div>
-            )}
+          </div>
+          <div className={s.heroQuiz} data-hero>
+            <Quiz />
           </div>
         </section>
-      </div>
-    </main>
+
+        {/* Logo strip. */}
+        <section className={`${s.container} ${s.logos}`} aria-label="Clients" data-reveal>
+          <p className={s.logosLabel} data-rise>Trusted by businesses across BC</p>
+          {/* Two copies side by side; the track slides one copy's width and
+              starts over, so the row never ends. The copy is hidden from
+              screen readers. */}
+          <div className={s.marquee} data-rise>
+            <div className={s.track}>
+              {[0, 1].map((copy) => (
+                <div key={copy} className={s.logoRow} aria-hidden={copy === 1 || undefined}>
+                  {LOGOS.map((l) => (
+                    <Image
+                      key={l.file}
+                      src={`/free-homepage-design/logos/${l.file}.png`}
+                      alt={copy === 0 ? l.alt : ""}
+                      width={Math.round((l.w / 96) * l.h)}
+                      height={l.h}
+                      style={{ "--h": `${l.h}px` } as React.CSSProperties}
+                      className={s.logo}
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How it works: title and photo on the left, four rows on the right. */}
+        <section className={`${s.container} ${s.how}`} data-reveal>
+          <div className={s.howCopy}>
+            <div className={s.howIntro}>
+              <p className={s.eyebrow} data-rise>
+                How it works
+              </p>
+              <h2 className={s.h2} data-rise>
+                From three questions to a new home page.
+              </h2>
+              <p className={s.howSub} data-rise>Three quick questions from you. A custom home page from us.</p>
+            </div>
+            {/* The research clip from the homepage's Approach section. */}
+            <video
+              src="/approach-research.mp4"
+              poster="/approach-research-poster.jpg"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-label="Our research mind map for a client's new home page"
+              className={s.howPhoto}
+              data-plate
+            />
+          </div>
+          <ol className={s.steps}>
+            {STEPS.map((step, i) => (
+              <li key={step.title} className={s.stepRow} data-card>
+                <span className={s.stepNum}>{String(i + 1).padStart(2, "0")}</span>
+                <div className={s.stepText}>
+                  <h3 className={s.stepTitle}>{step.title}</h3>
+                  <p className={s.stepBody}>{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* What you'll get: dark band. */}
+        <section className={s.dark}>
+          <div className={`${s.container} ${s.darkInner}`} data-reveal>
+            <div className={s.darkTop}>
+              <h2 className={s.darkEyebrow} data-rise>What you&rsquo;ll get</h2>
+              <p className={s.statement} data-rise>
+                A home page made for your business, designed around what your customers look for and built to turn
+                visitors into calls and quotes.
+              </p>
+            </div>
+            <div className={s.darkBottom}>
+              <div className={s.clips}>
+                {CLIPS.map((clip) => (
+                  <Clip key={clip.name} clip={clip} />
+                ))}
+              </div>
+              <div className={s.darkNote} data-card>
+                <p className={s.darkNoteTitle}>Sites we&rsquo;ve designed</p>
+                <p className={s.darkNoteBody}>Yours gets the same care, built around your customers.</p>
+                <a href="#quiz" className={s.darkCta}>
+                  <span>Get my free design</span>
+                  <Arrow />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Hear it from the owners. */}
+        <OwnerVideos container={s.container} />
+
+        {/* Questions, answered: a dark band, the title on the left and the
+            answers in an accordion on the right. */}
+        <section className={s.faqBand}>
+          <div className={`${s.container} ${s.faq}`} data-reveal>
+            <div className={s.faqHead}>
+              <p className={s.darkEyebrow} data-rise>
+                FAQ
+              </p>
+              <h2 className={s.faqTitle} data-rise>
+                Questions, answered
+              </h2>
+              <p className={s.faqSub} data-rise>
+                Still unsure? <BookCall>Book a free call</BookCall> and ask us anything.
+              </p>
+            </div>
+            <div className={s.faqList}>
+              {FAQS.map((f) => (
+                <details key={f.q} className={s.faqItem} data-card>
+                  <summary className={s.faqQ}>
+                    {f.q}
+                    <svg className={s.plus} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+                      <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </summary>
+                  <p className={s.faqA}>{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Final CTA: the homepage's closing reel, pointed at the quiz. */}
+        <VideoCta
+          onDark
+          source="free-design"
+          line="Your new home page is three questions away."
+          sub="Free, no obligation, made for your business."
+          href="#quiz"
+          label="Get my free design"
+        />
+      </main>
+
+      <HomeFooter />
+    </div>
   );
 }

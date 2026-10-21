@@ -7,8 +7,8 @@ import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@
 /**
  * The free home page design quiz (/free-homepage-design) sends everything in
  * one go once the visitor reaches the last step: whether they have a site,
- * what kind of business it is, and how to reach them. One email to William,
- * reply-to set to the lead, and a buzz on his phone.
+ * what kind of business it is, and how to reach them (phone optional). One
+ * email to William, reply-to set to the lead, and a buzz on his phone.
  */
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "That doesn't look like a website." }, { status: 400 });
   }
   if (!name) return NextResponse.json({ error: "We need a name." }, { status: 400 });
-  if (!looksLikeAPhone(phone)) {
+  if (phone && !looksLikeAPhone(phone)) {
     return NextResponse.json({ error: "That doesn't look like a phone number." }, { status: 400 });
   }
   if (!LOOKS_LIKE_AN_EMAIL.test(email)) {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
   after(() =>
     alertWilliam({
       title: `Free design lead: ${who}`,
-      message: `${what} · ${website ? bare(website) : "no site yet"}\n${name} · ${phone} · ${email}`,
+      message: `${what} · ${website ? bare(website) : "no site yet"}\n${name} · ${phone || "no phone"} · ${email}`,
       phone,
       email,
     })
@@ -71,11 +71,11 @@ export async function POST(request: Request) {
       ...(business ? [`Business name: ${business}`] : []),
       "",
       `Name: ${name}`,
-      `Phone: ${phone}`,
+      `Phone: ${phone || "(not given)"}`,
       `Email: ${email}`,
       ...(notes ? ["", "Anything we should know:", notes] : []),
       "",
-      "Reply to this email to reach them, or text the number above.",
+      phone ? "Reply to this email to reach them, or text the number above." : "Reply to this email to reach them.",
     ].join("\n"),
   });
 
