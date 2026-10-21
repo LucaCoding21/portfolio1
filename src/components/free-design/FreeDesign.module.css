@@ -447,7 +447,7 @@
 
 .darkNote {
   display: flex;
-  flex: 0 1 280px;
+  flex: 0 1 400px;
   flex-direction: column;
   gap: 10px;
   min-width: 0;
@@ -644,6 +644,10 @@
   }
   .h1 {
     font-size: 46px;
+  }
+  /* The faces and "3,000+ inquiries" line are desktop only. */
+  .proof {
+    display: none;
   }
   .lede {
     font-size: 17px;

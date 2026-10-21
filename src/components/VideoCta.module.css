@@ -111,6 +111,13 @@
   .wrap {
     --edge: 0.75rem;
   }
+  /* The free design page: more air at the sides, a shorter plate. */
+  .onDark {
+    --edge: 1.5rem;
+  }
+  .onDark .plate {
+    min-height: calc(var(--svh, 1svh) * 46);
+  }
   .plate {
     min-height: calc(var(--svh, 1svh) * 62);
     border-radius: 22px;
