@@ -308,11 +308,33 @@ textarea.input {
   }
 }
 
+/* Phones: a more compact card. */
 @media (max-width: 480px) {
+  .card {
+    gap: 20px;
+    padding: 22px;
+  }
+  .head {
+    padding-top: 10px;
+  }
   .question {
-    font-size: 26px;
+    font-size: 23px;
   }
   .centred {
-    font-size: 28px;
+    font-size: 24px;
+  }
+  .stack {
+    gap: 16px;
+  }
+  .choice {
+    min-height: 54px;
+    font-size: 15px;
+  }
+  .big .choice {
+    min-height: 60px;
+    font-size: 16px;
+  }
+  .input {
+    min-height: 46px;
   }
 }

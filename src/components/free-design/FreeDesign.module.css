@@ -637,6 +637,14 @@
 /* ---------- phones ---------- */
 
 @media (max-width: 640px) {
+  /* More room under the header and above the quiz; a bigger heading. */
+  .hero {
+    padding-top: 72px;
+    row-gap: 56px;
+  }
+  .h1 {
+    font-size: 46px;
+  }
   .lede {
     font-size: 17px;
   }
