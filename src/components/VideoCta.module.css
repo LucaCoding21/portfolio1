@@ -15,6 +15,11 @@
 .onDark {
   padding-bottom: calc(var(--edge) + clamp(72px, 9vw, 128px));
   background: #111113;
+  /* Rounded at the bottom and above the footer, so the footer's reel shows
+     past the corners as the page lifts off it. */
+  position: relative;
+  z-index: 1;
+  border-radius: 0 0 28px 28px;
 }
 
 .onDark .plate {

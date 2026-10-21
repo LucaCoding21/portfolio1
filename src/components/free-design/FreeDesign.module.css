@@ -514,6 +514,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 40px 72px;
+  /* Narrower than the page: 1240px of content, the closing plate's width. */
+  max-width: calc(1240px + 2 * clamp(24px, 4.5vw, 64px));
   /* Lets the answers' height ease to and from auto. */
   interpolate-size: allow-keywords;
   padding-top: clamp(88px, 11vw, 160px);
