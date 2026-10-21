@@ -1,6 +1,6 @@
 /*
  * "Hear it from the owners": the title top left with arrows on the right,
- * then the videos as 4:5 crops in a row that scrolls sideways by hand. The
+ * then the videos as 3:4 crops in a row that scrolls sideways by hand. The
  * page sets the container.
  */
 
@@ -191,10 +191,10 @@
   scroll-snap-align: start;
 }
 
-/* 4:5 crops: shorter than the whole 9:16 frame, with the captions in the
+/* 3:4 crops: shorter than the whole 9:16 frame, with the captions in the
    videos still in view. */
 .band .frame {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 3 / 4;
 }
 
 @media (max-width: 640px) {

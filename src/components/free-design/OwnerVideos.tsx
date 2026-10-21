@@ -3,7 +3,7 @@
 /**
  * "Hear it from the owners" on /free-homepage-design: the title in the top
  * left corner with arrow buttons on the right, then the three owners'
- * videos as 4:5 crops in a row that scrolls sideways by hand (swipe,
+ * videos as 3:4 crops in a row that scrolls sideways by hand (swipe,
  * trackpad or the arrows), wider than the page. Each plays muted while on
  * screen; its sound button plays it from the start with sound and quiets
  * the others.
