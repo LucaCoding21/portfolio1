@@ -219,6 +219,13 @@ const STORY_STEPS: { icon: string; body: React.ReactNode; wide?: boolean }[] = [
   },
 ];
 
+/**
+ * The copy columns lean out past the 1200px container by up to 7rem, but
+ * never by more than the gutter the window actually has beside it. A fixed
+ * pull pushed the headline off the left edge on laptops under ~1360px wide.
+ */
+const PULL_LEFT = "md:-ml-[min(7rem,max(0px,calc((100vw_-_1200px)/2)))]";
+
 export default function Hero() {
   const scope = useSightGsap<HTMLElement>((root, reduced) => {
     if (reduced) return;
@@ -329,7 +336,7 @@ export default function Hero() {
       <div className="mx-auto max-w-[1200px] px-6 md:px-10">
         <div className="md:grid md:grid-cols-[1.2fr_1fr] md:gap-x-14 lg:gap-x-20">
           {/* Hero copy — first viewport, left */}
-          <div className="flex flex-col justify-center pt-32 md:col-start-1 md:row-start-1 md:min-h-screen md:pt-0 md:-ml-16 lg:-ml-28">
+          <div className={`flex flex-col justify-center pt-32 md:col-start-1 md:row-start-1 md:min-h-screen md:pt-0 ${PULL_LEFT}`}>
             <Cinematic atLoad>
               <Words
                 as="h1"
@@ -427,7 +434,7 @@ export default function Hero() {
           </div>
 
           {/* Story — one screen next to the pinned card */}
-          <div className="pb-20 pt-24 md:col-start-1 md:row-start-2 md:-ml-16 md:flex md:min-h-screen md:flex-col md:justify-center md:translate-y-[10vh] md:pb-[8vh] md:pt-0 lg:-ml-28">
+          <div className={`pb-20 pt-24 md:col-start-1 md:row-start-2 md:flex md:min-h-screen md:flex-col md:justify-center md:translate-y-[10vh] md:pb-[8vh] md:pt-0 ${PULL_LEFT}`}>
             <Cinematic>
               <Words
                 className="font-semibold leading-[1.15] tracking-[-0.02em] text-[var(--ink)]"

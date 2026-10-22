@@ -3,13 +3,17 @@
 /**
  * The free home page design quiz, the card in the page's hero (id="quiz",
  * which the page's CTAs scroll to). Built from the Page A handoff (Oct
- * 2026): a 6px bar along the card's top edge fills a third per step, with
- * "Step n of 3" under it and Back on the right from step 2.
+ * 2026): a 6px bar along the card's top edge fills a quarter per step, with
+ * "Step n of 4" under it and Back on the right from step 2.
  *
  *   site     Do you have a website? (Yes, I do / Not yet)
  *   type     What kind of business do you run? (BUSINESS_TYPES)
- *   contact  website (when they have one), name and email required; phone
- *            and a note optional
+ *   goal     What should your new site bring you more of? (GOALS for that
+ *            type, added Oct 22 2026; the done screen says it back)
+ *   contact  website (when they have one), name, email and phone required
+ *            (phone since Oct 22 2026); a note optional, folded behind
+ *            "+ Add a note" until tapped; "We'll only use this for your
+ *            sample." under the button
  *   done     You're all set, and Start over
  *
  * Picking an option moves straight on. Nothing is sent before the contact
@@ -18,17 +22,17 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import ArrowCta from "@/components/ArrowCta";
-import { BUSINESS_TYPES, type BusinessType } from "@/data/freeDesign";
+import { BUSINESS_TYPES, GOALS, type BusinessType, type Goal } from "@/data/freeDesign";
 import { WILLIAM_PHONE } from "@/lib/giftShared";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
 import { track } from "@/lib/track";
 import s from "./Quiz.module.css";
 
-type Step = "site" | "type" | "contact" | "done";
+type Step = "site" | "type" | "goal" | "contact" | "done";
 type Problem = "website" | "name" | "email" | "phone" | "send";
 type Fields = { website: string; name: string; email: string; phone: string; notes: string };
 
-const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, contact: 3, done: 3 };
+const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, goal: 3, contact: 4, done: 4 };
 const EMPTY: Fields = { website: "", name: "", email: "", phone: "", notes: "" };
 
 /** "+17789970335" reads as "778-997-0335". */
@@ -77,9 +81,14 @@ export default function Quiz() {
   const [step, setStep] = useState<Step>("site");
   const [hasSite, setHasSite] = useState<boolean | null>(null);
   const [type, setType] = useState<BusinessType | null>(null);
+  const [goal, setGoal] = useState<Goal | null>(null);
   const [fields, setFields] = useState<Fields>(EMPTY);
   const [error, setError] = useState<Problem | null>(null);
   const [sending, setSending] = useState(false);
+  // The optional note stays folded behind a link until it's wanted.
+  const [noteOpen, setNoteOpen] = useState(false);
+  // design_contact_start goes once, on the first field they touch.
+  const contactStarted = useRef(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -110,21 +119,32 @@ export default function Quiz() {
   };
 
   const answerType = (t: BusinessType) => {
+    // Another type has other goals, so an earlier pick no longer applies.
+    if (t !== type) setGoal(null);
     setType(t);
     setError(null);
     track("design_quiz_type", { business_type: t });
+    setStep("goal");
+  };
+
+  const answerGoal = (g: Goal) => {
+    setGoal(g);
+    setError(null);
+    track("design_quiz_goal", { business_type: type ?? "", goal: g.label });
     setStep("contact");
   };
 
   const back = () => {
     setError(null);
-    setStep(step === "contact" ? "type" : "site");
+    setStep(step === "contact" ? "goal" : step === "goal" ? "type" : "site");
   };
 
   const restart = () => {
     setHasSite(null);
     setType(null);
+    setGoal(null);
     setFields(EMPTY);
+    setNoteOpen(false);
     setError(null);
     setStep("site");
   };
@@ -142,7 +162,7 @@ export default function Quiz() {
           ? "name"
           : !LOOKS_LIKE_AN_EMAIL.test(fields.email.trim())
             ? "email"
-            : phone && !looksLikeAPhone(phone)
+            : !looksLikeAPhone(phone)
               ? "phone"
               : null;
     if (problem) {
@@ -160,6 +180,7 @@ export default function Quiz() {
         body: JSON.stringify({
           hasSite,
           type,
+          goal: goal?.label,
           website,
           name: fields.name,
           email: fields.email,
@@ -175,7 +196,7 @@ export default function Quiz() {
       return;
     }
 
-    track("design_lead", { has_site: !!hasSite, business_type: type ?? "" });
+    track("design_lead", { has_site: !!hasSite, business_type: type ?? "", goal: goal?.label ?? "" });
     setSending(false);
     setStep("done");
   };
@@ -183,21 +204,21 @@ export default function Quiz() {
   const number = STEP_NUMBER[step];
 
   return (
-    <div ref={cardRef} id="quiz" className={s.card} aria-label="Free home page design questions" role="region">
+    <div ref={cardRef} id="quiz" className={s.card} aria-label="Free homepage sample questions" role="region">
       <div
         className={s.bar}
         role="progressbar"
         aria-label="Quiz progress"
         aria-valuemin={1}
-        aria-valuemax={3}
+        aria-valuemax={4}
         aria-valuenow={number}
       >
-        <span style={{ width: step === "site" ? "33.4%" : step === "type" ? "66.7%" : "100%" }} />
+        <span style={{ width: `${number * 25}%` }} />
       </div>
 
       <div className={s.head}>
-        <span className={s.stepLabel}>{step === "done" ? "Done" : `Step ${number} of 3`}</span>
-        {(step === "type" || step === "contact") && (
+        <span className={s.stepLabel}>{step === "done" ? "Done" : `Step ${number} of 4`}</span>
+        {(step === "type" || step === "goal" || step === "contact") && (
           <button type="button" className={s.back} onClick={back}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
               <path d="M19 12H5M11 18l-6-6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -240,10 +261,40 @@ export default function Quiz() {
           </div>
         )}
 
+        {step === "goal" && type && (
+          <div className={s.stack}>
+            <h2 ref={headingRef} tabIndex={-1} className={s.question}>
+              What should your new site bring you more of?
+            </h2>
+            <div className={`${s.choices} ${s.single}`}>
+              {GOALS[type].map((g) => (
+                <button
+                  key={g.label}
+                  type="button"
+                  className={s.choice}
+                  aria-pressed={goal?.label === g.label}
+                  onClick={() => answerGoal(g)}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {step === "contact" && (
-          <form className={s.form} onSubmit={submit} noValidate>
+          <form
+            className={s.form}
+            onSubmit={submit}
+            noValidate
+            onFocus={() => {
+              if (contactStarted.current) return;
+              contactStarted.current = true;
+              track("design_contact_start", { business_type: type ?? "", goal: goal?.label ?? "" });
+            }}
+          >
             <h2 ref={headingRef} tabIndex={-1} className={`${s.question} ${s.formQuestion}`}>
-              Where should we send your design?
+              Where should we send your sample?
             </h2>
             {hasSite && (
               <Field
@@ -282,30 +333,44 @@ export default function Quiz() {
               />
               <Field
                 label="Phone"
-                optional
                 name="phone"
                 type="tel"
                 inputMode="tel"
                 autoComplete="tel"
                 value={fields.phone}
                 onChange={set("phone")}
-                error={error === "phone" ? "Add the area code, or leave it blank." : undefined}
+                error={error === "phone" ? "Add a phone number, with the area code." : undefined}
               />
             </div>
-            <Field
-              label="Anything we should know?"
-              optional
-              multiline
-              name="notes"
-              placeholder="Colours you like, a site you love, what customers should do first"
-              value={fields.notes}
-              onChange={set("notes")}
-            />
+            {noteOpen ? (
+              <Field
+                label="Anything we should know?"
+                optional
+                multiline
+                autoFocus
+                name="notes"
+                placeholder="Colours you like, a site you love, what customers should do first"
+                value={fields.notes}
+                onChange={set("notes")}
+              />
+            ) : (
+              <button
+                type="button"
+                className={s.addNote}
+                onClick={() => {
+                  setNoteOpen(true);
+                  track("design_note_open");
+                }}
+              >
+                + Add a note <span className={s.optional}>(optional)</span>
+              </button>
+            )}
             {/* Honeypot: hidden from people, so anything in it is a bot. */}
             <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden className={s.honeypot} />
             <ArrowCta full className={s.submit}>
-              {sending ? "Sending…" : "Get my free design"}
+              {sending ? "Sending…" : "Free homepage sample"}
             </ArrowCta>
+            <p className={s.reassure}>We&rsquo;ll only use this for your sample.</p>
             {error === "send" && (
               <p className={s.error} role="alert">
                 That didn&rsquo;t send. Try again, or text William at{" "}
@@ -326,8 +391,9 @@ export default function Quiz() {
               You&rsquo;re all set.
             </h2>
             <p className={s.doneText}>
-              Thanks! We have what we need to start on your home page. We&rsquo;ll be in touch by email with next
-              steps.
+              {goal
+                ? `Thanks! We’ll design your home page around ${goal.focus}, and be in touch by email with next steps.`
+                : "Thanks! We have what we need to start on your home page. We’ll be in touch by email with next steps."}
             </p>
             <button type="button" className={s.restart} onClick={restart}>
               Start over

@@ -16,6 +16,10 @@
   --line: #e4dfd6;
   --divider: #e0dad0;
   --grey-on-dark: #8a857d;
+  /* The first screen's unit: 1px up to the handoff's 1440px, then growing
+     with the screen to 4/3 at 1920, so the header, promise and quiz grow
+     alongside the work strip instead of staying put. */
+  --u: clamp(1px, calc(100vw / 1440), 1.333px);
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
@@ -35,34 +39,87 @@
   padding-right: clamp(24px, 4.5vw, 64px);
 }
 
+/* ---------- motion ----------
+   Starting states for the entry motion (see FreeDesign.tsx). The hero rises
+   from first paint, one piece after another (power3.out), the work strip
+   last; the reveals sit
+   hidden until their scroll trigger runs them to rest. Only with scripts on
+   (nothing would ever reveal them otherwise) and motion allowed. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .page [data-hero] {
+    animation: heroRise 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) 0.1s both;
+  }
+  .page [data-hero="2"] {
+    animation-delay: 0.2s;
+  }
+  .page [data-hero="3"] {
+    animation-delay: 0.3s;
+  }
+  .page [data-hero="4"] {
+    animation-delay: 0.4s;
+  }
+  .page [data-hero="5"] {
+    animation-delay: 0.5s;
+  }
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .page [data-reveal] [data-rise] {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  .page [data-reveal] [data-card] {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  .page [data-reveal] [data-plate] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
 /* ---------- header ---------- */
 
+/* The header and hero sit in the handoff's narrower frame, 1280px with
+   sides up to 48px (in --u, so they grow on larger screens). */
+.header,
+.hero {
+  max-width: calc(1280 * var(--u));
+  padding-left: clamp(24px, 4.5vw, calc(48 * var(--u)));
+  padding-right: clamp(24px, 4.5vw, calc(48 * var(--u)));
+}
+
+/* 52px tall on one row: 28px down, then the 24px logo. Both links keep a
+   44px target that reaches past the row instead of growing it. */
 .header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 20px;
+  padding-top: calc(28 * var(--u));
 }
 
+/* The studio's logo, the one the gift pages use (public/cloverfield-logo.png). */
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
   min-height: 44px;
-  color: var(--ink);
-  text-decoration: none;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: 23px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
+  margin: calc((24 * var(--u) - 44px) / 2) 0;
 }
 
 .brand img {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: auto;
+  height: calc(24 * var(--u));
 }
 
 .callLink {
@@ -75,13 +132,13 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  font-size: 15px;
+  margin: calc((20 * var(--u) - 44px) / 2) 0;
+  font-size: calc(15 * var(--u));
   color: var(--soft);
   text-decoration: none;
 }
 
 .callText {
-  font-weight: 500;
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -94,41 +151,68 @@
 
 /* ---------- hero ---------- */
 
-/* Narrower than the other sections, so the promise and the quiz sit
-   closer together. */
-.hero {
-  max-width: 1360px;
+/* The first screen: at least the window's height under the 52px header,
+   the hero taking whatever the work strip leaves. */
+.screen {
   display: flex;
+  flex-direction: column;
+  min-height: calc(var(--svh, 1svh) * 100 - 52 * var(--u));
+}
+
+/* The promise and the quiz, pushed to either side and centred in the
+   height the strip leaves them. */
+.hero {
+  display: flex;
+  flex: 1 0 auto;
   flex-wrap: wrap;
   align-items: center;
-  gap: clamp(40px, 5vw, 72px);
-  padding-top: clamp(48px, 7vw, 104px);
-  padding-bottom: clamp(56px, 6vw, 88px);
+  align-content: center;
+  justify-content: space-between;
+  gap: calc(40 * var(--u)) calc(64 * var(--u));
+  padding-top: clamp(28px, calc(var(--svh, 1svh) * 6), 72px);
+  padding-bottom: clamp(24px, calc(var(--svh, 1svh) * 4.5), 52px);
+}
+
+/* On laptops and larger screens the window's bottom edge cuts the strip's
+   pictures in half, so the work peeks up from below: the hero fills the
+   window under the header but for the strip's label, the gap under it and
+   half a picture (WorkStrip.module.css: 17px, 18px, 3px to the picture,
+   then half of its 112 to 168px). */
+@media (min-width: 1024px) {
+  .screen {
+    min-height: 0;
+  }
+  .hero {
+    min-height: calc(
+      var(--svh, 1svh) * 100 - 52 * var(--u) - 38px - clamp(56px, calc(var(--svh, 1svh) * 9.5), 84px)
+    );
+  }
 }
 
 .heroCopy {
   display: flex;
-  flex: 1 1 480px;
+  flex: 1 1 calc(440 * var(--u));
   flex-direction: column;
-  gap: 28px;
+  gap: calc(24 * var(--u));
   min-width: 0;
+  max-width: calc(580 * var(--u));
 }
 
-/* Two lines, broken after "free"; sized so "home page design" fits its
-   column beside the quiz. */
+/* Two lines, broken after "free"; sized so "homepage sample" fits its
+   column beside the quiz and the strip fits under them. */
 .h1 {
   margin: 0;
   font-family: var(--font-outfit), sans-serif;
-  font-size: clamp(40px, 5vw, 72px);
+  font-size: clamp(40px, 4.3vw, calc(62 * var(--u)));
   font-weight: 500;
   line-height: 0.98;
   letter-spacing: -0.045em;
 }
 
 .lede {
-  max-width: 520px;
+  max-width: calc(500 * var(--u));
   margin: 0;
-  font-size: 19px;
+  font-size: calc(19 * var(--u));
   line-height: 1.55;
   color: var(--muted);
 }
@@ -137,8 +221,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 14px;
-  padding-top: 4px;
+  gap: calc(12 * var(--u)) calc(14 * var(--u));
+  padding-top: calc(4 * var(--u));
 }
 
 .faces {
@@ -146,9 +230,9 @@
 }
 
 .face {
-  width: 36px;
-  height: 36px;
-  margin-left: -10px;
+  width: calc(40 * var(--u));
+  height: calc(40 * var(--u));
+  margin-left: calc(-8 * var(--u));
   border: 2px solid var(--paper);
   border-radius: 50%;
   object-fit: cover;
@@ -159,72 +243,32 @@
 }
 
 .proofText {
+  max-width: calc(250 * var(--u));
   margin: 0;
-  font-size: 13px;
-  line-height: 1.45;
+  font-size: calc(14 * var(--u));
+  line-height: 1.4;
   color: var(--soft);
 }
 
 .proofText strong {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink);
 }
 
+/* The quiz card counts its sizes in --q (Quiz.module.css): the handoff's
+   pixels on phones and tablets, a fifth bigger once it sits beside the
+   promise, then growing with the screen like the rest. In a short window
+   it gives some of that back (down to the handoff's size at 670px tall),
+   so the top of the work strip still shows on the first screen. */
 .heroQuiz {
-  flex: 1 1 420px;
+  --q: 1px;
+  flex: 0 1 calc(442 * var(--q));
   min-width: 0;
-  max-width: 580px;
 }
 
-/* ---------- logo strip ---------- */
-
-.logos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  padding-top: 36px;
-  padding-bottom: 36px;
-}
-
-.logosLabel {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-align: center;
-}
-
-/* The logos drift left on a loop, fading out at both edges. */
-.marquee {
-  width: 100%;
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-
-.track {
-  display: flex;
-  width: max-content;
-  animation: drift 45s linear infinite;
-}
-
-/* Each copy carries the gap after its last logo, so the seam matches. */
-.logoRow {
-  --gap: 64px;
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: var(--gap);
-  padding-right: var(--gap);
-  opacity: 0.7;
-}
-
-@keyframes drift {
-  to {
-    transform: translateX(-50%);
+@media (min-width: 1024px) {
+  .heroQuiz {
+    --q: max(1px, min(calc(1.2 * var(--u)), calc(1px + (var(--svh, 1svh) * 100 - 670px) / 360)));
   }
 }
 
@@ -235,15 +279,6 @@
   .faqItem[open] .faqA {
     animation: none;
   }
-  .track {
-    animation: none;
-  }
-}
-
-.logo {
-  display: block;
-  width: auto;
-  height: var(--h);
 }
 
 /* ---------- how it works ---------- */
@@ -254,7 +289,8 @@
   align-items: stretch;
   gap: 48px clamp(40px, 6vw, 96px);
   padding-top: clamp(80px, 10vw, 144px);
-  padding-bottom: clamp(80px, 10vw, 144px);
+  /* Half the top: the reviews follow close under the steps. */
+  padding-bottom: clamp(40px, 5vw, 72px);
 }
 
 /* Title at the top, photo at the bottom, level with the last row. */
@@ -273,15 +309,6 @@
   gap: 16px;
 }
 
-.eyebrow {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--soft);
-}
-
 .h2 {
   margin: 0;
   font-family: var(--font-outfit), sans-serif;
@@ -297,6 +324,7 @@
   margin: 0;
   font-size: 18px;
   line-height: 1.55;
+  text-wrap: balance;
   color: var(--soft);
 }
 
@@ -310,9 +338,18 @@
   object-fit: cover;
 }
 
-.steps {
+/* The steps, then the button under the last one. */
+.howSteps {
   display: flex;
   flex: 1 1 400px;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+}
+
+.steps {
+  display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   min-width: 0;
   margin: 0;
@@ -360,6 +397,12 @@
   color: var(--soft);
 }
 
+/* Phones read the short line, laptops and up the full one (the steps in How
+   does it work, and the line under "What will my sample look like?"). */
+.stepShort {
+  display: none;
+}
+
 /* ---------- what you'll get ---------- */
 
 .dark {
@@ -371,135 +414,32 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: clamp(88px, 11vw, 160px);
+  gap: clamp(56px, 7vw, 96px);
   min-height: 640px;
   padding-top: clamp(80px, 10vw, 144px);
   padding-bottom: clamp(80px, 10vw, 144px);
 }
 
+/* The visitor's question as the heading, the page's .h2 in white, and the
+   answer under it in a lighter line, as in How does it work. */
 .darkTop {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
   max-width: 880px;
 }
 
-.darkEyebrow {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--grey-on-dark);
+.darkTitle {
+  color: #fff;
 }
 
 .statement {
-  max-width: 754px;
-  margin: 0;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: clamp(24px, 2.5vw, 34px);
-  font-weight: 400;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: var(--grey-on-dark);
-}
-
-/* The note sits just after the clips rather than at the far edge, centred
-   on them. The clips take the room the note leaves, up to 340px each. */
-.darkBottom {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 36px clamp(64px, 8vw, 128px);
-}
-
-.clips {
-  display: flex;
-  flex: 1 1 640px;
-  flex-wrap: wrap;
-  gap: 16px;
-  max-width: 1052px;
-}
-
-.clip {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  margin: 0;
-}
-
-.clipVideo {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border-radius: 10px;
-  background: #1e1e22;
-  object-fit: cover;
-  object-position: top;
-}
-
-.clipName {
-  font-size: 13px;
-  color: var(--grey-on-dark);
-}
-
-.darkNote {
-  display: flex;
-  flex: 0 1 400px;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-.darkNoteTitle {
-  margin: 0;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: #fff;
-}
-
-.darkNoteBody {
+  max-width: 660px;
   margin: 0;
   font-size: 18px;
   line-height: 1.55;
-  color: #a8a39b;
-}
-
-/* An underlined link with the arrow on the same line. */
-.darkCta {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  margin-top: 6px;
-  color: #fff;
-  font-family: var(--font-outfit), sans-serif;
-  font-size: 18px;
-  font-weight: 500;
-  white-space: nowrap;
-  text-decoration: none;
-}
-
-.darkCta span {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-}
-
-.darkCta svg {
-  flex: none;
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .darkCta:hover svg {
-    transform: rotate(-45deg);
-  }
+  text-wrap: pretty;
+  color: rgb(255 255 255 / 0.72);
 }
 
 /* ---------- questions ---------- */
@@ -634,16 +574,73 @@
   color: #bdb8af;
 }
 
+/* A name with its owner's photo after it, kept on one line. */
+.faqPerson {
+  white-space: nowrap;
+}
+
+.faqFace {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: -4px 0 -4px 6px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: -9px;
+}
+
+/* A link at the end of an answer: white and underlined. */
+.faqLink {
+  color: #fff;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+
+.faqLink:hover {
+  color: #dcebd9;
+}
+
 /* ---------- phones ---------- */
 
 @media (max-width: 640px) {
-  /* More room under the header and above the quiz; a bigger heading. */
-  .hero {
-    padding-top: 72px;
-    row-gap: 56px;
+  /* The header's "Prefer to talk? Book a free call" is desktop only: on a
+     phone the header is just the logo. */
+  .header .callLink {
+    display: none;
   }
+  /* A smaller logo, nearer the top: 16px down, then 20px tall. */
+  .header {
+    padding-top: 16px;
+  }
+  .brand {
+    margin: -12px 0;
+  }
+  .brand img {
+    height: 20px;
+  }
+  /* As on desktop, the bottom edge of the screen cuts the work strip's
+     pictures in half (Oct 22 2026): the hero fills the screen under the
+     36px header but for the strip's two-line label (28px), its 12px gap,
+     3px to the picture and half the picture. The space around the heading and
+     the quiz is tight enough for that on an iPhone's screen in Safari;
+     taller phones centre the hero in the extra room. */
+  .screen {
+    min-height: 0;
+  }
+  .hero {
+    min-height: calc(
+      var(--svh, 1svh) * 100 - 36px - 43px - clamp(56px, calc(var(--svh, 1svh) * 9.5), 84px)
+    );
+    padding-top: 28px;
+    padding-bottom: 20px;
+    row-gap: 28px;
+  }
+  /* Up to 46px, and small enough that "homepage sample" stays on one line
+     down to a 320px screen. */
   .h1 {
-    font-size: 46px;
+    font-size: min(46px, 11.2vw);
   }
   /* The faces and "3,000+ inquiries" line are desktop only. */
   .proof {
@@ -656,15 +653,6 @@
     flex-basis: 100%;
     max-width: none;
   }
-  .logoRow {
-    --gap: 40px;
-  }
-  .track {
-    animation-duration: 32s;
-  }
-  .logo {
-    height: calc(var(--h) * 0.8);
-  }
   .howPhoto {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -675,11 +663,14 @@
   .stepTitle {
     font-size: 20px;
   }
+  .stepLong {
+    display: none;
+  }
+  .stepShort {
+    display: inline;
+  }
   .darkInner {
     min-height: 0;
-  }
-  .clip {
-    flex-basis: 100%;
   }
   .faqQ {
     font-size: 18px;

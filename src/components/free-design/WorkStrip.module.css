@@ -1,0 +1,130 @@
+/*
+ * The work strip (WorkStrip.tsx), from the Option A handoff (Oct 21 2026):
+ * full width under the hero, the page's DM Sans, the label and names in its
+ * muted ink.
+ */
+
+.strip {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  padding-bottom: clamp(20px, calc(var(--svh, 1svh) * 4), 40px);
+}
+
+.label {
+  margin: 0;
+  padding: 0 24px;
+  font-size: 13px;
+  line-height: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #6a665e;
+}
+
+/* The cards fade out at both edges. */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+/* A full pass of the ten cards takes 85s, about 34px a second (slowed
+   by request from the handoff's 70s for thirteen); hovering holds it. */
+.track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  padding: 2px 0 6px;
+  animation: drift 85s linear infinite;
+}
+
+.track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(calc(-50% - 10px));
+  }
+}
+
+.card {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+/* 16:10, 112 to 168px tall with the window, its border drawn outside that
+   (content-box, as in the handoff). The paper tint shows only until the
+   still arrives. */
+.video {
+  display: block;
+  box-sizing: content-box;
+  width: auto;
+  height: clamp(112px, calc(var(--svh, 1svh) * 19), 168px);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid rgb(26 22 19 / 0.08);
+  border-radius: 10px;
+  background: #ece7e0;
+  box-shadow: 0 14px 30px -22px rgb(26 22 19 / 0.5);
+}
+
+/* As wide as the picture and no wider (it adds nothing to the card's
+   width, then fills it), so a long result wraps inside the card. */
+.caption {
+  width: 0;
+  min-width: 100%;
+  padding-left: 2px;
+  font-size: 13px;
+  line-height: normal;
+  color: #6a665e;
+}
+
+/* Small under the name: the result, with only its figure in /work's soft
+   green highlighter (WorkGallery's .rowStat), bold ink on #dcebd9. A long
+   one wraps inside the card. */
+.statLine {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.65;
+  text-wrap: balance;
+  color: #55504a;
+}
+
+.figure {
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  background: #dcebd9;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #1a1613;
+}
+
+/* Phones: a smaller label (11px on 14px lines, two lines) and a tighter gap
+   under it, so the strip peeks up from the bottom of the first screen
+   (FreeDesign.module.css counts on those 28px and 12px). */
+@media (max-width: 640px) {
+  .strip {
+    gap: 12px;
+  }
+  .label {
+    font-size: 11px;
+    line-height: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

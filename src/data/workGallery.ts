@@ -77,7 +77,8 @@ const REELS: Record<number, { video: string; poster: string }> = {
   13: { video: "/success/caddie-companion-work.mp4", poster: "/success/caddie-companion-cover-card.webp" },
   9: { video: "/success/transforming-landscapes-work.mp4", poster: "/success/transforming-landscapes.webp" },
   11: { video: "/success/afterparty.mp4", poster: "/afterparty/afterparty-cover-card.webp" },
-  1: { video: "/success/ace-work.mp4", poster: "/success/ace.webp" },
+  // Trimmed so "Every Frame Tells a Story" never shows (Oct 22 2026).
+  1: { video: "/success/ace-work-v3.mp4", poster: "/success/ace.webp" },
   15: { video: "/success/shoobydoo.mp4", poster: "/shoobydoo/shoobydoo-cover-card.webp" },
   16: { video: "/success/southboundsips.mp4", poster: "/southboundsips/southboundsips-cover-card.webp" },
   17: { video: "/success/dreamhouse.mp4", poster: "/dreamhouse/dreamhouse-cover-card.webp" },

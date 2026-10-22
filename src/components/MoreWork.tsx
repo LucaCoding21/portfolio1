@@ -14,8 +14,8 @@
  * so there is one video per reel. Posters load as the section nears; a reel
  * downloads only once it first comes on screen and plays only while visible.
  *
- * PLACEHOLDER: the title over the rows and the closing line are a first
- * pass (Oct 2026).
+ * The line under the title is the free sample page's opening line, word
+ * for word, and the closing line answers the reels (both Oct 22 2026).
  *
  * Reduced motion: the rows sit still and show their posters.
  */
@@ -186,11 +186,11 @@ export default function MoreWork() {
         <h2 className={s.title}>
           Get your free
           <br />
-          home page design
+          homepage sample
         </h2>
         <p className={s.sub}>
-          Answer three quick questions and we&rsquo;ll design a new home page
-          for your business, at no cost to you.
+          Answer a few questions and we&rsquo;ll study your competitors, then
+          design your new home page for free.
         </p>
       </div>
 
@@ -201,11 +201,10 @@ export default function MoreWork() {
 
       <div className={s.foot} data-track="more-work">
         <p className={`${s.sub} ${s.footCopy}`}>
-          Like what you see? We&rsquo;ll design your new home page for free,
-          <br />
-          so you can see what we&rsquo;d make for you.
+          Like what you see? We&rsquo;ll make one for your business, ready
+          within 3 days.
         </p>
-        <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
+        <ArrowCta href={FREE_DESIGN_URL}>Free homepage sample</ArrowCta>
       </div>
     </section>
   );

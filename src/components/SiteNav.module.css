@@ -99,18 +99,28 @@
   transition: background-color 0.3s ease;
 }
 
-/* the calls to action are the only solid pills in the row: the main one,
-   "Start project", in ink, "Get free homepage design" in white beside it */
+/* the main call to action, "Start project", is the only solid pill in the
+   row; "Free homepage sample" beside it is an ink outline with no fill,
+   which gives way to the sliding white pill on hover */
 .item.isCta .itemBg {
   background: var(--ink);
 }
 .item.isCta:hover .itemBg {
   background: #2c2723;
 }
-.item.isCtaLight .itemBg,
-.item.isCtaLight:hover .itemBg {
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(26, 22, 19, 0.08);
+.item.isCtaLight .itemBg {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ink);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+/* under the pointer the outline fades and only the sliding white pill
+   shows, as on the plain links */
+.item.isCtaLight:hover .itemBg,
+.item.isCtaLight[data-hover="1"] .itemBg {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px transparent;
 }
 
 /* press feedback */
@@ -121,7 +131,7 @@
   background: #000;
 }
 .item.isCtaLight:active .itemBg {
-  background: #f1efea;
+  background: rgba(26, 22, 19, 0.06);
 }
 
 .label {
@@ -151,7 +161,7 @@
   color: var(--ink);
 }
 
-/* white type on the black call to action, ink on the white one, in every state */
+/* white type on the black call to action, ink on the outline one, in every state */
 .item.isCta .label,
 .item.isCta:hover .label,
 .item.isCta[data-hover="1"] .label {

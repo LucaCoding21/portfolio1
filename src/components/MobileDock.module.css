@@ -365,19 +365,19 @@
   background: #000;
 }
 
-/* "Get free homepage design": white above the ink "Start project" */
+/* "Free homepage sample": an ink outline, no fill, above the ink "Start project" */
 .cta + .cta {
   margin-top: 8px;
 }
 
 .ctaLight {
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(26, 22, 19, 0.08);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ink);
   color: var(--ink);
 }
 
 .ctaLight:active {
-  background: #f1efea;
+  background: rgba(26, 22, 19, 0.06);
 }
 
 @media (hover: hover) {
@@ -388,7 +388,7 @@
     background: #2c2723;
   }
   .ctaLight:hover {
-    background: #f6f5f2;
+    background: rgba(26, 22, 19, 0.04);
   }
   .link:hover .linkBg {
     opacity: 1;

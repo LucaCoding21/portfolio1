@@ -2,10 +2,11 @@
 
 /**
  * The closing call: a full-width reel in a rounded plate with a margin of
- * paper around it, one line and the "Get free homepage design" button in
+ * paper around it, one line and the "Free homepage sample" button in
  * the middle (tagged "closing", or "work" on /work). The reel plays only
  * while it is on screen; the line and button rise in with it. The free home
- * page design page passes its own line, a sub-line and a link to its quiz.
+ * page design page passes its own line, a sub-line (and a shorter one for
+ * phones) and a link to its quiz.
  *
  * PLACEHOLDER: the line is a first pass.
  */
@@ -26,8 +27,9 @@ export default function VideoCta({
   onDark = false,
   line = "Your site could be next.",
   sub,
+  subShort,
   href = FREE_DESIGN_URL,
-  label = "Get free homepage design",
+  label = "Free homepage sample",
 }: {
   /** Which placement the button reports as: the homepage, /work or the free design page. */
   source?: "closing" | "work" | "free-design";
@@ -38,6 +40,8 @@ export default function VideoCta({
   line?: string;
   /** A smaller line under the main one. */
   sub?: string;
+  /** A shorter sub-line for phones, in place of `sub`. */
+  subShort?: string;
   href?: string;
   label?: string;
 } = {}) {
@@ -115,7 +119,12 @@ export default function VideoCta({
         <div className={s.content}>
           <div className={s.copy} data-rise>
             <p className={s.line}>{line}</p>
-            {sub && <p className={s.sub}>{sub}</p>}
+            {sub && (
+              <p className={`${s.sub} ${subShort ? s.hasShort : ""}`}>
+                <span className={s.subLong}>{sub}</span>
+                {subShort && <span className={s.subShort}>{subShort}</span>}
+              </p>
+            )}
           </div>
           <div data-rise data-track={source}>
             <ArrowCta href={href}>{label}</ArrowCta>

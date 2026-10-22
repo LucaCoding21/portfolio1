@@ -1,23 +1,37 @@
 "use client";
 
 /**
- * "Hear it from the owners" on /free-homepage-design: the title in the top
- * left corner with arrow buttons on the right, then the three owners'
- * videos as 3:4 crops in a row that scrolls sideways by hand (swipe,
- * trackpad or the arrows), wider than the page. Each plays muted while on
- * screen; its sound button plays it from the start with sound and quiets
- * the others.
+ * "What's it like working with us?" on /free-homepage-design (until Oct 22
+ * 2026 "Hear it from the owners" under a Testimonials eyebrow): the title in
+ * the top left corner, then the three owners' videos as 3:4 crops, side by side on
+ * laptops and up and swiped sideways on tablets and phones (the arrows
+ * went on Oct 22 2026: three videos don't need them). Each plays muted
+ * while on screen. A "Tap for sound" pill in its top left corner (Oct 22
+ * 2026, where it covers no face or caption), or a tap anywhere on the video,
+ * plays it from the start with sound and quiets the others; the pill then
+ * reads "Sound on" and mutes it again. Under the videos, the ink ArrowCta
+ * "Get your free homepage sample" up to the quiz (Oct 22 2026).
  *
  * Motion comes from the page: the copy carries data-rise and the videos
  * data-card inside the section's data-reveal.
  */
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import ArrowCta from "@/components/ArrowCta";
 import { TESTIMONIAL_VIDEOS } from "@/data/testimonials";
 import { track } from "@/lib/track";
 import s from "./OwnerVideos.module.css";
 
 const VIDEOS = TESTIMONIAL_VIDEOS;
+
+/** Each business's logo, before the owner's name (Oct 22 2026), so a real
+    business shows behind the face. Flow State’s tile shows as a circle. */
+const LOGOS: Record<string, { src: string; width: number; height: number; tile?: boolean }> = {
+  "Ellen and Vien": { src: "/free-homepage-design/logos/afterparty.png", width: 84, height: 96 },
+  "Paula Wilson": { src: "/free-homepage-design/logos/flow-state.webp", width: 96, height: 96, tile: true },
+  "Taylor Paige": { src: "/free-homepage-design/logos/wrapcity.png", width: 312, height: 96 },
+};
 
 function SoundIcon({ on }: { on: boolean }) {
   return (
@@ -45,68 +59,24 @@ function SoundIcon({ on }: { on: boolean }) {
   );
 }
 
-function Arrow({ back }: { back?: boolean }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
-      <path
-        d={back ? "M19 12H5M11 18l-6-6 6-6" : "M5 12h14M13 6l6 6-6 6"}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function Head() {
   return (
     <div className={s.head}>
-      <p className={s.eyebrow} data-rise>
-        Testimonials
-      </p>
       <h2 className={s.title} data-rise>
-        Hear it from the owners.
+        What&rsquo;s it like working with us?
       </h2>
       <p className={s.sub} data-rise>
-        Real clients sharing, in their own words, what it was like to work with us and what changed after their site
-        went live.
+        The owners of Afterparty, Flow State Therapy and WrapCity on how it went and what changed for their business
+        after.
       </p>
     </div>
   );
 }
 
-/** The three videos in a sideways-scrolling row, with arrows to step it. */
+/** The three videos in a row, swiped sideways on smaller screens. */
 function Band() {
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
-  const railRef = useRef<HTMLDivElement>(null);
   const [loud, setLoud] = useState<number | null>(null);
-  const [edge, setEdge] = useState({ start: true, end: false });
-
-  // Which ends the row has reached, for the arrows' disabled states.
-  useEffect(() => {
-    const rail = railRef.current;
-    if (!rail) return;
-    const update = () =>
-      setEdge({
-        start: rail.scrollLeft <= 2,
-        end: rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 2,
-      });
-    update();
-    rail.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      rail.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
-  // One card's width (plus the gap) per press.
-  const step = (dir: 1 | -1) => {
-    const rail = railRef.current;
-    const card = rail?.firstElementChild as HTMLElement | null;
-    if (!rail || !card) return;
-    rail.scrollBy({ left: dir * (card.offsetWidth + 20), behavior: "smooth" });
-  };
 
   // Each video runs muted while on screen, and rests when it is not.
   useEffect(() => {
@@ -139,68 +109,69 @@ function Band() {
   };
 
   return (
-    <>
-      <div className={s.arrows}>
-        <button
-          type="button"
-          className={s.arrow}
-          aria-label="Previous video"
-          disabled={edge.start}
-          onClick={() => step(-1)}
-        >
-          <Arrow back />
-        </button>
-        <button type="button" className={s.arrow} aria-label="Next video" disabled={edge.end} onClick={() => step(1)}>
-          <Arrow />
-        </button>
-      </div>
-      <div ref={railRef} className={s.band} tabIndex={0} aria-label="Owner videos, scroll sideways">
-        {VIDEOS.map((v, i) => (
-          <figure key={v.name} className={s.tile} data-card>
-            <div className={s.frame}>
-              <video
-                ref={(el) => {
-                  refs.current[i] = el;
-                }}
-                src={v.video}
-                poster={v.poster}
-                style={{ objectPosition: v.position }}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                className={s.media}
-                aria-label={`Video from ${v.name}, ${v.role}`}
+    <div className={s.band} aria-label="Owner videos">
+      {VIDEOS.map((v, i) => (
+        <figure key={v.name} className={s.tile} data-card>
+          <div className={s.frame}>
+            <video
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
+              src={v.video}
+              poster={v.poster}
+              style={{ objectPosition: v.position }}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              className={s.media}
+              aria-label={`Video from ${v.name}, ${v.role}`}
+              onClick={() => toggle(i)}
+            />
+            <button
+              type="button"
+              className={s.sound}
+              aria-pressed={loud === i}
+              aria-label={loud === i ? `Mute ${v.name}` : `Unmute ${v.name}`}
+              onClick={() => toggle(i)}
+            >
+              <SoundIcon on={loud === i} />
+              <span aria-hidden>{loud === i ? "Sound on" : "Tap for sound"}</span>
+            </button>
+          </div>
+          <figcaption className={s.caption}>
+            {LOGOS[v.name] && (
+              <Image
+                src={LOGOS[v.name].src}
+                alt=""
+                width={LOGOS[v.name].width}
+                height={LOGOS[v.name].height}
+                className={`${s.logo} ${LOGOS[v.name].tile ? s.logoTile : ""}`}
               />
-              <button
-                type="button"
-                className={s.sound}
-                aria-pressed={loud === i}
-                aria-label={loud === i ? `Mute ${v.name}` : `Unmute ${v.name}`}
-                onClick={() => toggle(i)}
-              >
-                <SoundIcon on={loud === i} />
-              </button>
-            </div>
-            <figcaption className={s.caption}>
+            )}
+            <span className={s.who}>
               <strong>{v.name}</strong>
               {v.role}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
   );
 }
 
 /** `container` is the page's width class. */
 export default function OwnerVideos({ container = "" }: { container?: string }) {
   return (
-    <section className={`${s.section} ${container}`} data-reveal>
+    <section className={`${s.section} ${container}`} data-reveal data-section="owners">
       <div className={s.top}>
         <Head />
       </div>
       <Band />
+      {/* After the videos, once they've heard from owners like them. */}
+      <div className={s.cta} data-card>
+        <ArrowCta href="#quiz">Get your free homepage sample</ArrowCta>
+      </div>
     </section>
   );
 }

@@ -1,13 +1,12 @@
 /*
- * "Hear it from the owners": the title top left with arrows on the right,
- * then the videos as 3:4 crops in a row that scrolls sideways by hand. The
+ * "What's it like working with us?": the title top left, then the videos as
+ * 3:4 crops, three across on laptops and up, swiped sideways below that. The
  * page sets the container.
  */
 
 .section {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
   --ink: #1a1613;
   --dark: #111113;
   --muted: #6a665e;
@@ -23,17 +22,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 520px;
+  max-width: 720px;
   margin-bottom: clamp(48px, 6vw, 80px);
-}
-
-.eyebrow {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--soft);
 }
 
 .title {
@@ -47,7 +37,8 @@
 }
 
 .sub {
-  max-width: 460px;
+  /* Wide enough for the line to sit on two rows. */
+  max-width: 600px;
   margin: 0;
   font-size: 17px;
   line-height: 1.55;
@@ -77,48 +68,76 @@
   height: 100%;
   object-fit: cover;
   background: #000;
+  cursor: pointer;
 }
 
+/* "Tap for sound", top left, where it covers no face or caption. Dark
+   once the video has sound ("Sound on"). A tap on the video does the same. */
 .sound {
   position: absolute;
-  right: 12px;
-  bottom: 12px;
+  top: 12px;
+  left: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px 0 12px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 999px;
   background: rgb(255 255 255 / 0.92);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   color: var(--dark);
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .sound:hover {
-  transform: scale(1.06);
+  transform: scale(1.04);
 }
 
 .sound[aria-pressed="true"] {
-  background: var(--dark);
+  background: rgb(17 17 19 / 0.85);
   color: #fff;
 }
 
+/* The business's logo, then the owner's name and role. */
 .caption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.who {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
   font-size: 14px;
   line-height: 1.5;
   color: var(--muted);
 }
 
-.caption strong {
+.who strong {
   font-size: 17px;
   font-weight: 500;
   color: var(--ink);
+}
+
+.logo {
+  flex: none;
+  width: auto;
+  height: 32px;
+}
+
+.logoTile {
+  border-radius: 50%;
 }
 
 /* ---------- the row ---------- */
@@ -127,50 +146,12 @@
   min-width: 0;
 }
 
-.arrows {
-  display: flex;
-  gap: 10px;
-  margin-bottom: clamp(48px, 6vw, 80px);
-}
-
-.arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 0;
-  border: 1px solid #d9d3c8;
-  border-radius: 50%;
-  background: #fff;
-  color: var(--ink);
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.arrow:hover:not(:disabled) {
-  background: var(--ink);
-  color: #fff;
-}
-
-.arrow:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-/* Wider than the page, scrolled sideways by hand and snapping
-   to each card. No scrollbar. */
+/* Three across on laptops and up. On tablets and phones, a row swiped
+   sideways, snapping to each card, with no scrollbar. */
 .band {
   display: flex;
   grid-column: 1 / -1;
   gap: 20px;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
 }
 
 .band::-webkit-scrollbar {
@@ -184,11 +165,17 @@
 
 .tile {
   display: flex;
-  flex: 0 0 clamp(280px, 32vw, 460px);
+  flex: 1 1 0;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
   margin: 0;
   scroll-snap-align: start;
+}
+
+/* The button up to the quiz, under the videos on the left. */
+.cta {
+  margin-top: clamp(40px, 4vw, 56px);
 }
 
 /* 3:4 crops: shorter than the whole 9:16 frame, with the captions in the
@@ -197,10 +184,22 @@
   aspect-ratio: 3 / 4;
 }
 
-@media (max-width: 640px) {
-  .arrows {
-    display: none;
+/* Only a scroll box where it scrolls, and sideways only, so the wheel
+   never gets caught scrolling it up and down while the videos rise in. */
+@media (max-width: 899px) {
+  .band {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
   }
+  .tile {
+    flex: 0 0 clamp(260px, 42vw, 360px);
+  }
+}
+
+@media (max-width: 640px) {
   .tile {
     flex-basis: 78vw;
   }

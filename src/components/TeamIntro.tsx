@@ -2,7 +2,7 @@
 
 /**
  * Sits straight under the logo strip: headline, a line of studio copy, a row
- * of stats and the "Get free homepage design" button on the left; the two
+ * of stats and the "Free homepage sample" button on the left; the two
  * of us on the right with the hand labels landing on the arrows already
  * drawn in the photo.
  *
@@ -128,7 +128,7 @@ export default function TeamIntro() {
           </dl>
 
           <div data-rise data-track="team">
-            <ArrowCta href={FREE_DESIGN_URL}>Get free homepage design</ArrowCta>
+            <ArrowCta href={FREE_DESIGN_URL}>Free homepage sample</ArrowCta>
           </div>
         </div>
 

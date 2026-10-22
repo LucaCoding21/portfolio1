@@ -62,7 +62,8 @@ export const SUCCESS_STORIES: SuccessStory[] = [
     resultLabel: "Monthly bookings, now fully booked three months out",
     // Concert photo for the card's cover; the reel keeps its own poster.
     image: "/success/ace-cover.jpg",
-    video: "/success/ace.mp4",
+    // Trimmed so "Every Frame Tells a Story" never shows (Oct 22 2026).
+    video: "/success/ace-v2.mp4",
     href: "/work",
     site: "https://acesuasola.com/",
   },

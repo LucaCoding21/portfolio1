@@ -1,0 +1,202 @@
+/*
+ * The dark band's work (SiteClips.tsx): the band's heading, then the note
+ * on the right, then the clips in a row as wide as the page,
+ * scrolled sideways and snapping to each clip, with no scrollbar, and the
+ * arrows under it. Three and a bit clips on a laptop or larger, two and a
+ * bit on a tablet, one and a bit on a phone (swiped there; no arrows).
+ */
+
+/* The heading, the band's wide gap, then the note and the clips. */
+.work {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(56px, 7vw, 96px);
+}
+
+.lower {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 4vw, 48px);
+}
+
+/* On the right, above the clips. */
+.note {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
+  gap: 10px;
+  width: 360px;
+  max-width: 100%;
+}
+
+.noteTitle {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.noteBody {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: #a8a39b;
+}
+
+.cta {
+  margin-top: 10px;
+}
+
+/* The clips, then the arrows under them on the right. */
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Solid white circles with ink arrows, clear on the dark band; the soft
+   green on hover. At either end of the row the spent arrow goes faint. */
+.arrows {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #111113;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.arrow:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .arrow:hover:not(:disabled) {
+    background: #dcebd9;
+  }
+}
+
+.arrow:disabled {
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.35);
+  cursor: default;
+}
+
+.arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Sideways only: never a box that scrolls up and down, so the wheel always
+   moves the page. */
+.rail {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.clip {
+  display: flex;
+  flex: 0 0 calc((100% - 60px) / 3.25);
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 10px;
+  background: #1e1e22;
+  object-fit: cover;
+  object-position: top;
+}
+
+.name {
+  font-size: 13px;
+  color: var(--grey-on-dark);
+}
+
+/* Under the name, the site's result from the work strip, its figure in the
+   same soft green highlighter. */
+.stat {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #a8a39b;
+}
+
+.figure {
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  background: #dcebd9;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #1a1613;
+}
+
+@media (max-width: 1023px) {
+  .clip {
+    flex-basis: calc((100% - 20px) / 2.2);
+  }
+}
+
+/* Phones: the heading, its short line, the sites, then the button. The
+   note's title and line say again what the heading says, and the button
+   asks before the sites have been seen, so the title and line go and the
+   button moves under the row. */
+@media (max-width: 640px) {
+  .noteTitle,
+  .noteBody {
+    display: none;
+  }
+  .note {
+    order: 2;
+    align-self: flex-start;
+    width: auto;
+  }
+  .cta {
+    margin-top: 0;
+  }
+  .arrows {
+    display: none;
+  }
+  .clip {
+    flex-basis: 78vw;
+  }
+}

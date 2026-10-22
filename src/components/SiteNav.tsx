@@ -5,7 +5,7 @@
  * Items are plain text at rest; on hover one white pill slides under the
  * pointer (0.3s expo.out) and the label rolls: it slides out the top as a
  * copy slides in from below, on calebwu.ca's ease. Two calls to action end
- * the row: "Get free homepage design" (a white pill, to /free-homepage-design)
+ * the row: "Free homepage sample" (an ink outline, to /free-homepage-design)
  * and the main one, "Start project" (the one black pill, the Cal booking).
  * Over the hero the nav runs a "dark" theme (slightly more opaque bar), after
  * it a "light" one. Past 400px of scroll the wordmark folds away and only the
@@ -405,9 +405,9 @@ export default function SiteNav() {
             {/* Two stacked copies in a clipped box: hover slides the stack up
                 one row, so the label flips out the top and back in from below. */}
             <span className={s.flip}>
-              <span className={s.flipRow}>Get free homepage design</span>
+              <span className={s.flipRow}>Free homepage sample</span>
               <span className={s.flipRow} aria-hidden>
-                Get free homepage design
+                Free homepage sample
               </span>
             </span>
           </span>

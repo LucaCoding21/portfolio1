@@ -104,19 +104,39 @@
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   font-size: clamp(1rem, 1.2vw, 1.125rem);
   line-height: 1.45;
+  text-wrap: balance;
   color: rgb(255 255 255 / 0.85);
+}
+
+/* The phone version of the sub-line, when there is one. */
+.subShort {
+  display: none;
 }
 
 @media (max-width: 767px) {
   .wrap {
     --edge: 0.75rem;
   }
-  /* The free design page: more air at the sides, a shorter plate. */
+  /* The free design page: more air at the sides, and a plate tall enough
+     that the footage shows above the copy rather than behind all of it,
+     with a soft fade at the foot so the copy reads over it. */
   .onDark {
     --edge: 1.5rem;
   }
   .onDark .plate {
-    min-height: calc(var(--svh, 1svh) * 46);
+    min-height: calc(var(--svh, 1svh) * 62);
+  }
+  .onDark .scrim {
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0.05) 35%, rgb(0 0 0 / 0.6));
+  }
+  .onDark .content {
+    padding: 2rem 1.25rem 1.75rem;
+  }
+  .hasShort .subLong {
+    display: none;
+  }
+  .hasShort .subShort {
+    display: inline;
   }
   .plate {
     min-height: calc(var(--svh, 1svh) * 62);

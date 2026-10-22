@@ -22,7 +22,7 @@
  * the logo and toggle slide with the side edges. One tween drives all four.
  *
  * Content and colours are ours: four links in two columns and, like SiteNav,
- * two full-width buttons under them: "Get free homepage design" (white) and
+ * two full-width buttons under them: "Free homepage sample" (ink outline) and
  * the main one, "Start project" (ink, the Cal booking), on a light frosted plate
  * matching SiteNav's palette. The reference's icons (Framer's stroke set)
  * are kept.
@@ -348,7 +348,7 @@ export default function MobileDock() {
 
           <Link href={FREE_DESIGN_URL} data-track="mobile-dock" className={`${s.cta} ${s.ctaLight}`} onClick={close}>
             <IconLayout className={s.icon} />
-            <span className={s.linkText}>Get free homepage design</span>
+            <span className={s.linkText}>Free homepage sample</span>
           </Link>
           <a href={CAL_URL} data-track="mobile-dock" target="_blank" rel="noopener noreferrer" className={s.cta} onClick={close}>
             <IconMessageDots className={s.icon} />

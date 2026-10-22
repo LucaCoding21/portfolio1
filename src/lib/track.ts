@@ -5,8 +5,13 @@
  * gift_claim_start, gift_claimed, gift_site_click, gift_text_william,
  * gift_pass_on; and the free home page design: free_design_click (any link
  * to the page, by placement), design_quiz_start, design_quiz_type,
- * design_lead.
+ * design_quiz_goal, design_contact_start, design_note_open, design_lead,
+ * design_section_view (how, reviews, sample, owners, faq, closing) and
+ * design_faq_open. Every event also goes to PostHog where it's running
+ * (instrumentation-client.ts).
  */
+
+import posthog from "posthog-js";
 
 type Params = Record<string, string | number | boolean | undefined>;
 
@@ -16,8 +21,10 @@ declare global {
   }
 }
 
+/** Sends to Google Analytics and, where it's running, PostHog. */
 export function track(event: string, params: Params = {}) {
   window.gtag?.("event", event, params);
+  if (posthog.__loaded) posthog.capture(event, params);
 }
 
 /** Where on the page an element sits: data-track, else its section, else nav/footer. */
