@@ -104,14 +104,15 @@
   padding: 0 20px;
 }
 
-/* text-heading-xl */
+/* text-heading-xl, in the site's Outfit (Oct 22 2026, was the serif with an
+   italic second line). Outfit runs wider, so it sits a size smaller. */
 .headline {
   margin: 0 0 40px;
-  font-family: var(--font-marist), Georgia, serif;
+  font-family: var(--font-outfit), sans-serif;
   font-weight: 500;
-  font-size: clamp(40px, 12.69vw, 64px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+  font-size: clamp(36px, 10.6vw, 56px);
+  line-height: 1;
+  letter-spacing: -0.04em;
   text-align: center;
   color: #fff;
   text-shadow: 0 2px 24px rgba(26, 22, 19, 0.35);
@@ -119,19 +120,18 @@
 
 @media (min-width: 1024px) {
   .headline {
-    font-size: clamp(74px, 7.22vw, 76.9px);
+    font-size: clamp(62px, 6.1vw, 66px);
   }
 }
 
 @media (min-width: 1280px) {
   .headline {
-    font-size: clamp(76.9px, 6.01vw, 104px);
+    font-size: clamp(66px, 5.15vw, 90px);
   }
 }
 
-.italic {
-  font-style: italic;
-}
+/* The second line keeps its own entrance (below) but no slant: Outfit has
+   no italic, and a faked one looks off. */
 
 /* headline lines and words, for the word-by-word entrance */
 .line {
