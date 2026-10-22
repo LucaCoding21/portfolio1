@@ -31,6 +31,10 @@ type Step = "site" | "type" | "goal" | "contact" | "done";
 type Problem = "website" | "name" | "email" | "phone" | "send";
 type Fields = { website: string; name: string; email: string; phone: string; notes: string };
 
+/** What a visitor sent: handed to the page for its thank-you screen, and
+    handed back to reopen the last step with it all filled in ("Fix it"). */
+export type QuizResult = { hasSite: boolean | null; type: BusinessType | null; goal: Goal | null; fields: Fields };
+
 const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, goal: 3, contact: 4, done: 4 };
 const EMPTY: Fields = { website: "", name: "", email: "", phone: "", notes: "" };
 
@@ -76,18 +80,22 @@ function Field({
   );
 }
 
-export default function Quiz() {
-  const [step, setStep] = useState<Step>("site");
-  const [hasSite, setHasSite] = useState<boolean | null>(null);
-  const [type, setType] = useState<BusinessType | null>(null);
-  const [goal, setGoal] = useState<Goal | null>(null);
-  const [fields, setFields] = useState<Fields>(EMPTY);
+/** `onDone` gets what was sent, once it has gone (the page then shows its
+    thank-you screen); without it the card shows its own "You're all set".
+    `resume` reopens the last step filled in, to correct a detail; sending
+    again marks the lead as a correction. */
+export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult) => void; resume?: QuizResult }) {
+  const [step, setStep] = useState<Step>(resume ? "contact" : "site");
+  const [hasSite, setHasSite] = useState<boolean | null>(resume?.hasSite ?? null);
+  const [type, setType] = useState<BusinessType | null>(resume?.type ?? null);
+  const [goal, setGoal] = useState<Goal | null>(resume?.goal ?? null);
+  const [fields, setFields] = useState<Fields>(resume?.fields ?? EMPTY);
   const [error, setError] = useState<Problem | null>(null);
   const [sending, setSending] = useState(false);
   // The optional note stays folded behind a link until it's wanted.
-  const [noteOpen, setNoteOpen] = useState(false);
+  const [noteOpen, setNoteOpen] = useState(!!resume?.fields.notes);
   // design_contact_start goes once, on the first field they touch.
-  const contactStarted = useRef(false);
+  const contactStarted = useRef(!!resume);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -186,6 +194,7 @@ export default function Quiz() {
           phone,
           notes: fields.notes,
           company: new FormData(form).get("company"),
+          fix: !!resume,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -195,9 +204,14 @@ export default function Quiz() {
       return;
     }
 
-    track("design_lead", { has_site: !!hasSite, business_type: type ?? "", goal: goal?.label ?? "" });
+    track(resume ? "design_lead_fix" : "design_lead", {
+      has_site: !!hasSite,
+      business_type: type ?? "",
+      goal: goal?.label ?? "",
+    });
     setSending(false);
-    setStep("done");
+    if (onDone) onDone({ hasSite, type, goal, fields: { ...fields, website, phone } });
+    else setStep("done");
   };
 
   const number = STEP_NUMBER[step];

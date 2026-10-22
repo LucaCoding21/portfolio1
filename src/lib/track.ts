@@ -6,6 +6,7 @@
  * gift_pass_on; and the free home page design: free_design_click (any link
  * to the page, by placement), design_quiz_start, design_quiz_type,
  * design_quiz_goal, design_contact_start, design_note_open, design_lead,
+ * design_lead_fix_open and design_lead_fix ("Wrong email? Fix it"),
  * design_section_view (how, reviews, sample, owners, faq, closing) and
  * design_faq_open. Every event also goes to PostHog where it's running
  * (instrumentation-client.ts).

@@ -20,6 +20,8 @@ export async function POST(request: Request) {
   if (body?.company) return NextResponse.json({ ok: true });
 
   const hasSite = body?.hasSite === true;
+  // A visitor correcting what they sent ("Wrong email? Fix it").
+  const fix = body?.fix === true;
   const type = (BUSINESS_TYPES as readonly string[]).includes(body?.type) ? (body.type as string) : "";
   const typeOther = type === OTHER_TYPE ? text(body?.typeOther, 100) : "";
   const goal = type && GOALS[type as BusinessType].some((g) => g.label === body?.goal) ? (body.goal as string) : "";
@@ -46,7 +48,7 @@ export async function POST(request: Request) {
 
   after(() =>
     alertWilliam({
-      title: `Free sample lead: ${who}`,
+      title: `${fix ? "Corrected free sample lead" : "Free sample lead"}: ${who}`,
       message: `${what} · ${goal ? `${goal} · ` : ""}${website ? bare(website) : "no site yet"}\n${name} · ${phone} · ${email}`,
       phone,
       email,
@@ -63,9 +65,11 @@ export async function POST(request: Request) {
     from: "Cloverfield Studio <cloverfield@cloverfield.studio>",
     to: ["william@cloverfield.studio"],
     replyTo: email,
-    subject: `Free homepage sample: ${who}`,
+    subject: `${fix ? "Corrected: " : ""}Free homepage sample: ${who}`,
     text: [
-      `${name} asked for a free homepage sample.`,
+      fix
+        ? `${name} corrected their free homepage sample request. Use these details over the earlier email.`
+        : `${name} asked for a free homepage sample.`,
       "",
       `Has a website: ${hasSite ? "Yes" : "Not yet"}`,
       ...(hasSite ? [`Website: ${website}`] : []),

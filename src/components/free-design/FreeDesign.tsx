@@ -40,7 +40,7 @@
  * everything is simply there.
  */
 
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -51,9 +51,10 @@ import { CAL_URL } from "@/data/projects";
 import HomeFooter from "@/components/HomeFooter";
 import VideoCta from "@/components/VideoCta";
 import OwnerVideos from "./OwnerVideos";
-import Quiz from "./Quiz";
+import Quiz, { type QuizResult } from "./Quiz";
 import Reviews from "./Reviews";
 import SiteClips from "./SiteClips";
+import Thanks from "./Thanks";
 import WorkStrip from "./WorkStrip";
 import s from "./FreeDesign.module.css";
 
@@ -125,8 +126,8 @@ const FAQS: { q: string; a: React.ReactNode; link?: { href: string; label: strin
     a: "Yes, it’s free. We’d rather show you what we can do than pitch you. If you like the sample, we can talk about building it. If not, there’s nothing to pay.",
   },
   {
-    q: "Will you keep calling me afterwards?",
-    a: "No. We’ll check in once after you’ve had a look. If you want to talk about building it, just reply. If not, that’s the end of it.",
+    q: "Will you keep calling me?",
+    a: "No. We’ll call to walk you through your sample, and if it’s not for you, that’s the end of it.",
   },
   {
     q: "What do I need to give you?",
@@ -189,6 +190,10 @@ function BookCall({ children }: { children: React.ReactNode }) {
 
 export default function FreeDesign() {
   const pageRef = useRef<HTMLDivElement>(null);
+  // What the quiz sent, once it has (the thank-you screen), and what to
+  // reopen it with when they fix a detail.
+  const [lead, setLead] = useState<QuizResult | null>(null);
+  const [resume, setResume] = useState<QuizResult | undefined>();
 
   /* How far down people get: each [data-section] reports once, as its top
      passes 60% of the way up the screen (design_section_view). */
@@ -279,29 +284,53 @@ export default function FreeDesign() {
             window's edge). */}
         <div className={s.screen}>
           <section className={`${s.container} ${s.hero}`}>
-            <div className={s.heroCopy}>
-              <h1 className={s.h1} data-hero="1">
-                Get your free
-                <br />
-                homepage sample
-              </h1>
-              <p className={s.lede} data-hero="2">
-                Answer a few questions and we&rsquo;ll study your competitors, then design your new home page for free.
-              </p>
-              <div className={s.proof} data-hero="3">
-                <span className={s.faces} aria-hidden>
-                  {FACES.map((src) => (
-                    <Image key={src} src={src} alt="" width={72} height={72} className={s.face} />
-                  ))}
-                </span>
-                <p className={s.proofText}>
-                  <strong>3,000+ inquiries</strong> generated for local businesses by sites we&rsquo;ve built
-                </p>
-              </div>
-            </div>
-            <div className={s.heroQuiz} data-hero="4">
-              <Quiz />
-            </div>
+            {/* Once the quiz has gone, the whole first screen is the
+                thank-you (Thanks), in the same two columns. */}
+            {lead ? (
+              <Thanks
+                lead={lead}
+                onFix={() => {
+                  track("design_lead_fix_open");
+                  setResume(lead);
+                  setLead(null);
+                }}
+                classes={{ copy: s.heroCopy, card: s.heroQuiz, h1: s.h1, lede: s.lede }}
+              />
+            ) : (
+              <>
+                <div className={s.heroCopy}>
+                  <h1 className={s.h1} data-hero="1">
+                    Get your free
+                    <br />
+                    homepage sample
+                  </h1>
+                  <p className={s.lede} data-hero="2">
+                    Answer a few questions and we&rsquo;ll study your competitors, then design your new home page for free.
+                  </p>
+                  <div className={s.proof} data-hero="3">
+                    <span className={s.faces} aria-hidden>
+                      {FACES.map((src) => (
+                        <Image key={src} src={src} alt="" width={72} height={72} className={s.face} />
+                      ))}
+                    </span>
+                    <p className={s.proofText}>
+                      <strong>3,000+ inquiries</strong> generated for local businesses by sites we&rsquo;ve built
+                    </p>
+                  </div>
+                </div>
+                <div className={s.heroQuiz} data-hero="4">
+                  <Quiz
+                    key={resume ? "fix" : "new"}
+                    resume={resume}
+                    onDone={(result) => {
+                      setLead(result);
+                      setResume(undefined);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  />
+                </div>
+              </>
+            )}
           </section>
 
           <WorkStrip />

@@ -1,0 +1,210 @@
+/*
+ * The thank-you screen (Thanks.tsx). The left column wears the hero's own
+ * type; the card on the right is the quiz card's frame (white, the paper
+ * line, the shadow and its top bar, now full and in the soft green), its
+ * sizes counted in --q like the quiz so it grows with the screen the same.
+ */
+
+/* The heading takes focus for screen readers; it isn't a control, so no
+   ring (doubled class to beat the page's :focus-visible rule). */
+.heading.heading:focus,
+.heading.heading:focus-visible {
+  outline: none;
+}
+
+/* William and Irish, as the hero's faces line sits. */
+.team {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(12 * var(--u, 1px)) calc(14 * var(--u, 1px));
+  padding-top: calc(4 * var(--u, 1px));
+}
+
+.faces {
+  display: flex;
+}
+
+.face {
+  width: calc(44 * var(--u, 1px));
+  height: calc(44 * var(--u, 1px));
+  margin-left: calc(-8 * var(--u, 1px));
+  border: 2px solid #f9f8f5;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.face:first-child {
+  margin-left: 0;
+}
+
+/* Beside the faces, down to a 320px phone. */
+.teamText {
+  flex: 1 1 160px;
+  max-width: calc(260 * var(--u, 1px));
+  margin: 0;
+  font-size: calc(15 * var(--u, 1px));
+  line-height: 1.4;
+  color: #55504a;
+}
+
+.teamText strong {
+  font-weight: 600;
+  color: #1a1613;
+}
+
+/* The quiet way to talk sooner. */
+.call {
+  margin: 0;
+  font-size: calc(15 * var(--u, 1px));
+  color: #6a665e;
+}
+
+.link {
+  color: #1a1613;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.link:hover {
+  color: #55504a;
+}
+
+/* ---------- the card ---------- */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(22 * var(--q, 1px));
+  padding: calc(52 * var(--q, 1px)) calc(36 * var(--q, 1px)) calc(36 * var(--q, 1px));
+  overflow: hidden;
+  scroll-margin-top: 24px;
+  border: 1px solid #e4dfd6;
+  border-radius: calc(12 * var(--q, 1px));
+  background: #fff;
+  box-shadow: 0 18px 40px -28px rgb(26 22 19 / 0.35);
+}
+
+/* The quiz's bar, full now, in the brand's soft green. */
+.bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(6 * var(--q, 1px));
+  background: #dcebd9;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: calc(26 * var(--q, 1px));
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #1a1613;
+}
+
+/* Three steps down a thin line, a dot at each. */
+.steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: calc(22 * var(--q, 1px));
+  margin: 0;
+  padding: 0 0 0 calc(26 * var(--q, 1px));
+  list-style: none;
+}
+
+.steps::before {
+  content: "";
+  position: absolute;
+  top: calc(8 * var(--q, 1px));
+  bottom: calc(8 * var(--q, 1px));
+  left: calc(4 * var(--q, 1px));
+  width: 1px;
+  background: #e4dfd6;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(4 * var(--q, 1px));
+}
+
+.step::before {
+  content: "";
+  position: absolute;
+  top: calc(5 * var(--q, 1px));
+  left: calc(-26 * var(--q, 1px));
+  width: calc(9 * var(--q, 1px));
+  height: calc(9 * var(--q, 1px));
+  border-radius: 50%;
+  background: #1a1613;
+}
+
+/* Today is under way: a green dot with a ring. */
+.step:first-child::before {
+  background: #4f8a4b;
+  box-shadow: 0 0 0 calc(4 * var(--q, 1px)) #dcebd9;
+}
+
+.when {
+  font-size: calc(12 * var(--q, 1px));
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6a665e;
+}
+
+.what {
+  margin: 0;
+  font-size: calc(16 * var(--q, 1px));
+  line-height: 1.5;
+  color: #1a1613;
+}
+
+.email {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* "Wrong number? Fix it": reopens the last step, filled in. */
+.fix {
+  min-height: 44px;
+  margin: -10px 0 -12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: calc(14 * var(--q, 1px));
+  color: #6a665e;
+  text-decoration: underline;
+  text-decoration-color: #e4dfd6;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.fix:hover {
+  color: #1a1613;
+  text-decoration-color: currentColor;
+}
+
+.fix:focus-visible {
+  outline: 2px solid #1a1613;
+  outline-offset: 2px;
+}
+
+/* Phones: the card a touch tighter, as the quiz card is there. */
+@media (max-width: 480px) {
+  .card {
+    padding: 32px 22px 26px;
+  }
+  .title {
+    font-size: 22px;
+  }
+}
