@@ -32,7 +32,7 @@
 }
 
 /* A full pass of the ten cards takes 85s, about 34px a second (slowed
-   by request from the handoff's 70s for thirteen); hovering holds it. */
+   by request from the handoff's 70s for thirteen). */
 .track {
   display: flex;
   gap: 20px;
@@ -41,8 +41,12 @@
   animation: drift 85s linear infinite;
 }
 
-.track:hover {
-  animation-play-state: paused;
+/* Hover holds it, with a real mouse only: a phone keeps the last tapped
+   element "hovered", which would stop the strip until the next tap. */
+@media (hover: hover) and (pointer: fine) {
+  .track:hover {
+    animation-play-state: paused;
+  }
 }
 
 @keyframes drift {

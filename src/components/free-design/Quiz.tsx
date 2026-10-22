@@ -12,8 +12,7 @@
  *            type, added Oct 22 2026; the done screen says it back)
  *   contact  website (when they have one), name, email and phone required
  *            (phone since Oct 22 2026); a note optional, folded behind
- *            "+ Add a note" until tapped; "We'll only use this for your
- *            sample." under the button
+ *            "+ Add a note" until tapped
  *   done     You're all set, and Start over
  *
  * Picking an option moves straight on. Nothing is sent before the contact
@@ -370,7 +369,6 @@ export default function Quiz() {
             <ArrowCta full className={s.submit}>
               {sending ? "Sending…" : "Free homepage sample"}
             </ArrowCta>
-            <p className={s.reassure}>We&rsquo;ll only use this for your sample.</p>
             {error === "send" && (
               <p className={s.error} role="alert">
                 That didn&rsquo;t send. Try again, or text William at{" "}

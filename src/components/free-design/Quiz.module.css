@@ -264,15 +264,6 @@ textarea.input {
   text-decoration-color: currentColor;
 }
 
-/* Under the button: what the details are for. */
-.reassure {
-  margin: calc(-4 * var(--q, 1px)) 0 0;
-  font-size: calc(13 * var(--q, 1px));
-  line-height: 1.4;
-  text-align: center;
-  color: var(--muted);
-}
-
 /* The studio's ink pill, a touch taller here (58px, as in the handoff). */
 .form .submit {
   --h: calc(58 * var(--q, 1px));
