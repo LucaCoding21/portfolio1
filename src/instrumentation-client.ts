@@ -9,7 +9,8 @@ import posthog from "posthog-js";
  * (?internal=0 undoes it). ?posthog_test=1 lets a device report from
  * anywhere, localhost or a preview, to check the install (?posthog_test=0
  * undoes it). Events go through /ingest on our own domain (next.config.ts)
- * so ad blockers don't drop them. Form inputs are masked in replays.
+ * so ad blockers don't drop them. Form inputs are masked in replays. Leads
+ * are tied to their sessions when they send a form (identify in lib/track).
  */
 
 const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
@@ -35,6 +36,8 @@ if (token && shouldReport()) {
     ui_host: "https://us.posthog.com",
     defaults: "2026-08-30",
     person_profiles: "identified_only",
+    // Also what people copy (an email address, a price, a line of copy).
+    autocapture: { capture_copied_text: true },
     // No surveys on the site: don't load their code.
     disable_surveys: true,
   });

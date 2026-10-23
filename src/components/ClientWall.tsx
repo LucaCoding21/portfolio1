@@ -327,7 +327,7 @@ export default function ClientWall() {
   }, []);
 
   return (
-    <section className={s.section} aria-label={WALL_LABEL}>
+    <section data-section="clients" className={s.section} aria-label={WALL_LABEL}>
       <p className={s.label}>{WALL_LABEL}</p>
       <div ref={wrapRef} className={s.wrap}>
         <div ref={baseRef} className={s.base} style={{ "--cols": WALL_COLUMNS } as React.CSSProperties}>

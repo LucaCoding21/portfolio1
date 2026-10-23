@@ -23,7 +23,7 @@ import { useId, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import ArrowCta from "@/components/ArrowCta";
 import { REVIEW_CAL_URL, projects } from "@/data/projects";
-import { track } from "@/lib/track";
+import { identify, track } from "@/lib/track";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@/lib/reviewLead";
 import s from "./ReviewField.module.css";
 
@@ -188,6 +188,7 @@ export default function ReviewField({
     }
 
     track("review_contact_submit", { placement: source });
+    identify(address, { name: who, website, lead_from: `review_${source}` });
     setName(who);
     setEmail(address);
     setPhone(number);

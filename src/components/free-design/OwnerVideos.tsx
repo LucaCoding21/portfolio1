@@ -118,6 +118,7 @@ function Band() {
                 refs.current[i] = el;
               }}
               src={v.video}
+              data-video={v.name}
               poster={v.poster}
               style={{ objectPosition: v.position }}
               muted

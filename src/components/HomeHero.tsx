@@ -324,7 +324,7 @@ export default function HomeHero({ ready }: { ready: boolean }) {
   }, [tasksOn]);
 
   return (
-    <section ref={heroRef} aria-label="Hero section" className={s.hero} data-nav-theme="dark">
+    <section data-section="hero" ref={heroRef} aria-label="Hero section" className={s.hero} data-nav-theme="dark">
       <div ref={mediaRef} className={s.plate}>
         <div className={s.inner}>
           {/* The video carries no poster attribute: it would paint the

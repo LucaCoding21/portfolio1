@@ -175,7 +175,7 @@ export default function MoreWork() {
   }, []);
 
   return (
-    <section ref={sectionRef} className={s.wrap} aria-label="More of our work">
+    <section data-section="more-work" ref={sectionRef} className={s.wrap} aria-label="More of our work">
       <div className={s.head}>
         <ArrowCta href="/work" outline>
           See all projects

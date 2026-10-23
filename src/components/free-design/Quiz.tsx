@@ -24,7 +24,7 @@ import ArrowCta from "@/components/ArrowCta";
 import { BUSINESS_TYPES, GOALS, type BusinessType, type Goal } from "@/data/freeDesign";
 import { WILLIAM_PHONE } from "@/lib/giftShared";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
-import { track } from "@/lib/track";
+import { identify, track } from "@/lib/track";
 import s from "./Quiz.module.css";
 
 type Step = "site" | "type" | "goal" | "contact" | "done";
@@ -208,6 +208,13 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
       has_site: !!hasSite,
       business_type: type ?? "",
       goal: goal?.label ?? "",
+    });
+    identify(fields.email, {
+      name: fields.name.trim(),
+      website,
+      business_type: type ?? "",
+      goal: goal?.label ?? "",
+      lead_from: "free_design",
     });
     setSending(false);
     if (onDone) onDone({ hasSite, type, goal, fields: { ...fields, website, phone } });

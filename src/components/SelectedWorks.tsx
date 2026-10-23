@@ -429,7 +429,7 @@ export default function SelectedWorks({ ready }: { ready: boolean }) {
   }, []);
 
   return (
-    <section className={s.section}>
+    <section className={s.section} data-section="selected-works">
       <section className={s.intro}>
         <h2 className={s.title}>
           Our

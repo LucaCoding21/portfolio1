@@ -35,7 +35,7 @@ import GiftCard, { type CardStatus } from "@/components/gift/GiftCard";
 import GiftHeader from "@/components/gift/GiftHeader";
 import ClaimForm from "@/components/gift/ClaimForm";
 import { WILLIAM_PHONE, senderKey, type ClaimFields } from "@/lib/giftShared";
-import { track } from "@/lib/track";
+import { identify, track } from "@/lib/track";
 import s from "./gift.module.css";
 
 export type GiftState = "sealed" | "claimed" | "signed" | "expired";
@@ -310,6 +310,7 @@ export default function GiftReveal({
             fix={claim === "fix"}
             onDone={(values) => {
               if (claim === "form") track("gift_claimed");
+              if (values.email) identify(values.email, { name: values.name, business: values.business, lead_from: "gift" });
               setDetails(values);
               setClaim("done");
             }}

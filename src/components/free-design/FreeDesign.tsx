@@ -195,24 +195,8 @@ export default function FreeDesign() {
   const [lead, setLead] = useState<QuizResult | null>(null);
   const [resume, setResume] = useState<QuizResult | undefined>();
 
-  /* How far down people get: each [data-section] reports once, as its top
-     passes 60% of the way up the screen (design_section_view). */
-  useEffect(() => {
-    const seen = new Set<string>();
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          const name = (e.target as HTMLElement).dataset.section;
-          if (!e.isIntersecting || !name || seen.has(name)) return;
-          seen.add(name);
-          io.unobserve(e.target);
-          track("design_section_view", { section: name });
-        }),
-      { rootMargin: "0px 0px -40% 0px" }
-    );
-    pageRef.current?.querySelectorAll("[data-section]").forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
+  /* How far down people get: each [data-section] reports design_section_view
+     once, from the site-wide tracker (components/Analytics). */
 
   /* Section reveals; see the note at the top. The CSS already holds them
      hidden, so these run from those same values to rest. Set up before
@@ -283,7 +267,7 @@ export default function FreeDesign() {
             strip along the bottom (on laptops and up, cut in half by the
             window's edge). */}
         <div className={s.screen}>
-          <section className={`${s.container} ${s.hero}`}>
+          <section data-section="hero" className={`${s.container} ${s.hero}`}>
             {/* Once the quiz has gone, the whole first screen is the
                 thank-you (Thanks), in the same two columns. */}
             {lead ? (

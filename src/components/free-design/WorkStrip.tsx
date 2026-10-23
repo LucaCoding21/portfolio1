@@ -176,7 +176,7 @@ export default function WorkStrip() {
   }, []);
 
   return (
-    <section ref={stripRef} className={s.strip} aria-label="Home pages we’ve designed" data-hero="5">
+    <section ref={stripRef} className={s.strip} data-section="strip" aria-label="Home pages we’ve designed" data-hero="5">
       <p className={s.label}>Home pages we&rsquo;ve designed for businesses across Canada and the US</p>
       <div ref={marqueeRef} className={s.marquee}>
         {/* Both copies in one row: the track slides half its width plus half

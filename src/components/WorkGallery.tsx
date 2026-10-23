@@ -302,7 +302,7 @@ export default function WorkGallery() {
   const chooseFilter = (tag: string | null) => setActiveFilter(tag);
 
   return (
-    <section ref={sectionRef} className={s.section}>
+    <section data-section="gallery" ref={sectionRef} className={s.section}>
       <div className={s.paddingGlobal}>
         <div className={s.container}>
           <header ref={headerRef} className={`${s.header} ${s.loadIn}`}>

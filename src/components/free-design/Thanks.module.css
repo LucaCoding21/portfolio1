@@ -147,10 +147,9 @@
   background: #1a1613;
 }
 
-/* Today is under way: a green dot with a ring. */
+/* Today is under way: a green dot. */
 .step:first-child::before {
   background: #4f8a4b;
-  box-shadow: 0 0 0 calc(4 * var(--q, 1px)) #dcebd9;
 }
 
 .when {

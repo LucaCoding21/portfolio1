@@ -148,7 +148,7 @@ export default function CaddieCompanionCaseStudy() {
       />
 
       {/* Breadcrumb */}
-      <section className="pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-10">
+      <section data-section="breadcrumb" className="pt-32 md:pt-40 pb-10 md:pb-14 px-6 md:px-10">
         <nav
           aria-label="Breadcrumb"
           className="max-w-[1100px] mx-auto text-[13px] font-[family-name:var(--font-geist-sans)] text-black/55"
@@ -174,7 +174,7 @@ export default function CaddieCompanionCaseStudy() {
       </section>
 
       {/* Title block: heading row + content row align across columns */}
-      <section className="px-6 md:px-10 mb-16 md:mb-24">
+      <section data-section="title" className="px-6 md:px-10 mb-16 md:mb-24">
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-x-10 md:gap-x-12 lg:gap-x-16 gap-y-6 md:gap-y-8">
           <h1 className="md:col-span-8 order-1 font-[family-name:var(--font-outfit)] font-bold text-[clamp(1.6rem,3.8vw,2.8rem)] tracking-tight leading-[1.05]">
             Caddie Companion
@@ -206,7 +206,7 @@ export default function CaddieCompanionCaseStudy() {
       </section>
 
       {/* Hero video: scroll-driven scale */}
-      <section className="px-3 md:px-10 mb-16 md:mb-24">
+      <section data-section="video" className="px-3 md:px-10 mb-16 md:mb-24">
         <div className="max-w-[1600px] mx-auto">
           <CaseStudyHeroVideo
             src="/success/caddie-companion.mp4"
@@ -220,7 +220,7 @@ export default function CaddieCompanionCaseStudy() {
       </section>
 
       {/* Stat strip: outcome teaser */}
-      <section className="px-6 md:px-10 mb-24 md:mb-40">
+      <section data-section="stats" className="px-6 md:px-10 mb-24 md:mb-40">
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 md:gap-12 border-t border-black/15 pt-8 md:pt-10">
           <div>
             <p className="font-[family-name:var(--font-outfit)] font-bold text-3xl md:text-4xl tracking-tight leading-[1.05] mb-3">
@@ -488,7 +488,7 @@ export default function CaddieCompanionCaseStudy() {
       </div>
 
       {/* CTA */}
-      <section className="px-6 md:px-10 pb-32 md:pb-48 pt-12 md:pt-16 border-t border-black/[0.06]">
+      <section data-section="closing" className="px-6 md:px-10 pb-32 md:pb-48 pt-12 md:pt-16 border-t border-black/[0.06]">
         <div className="max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 items-end">
             <div className="md:col-span-8">

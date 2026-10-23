@@ -92,7 +92,7 @@ export default function VideoCta({
   }, []);
 
   return (
-    <section ref={sectionRef} className={`${s.wrap} ${onPaper ? s.onPaper : ""} ${onDark ? s.onDark : ""}`} aria-label="Book a call">
+    <section ref={sectionRef} className={`${s.wrap} ${onPaper ? s.onPaper : ""} ${onDark ? s.onDark : ""}`} aria-label="Book a call" data-section="closing">
       <div className={s.plate} data-plate>
         {/* Phones get a 9:16 crop of the 1080p source, panned right onto the
             bench, so the plate is not upscaling a sliver of the landscape

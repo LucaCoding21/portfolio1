@@ -129,6 +129,7 @@ export default function Testimonials() {
                   videoRefs.current[i] = el;
                 }}
                 src={r.video}
+                data-video={r.name}
                 data-poster={r.poster}
                 muted
                 loop
