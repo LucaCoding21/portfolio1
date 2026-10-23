@@ -32,7 +32,7 @@ No test framework is configured.
 
 **Data:** Project data lives in `src/data/projects.ts`. `homepageProjects` is a filtered subset (by `HOMEPAGE_PROJECT_IDS`). The `/work` page shows all projects. Navigation items (`NAV_ITEMS`) are also exported from this file.
 
-**Fonts:** Five Google Fonts loaded via `next/font` in `layout.tsx`, exposed as CSS variables: `--font-geist-sans`, `--font-outfit` (the main face), `--font-script` (Caveat), `--font-sometype` (Sometype Mono, legacy labels only), `--font-reenie` (Reenie Beanie, handwriting). Utility classes like `.glitch-text` and `.sight-nav-link` live in `globals.css`.
+**Fonts:** Five Google Fonts loaded via `next/font` in `layout.tsx`, exposed as CSS variables: `--font-geist-sans`, `--font-outfit` (the main face), `--font-script` (Caveat), `--font-sometype` (Sometype Mono, legacy labels only), `--font-reenie` (Reenie Beanie, handwriting). None is preloaded (`preload: false` on every face, Oct 23 2026): any font preload made headless Chrome, which PageSpeed runs, hold the first frame 1 to 2.4s and cost the free page about 25 points on mobile. Don't turn preloading back on. Utility classes like `.glitch-text` and `.sight-nav-link` live in `globals.css`.
 
 **Cursor:** the site uses the native cursor. The old `CustomCursor` was removed in September 2026; do not reintroduce a custom cursor.
 

@@ -9,10 +9,12 @@ import Analytics from "@/components/Analytics";
 import ChromeGate from "@/components/ChromeGate";
 import { STEADY_VH_SCRIPT } from "@/lib/viewport";
 
-// Preloaded: Outfit (the main face), DM Sans (the nav) and Inter (the phone
-// dock), which every page shows at once. The rest load when a page first
-// lays out text in them (the CSS is inlined, so that is immediate), and
-// pages that never use a face never download it.
+// No face is preloaded. Each loads when a page first lays out text in it
+// (the CSS is inlined, so that is immediate), and pages that never use a
+// face never download it. Outfit, DM Sans and Inter were preloaded until
+// Oct 23 2026, but any font preload made headless Chrome, which PageSpeed
+// runs, hold the first frame for 1 to 2.4s (free page mobile 63 to 66
+// against 91 without); a visible Chrome painted at the same time either way.
 const geistSans = Geist({
   variable: "--font-geist-sans",
   preload: false,
@@ -21,6 +23,7 @@ const geistSans = Geist({
 
 const outfit = Outfit({
   variable: "--font-outfit",
+  preload: false,
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
@@ -47,6 +50,7 @@ const sometype = Sometype_Mono({
 // Cormorant Garamond stands in for their licensed ABC Marist.
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
+  preload: false,
   subsets: ["latin"],
 });
 
@@ -62,6 +66,7 @@ const marist = Cormorant_Garamond({
 // the Sight product mockups. Variable, so every weight comes from one file.
 const inter = Inter({
   variable: "--font-inter",
+  preload: false,
   subsets: ["latin"],
 });
 
