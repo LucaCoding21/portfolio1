@@ -3,7 +3,8 @@
 /**
  * The free home page design page (/free-homepage-design), rebuilt from the
  * Page A handoff (Oct 2026). It stands on its own: no site nav, just the
- * logo and "Book a free call" (see ChromeGate). Top to bottom:
+ * logo and "Book a free call", which goes once the quiz is sent (see
+ * ChromeGate). Top to bottom:
  *
  *   hero          the first screen, filling the window (Option A handoff,
  *                 Oct 21 2026): the promise and the trust line on the left,
@@ -256,9 +257,12 @@ export default function FreeDesign() {
         <Link href="/" aria-label="Cloverfield Studio home" className={s.brand}>
           <Image src="/cloverfield-logo.png" alt="" width={4162} height={662} sizes="140px" priority />
         </Link>
-        <BookCall>
-          <span className={s.callLead}>Prefer to talk?</span> <span className={s.callText}>Book a free call</span>
-        </BookCall>
+        {/* Not on the thank-you: William is about to call them. */}
+        {!lead && (
+          <BookCall>
+            <span className={s.callLead}>Prefer to talk?</span> <span className={s.callText}>Book a free call</span>
+          </BookCall>
+        )}
       </header>
 
       <main>

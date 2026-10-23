@@ -265,9 +265,14 @@ textarea.input {
 }
 
 /* The studio's ink pill, a touch taller here (58px, as in the handoff). */
+/* The whole pill counts in --q, label and arrow too, so it keeps the
+   handoff's proportions as the card grows on big screens. */
 .form .submit {
   --h: calc(58 * var(--q, 1px));
   --chip: calc(42 * var(--q, 1px));
+  --pad: calc(22 * var(--q, 1px));
+  --label-size: calc(15 * var(--q, 1px));
+  --arrow: calc(15 * var(--q, 1px));
   margin-top: calc(6 * var(--q, 1px));
 }
 

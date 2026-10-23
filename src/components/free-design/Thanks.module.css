@@ -77,8 +77,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: calc(22 * var(--q, 1px));
-  padding: calc(52 * var(--q, 1px)) calc(36 * var(--q, 1px)) calc(36 * var(--q, 1px));
+  gap: calc(18 * var(--q, 1px));
+  padding: calc(40 * var(--q, 1px)) calc(36 * var(--q, 1px)) calc(36 * var(--q, 1px));
   overflow: hidden;
   scroll-margin-top: 24px;
   border: 1px solid #e4dfd6;
@@ -107,95 +107,179 @@
   color: #1a1613;
 }
 
-/* Three steps down a thin line, a dot at each. */
+/* ---------- the steps: a thick pill rail, an icon in it at each step ----------
+   One light track from the first icon down to the last line of the last
+   step, rounded at both ends, and a darker fill over it from the top to the
+   middle of the gap under step 1, the step they're on (always the first
+   here, so this is no general progress bar). Icons sit in the rail, centred
+   on each heading's first line. CSS only, nothing measured. */
+
 .steps {
+  --bar: calc(31 * var(--q, 1px));
+  --icon: calc(17 * var(--q, 1px));
+  --rail-gap: calc(16 * var(--q, 1px));
+  --head-size: calc(15.5 * var(--q, 1px));
+  --head-lh: calc(var(--head-size) * 1.25);
+  --step-gap: calc(23 * var(--q, 1px));
+  /* How far the rail's round top reaches above the first heading line. */
+  --cap: max(0px, calc((var(--bar) - var(--head-lh)) / 2));
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: calc(22 * var(--q, 1px));
+  gap: var(--step-gap);
   margin: 0;
-  padding: 0 0 0 calc(26 * var(--q, 1px));
+  padding: var(--cap) 0 0;
   list-style: none;
 }
 
+/* The track: the card's own warm line colour, so only the fill is green. */
 .steps::before {
   content: "";
   position: absolute;
-  top: calc(8 * var(--q, 1px));
-  bottom: calc(8 * var(--q, 1px));
-  left: calc(4 * var(--q, 1px));
-  width: 1px;
-  background: #e4dfd6;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--bar);
+  border-radius: 999px;
+  background: #ece8e0;
 }
 
 .step {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: calc(4 * var(--q, 1px));
+  display: grid;
+  grid-template-columns: var(--bar) minmax(0, 1fr);
+  column-gap: var(--rail-gap);
+  row-gap: calc(5 * var(--q, 1px));
+  align-items: start;
 }
 
-.step::before {
+/* The fill, a shade darker than the live green so a white icon reads on it. */
+.now::before {
   content: "";
   position: absolute;
-  top: calc(5 * var(--q, 1px));
-  left: calc(-26 * var(--q, 1px));
-  width: calc(9 * var(--q, 1px));
-  height: calc(9 * var(--q, 1px));
-  border-radius: 50%;
-  background: #1a1613;
+  top: calc(-1 * var(--cap));
+  bottom: calc(-0.5 * var(--step-gap));
+  left: 0;
+  width: var(--bar);
+  border-radius: 999px;
+  background: #328c46;
+  transform-origin: top center;
 }
 
-/* Today is under way: a green dot. */
-.step:first-child::before {
-  background: #4f8a4b;
+/* Grows down from the top once the card has risen in. */
+@media (prefers-reduced-motion: no-preference) {
+  .now::before {
+    animation: railFill 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) 0.9s both;
+  }
 }
 
-.when {
-  font-size: calc(12 * var(--q, 1px));
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+@keyframes railFill {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+/* As tall as the heading's first line, so the icon centres on it. */
+.stepIcon {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  height: var(--head-lh);
   color: #6a665e;
 }
 
-.what {
+.stepIcon svg {
+  display: block;
+  width: var(--icon);
+  height: var(--icon);
+}
+
+.now .stepIcon {
+  color: #fff;
+}
+
+.stepHead,
+.stepBody,
+.fix {
+  grid-column: 2;
+}
+
+.stepHead {
   margin: 0;
-  font-size: calc(16 * var(--q, 1px));
-  line-height: 1.5;
+  font-family: var(--font-outfit), sans-serif;
+  font-size: var(--head-size);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.014em;
   color: #1a1613;
 }
 
-.email {
-  font-weight: 600;
-  overflow-wrap: anywhere;
+.stepBody {
+  margin: 0;
+  font-size: calc(13.5 * var(--q, 1px));
+  line-height: 1.5;
+  color: #4a453f;
 }
 
-/* "Wrong number? Fix it": reopens the last step, filled in. */
+/* William's number, the one they need to recognise when it rings: ink and
+   bold, underlined only on hover. No wrap mid-number. */
+.number {
+  font-weight: 600;
+  color: #1a1613;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.number:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* "Not [their number]? Fix it": reopens the last step, filled in. */
 .fix {
+  justify-self: start;
   min-height: 44px;
-  margin: -10px 0 -12px;
+  margin: -12px 0 -14px;
   padding: 0;
   border: 0;
   background: none;
   font: inherit;
-  font-size: calc(14 * var(--q, 1px));
+  font-size: calc(12 * var(--q, 1px));
+  text-align: left;
   color: #6a665e;
-  text-decoration: underline;
-  text-decoration-color: #e4dfd6;
-  text-underline-offset: 4px;
   cursor: pointer;
+}
+
+.fixLink {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .fix:hover {
   color: #1a1613;
-  text-decoration-color: currentColor;
 }
 
 .fix:focus-visible {
   outline: 2px solid #1a1613;
   outline-offset: 2px;
+}
+
+/* The full lines on laptops and tablets, the short ones on phones. */
+.short {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .long,
+  .team {
+    display: none;
+  }
+  .short {
+    display: inline;
+  }
 }
 
 /* Phones: the card a touch tighter, as the quiz card is there. */
@@ -205,5 +289,19 @@
   }
   .title {
     font-size: 22px;
+  }
+  /* The rail's desktop sizes would take a fifth of the card here. */
+  .steps {
+    --bar: 32px;
+    --icon: 18px;
+    --rail-gap: 14px;
+    --head-size: 18px;
+    --step-gap: 22px;
+  }
+  .stepBody {
+    font-size: 16px;
+  }
+  .fix {
+    font-size: 14px;
   }
 }

@@ -22,10 +22,11 @@
   align-items: center;
   height: var(--h);
   /* right pad = chip inset, so the chip hugs the end of the pill */
-  padding: 0 calc((var(--h) - var(--chip)) / 2 - 1px) 0 22px;
+  padding: 0 calc((var(--h) - var(--chip)) / 2 - 1px) 0 var(--pad, 22px);
   border: 1px solid var(--ink);
-  /* Overridable per use: --radius (pill by default), --chip-radius and
-     --label (the blended label colour; keep it light, see .content). */
+  /* Overridable per use: --radius (pill by default), --chip-radius,
+     --label (the blended label colour; keep it light, see .content), and
+     --pad, --label-size and --arrow for a pill that scales with its card. */
   border-radius: var(--radius, 999px);
   overflow: hidden;
   isolation: isolate;
@@ -113,7 +114,7 @@
 .label {
   display: block;
   font-family: var(--font-outfit), sans-serif;
-  font-size: 0.9375rem;
+  font-size: var(--label-size, 0.9375rem);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -134,13 +135,15 @@
 
 .arrow > svg {
   display: block;
+  width: var(--arrow, 15px);
+  height: var(--arrow, 15px);
 }
 
 /* Availability dot with a slow breathing ring. */
 .dot {
   position: absolute;
   z-index: 2;
-  left: 22px;
+  left: var(--pad, 22px);
   top: calc(50% - 4px);
   width: 8px;
   height: 8px;
