@@ -156,6 +156,14 @@
   opacity: 0;
 }
 
+/* The reel waits too. Under the loader it is covered by the loader's own
+   copy, and two videos on screen at once held Chrome to 30fps for the whole
+   bloom (measured, Oct 2026). It keeps playing, so it stays buffered (iOS
+   only buffers a playing video) and the handoff's seek is short. */
+.hero[data-intro="wait"] .video {
+  opacity: 0;
+}
+
 .hero[data-intro="play"] .line:not(.italic) .word {
   animation: hero-drop 0.9s cubic-bezier(0.62, 0.61, 0.02, 1) both;
   animation-delay: calc(var(--i, 0) * 0.05s);
