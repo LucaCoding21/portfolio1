@@ -1,0 +1,145 @@
+/*
+  /privacy: one readable column on the homepage's paper and ink, Outfit
+  throughout, hairlines at 12% ink. The top padding clears the floating nav.
+*/
+
+.page {
+  --ink: #1a1613;
+  --ink-soft: #55504a;
+  --faint: #6a665e;
+  --paper: #f9f8f5;
+  --line: rgb(26 22 19 / 0.12);
+
+  min-height: calc(var(--svh, 1svh) * 100);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.main {
+  position: relative;
+  z-index: 10;
+  overflow: clip;
+  border-radius: 0 0 28px 28px;
+  background: var(--paper);
+}
+
+.article {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(128px, 12vw, 176px) 24px clamp(96px, 10vw, 160px);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  -webkit-font-smoothing: antialiased;
+}
+
+.title {
+  font-size: clamp(44px, 6vw, 76px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.updated {
+  margin-top: 18px;
+  font-size: 15px;
+  color: var(--faint);
+}
+
+.lede {
+  margin-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--line);
+  font-size: clamp(18px, 1.5vw, 20px);
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.article h2 {
+  margin-top: 52px;
+  margin-bottom: 14px;
+  font-size: clamp(22px, 2vw, 26px);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.article p + p,
+.article p + ul,
+.article ul + p {
+  margin-top: 16px;
+}
+
+.article ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.article li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.article li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink);
+  opacity: 0.35;
+}
+
+.article strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.article a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: rgb(26 22 19 / 0.3);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.article a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.address {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-style: normal;
+  color: var(--ink);
+}
+
+@media (min-width: 768px) {
+  .main {
+    border-radius: 0 0 48px 48px;
+  }
+}
+
+@media (max-width: 479px) {
+  .article {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 16px;
+  }
+
+  .lede {
+    margin-top: 32px;
+    padding-bottom: 32px;
+  }
+
+  .article h2 {
+    margin-top: 44px;
+  }
+}
