@@ -17,6 +17,22 @@ export const metadata: Metadata = {
     siteName: "Cloverfield Studio",
     locale: "en_CA",
     type: "website",
+    // Set again here: this openGraph replaces the layout's whole.
+    images: [
+      {
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Cloverfield Studio, web design in Surrey, BC",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Work | Cloverfield Studio",
+    description:
+      "Websites that bring in customers, for trades, real estate, clinics, hospitality, ecommerce, and photography businesses in Surrey, BC and Vancouver.",
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
 

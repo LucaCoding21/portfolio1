@@ -18,6 +18,31 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://cloverfield.studio/privacy",
   },
+  // Its own share card, so a shared link isn't sent to the homepage.
+  openGraph: {
+    title: "Privacy Policy | Cloverfield Studio",
+    description:
+      "What Cloverfield Studio Inc. collects when you visit cloverfield.studio or send a form, why, and how to reach us about it.",
+    url: "https://cloverfield.studio/privacy",
+    siteName: "Cloverfield Studio",
+    locale: "en_CA",
+    type: "website",
+    images: [
+      {
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Cloverfield Studio, web design in Surrey, BC",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | Cloverfield Studio",
+    description:
+      "What Cloverfield Studio Inc. collects when you visit cloverfield.studio or send a form, why, and how to reach us about it.",
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
+  },
 };
 
 const EMAIL = "william@cloverfield.studio";

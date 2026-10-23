@@ -30,6 +30,22 @@ export const metadata: Metadata = {
     siteName: "Cloverfield Studio",
     locale: "en_CA",
     type: "website",
+    // Set again here: this openGraph replaces the layout's whole.
+    images: [
+      {
+        url: "https://cloverfield.studio/og-image-v2.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "Cloverfield Studio, web design in Surrey, BC",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sight by Cloverfield · Ask your business anything",
+    description:
+      "One dashboard for your whole business, an AI that answers any question in seconds, and alerts that catch problems early. Live in 45 days or you don't pay.",
+    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
 };
 
