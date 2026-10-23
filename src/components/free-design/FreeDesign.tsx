@@ -48,6 +48,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import Link from "next/link";
 import ArrowCta from "@/components/ArrowCta";
 import { track } from "@/lib/track";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import { CAL_URL } from "@/data/projects";
 import HomeFooter from "@/components/HomeFooter";
 import VideoCta from "@/components/VideoCta";
@@ -148,11 +149,12 @@ const FAQS: { q: string; a: React.ReactNode; link?: { href: string; label: strin
   },
 ];
 
-/** The research clip in How does it work: nothing loads until it is on
-    screen (it sits well below the first screen), then it plays while
-    visible. Its poster shows until then. */
+/** The research clip in How does it work: its poster waits until it is
+    near (it sits below the first screen), and the clip loads once it is on
+    screen, then plays while visible. */
 function ResearchClip() {
   const ref = useRef<HTMLVideoElement>(null);
+  useWakeMedia(ref, undefined, false);
 
   useEffect(() => {
     const v = ref.current;
@@ -169,7 +171,7 @@ function ResearchClip() {
     <video
       ref={ref}
       src="/approach-research.mp4"
-      poster="/approach-research-poster.jpg"
+      data-poster="/approach-research-poster.jpg"
       muted
       loop
       playsInline
@@ -254,7 +256,9 @@ export default function FreeDesign() {
   return (
     <div ref={pageRef} className={s.page}>
       <header className={`${s.container} ${s.header}`}>
-        <Link href="/" aria-label="Cloverfield Studio home" className={s.brand}>
+        {/* Not prefetched: the home page's data and scripts would load
+            alongside this page's first screen, for the few who leave. */}
+        <Link href="/" prefetch={false} aria-label="Cloverfield Studio home" className={s.brand}>
           <Image src="/cloverfield-logo.png" alt="" width={4162} height={662} sizes="140px" priority />
         </Link>
         {/* Not on the thank-you: William is about to call them. */}

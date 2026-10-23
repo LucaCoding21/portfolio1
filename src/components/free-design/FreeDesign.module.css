@@ -79,9 +79,13 @@
   }
 }
 
+/* From 1%, not 0: Chrome never counts text it first painted at opacity 0
+   as the page's largest paint, so with a 0 start the headline was skipped
+   and PageSpeed timed the page by a later strip still, after every script
+   and image had loaded (LCP 4 to 9s on mobile). 1% looks the same. */
 @keyframes heroRise {
   from {
-    opacity: 0;
+    opacity: 0.01;
     transform: translateY(28px);
   }
 }

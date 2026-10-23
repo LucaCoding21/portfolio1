@@ -159,12 +159,12 @@ export default function RootLayout({
         {/* Before first paint: a viewport height that holds still in in-app
             browsers (see lib/viewport). */}
         <script dangerouslySetInnerHTML={{ __html: STEADY_VH_SCRIPT }} />
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5"
-          strategy="afterInteractive"
-        />
         {/* Only the live domain reports. Open any page with ?internal=1 once on
-            your own devices to stop counting yourself (?internal=0 undoes it). */}
+            your own devices to stop counting yourself (?internal=0 undoes it).
+            gtag.js is added at the end, once the page has hydrated, rather
+            than as its own <Script src>: Next preloads those from the HTML,
+            which put its 200KB at the front of every first load, beside the
+            fonts and the first screen's pictures. */}
         <Script id="gtag-init" strategy="afterInteractive">
           {`(function(){
 var q = new URLSearchParams(location.search).get('internal');
@@ -179,7 +179,13 @@ if (!live || me) window['ga-disable-G-KHS5MBDWV5'] = true;
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-KHS5MBDWV5');`}
+gtag('config', 'G-KHS5MBDWV5');
+(function(){
+var s = document.createElement('script');
+s.async = true;
+s.src = 'https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5';
+document.head.appendChild(s);
+})();`}
         </Script>
         <script
           type="application/ld+json"

@@ -15,6 +15,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import ArrowCta from "@/components/ArrowCta";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import { SITES } from "./WorkStrip";
 import s from "./SiteClips.module.css";
 
@@ -120,7 +121,7 @@ function Clip({ clip }: { clip: (typeof CLIPS)[number] }) {
     <figure className={s.clip}>
       <video
         ref={ref}
-        poster={clip.poster}
+        data-poster={clip.poster}
         muted
         playsInline
         loop={!clip.start}
@@ -154,8 +155,13 @@ function Clip({ clip }: { clip: (typeof CLIPS)[number] }) {
 
 /** `children` is the band's heading, above everything else. */
 export default function SiteClips({ children }: { children: React.ReactNode }) {
+  const workRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
+  // Every clip's poster once the band is near, the ones off to the side
+  // too, so the arrows never bring in an empty frame; each reel itself
+  // loads when it starts playing.
+  useWakeMedia(workRef, undefined, false);
 
   // Which ends the row has reached, for the arrows' disabled states.
   useEffect(() => {
@@ -184,7 +190,7 @@ export default function SiteClips({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className={s.work}>
+    <div ref={workRef} className={s.work}>
       {children}
       <div className={s.lower}>
         <div className={s.note} data-rise>

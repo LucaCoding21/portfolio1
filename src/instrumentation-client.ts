@@ -1,4 +1,4 @@
-import posthog from "posthog-js";
+import { setPosthog } from "@/lib/track";
 
 /**
  * PostHog (Oct 2026): session replays, scroll depth, heatmaps and funnels,
@@ -30,15 +30,21 @@ function shouldReport() {
   }
 }
 
+// Loaded on its own rather than bundled with the page: at about 100KB
+// compressed it was the largest script on every page, and the first screen
+// waited behind it (PageSpeed, Oct 23 2026). It starts a moment later.
 if (token && shouldReport()) {
-  posthog.init(token, {
-    api_host: "/ingest",
-    ui_host: "https://us.posthog.com",
-    defaults: "2026-08-30",
-    person_profiles: "identified_only",
-    // Also what people copy (an email address, a price, a line of copy).
-    autocapture: { capture_copied_text: true },
-    // No surveys on the site: don't load their code.
-    disable_surveys: true,
+  import("posthog-js").then(({ default: posthog }) => {
+    posthog.init(token, {
+      api_host: "/ingest",
+      ui_host: "https://us.posthog.com",
+      defaults: "2026-08-30",
+      person_profiles: "identified_only",
+      // Also what people copy (an email address, a price, a line of copy).
+      autocapture: { capture_copied_text: true },
+      // No surveys on the site: don't load their code.
+      disable_surveys: true,
+    });
+    setPosthog(posthog);
   });
 }

@@ -13,9 +13,18 @@
  * it's running (instrumentation-client.ts).
  */
 
-import posthog from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 type Params = Record<string, string | number | boolean | undefined>;
+
+/** PostHog once instrumentation-client.ts has loaded and started it. It
+    loads on its own, after the page's scripts, so until then (and wherever
+    it doesn't run) events go to GA only. */
+let posthog: PostHog | undefined;
+
+export function setPosthog(client: PostHog) {
+  posthog = client;
+}
 
 declare global {
   interface Window {
@@ -26,7 +35,7 @@ declare global {
 /** Sends to Google Analytics and, where it's running, PostHog. */
 export function track(event: string, params: Params = {}) {
   window.gtag?.("event", event, params);
-  if (posthog.__loaded) posthog.capture(event, params);
+  posthog?.capture(event, params);
 }
 
 /**
@@ -36,7 +45,7 @@ export function track(event: string, params: Params = {}) {
  */
 export function identify(email: string, props: Params = {}) {
   const id = email.trim().toLowerCase();
-  if (!id || !posthog.__loaded) return;
+  if (!id || !posthog) return;
   posthog.identify(id, { email: email.trim(), ...props });
 }
 

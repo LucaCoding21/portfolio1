@@ -21,6 +21,7 @@ import Image from "next/image";
 import ArrowCta from "@/components/ArrowCta";
 import { TESTIMONIAL_VIDEOS } from "@/data/testimonials";
 import { track } from "@/lib/track";
+import { useWakeMedia } from "@/lib/useWakeMedia";
 import s from "./OwnerVideos.module.css";
 
 const VIDEOS = TESTIMONIAL_VIDEOS;
@@ -73,10 +74,14 @@ function Head() {
   );
 }
 
-/** The three videos in a row, swiped sideways on smaller screens. */
+/** The three videos in a row, swiped sideways on smaller screens. Their
+    posters wait until the band is near, and each video loads when it
+    starts playing, so none of it shares the first screen's connection. */
 function Band() {
+  const bandRef = useRef<HTMLDivElement>(null);
   const refs = useRef<(HTMLVideoElement | null)[]>([]);
   const [loud, setLoud] = useState<number | null>(null);
+  useWakeMedia(bandRef, undefined, false);
 
   // Each video runs muted while on screen, and rests when it is not.
   useEffect(() => {
@@ -109,7 +114,7 @@ function Band() {
   };
 
   return (
-    <div className={s.band} aria-label="Owner videos">
+    <div ref={bandRef} className={s.band} aria-label="Owner videos">
       {VIDEOS.map((v, i) => (
         <figure key={v.name} className={s.tile} data-card>
           <div className={s.frame}>
@@ -119,12 +124,12 @@ function Band() {
               }}
               src={v.video}
               data-video={v.name}
-              poster={v.poster}
+              data-poster={v.poster}
               style={{ objectPosition: v.position }}
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="none"
               className={s.media}
               aria-label={`Video from ${v.name}, ${v.role}`}
               onClick={() => toggle(i)}
