@@ -192,6 +192,38 @@ s.src = 'https://www.googletagmanager.com/gtag/js?id=G-KHS5MBDWV5';
 document.head.appendChild(s);
 })();`}
         </Script>
+        {/* Meta Pixel (Oct 25 2026), for the ads on the free page: PageView
+            here, Lead and SubmitApplication from the quiz (pixel() in
+            lib/track). The same rule as GA: only the live domain, never a
+            device opened with ?internal=1. fbevents.js waits for the page's
+            load event and a quiet moment, so it never competes with the
+            first screen; events wait in fbq's queue until it arrives. Meta's
+            <noscript> image is left out, as it can't skip those devices. */}
+        <Script id="meta-pixel" strategy="afterInteractive">
+          {`(function(){
+var q = new URLSearchParams(location.search).get('internal');
+var me = q === '1';
+try { if (q !== '0' && localStorage.getItem('cf_internal') === '1') me = true; } catch (e) {}
+if (me || window.fbq || !/(^|\.)cloverfield\.studio$/.test(location.hostname)) return;
+var n = window.fbq = function(){ n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); };
+if (!window._fbq) window._fbq = n;
+n.push = n; n.loaded = true; n.version = '2.0'; n.queue = [];
+fbq('init', '2627321397702969');
+fbq('track', 'PageView');
+function load(){
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://connect.facebook.net/en_US/fbevents.js';
+  document.head.appendChild(s);
+}
+function idle(){
+  if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 3000 });
+  else setTimeout(load, 1);
+}
+if (document.readyState === 'complete') idle();
+else addEventListener('load', idle, { once: true });
+})();`}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

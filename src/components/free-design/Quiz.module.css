@@ -37,7 +37,7 @@
   outline: none;
 }
 
-/* 6px along the top edge, filling a third per step. */
+/* 6px along the top edge, filling a fifth per step. */
 .bar {
   position: absolute;
   top: 0;
@@ -138,6 +138,13 @@
 /* The goals: one under another, since a few run long. */
 .single {
   grid-template-columns: minmax(0, 1fr);
+}
+
+/* The revenue ranges: "Just getting started" across the top, the four
+   figures in two rows under it, so the card stays as tall as the business
+   types' step. */
+.revenue .choice:first-child {
+  grid-column: 1 / -1;
 }
 
 /* Yes, I do / Not yet. */

@@ -5,7 +5,8 @@
  * gift_claim_start, gift_claimed, gift_site_click, gift_text_william,
  * gift_pass_on; and the free home page design: free_design_click (any link
  * to the page, by placement), design_quiz_start, design_quiz_type,
- * design_quiz_goal, design_contact_start, design_note_open, design_lead,
+ * design_quiz_goal, design_quiz_revenue, design_contact_start,
+ * design_note_open, design_lead (with `qualified`, $100K a year and up),
  * design_lead_fix_open and design_lead_fix ("Wrong number? Fix it"),
  * design_section_view (how, reviews, sample, owners, faq, closing) and
  * design_faq_open; and on every page (components/Analytics): section_view,
@@ -29,6 +30,7 @@ export function setPosthog(client: PostHog) {
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
   }
 }
 
@@ -36,6 +38,17 @@ declare global {
 export function track(event: string, params: Params = {}) {
   window.gtag?.("event", event, params);
   posthog?.capture(event, params);
+}
+
+/**
+ * Meta Pixel standard events for the ads (Oct 25 2026). The pixel is set up
+ * in layout.tsx, which also sends PageView. Only the free sample request
+ * goes to Meta, not every track() event: Lead for each one, and
+ * SubmitApplication for the qualified ones ($100K a year and up), which the
+ * campaigns optimize for. No contact details are sent.
+ */
+export function pixel(event: "Lead" | "SubmitApplication") {
+  window.fbq?.("track", event);
 }
 
 /**

@@ -3,13 +3,17 @@
 /**
  * The free home page design quiz, the card in the page's hero (id="quiz",
  * which the page's CTAs scroll to). Built from the Page A handoff (Oct
- * 2026): a 6px bar along the card's top edge fills a quarter per step, with
- * "Step n of 4" under it and Back on the right from step 2.
+ * 2026): a 6px bar along the card's top edge fills a fifth per step, with
+ * "Step n of 5" under it and Back on the right from step 2.
  *
  *   site     Do you have a website? (Yes, I do / Not yet)
  *   type     What kind of business do you run? (BUSINESS_TYPES)
  *   goal     What should your new site bring you more of? (GOALS for that
  *            type, added Oct 22 2026; the done screen says it back)
+ *   revenue  Roughly what does your business bring in a year?
+ *            (REVENUE_RANGES, added Oct 25 2026; $100K and up counts as a
+ *            qualified lead: `qualified` on design_lead, and SubmitApplication
+ *            on the Meta Pixel, which the ads optimize for)
  *   contact  website (when they have one), name, email and phone required
  *            (phone since Oct 22 2026); a note optional, folded behind
  *            "+ Add a note" until tapped
@@ -21,21 +25,28 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import ArrowCta from "@/components/ArrowCta";
-import { BUSINESS_TYPES, GOALS, type BusinessType, type Goal } from "@/data/freeDesign";
+import { BUSINESS_TYPES, GOALS, REVENUE_RANGES, type BusinessType, type Goal, type Revenue } from "@/data/freeDesign";
 import { WILLIAM_PHONE } from "@/lib/giftShared";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
-import { identify, track } from "@/lib/track";
+import { identify, pixel, track } from "@/lib/track";
 import s from "./Quiz.module.css";
 
-type Step = "site" | "type" | "goal" | "contact" | "done";
+type Step = "site" | "type" | "goal" | "revenue" | "contact" | "done";
 type Problem = "website" | "name" | "email" | "phone" | "send";
 type Fields = { website: string; name: string; email: string; phone: string; notes: string };
 
 /** What a visitor sent: handed to the page for its thank-you screen, and
     handed back to reopen the last step with it all filled in ("Fix it"). */
-export type QuizResult = { hasSite: boolean | null; type: BusinessType | null; goal: Goal | null; fields: Fields };
+export type QuizResult = {
+  hasSite: boolean | null;
+  type: BusinessType | null;
+  goal: Goal | null;
+  revenue: Revenue | null;
+  fields: Fields;
+};
 
-const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, goal: 3, contact: 4, done: 4 };
+const STEPS = 5;
+const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, goal: 3, revenue: 4, contact: 5, done: 5 };
 const EMPTY: Fields = { website: "", name: "", email: "", phone: "", notes: "" };
 
 /** "+17789970335" reads as "778-997-0335". */
@@ -89,6 +100,7 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
   const [hasSite, setHasSite] = useState<boolean | null>(resume?.hasSite ?? null);
   const [type, setType] = useState<BusinessType | null>(resume?.type ?? null);
   const [goal, setGoal] = useState<Goal | null>(resume?.goal ?? null);
+  const [revenue, setRevenue] = useState<Revenue | null>(resume?.revenue ?? null);
   const [fields, setFields] = useState<Fields>(resume?.fields ?? EMPTY);
   const [error, setError] = useState<Problem | null>(null);
   const [sending, setSending] = useState(false);
@@ -138,18 +150,26 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
     setGoal(g);
     setError(null);
     track("design_quiz_goal", { business_type: type ?? "", goal: g.label });
+    setStep("revenue");
+  };
+
+  const answerRevenue = (r: Revenue) => {
+    setRevenue(r);
+    setError(null);
+    track("design_quiz_revenue", { business_type: type ?? "", revenue: r.label, qualified: r.qualified });
     setStep("contact");
   };
 
   const back = () => {
     setError(null);
-    setStep(step === "contact" ? "goal" : step === "goal" ? "type" : "site");
+    setStep(step === "contact" ? "revenue" : step === "revenue" ? "goal" : step === "goal" ? "type" : "site");
   };
 
   const restart = () => {
     setHasSite(null);
     setType(null);
     setGoal(null);
+    setRevenue(null);
     setFields(EMPTY);
     setNoteOpen(false);
     setError(null);
@@ -188,6 +208,7 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
           hasSite,
           type,
           goal: goal?.label,
+          revenue: revenue?.label,
           website,
           name: fields.name,
           email: fields.email,
@@ -208,16 +229,24 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
       has_site: !!hasSite,
       business_type: type ?? "",
       goal: goal?.label ?? "",
+      revenue: revenue?.label ?? "",
+      qualified: !!revenue?.qualified,
     });
+    // A correction isn't a new lead, so Meta only hears about the first send.
+    if (!resume) {
+      pixel("Lead");
+      if (revenue?.qualified) pixel("SubmitApplication");
+    }
     identify(fields.email, {
       name: fields.name.trim(),
       website,
       business_type: type ?? "",
       goal: goal?.label ?? "",
+      revenue: revenue?.label ?? "",
       lead_from: "free_design",
     });
     setSending(false);
-    if (onDone) onDone({ hasSite, type, goal, fields: { ...fields, website, phone } });
+    if (onDone) onDone({ hasSite, type, goal, revenue, fields: { ...fields, website, phone } });
     else setStep("done");
   };
 
@@ -230,15 +259,15 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
         role="progressbar"
         aria-label="Quiz progress"
         aria-valuemin={1}
-        aria-valuemax={4}
+        aria-valuemax={STEPS}
         aria-valuenow={number}
       >
-        <span style={{ width: `${number * 25}%` }} />
+        <span style={{ width: `${(number / STEPS) * 100}%` }} />
       </div>
 
       <div className={s.head}>
-        <span className={s.stepLabel}>{step === "done" ? "Done" : `Step ${number} of 4`}</span>
-        {(step === "type" || step === "goal" || step === "contact") && (
+        <span className={s.stepLabel}>{step === "done" ? "Done" : `Step ${number} of ${STEPS}`}</span>
+        {step !== "site" && step !== "done" && (
           <button type="button" className={s.back} onClick={back}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
               <path d="M19 12H5M11 18l-6-6 6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -296,6 +325,27 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
                   onClick={() => answerGoal(g)}
                 >
                   {g.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {step === "revenue" && (
+          <div className={s.stack}>
+            <h2 ref={headingRef} tabIndex={-1} className={s.question}>
+              Roughly what does your business bring in a year?
+            </h2>
+            <div className={`${s.choices} ${s.revenue}`}>
+              {REVENUE_RANGES.map((r) => (
+                <button
+                  key={r.label}
+                  type="button"
+                  className={s.choice}
+                  aria-pressed={revenue?.label === r.label}
+                  onClick={() => answerRevenue(r)}
+                >
+                  {r.label}
                 </button>
               ))}
             </div>

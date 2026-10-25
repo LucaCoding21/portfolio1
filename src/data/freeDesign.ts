@@ -1,9 +1,10 @@
 /**
  * The free home page design offer (Oct 2026), which replaces the free website
- * review. Its page is a four-step quiz (have a site? what kind of business?
- * what should the site bring you more of? where do we reach you?) that emails
- * William and buzzes his phone through /api/design-lead. Shared by the page,
- * the route and every link to it.
+ * review. Its page is a five-step quiz (have a site? what kind of business?
+ * what should the site bring you more of? roughly what does the business
+ * bring in a year? where do we reach you?) that emails William and buzzes his
+ * phone through /api/design-lead. Shared by the page, the route and every
+ * link to it.
  */
 
 export const FREE_DESIGN_URL = "/free-homepage-design";
@@ -60,3 +61,19 @@ export const GOALS: Record<BusinessType, readonly Goal[]> = {
     { label: "Sales", focus: "getting you more sales" },
   ],
 };
+
+/** "Roughly what does your business bring in a year?" (added Oct 25 2026),
+    asked just before the contact step. `qualified` marks the businesses big
+    enough to pay for a full site (the line is $100K a year): only those
+    leads send the Meta Pixel's SubmitApplication, which the ads optimize
+    for, so Meta finds more of them rather than the cheapest people to reach. Every answer gets
+    the same thank-you, so nobody has a reason to round up. */
+export const REVENUE_RANGES = [
+  { label: "Just getting started", qualified: false },
+  { label: "Under $100K", qualified: false },
+  { label: "$100K to $500K", qualified: true },
+  { label: "$500K to $1M", qualified: true },
+  { label: "Over $1M", qualified: true },
+] as const;
+
+export type Revenue = (typeof REVENUE_RANGES)[number];

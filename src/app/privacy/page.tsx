@@ -5,10 +5,11 @@ import s from "./privacy.module.css";
 /**
  * The privacy policy (Oct 23 2026), linked from the footer on every page.
  * It describes what the site actually does, so update it when that changes:
- * a new form, a new service that handles leads, or the Meta Pixel (not on
- * the site yet; add it under "What we learn when you browse" and "Who helps
- * us handle it" when it goes in). Replays are kept 30 days, the retention
- * set in PostHog.
+ * a new form, a new service that handles leads, or a new tracker. The Meta
+ * Pixel went in on Oct 25 2026 with automatic advanced matching off, so
+ * Meta gets no contact details; turning that on in Events Manager means
+ * changing "What we learn when you browse". Replays are kept 30 days, the
+ * retention set in PostHog.
  */
 
 export const metadata: Metadata = {
@@ -54,7 +55,7 @@ export default function PrivacyPage() {
       <main className={s.main}>
         <article className={s.article} data-section="privacy">
           <h1 className={s.title}>Privacy policy</h1>
-          <p className={s.updated}>Last updated October 23, 2026</p>
+          <p className={s.updated}>Last updated October 25, 2026</p>
 
           <p className={s.lede}>
             Cloverfield Studio Inc. is a web design studio in Surrey, BC. This page explains what we collect when
@@ -68,8 +69,8 @@ export default function PrivacyPage() {
           <ul>
             <li>
               <strong>Free homepage sample:</strong> whether you have a website and its address, what kind of
-              business you run, what you&apos;d like your site to bring you more of, your name, email and phone
-              number, and any note you add.
+              business you run, what you&apos;d like your site to bring you more of, roughly what your business
+              brings in a year, your name, email and phone number, and any note you add.
             </li>
             <li>
               <strong>Free website review:</strong> your website, name, email and phone number.
@@ -106,13 +107,25 @@ export default function PrivacyPage() {
           <p>
             When you send a form, we link the email, name and business details you gave us to your visits, so we
             can see which pages you looked at before getting in touch. Your phone number is never sent to our
-            analytics tools.
+            analytics or advertising tools.
+          </p>
+          <p>
+            We also use the Meta Pixel to see which of our Facebook and Instagram ads bring people to the site
+            and lead to a request. It tells Meta the pages you visit, the buttons you tap, and when you send a
+            request for a free homepage sample (and whether your business brings in $100K a year or more), along
+            with your browser, your IP address and Meta&apos;s cookie. Meta uses this to match your visit to an ad
+            you saw and to show our ads to people like those who get in touch. We don&apos;t send Meta your name,
+            email or phone number. Meta explains how it uses this in its{" "}
+            <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">
+              privacy policy
+            </a>
+            , and you can limit it in your Facebook or Instagram ad settings.
           </p>
 
           <h2>Cookies and similar technology</h2>
           <p>
-            Google Analytics and PostHog store small files (cookies and local storage) in your browser so they
-            can recognise a returning visitor. The site also keeps a few settings of its own in your browser, for
+            Google Analytics, PostHog and the Meta Pixel store small files (cookies and local storage) in your
+            browser so they can recognise a returning visitor. The site also keeps a few settings of its own in your browser, for
             example to remember that a gift was sent from this device. You can block or delete cookies in your
             browser&apos;s settings, and you can turn off Google Analytics on every site with{" "}
             <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">
@@ -133,6 +146,10 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong>PostHog</strong> runs our analytics and session recordings.
+            </li>
+            <li>
+              <strong>Meta</strong> measures which of our Facebook and Instagram ads lead to a visit or a request
+              (the Meta Pixel).
             </li>
             <li>
               <strong>Resend</strong> delivers the emails our forms send us.
