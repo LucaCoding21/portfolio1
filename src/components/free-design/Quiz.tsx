@@ -200,6 +200,8 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
 
     setSending(true);
     setError(null);
+    // Shared by the pixel below and the server's copy of the same events.
+    const eventId = crypto.randomUUID();
     try {
       const res = await fetch("/api/design-lead", {
         method: "POST",
@@ -216,6 +218,7 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
           notes: fields.notes,
           company: new FormData(form).get("company"),
           fix: !!resume,
+          eventId,
         }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -234,8 +237,8 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
     });
     // A correction isn't a new lead, so Meta only hears about the first send.
     if (!resume) {
-      pixel("Lead");
-      if (revenue?.qualified) pixel("SubmitApplication");
+      pixel("Lead", eventId);
+      if (revenue?.qualified) pixel("SubmitApplication", eventId);
     }
     identify(fields.email, {
       name: fields.name.trim(),

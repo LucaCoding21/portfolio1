@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { NextResponse, after } from "next/server";
 import { BUSINESS_TYPES, GOALS, OTHER_TYPE, REVENUE_RANGES, type BusinessType } from "@/data/freeDesign";
 import { alertWilliam } from "@/lib/alertWilliam";
+import { leadEventId, sendMetaLead } from "@/lib/metaConversions";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@/lib/reviewLead";
 
 /**
@@ -10,7 +11,8 @@ import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@
  * what kind of business it is, what they want the site to bring them more of,
  * roughly what the business brings in a year, and how to reach them (name,
  * email and phone). One email to William,
- * reply-to set to the lead, and a buzz on his phone.
+ * reply-to set to the lead, and a buzz on his phone. A first send also goes
+ * to Meta for the ads (lib/metaConversions), a correction doesn't.
  */
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -47,6 +49,12 @@ export async function POST(request: Request) {
 
   const what = typeOther ? `${OTHER_TYPE}: ${typeOther}` : type || "(not given)";
   const who = business || (website ? bare(website) : name);
+
+  if (!fix) {
+    const qualified = REVENUE_RANGES.some((r) => r.label === revenue && r.qualified);
+    const eventId = leadEventId(body?.eventId);
+    after(() => sendMetaLead(request.headers, { eventId, qualified, email, phone }));
+  }
 
   after(() =>
     alertWilliam({

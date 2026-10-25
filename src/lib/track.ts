@@ -45,10 +45,12 @@ export function track(event: string, params: Params = {}) {
  * in layout.tsx, which also sends PageView. Only the free sample request
  * goes to Meta, not every track() event: Lead for each one, and
  * SubmitApplication for the qualified ones ($100K a year and up), which the
- * campaigns optimize for. No contact details are sent.
+ * campaigns optimize for. The server sends the same events with the same
+ * `eventId` (lib/metaConversions), so Meta counts each lead once. No
+ * contact details go from the browser.
  */
-export function pixel(event: "Lead" | "SubmitApplication") {
-  window.fbq?.("track", event);
+export function pixel(event: "Lead" | "SubmitApplication", eventId: string) {
+  window.fbq?.("track", event, {}, { eventID: eventId });
 }
 
 /**
