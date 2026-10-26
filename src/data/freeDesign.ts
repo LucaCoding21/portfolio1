@@ -9,6 +9,21 @@
 
 export const FREE_DESIGN_URL = "/free-homepage-design";
 
+/** What a free sample lead is worth, in CAD, for Meta's reports: a guess at
+    the chance they buy times what they'd likely pay (sites run $3,000 to
+    $10,000). Qualified ($100K a year and up): 1 in 5 at about $6,000; the
+    rest: 1 in 20 at about $3,000. Estimates (Oct 26 2026) until there are
+    real close rates; revisit after 20 or so leads. */
+export const ESTIMATED_LEAD_VALUE = { qualified: 1200, other: 150 } as const;
+
+/** The Lead and SubmitApplication events' details, the same from the pixel
+    and from the server. */
+export const leadEventData = (qualified: boolean) => ({
+  currency: "CAD",
+  value: qualified ? ESTIMATED_LEAD_VALUE.qualified : ESTIMATED_LEAD_VALUE.other,
+  content_name: "free_homepage_sample",
+});
+
 /** The quiz's "What kind of business do you run?" answers. */
 export const BUSINESS_TYPES = [
   "Trades business",

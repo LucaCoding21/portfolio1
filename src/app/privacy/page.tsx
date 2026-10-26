@@ -8,7 +8,7 @@ import s from "./privacy.module.css";
  * a new form, a new service that handles leads, or a new tracker. The Meta
  * Pixel went in on Oct 25 2026 with automatic advanced matching off; Meta
  * gets contact details only from our server, as hashes of the free sample
- * request's email and phone (lib/metaConversions). Turning automatic
+ * request's name, email and phone (lib/metaConversions). Turning automatic
  * matching on in Events Manager means changing "What we learn when you
  * browse". Replays are kept 30 days, the retention set in PostHog.
  */
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
       <main className={s.main}>
         <article className={s.article} data-section="privacy">
           <h1 className={s.title}>Privacy policy</h1>
-          <p className={s.updated}>Last updated October 25, 2026</p>
+          <p className={s.updated}>Last updated October 26, 2026</p>
 
           <p className={s.lede}>
             Cloverfield Studio Inc. is a web design studio in Surrey, BC. This page explains what we collect when
@@ -115,10 +115,10 @@ export default function PrivacyPage() {
             and lead to a request. It tells Meta the pages you visit, the buttons you tap, and when you send a
             request for a free homepage sample (and whether your business brings in $100K a year or more), along
             with your browser, your IP address and Meta&apos;s cookie. When you send that request, our server
-            tells Meta too, with a scrambled (hashed) copy of your email address and phone number. Hashing turns
-            them into a code Meta can compare with the details on its own accounts but can&apos;t turn back into
-            your email or number. Meta uses all this to match your visit to an ad you saw and to show our ads to
-            people like those who get in touch. We don&apos;t send Meta your name, your note or anything else you
+            tells Meta too, with a scrambled (hashed) copy of your name, email address and phone number. Hashing
+            turns them into a code Meta can compare with the details on its own accounts but can&apos;t turn back
+            into your name, email or number. Meta uses all this to match your visit to an ad you saw and to show
+            our ads to people like those who get in touch. We don&apos;t send Meta your note or anything else you
             type. Meta explains how it uses this in its{" "}
             <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">
               privacy policy

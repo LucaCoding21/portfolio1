@@ -40,17 +40,33 @@ export function track(event: string, params: Params = {}) {
   posthog?.capture(event, params);
 }
 
+/** The Meta Pixel standard events the site sends, and its custom ones. */
+export type PixelEvent = "PageView" | "ViewContent" | "Lead" | "SubmitApplication" | "Contact";
+export type PixelCustomEvent = "LeadFormStart" | "ScheduleIntent";
+
 /**
- * Meta Pixel standard events for the ads (Oct 25 2026). The pixel is set up
- * in layout.tsx, which also sends PageView. Only the free sample request
- * goes to Meta, not every track() event: Lead for each one, and
- * SubmitApplication for the qualified ones ($100K a year and up), which the
- * campaigns optimize for. The server sends the same events with the same
- * `eventId` (lib/metaConversions), so Meta counts each lead once. No
- * contact details go from the browser.
+ * Meta Pixel events for the ads (Oct 25 2026), the only calls to fbq after
+ * the base code in layout.tsx. Quiet where the pixel doesn't run (blocked,
+ * off the live domain, on ?internal=1 devices); in dev each call is logged
+ * instead. PageView on later pages and the free page's ViewContent, Contact
+ * and ScheduleIntent come from components/Analytics; LeadFormStart, Lead and
+ * SubmitApplication from the quiz. Lead and SubmitApplication pass the
+ * `eventId` the server sends the same events with (lib/metaConversions), so
+ * Meta counts each lead once. No contact details or typed answers go from
+ * the browser.
  */
-export function pixel(event: "Lead" | "SubmitApplication", eventId: string) {
-  window.fbq?.("track", event, {}, { eventID: eventId });
+export function pixel(event: PixelEvent, params: Params = {}, eventId?: string) {
+  sendPixel("track", event, params, eventId);
+}
+
+export function pixelCustom(event: PixelCustomEvent, params: Params = {}) {
+  sendPixel("trackCustom", event, params);
+}
+
+function sendPixel(method: "track" | "trackCustom", event: string, params: Params, eventId?: string) {
+  const args = eventId ? [method, event, params, { eventID: eventId }] : [method, event, params];
+  if (process.env.NODE_ENV === "development") console.info("[meta pixel]", ...args);
+  window.fbq?.(...args);
 }
 
 /**

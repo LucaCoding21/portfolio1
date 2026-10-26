@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { FREE_DESIGN_URL } from "@/data/freeDesign";
-import { placementOf, track } from "@/lib/track";
+import { pixel, pixelCustom, placementOf, track } from "@/lib/track";
 
 /**
  * Site-wide tracking, so new pages, sections and CTAs are covered without
@@ -21,10 +21,29 @@ import { placementOf, track } from "@/lib/track";
  *   ones also send design_section_view, which its PostHog insight reads.
  * - video_progress: 25, 50, 75 and 95% of any video watched with sound on,
  *   named by its data-video, else its file name.
+ * - Meta Pixel: PageView for each page after the first (the base code in
+ *   layout.tsx sends the first, and its own history tracking is off, as it
+ *   counted the free page's jumps to #quiz as new pages), ViewContent on the
+ *   free page, Contact for a tap on an email, phone or text link to us, and
+ *   ScheduleIntent for a Cal.com link.
  */
 
 const SECTIONS = "[data-section], section, footer";
 const MILESTONES = [25, 50, 75, 95];
+
+/** The path the pixel last counted a page view for; null before the first. */
+let pixelPath: string | null = null;
+
+/** How a link reaches us, for the pixel's Contact; null when it doesn't.
+    Links with no one to send to (sms:?&body=, mailto:?subject=) are a
+    visitor passing something on, such as a gift, so they don't count. */
+function contactMethod(url: URL): string | null {
+  if (url.protocol === "mailto:") return url.pathname ? "email" : null;
+  if (url.protocol === "tel:") return url.pathname ? "phone" : null;
+  if (url.protocol === "sms:") return url.pathname ? "sms" : null;
+  if (["wa.me", "api.whatsapp.com", "ig.me", "m.me"].includes(url.hostname)) return "dm";
+  return null;
+}
 
 const slug = (text: string) =>
   text
@@ -68,15 +87,17 @@ export default function Analytics() {
       const url = new URL(link.href, location.href);
 
       if (url.hostname === "cal.com") {
-        track("book_call_click", {
-          placement: placementOf(link),
-          cal_event: url.pathname.split("/").pop(),
-        });
+        const calEvent = url.pathname.split("/").pop() ?? "";
+        track("book_call_click", { placement: placementOf(link), cal_event: calEvent });
+        pixelCustom("ScheduleIntent", { location: placementOf(link), cal_event: calEvent });
       } else if (url.origin === location.origin && url.pathname === FREE_DESIGN_URL) {
         track("free_design_click", { placement: placementOf(link) });
       } else if (url.protocol === "mailto:" || url.protocol === "tel:") {
         track("contact_click", { method: url.protocol.replace(":", ""), placement: placementOf(link) });
       }
+
+      const method = contactMethod(url);
+      if (method) pixel("Contact", { method });
     };
 
     // <details> opening (toggle doesn't bubble, so listen on the way down).
@@ -116,6 +137,17 @@ export default function Analytics() {
       document.removeEventListener("timeupdate", onTime, { capture: true });
     };
   }, []);
+
+  // Once per page: Strict Mode's second run in dev finds the path counted.
+  useEffect(() => {
+    if (pixelPath === pathname) return;
+    const first = pixelPath === null;
+    pixelPath = pathname;
+    if (!first) pixel("PageView");
+    if (pathname === FREE_DESIGN_URL) {
+      pixel("ViewContent", { content_name: "Free homepage sample", content_category: "landing" });
+    }
+  }, [pathname]);
 
   // Section reach, started over on every page. Sections that render late
   // (after the homepage's loader, dynamic imports) are picked up as they

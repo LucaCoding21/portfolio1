@@ -25,10 +25,18 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import ArrowCta from "@/components/ArrowCta";
-import { BUSINESS_TYPES, GOALS, REVENUE_RANGES, type BusinessType, type Goal, type Revenue } from "@/data/freeDesign";
+import {
+  BUSINESS_TYPES,
+  GOALS,
+  REVENUE_RANGES,
+  leadEventData,
+  type BusinessType,
+  type Goal,
+  type Revenue,
+} from "@/data/freeDesign";
 import { WILLIAM_PHONE } from "@/lib/giftShared";
 import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, looksLikeAPhone } from "@/lib/reviewLead";
-import { identify, pixel, track } from "@/lib/track";
+import { identify, pixel, pixelCustom, track } from "@/lib/track";
 import s from "./Quiz.module.css";
 
 type Step = "site" | "type" | "goal" | "revenue" | "contact" | "done";
@@ -48,6 +56,7 @@ export type QuizResult = {
 const STEPS = 5;
 const STEP_NUMBER: Record<Step, number> = { site: 1, type: 2, goal: 3, revenue: 4, contact: 5, done: 5 };
 const EMPTY: Fields = { website: "", name: "", email: "", phone: "", notes: "" };
+const STARTED_KEY = "cf_quiz_started";
 
 /** "+17789970335" reads as "778-997-0335". */
 const WILLIAM_PHONE_READ = WILLIAM_PHONE.replace(/^\+1(\d{3})(\d{3})(\d{4})$/, "$1-$2-$3");
@@ -134,6 +143,13 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
     setHasSite(yes);
     setError(null);
     track("design_quiz_start", { has_site: yes });
+    // Meta hears about the first start in a visit only, not each Start over.
+    let started = false;
+    try {
+      started = sessionStorage.getItem(STARTED_KEY) === "1";
+      sessionStorage.setItem(STARTED_KEY, "1");
+    } catch {}
+    if (!started) pixelCustom("LeadFormStart", { has_website: yes ? "yes" : "no" });
     setStep("type");
   };
 
@@ -237,8 +253,9 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
     });
     // A correction isn't a new lead, so Meta only hears about the first send.
     if (!resume) {
-      pixel("Lead", eventId);
-      if (revenue?.qualified) pixel("SubmitApplication", eventId);
+      const qualified = !!revenue?.qualified;
+      pixel("Lead", leadEventData(qualified), eventId);
+      if (qualified) pixel("SubmitApplication", leadEventData(true), eventId);
     }
     identify(fields.email, {
       name: fields.name.trim(),

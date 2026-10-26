@@ -11,8 +11,9 @@ import { LOOKS_LIKE_AN_EMAIL, LOOKS_LIKE_A_SITE, bare, looksLikeAPhone } from "@
  * what kind of business it is, what they want the site to bring them more of,
  * roughly what the business brings in a year, and how to reach them (name,
  * email and phone). One email to William,
- * reply-to set to the lead, and a buzz on his phone. A first send also goes
- * to Meta for the ads (lib/metaConversions), a correction doesn't.
+ * reply-to set to the lead, and a buzz on his phone. A first send that went
+ * through also goes to Meta for the ads (lib/metaConversions), a correction
+ * doesn't.
  */
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -50,11 +51,14 @@ export async function POST(request: Request) {
   const what = typeOther ? `${OTHER_TYPE}: ${typeOther}` : type || "(not given)";
   const who = business || (website ? bare(website) : name);
 
-  if (!fix) {
+  // Meta hears about a first send once it has gone through, as the pixel
+  // does, so a visitor who retries after an error is one lead, not two.
+  const toMeta = () => {
+    if (fix) return;
     const qualified = REVENUE_RANGES.some((r) => r.label === revenue && r.qualified);
     const eventId = leadEventId(body?.eventId);
-    after(() => sendMetaLead(request.headers, { eventId, qualified, email, phone }));
-  }
+    after(() => sendMetaLead(request.headers, { eventId, qualified, email, phone, name }));
+  };
 
   after(() =>
     alertWilliam({
@@ -68,6 +72,7 @@ export async function POST(request: Request) {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
     console.warn("design-lead: RESEND_API_KEY is not set, lead not emailed:", who, email);
+    toMeta();
     return NextResponse.json({ ok: true, emailed: false });
   }
 
@@ -98,5 +103,6 @@ export async function POST(request: Request) {
   });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  toMeta();
   return NextResponse.json({ ok: true, emailed: true });
 }
