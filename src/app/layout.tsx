@@ -131,6 +131,10 @@ export const metadata: Metadata = {
       "We make websites that bring in customers. Our work has generated more than 3,000 inquiries for local businesses in Surrey, BC and the Lower Mainland.",
     images: ["https://cloverfield.studio/og-image-v2.jpeg"],
   },
+  // Meta Business Settings checks this tag to verify cloverfield.studio.
+  verification: {
+    other: { "facebook-domain-verification": "26tzbkvsjtqh2o9eu3gh5a0kf2w0go" },
+  },
 };
 
 /** Schema: cities served, first four in the order people search them. */
