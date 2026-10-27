@@ -377,8 +377,11 @@ export default function Quiz({ onDone, resume }: { onDone?: (result: QuizResult)
             className={s.form}
             onSubmit={submit}
             noValidate
-            onFocus={() => {
+            onFocus={(e) => {
               if (contactStarted.current) return;
+              // Only a field counts: the step moves focus to its heading as it
+              // opens, and that focus bubbles up here too.
+              if (!(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) return;
               contactStarted.current = true;
               track("design_contact_start", { business_type: type ?? "", goal: goal?.label ?? "" });
             }}

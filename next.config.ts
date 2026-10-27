@@ -40,6 +40,9 @@ const nextConfig: NextConfig = {
       { source: "/approach", destination: "/#how-we-do-it", permanent: true },
       // The service page was folded back into the homepage.
       { source: "/web-design-surrey", destination: "/", permanent: true },
+      // A link pasted at the end of a sentence picks up its punctuation
+      // ("cloverfield.studio/free-homepage-design.") and 404s; drop it.
+      { source: "/:path(.*[^.,;:!\\)]):end([.,;:!\\)]+)", destination: "/:path", permanent: true },
     ];
   },
 };
