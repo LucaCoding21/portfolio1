@@ -24,6 +24,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/dist/CustomEase";
+import { steadyLvh } from "@/lib/viewport";
 import s from "./LoadingScreen.module.css";
 
 gsap.registerPlugin(CustomEase);
@@ -162,9 +163,13 @@ export default function LoadingScreen({ onLoadingComplete }: LoadingScreenProps)
         zIndex: 2,
       });
 
+      // Grown to the hero's height, which runs on behind a phone's toolbar
+      // (lib/viewport): the same box crops the reel the same way, so the
+      // handoff doesn't jump. The plate is fixed, so the root doesn't clip it.
+      const H = Math.max(R.height, steadyLvh());
       bloom = gsap.timeline({ onComplete: finish });
       bloom
-        .to(plate, { left: 0, top: 0, width: R.width, height: R.height, borderRadius: 0, duration: BLOOM, ease: EASE_IN_OUT }, 0)
+        .to(plate, { left: 0, top: 0, width: R.width, height: H, borderRadius: 0, duration: BLOOM, ease: EASE_IN_OUT }, 0)
         .to(left, { x: -vw() * 0.6, autoAlpha: 0, duration: BLOOM * 0.8, ease: EASE_IN_OUT }, 0)
         .to(right, { x: vw() * 0.6, autoAlpha: 0, duration: BLOOM * 0.8, ease: EASE_IN_OUT }, 0)
         .to(root, { backgroundColor: "rgba(249, 248, 245, 0)", duration: 0.3, ease: "power1.out" }, BLOOM * 0.6)

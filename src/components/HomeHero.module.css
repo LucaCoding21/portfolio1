@@ -13,7 +13,10 @@
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: calc(var(--svh, 1svh) * 100);
+  /* The large viewport, so the reel runs down behind Safari's toolbar
+     instead of stopping above it with the next section showing underneath
+     (see lib/viewport). The copy stays centred on the small one (.content). */
+  height: calc(var(--lvh, 1lvh) * 100);
   overflow: hidden;
   font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
@@ -101,7 +104,9 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 0 20px;
+  /* the part of the hero below the small viewport sits behind the toolbar,
+     so it is left out of the centring */
+  padding: 0 20px calc((var(--lvh, 1lvh) - var(--svh, 1svh)) * 100);
 }
 
 /* text-heading-xl, in the site's Outfit (Oct 22 2026, was the serif with an

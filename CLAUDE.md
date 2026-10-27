@@ -38,7 +38,7 @@ No test framework is configured.
 
 **Path alias:** `@/*` maps to `./src/*`.
 
-**Viewport height:** never write raw `svh`/`vh` for full-screen sections. Use `calc(var(--svh, 1svh) * N)` (and `steadyVh()` from `src/lib/viewport.ts` in JS). Instagram and other in-app browsers resize the page while scrolling; `--svh` is measured once in `<head>` and holds still on phones.
+**Viewport height:** never write raw `svh`/`vh` for full-screen sections. Use `calc(var(--svh, 1svh) * N)` (and `steadyVh()` from `src/lib/viewport.ts` in JS). Instagram and other in-app browsers resize the page while scrolling; `--svh` is measured once in `<head>` and holds still on phones. The homepage hero alone uses `--lvh` (measured with it: the largest of 100lvh, 100svh and the window height), so the reel runs down behind Safari's toolbar; on William's iPhone (Oct 27 2026) 100svh came out about 90px short and the next section showed under the hero. The hero's copy stays centred on `--svh`, and the loader's bloom grows to the same `--lvh` height so the handoff doesn't jump.
 
 ## Cloning a reference section 1:1 (playbook)
 
