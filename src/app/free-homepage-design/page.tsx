@@ -10,7 +10,8 @@ export const metadata: Metadata = {
   },
   // Its own share card: without these the page inherited the homepage's,
   // and LinkedIn followed og:url to the homepage. A page's openGraph
-  // replaces the layout's whole, so the image is set again here.
+  // replaces the layout's whole, so the image is set here too. The image
+  // stays a JPEG: not every link preview reads WebP.
   openGraph: {
     title: "Free Homepage Sample | Cloverfield Studio",
     description: "Answer a few questions and we’ll design a free homepage sample for your business.",
@@ -20,10 +21,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://cloverfield.studio/og-image-v2.jpeg",
+        url: "https://cloverfield.studio/og-free-homepage-sample.jpeg",
         width: 1200,
         height: 630,
-        alt: "Cloverfield Studio, web design in Surrey, BC",
+        alt: "Your free sample homepage, designed on us, by Cloverfield Studio",
       },
     ],
   },
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Free Homepage Sample | Cloverfield Studio",
     description: "Answer a few questions and we’ll design a free homepage sample for your business.",
-    images: ["https://cloverfield.studio/og-image-v2.jpeg"],
+    images: ["https://cloverfield.studio/og-free-homepage-sample.jpeg"],
   },
 };
 
