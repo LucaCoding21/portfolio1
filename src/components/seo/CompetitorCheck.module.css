@@ -1,0 +1,285 @@
+/* The free competitor check card (CompetitorCheck.tsx): the handoff's card,
+   without its rank grid (the example graphics tried in its place were dropped). */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding: clamp(24px, 3vw, 34px);
+  overflow: hidden;
+  border: 1px solid #e4dfd6;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 40px -28px rgb(26 22 19 / 0.35);
+}
+
+.bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 6px;
+  background: #e4e1d8;
+}
+
+.barFill {
+  height: 100%;
+  background: #1a1613;
+  transition: width 0.3s ease;
+}
+
+.stepFirst,
+.step,
+.done {
+  display: flex;
+  flex-direction: column;
+  padding-top: 6px;
+}
+
+.stepFirst,
+.done {
+  gap: 20px;
+}
+
+.step {
+  gap: 16px;
+}
+
+.h2 {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+/* Focus lands on the heading after a step changes; no ring for that. */
+.h2:focus,
+.doneTitle:focus {
+  outline: none;
+}
+
+/* step 0: the label and title */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ask {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px 12px 18px;
+  border: 1px solid #e4dfd6;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.opt:hover {
+  border-color: #1a1613;
+  background: #f9f8f5;
+}
+
+/* "Yes, I have one in mind" opens a small box under itself: the button and
+   the box share one ink outline, so it reads as the answer opening up. */
+.optWrap {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+.optOpen {
+  outline: 1px solid #1a1613;
+  outline-offset: -1px;
+  background: #f9f8f5;
+}
+
+.optOpen > .opt {
+  border-color: transparent;
+  background: transparent;
+}
+
+.optPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 16px 18px;
+}
+
+.optional {
+  color: #8a857c;
+}
+
+/* steps 1 to 3: the label and Back */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow {
+  color: #6a665e;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 0 8px 10px;
+  border: 0;
+  background: none;
+  color: #55504a;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: #1a1613;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #55504a;
+  font-size: 14px;
+}
+
+.field {
+  width: 100%;
+  height: 50px;
+  padding: 0 14px;
+  border: 1px solid #d9d3c9;
+  border-radius: 10px;
+  background: #fff;
+  color: #1a1613;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 16px;
+}
+
+.field:focus {
+  outline: none;
+  border-color: #1a1613;
+}
+
+.error {
+  margin: 0;
+  color: #b42323;
+  font-size: 14px;
+}
+
+.error a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fine {
+  margin: 0;
+  color: #6a665e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* the thank-you */
+.doneTitle {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.next {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.next li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e4dfd6;
+}
+
+.next li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.next h3 {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.next p {
+  margin: 0;
+  color: #55504a;
+  font-size: 15px;
+  line-height: 1.5;
+}

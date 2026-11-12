@@ -1,0 +1,883 @@
+/*
+ * The monthly SEO page (SeoPage.tsx), values from the "Landing page" handoff
+ * (Nov 9 2026). Where the design tool had pinned a box's size, the kept
+ * value is noted beside it.
+ */
+
+.page {
+  overflow-x: clip;
+  background: #f9f8f5;
+  color: #1a1613;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  /* the handoff's default; Tailwind's base sets 1.5 */
+  line-height: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.page summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.page summary::-webkit-details-marker {
+  display: none;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+/* ---- shared type ---- */
+
+.h2 {
+  max-width: 920px;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 52px);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.h3 {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.eyebrow,
+.sideLabel {
+  margin: 0;
+  color: #6a665e;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mark {
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: #dcebd9;
+  color: #1a1613;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.markYellow {
+  background: #fdf3a1;
+}
+
+/* The square dark button (not the arrow pill). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: #111113;
+  color: #f9f8f5;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.btn:hover {
+  background: #2e2b28;
+}
+
+.btnLight {
+  background: #f9f8f5;
+  color: #111113;
+}
+
+.btnLight:hover {
+  background: #e6e2da;
+}
+
+.plus {
+  flex: none;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+details[open] > summary .plus {
+  transform: rotate(45deg);
+}
+
+/* ---- hero ---- */
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px 64px;
+  max-width: 1280px;
+  margin: 0 auto;
+  /* 92px on top at 1440 (pinned in the handoff), under the 69px its own
+     header took, which the floating site nav now overlaps instead; the
+     bottom comes out at the 47px the pinned 620px height left */
+  padding: calc(69px + clamp(32px, 6.4vw, 92px)) clamp(20px, 4.5vw, 48px) clamp(36px, 4vw, 47px);
+}
+
+.heroCopy {
+  display: flex;
+  flex: 1 1 440px;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+  max-width: 650px;
+}
+
+.h1 {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(38px, 4.3vw, 60px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+/* The tile after "AI" (AiSwap): ChatGPT, Gemini and Claude take turns, each
+   held 2.1s, sliding up through it. Sized in em so it follows the headline;
+   its middle sits on the middle of the capitals. */
+.aiTile {
+  --swap: 6.3s;
+  position: relative;
+  display: inline-block;
+  width: 0.86em;
+  height: 0.86em;
+  margin-left: 0.04em;
+  overflow: hidden;
+  border-radius: 0.24em;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(26, 22, 19, 0.08),
+    0 0.05em 0.16em rgba(26, 22, 19, 0.08);
+  vertical-align: -0.1em;
+}
+
+.aiLayer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  animation: aiSwap var(--swap) infinite both;
+}
+
+/* the first is already in when the page opens; the others wait their turn */
+.aiLayer:nth-child(1) {
+  opacity: 1;
+  animation-delay: calc(var(--swap) * -0.05);
+}
+.aiLayer:nth-child(2) {
+  animation-delay: calc(var(--swap) / 3 - var(--swap) * 0.05);
+}
+.aiLayer:nth-child(3) {
+  animation-delay: calc(var(--swap) * 2 / 3 - var(--swap) * 0.05);
+}
+
+.aiMark {
+  display: block;
+  width: 0.54em;
+  height: 0.54em;
+}
+
+@keyframes aiSwap {
+  0% {
+    opacity: 0;
+    transform: translateY(80%);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  5% {
+    opacity: 1;
+    transform: none;
+  }
+  33.333% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  38.333%,
+  100% {
+    opacity: 0;
+    transform: translateY(-80%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aiLayer {
+    animation: none;
+  }
+}
+
+/* Side by side, the copy stands 481px tall (pinned in the handoff), so it
+   sits a little above the card's top, and the headline keeps its 193px. */
+@media (min-width: 1000px) {
+  .heroCopy {
+    min-height: 481px;
+  }
+  .h1 {
+    min-height: 3.217em;
+  }
+}
+
+.lede {
+  max-width: 540px;
+  margin: 0;
+  color: #6a665e;
+  font-size: clamp(17px, 1.4vw, 19px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.promiseLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 2px;
+}
+
+.shield {
+  flex: none;
+  margin-top: 3px;
+  color: #2a7a3c;
+}
+
+.promiseText {
+  max-width: 560px;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(18px, 1.5vw, 20px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 14px;
+  padding-top: 4px;
+}
+
+.faces {
+  display: flex;
+}
+
+.face {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #f9f8f5;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.face + .face {
+  margin-left: -8px;
+}
+
+.proofText {
+  max-width: 260px;
+  margin: 0;
+  color: #55504a;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.proofText strong {
+  color: #1a1613;
+  font-weight: 600;
+}
+
+.check {
+  flex: 1 1 380px;
+  min-width: 0;
+  max-width: 470px;
+  scroll-margin-top: 92px;
+}
+
+.talk {
+  margin: 16px 0 0;
+  color: #6a665e;
+  font-size: 15px;
+  text-align: center;
+}
+
+.talk a {
+  color: #1a1613;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgb(26 22 19 / 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.talk a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ---- where leads stall ---- */
+
+.stall {
+  background: #f9f8f5;
+}
+
+.stallInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px clamp(32px, 5vw, 80px);
+  max-width: 1280px;
+  margin: 0 auto;
+  /* 112px on top (pinned), and the same under the cards since the button
+     that sat below them was taken out (Nov 10 2026) */
+  padding: clamp(96px, 7.8vw, 112px) clamp(20px, 4.5vw, 48px);
+}
+
+.sideLabel {
+  flex: 1 1 160px;
+  max-width: 240px;
+  padding-top: 12px;
+}
+
+.stallBody {
+  display: flex;
+  flex: 4 1 640px;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.stallCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stallCard {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 12px;
+  align-content: start;
+  padding: 20px;
+  border: 1px solid #f0ece6;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.stallIcon {
+  display: flex;
+  margin-bottom: 16px;
+  color: #1a1613;
+}
+
+.stallText {
+  max-width: 32ch;
+  margin: 0;
+  color: #55504a;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ---- results (dark): the screenshot rows (ProofShots) ---- */
+
+.results {
+  background: #111113;
+  color: #fff;
+}
+
+.resultsInner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(80px, 9vw, 120px) clamp(20px, 4.5vw, 48px);
+}
+
+.resultsLede {
+  max-width: 600px;
+  margin: 20px 0 0;
+  color: rgb(255 255 255 / 0.64);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* One row per business: the Google result and an AI answer side by side,
+   in boxes of the same size (ProofShots). */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 5vw, 56px);
+  align-self: stretch;
+  margin: clamp(56px, 6vw, 72px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.fig {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+}
+
+/* The box takes the row's Google shot's shape; each shot fits inside on its
+   own page colour, so a shorter one just shows more of its page around it. */
+.box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+.shot {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+  transition:
+    opacity 0.5s ease,
+    visibility 0s 0.5s;
+}
+
+.shotOff {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.shotOn {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease;
+}
+
+.shotImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* The dim and the ring, drawn over the screenshot in its own pixels. */
+.marks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* the dim reaches past a shorter shot to the box's edges */
+  overflow: visible;
+  pointer-events: none;
+}
+
+.marksDim {
+  fill: rgb(0 0 0 / 0.5);
+}
+
+.marksRing {
+  fill: none;
+  stroke: #fdf3a1;
+  stroke-width: 2.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* the plain line under a box */
+.capRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 30px;
+}
+
+.cap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.cap strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.cap svg {
+  flex: none;
+}
+
+/* One short bar per shot under each box; the showing one fills until the
+   next turn, and a tap jumps to one. */
+.ticks {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+.tick {
+  position: relative;
+  width: 28px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tick::before,
+.tickFill {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 2px;
+}
+
+.tick::before {
+  background: rgb(255 255 255 / 0.2);
+}
+
+.tick:hover::before {
+  background: rgb(255 255 255 / 0.4);
+}
+
+.tickFill {
+  background: #fdf3a1;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.tickRun {
+  animation: tickRun 4s linear forwards;
+}
+
+.tickFull {
+  transform: scaleX(1);
+}
+
+@keyframes tickRun {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shot,
+  .shotOn {
+    transition: none;
+  }
+}
+
+.resultsFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  align-self: stretch;
+  margin-top: clamp(32px, 4vw, 44px);
+}
+
+.asideNote {
+  margin: 0;
+  color: rgb(255 255 255 / 0.56);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* the enlarged screenshot */
+.zoom {
+  position: fixed;
+  inset: 0;
+  /* over the site nav and dock (50) */
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vw, 48px);
+  background: rgb(10 10 12 / 0.9);
+}
+
+.zoomBackdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-out;
+}
+
+.zoomPan {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  border-radius: 10px;
+  /* the dark screenshots would melt into the backdrop without it */
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16);
+  overscroll-behavior: contain;
+}
+
+.zoomImg {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(var(--svh, 1svh) * 100 - 2 * clamp(16px, 4vw, 48px));
+  pointer-events: none;
+}
+
+/* On phones the shot is shown wider than the screen and pans sideways, so
+   the words are big enough to read. */
+@media (max-width: 760px) {
+  .zoomImg {
+    width: 190vw;
+    max-width: none;
+    max-height: none;
+  }
+}
+
+.zoomClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f9f8f5;
+  color: #111113;
+  cursor: pointer;
+}
+
+/* ---- the promise (green band) ----
+ * Nov 11 2026: the promise and what happens if it's missed, in two
+ * sentences, between the dark proof and the dark FAQ. The terms are in the
+ * FAQ. The green is the old promise card's. */
+
+.promiseBand {
+  background: #1e5c30;
+  color: #fff;
+}
+
+.promiseBandInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: clamp(88px, 10vw, 128px) clamp(20px, 4.5vw, 48px);
+  text-align: center;
+}
+
+.promiseBandIcon {
+  color: #dcebd9;
+}
+
+.promiseBandTitle {
+  margin: 20px 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 4.2vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.promiseBandText {
+  max-width: 600px;
+  margin: 20px 0 0;
+  color: rgb(255 255 255 / 0.85);
+  font-size: 18px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.promiseBand .btn {
+  margin-top: 36px;
+}
+
+/* ---- questions (dark) ---- */
+
+.faq {
+  background: #111113;
+  color: #fff;
+}
+
+.faqInner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 72px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(88px, 10vw, 144px) clamp(20px, 4.5vw, 48px) clamp(48px, 5vw, 72px);
+}
+
+.faqIntro {
+  display: flex;
+  flex: 1 1 300px;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.faqTitle {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(34px, 3.8vw, 52px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.faqLede {
+  margin: 0;
+  color: #a8a39b;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.faqLede a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faqList {
+  flex: 2 1 520px;
+  min-width: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.faqItem {
+  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.faqQ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 22px 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.faqA {
+  max-width: 640px;
+  margin: 0 0 24px;
+  color: #bdb8af;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.faqAWithFaces {
+  line-height: 1.75;
+}
+
+.inlineFace {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: -4px 0 -4px 3px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: -9px;
+}
+
+.faqLink {
+  color: #fff;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- footer ---- */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px clamp(20px, 4.5vw, 48px);
+  color: #55504a;
+  font-size: 14px;
+}
+
+.footerLogo {
+  display: block;
+  width: auto;
+  height: 20px;
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.footerLinks a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

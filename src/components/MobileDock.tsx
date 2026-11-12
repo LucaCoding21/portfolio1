@@ -80,9 +80,11 @@ const Svg = ({ className, children }: IconProps & { children: React.ReactNode })
   </svg>
 );
 
-const IconSparkle = (p: IconProps) => (
+/* Monthly SEO: a magnifier (Sight's sparkle went with it, Nov 9 2026) */
+const IconSearch = (p: IconProps) => (
   <Svg {...p}>
-    <path d="M2 12c6 .667 9.333 4 10 10 .667-6 4-9.333 10-10-6-.667-9.333-4-10-10-.667 6-4 9.333-10 10Z" />
+    <circle cx={11} cy={11} r={7} />
+    <path d="m20 20-4-4" />
   </Svg>
 );
 const IconCloud = (p: IconProps) => (
@@ -119,7 +121,7 @@ const MAIN = [
   { label: "Work", href: "/work", Icon: IconCloud },
   { label: "Approach", href: "/#how-we-do-it", Icon: IconFileLines },
   { label: "About", href: "/#about", Icon: IconUser },
-  { label: "Sight", href: "/sight", Icon: IconSparkle },
+  { label: "SEO", href: "/seo", Icon: IconSearch },
 ];
 
 type Geom = { side: number; bottom: number };

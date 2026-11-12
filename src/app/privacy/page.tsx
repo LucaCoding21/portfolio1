@@ -56,7 +56,7 @@ export default function PrivacyPage() {
       <main className={s.main}>
         <article className={s.article} data-section="privacy">
           <h1 className={s.title}>Privacy policy</h1>
-          <p className={s.updated}>Last updated October 26, 2026</p>
+          <p className={s.updated}>Last updated November 10, 2026</p>
 
           <p className={s.lede}>
             Cloverfield Studio Inc. is a web design studio in Surrey, BC. This page explains what we collect when
@@ -72,6 +72,10 @@ export default function PrivacyPage() {
               <strong>Free homepage sample:</strong> whether you have a website and its address, what kind of
               business you run, what you&apos;d like your site to bring you more of, roughly what your business
               brings in a year, your name, email and phone number, and any note you add.
+            </li>
+            <li>
+              <strong>Free competitor check:</strong> whether you have a competitor in mind and their name if you
+              give it, what you&apos;d like more of, your business name, and your name, email and phone number.
             </li>
             <li>
               <strong>Free website review:</strong> your website, name, email and phone number.

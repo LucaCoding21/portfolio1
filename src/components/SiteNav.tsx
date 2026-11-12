@@ -64,9 +64,9 @@ const REVEAL_FALLBACK_MS = 5000;
 /* the collapsed logo: the 22px brand mark */
 const MARK_W = 22;
 
-// The panel lists Home first; Sight sits under the rule, like their Login.
-const MENU_MAIN = [{ label: "Home", href: "/" }, ...NAV_ITEMS.filter((i) => i.href !== "/sight")];
-const MENU_AFTER_RULE = NAV_ITEMS.filter((i) => i.href === "/sight");
+// The panel lists Home first. Sight used to sit under a rule, like their
+// Login; it left the nav on Nov 9 2026, and SEO takes its place in the list.
+const MENU_MAIN = [{ label: "Home", href: "/" }, ...NAV_ITEMS];
 
 type MenuState = "closed" | "opening" | "open" | "closing";
 
@@ -463,17 +463,6 @@ export default function SiteNav() {
                 onClick={(e) => onMenuLinkClick(e, item.href)}
                 aria-current={isActive(item.href) ? "page" : undefined}
                 className={s.panelLink}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {MENU_AFTER_RULE.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={(e) => onMenuLinkClick(e, item.href)}
-                aria-current={isActive(item.href) ? "page" : undefined}
-                className={`${s.panelLink} ${s.panelLinkRuled}`}
               >
                 {item.label}
               </Link>

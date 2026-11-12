@@ -9,7 +9,11 @@
  * design_note_open, design_lead (with `qualified`, $100K a year and up),
  * design_lead_fix_open and design_lead_fix ("Wrong number? Fix it"),
  * design_section_view (how, reviews, sample, owners, faq, closing) and
- * design_faq_open; and on every page (components/Analytics): section_view,
+ * design_faq_open; the monthly SEO page's free competitor check (/seo):
+ * check_start (the first tap, `competitor`: yes or not_sure), check_rival
+ * (Continue under Yes, with `named`), check_want (what they want more of)
+ * and check_lead (with `competitor`, `want` and `named_rival`); and on every page
+ * (components/Analytics): section_view,
  * panel_open and video_progress. Every event also goes to PostHog where
  * it's running (instrumentation-client.ts).
  */
