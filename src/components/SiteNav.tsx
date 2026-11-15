@@ -65,7 +65,8 @@ const REVEAL_FALLBACK_MS = 5000;
 const MARK_W = 22;
 
 // The panel lists Home first. Sight used to sit under a rule, like their
-// Login; it left the nav on Nov 9 2026, and SEO takes its place in the list.
+// Login; it left the nav on Nov 9 2026, and SEO took its place in the list
+// until it came out too on Nov 15 2026 (see NAV_ITEMS).
 const MENU_MAIN = [{ label: "Home", href: "/" }, ...NAV_ITEMS];
 
 type MenuState = "closed" | "opening" | "open" | "closing";

@@ -79,6 +79,9 @@ export default function SeoHero() {
               See our results
             </a>
           </div>
+          {/* The copy shows once the browser has read this far (see
+              .heroCopy in the CSS), so it never paints half-built. */}
+          <span data-hero-done hidden />
         </div>
       </div>
     </section>

@@ -320,10 +320,12 @@ export const CAL_URL = "https://cal.com/cloverfield/30min";
 export const REVIEW_CAL_URL = "https://cal.com/cloverfield/website-review";
 
 /** Sight came out of the nav on Nov 9 2026 for now (its page stays up);
-    the monthly SEO page took its place. */
+    the monthly SEO page took its place, and came out too on Nov 15 2026
+    while it isn't ready (/seo stays up). Put the SEO line back to return it,
+    with its line in MobileDock's MAIN. */
 export const NAV_ITEMS = [
   { label: "Work", href: "/work" },
   { label: "Approach", href: "/#how-we-do-it" },
   { label: "About", href: "/#about" },
-  { label: "SEO", href: "/seo" },
+  // { label: "SEO", href: "/seo" },
 ];
