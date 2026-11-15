@@ -1,0 +1,320 @@
+/* The offer under "The problem" (SeoOffer). White, with the same side
+   padding and width as the problem section so their left edges line up. */
+
+.offer {
+  background: #fff;
+}
+
+.inner {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: clamp(96px, 9vw, 168px) clamp(20px, 3vw, 56px);
+}
+
+/* both parts share these columns: the promise's title lines up with "How it
+   works" and the grey box with the steps */
+.process {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 40px clamp(48px, 6vw, 120px);
+}
+
+/* ---- the promise ---- */
+
+/* Nov 15 2026: a full-width photo band (people hurrying down a white
+   stairwell), the heading top left in white, the quote box bottom right. The
+   negative margins undo .inner's padding so it runs edge to edge and starts
+   at the top of the section */
+.promise {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+  grid-template-rows: auto 1fr;
+  gap: 48px;
+  min-height: clamp(640px, 54vw, 980px);
+  margin: calc(-1 * clamp(96px, 9vw, 168px)) calc(-1 * clamp(20px, 3vw, 56px)) clamp(72px, 7vw, 120px);
+  padding: clamp(72px, 7vw, 128px) clamp(20px, 3vw, 56px);
+  overflow: hidden;
+  background: #1a1d22;
+}
+
+/* taller than the band so it can drift for the parallax (SeoOffer.tsx);
+   with reduced motion it just sits still, centred */
+.promiseBg {
+  position: absolute;
+  inset: -12% 0;
+  z-index: -1;
+}
+
+/* the people on the stairs are around the middle */
+.promiseImg {
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+
+/* dark top left for the heading, a little along the foot */
+.promiseBg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(160deg, rgb(10 12 16 / 0.72) 0%, rgb(10 12 16 / 0.25) 45%, rgb(10 12 16 / 0) 65%),
+    linear-gradient(0deg, rgb(10 12 16 / 0.45) 0%, rgb(10 12 16 / 0) 40%);
+}
+
+.promiseHead {
+  grid-column: 1 / -1;
+}
+
+/* the type of "The problem" heading (SeoPage .stallTitle), in white */
+.title {
+  max-width: 14em;
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* "The solution", in the type of "The problem" label (SeoPage .stallLabel) */
+.promiseLabel {
+  margin: 0 0 20px;
+  color: rgb(255 255 255 / 0.75);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.box {
+  position: relative;
+  grid-column: 2;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  margin: 0;
+  padding: clamp(26px, 2.6vw, 36px) clamp(26px, 2.6vw, 40px);
+  border-radius: 12px;
+  background: #fff;
+}
+
+/* big black quote marks over the middle of the box's top edge, no circle */
+/* inside the box now, at its top: on the photo they were lost */
+.badge {
+  position: static;
+  margin-bottom: -8px;
+  display: block;
+  color: #1a1613;
+  line-height: 0;
+}
+
+.badge svg {
+  width: clamp(34px, 2.6vw, 42px);
+  height: auto;
+}
+
+.quote {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(18px, 1.35vw, 22px);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.sign {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-align: left;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sign strong {
+  color: #1a1613;
+  font-weight: 500;
+}
+
+.faces {
+  display: flex;
+  flex: none;
+}
+
+.faces img {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.faces img + img {
+  margin-left: -12px;
+}
+
+/* ---- how it works ---- */
+
+/* the label and heading sit across the top, then the photo and steps */
+.processHead {
+  margin-bottom: clamp(28px, 2.6vw, 44px);
+}
+
+/* the photo sits on the steps' bottom line (Nov 15 2026, by request) */
+.processLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* "How it works", in the type of "The solution" label */
+.label {
+  margin: 0;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* a section heading: the type of the solution heading, left aligned */
+.processTitle {
+  max-width: 15em;
+  margin: 20px 0 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* Nov 15 2026: smaller than its column by request (600 wide, then 680) */
+.photo {
+  position: relative;
+  width: min(100%, 680px);
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #ece8e0;
+}
+
+.photoInner {
+  position: absolute;
+  inset: -6% 0;
+}
+
+.photoImg {
+  object-fit: cover;
+}
+
+.steps {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 16px clamp(24px, 3vw, 56px);
+  padding: clamp(22px, 2vw, 32px) 0;
+}
+
+/* the hairlines are spans so they can draw in left to right */
+.rule {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: #ddd8ce;
+  transform-origin: left;
+}
+
+.topRule {
+  top: 0;
+  bottom: auto;
+}
+
+/* SplitText's line masks */
+.line {
+  padding-bottom: 0.06em;
+}
+
+/* the timing sits in the title's line, in grey (Nov 15 2026: the eyebrows
+   over each title were turned down) */
+.when {
+  margin-right: 0.3em;
+  color: #a39e95;
+  font-weight: 400;
+}
+
+.stepName {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(16px, 1.1vw, 19px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+/* the safety net, in the promise green */
+.step[data-last] .stepName {
+  color: #328c46;
+}
+
+.step[data-last] .when {
+  color: #328c46;
+  opacity: 0.6;
+}
+
+.text {
+  margin: 0;
+  color: #8a857c;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ---- phones and tablets ---- */
+
+@media (max-width: 900px) {
+  .process,
+  .step {
+    grid-template-columns: 1fr;
+  }
+
+  .promise {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    gap: clamp(220px, 60vw, 380px);
+    padding: 56px 20px 20px;
+  }
+
+  .box {
+    grid-column: 1;
+  }
+
+  .photo {
+    order: 2;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+  }
+
+  .step {
+    gap: 10px;
+  }
+}

@@ -1,0 +1,213 @@
+/* "What you get" (SeoGet), from a reference: light grey, the heading,
+   plan line and button under it on the left, tall white cards in a sideways row on
+   the right running off the page's edge, arrows under them. Same side
+   padding as the sections around it. */
+
+.get {
+  overflow: hidden;
+  background: #f3f2ef;
+  color: #1a1613;
+}
+
+.inner {
+  --pad: clamp(20px, 3vw, 56px);
+  display: grid;
+  grid-template-columns: minmax(240px, 0.32fr) minmax(0, 1fr);
+  gap: 40px clamp(24px, 3vw, 56px);
+  max-width: 1920px;
+  margin: 0 auto;
+  /* less below than above (Nov 15 2026, by request) */
+  padding: clamp(96px, 10vw, 160px) var(--pad) clamp(48px, 5vw, 80px);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(30px, 3vw, 46px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 11px 18px 11px 20px;
+  border: 1.5px solid #1a1613;
+  border-radius: 999px;
+  color: #1a1613;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.cta:hover {
+  background: #1a1613;
+  color: #fff;
+}
+
+.lede {
+  max-width: 22em;
+  margin: 20px 0 0;
+  color: #8a857c;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* the row runs past the right padding to the page's edge */
+.main {
+  min-width: 0;
+  margin-right: calc(-1 * var(--pad));
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(260px, 22vw, 340px);
+  column-gap: 14px;
+  margin: 0;
+  padding: 0 var(--pad) 0 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  /* taller by request (Nov 15 2026) */
+  min-height: clamp(380px, 30vw, 480px);
+  padding: clamp(22px, 1.8vw, 28px);
+  border-radius: 10px;
+  background: #fff;
+  scroll-snap-align: start;
+}
+
+/* the hover picture, in the empty space between the icon and the words;
+   uncovered from below, the words never move or sit on it */
+.card {
+  cursor: pointer;
+}
+
+.pic {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: -12px 0 -16px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f3f2ef;
+  clip-path: inset(100% 0 0 0 round 8px);
+  transition: clip-path 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.card[data-on] .pic {
+  clip-path: inset(0 0 0 0 round 8px);
+}
+
+.picImg {
+  object-fit: cover;
+  scale: 1.08;
+  transition: scale 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card[data-on] .picImg {
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pic,
+  .picImg {
+    transition: none;
+  }
+}
+
+.cardTitle {
+  max-width: 12em;
+  margin: 0 0 12px;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(22px, 1.7vw, 28px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.cardText {
+  max-width: 30ch;
+  margin: 0;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.iconWrap {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #f3f2ef;
+}
+
+.iconWrap svg {
+  width: 20px;
+  height: 20px;
+}
+
+.arrows {
+  display: flex;
+  gap: 4px;
+  margin-top: 24px;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #1a1613;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.arrow:hover:not(:disabled) {
+  background: #e7e4de;
+}
+
+.arrow:disabled {
+  color: #bdb8af;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .track {
+    grid-auto-columns: min(78vw, 300px);
+  }
+}

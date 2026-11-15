@@ -1,0 +1,317 @@
+/* The centred "The solution" drafts (SolutionDrafts.tsx). Type from
+   SeoOffer.module.css. */
+
+/* ---- board chrome (as the proof board) ---- */
+
+.board {
+  padding-bottom: 120px;
+}
+
+.jump {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 55;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgb(26 22 19 / 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.jump a {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.draft {
+  scroll-margin-top: 52px;
+}
+
+.tagBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 18px clamp(20px, 3vw, 56px);
+  background: #1a1613;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 14px;
+}
+
+.tagBar strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fdf3a1;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.sec {
+  background: #fff;
+}
+
+/* ---- shared ---- */
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: clamp(96px, 9vw, 168px) clamp(20px, 3vw, 56px);
+  text-align: center;
+}
+
+.label {
+  margin: 0 0 20px;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 16em;
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.quote {
+  max-width: 34em;
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(19px, 1.5vw, 24px);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.quotes {
+  display: block;
+  color: #1a1613;
+  line-height: 0;
+}
+
+.quotes svg {
+  width: clamp(56px, 4.6vw, 72px);
+  height: auto;
+}
+
+.sign {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin: 0;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.sign strong {
+  color: #1a1613;
+  font-weight: 500;
+}
+
+.faces {
+  display: flex;
+  flex: none;
+}
+
+.faces img {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.faces img + img {
+  margin-left: -12px;
+}
+
+.facesBig {
+  margin-bottom: 28px;
+}
+
+.facesBig img {
+  width: 64px;
+  height: 64px;
+  border-width: 3px;
+}
+
+.facesBig img + img {
+  margin-left: -16px;
+}
+
+/* ---- 1 grey box ---- */
+
+.box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  width: min(100%, 760px);
+  margin: clamp(64px, 6vw, 96px) 0 0;
+  padding: clamp(40px, 3.6vw, 60px) clamp(28px, 3vw, 48px) clamp(28px, 3vw, 48px);
+  border-radius: 14px;
+  background: #f3f2ef;
+}
+
+.quotesOnEdge {
+  position: absolute;
+  top: -34px;
+  left: 50%;
+  translate: -50% 0;
+}
+
+/* ---- 2 rules ---- */
+
+.ruled {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  width: min(100%, 980px);
+  margin: clamp(56px, 5vw, 80px) 0 0;
+  padding: clamp(40px, 4vw, 64px) 0;
+  border-top: 1px solid #ddd8ce;
+  border-bottom: 1px solid #ddd8ce;
+}
+
+.quoteBig {
+  max-width: 30em;
+  font-size: clamp(22px, 2vw, 32px);
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+
+/* ---- 3 one panel ---- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(64px, 7vw, 120px) clamp(24px, 5vw, 96px);
+  border-radius: 14px;
+  background: #f3f2ef;
+}
+
+.shortRule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: clamp(36px, 3.4vw, 52px) 0;
+  background: #c9c3b8;
+}
+
+.panel .sign {
+  margin-top: 32px;
+}
+
+.panel .faces img {
+  border-color: #f3f2ef;
+}
+
+/* ---- 4 letter ---- */
+
+.letter {
+  max-width: 36em;
+  margin: 36px 0 0;
+  color: #6a665e;
+  font-size: 17px;
+  line-height: 1.65;
+  text-wrap: balance;
+}
+
+.letterSign {
+  margin: 20px 0 0;
+  color: #1a1613;
+  font-family: var(--font-reenie), cursive;
+  font-size: 30px;
+  line-height: 1.1;
+}
+
+/* ---- 5 three parts ---- */
+
+.parts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(24px, 3vw, 56px);
+  width: min(100%, 1180px);
+  margin: clamp(64px, 6vw, 96px) 0 48px;
+  padding: 0;
+  list-style: none;
+}
+
+.part {
+  padding-top: 28px;
+  border-top: 1px solid #ddd8ce;
+}
+
+.partKey {
+  margin: 0 0 10px;
+  color: #8a857c;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.part:last-child .partKey,
+.part:last-child .partHead {
+  color: #328c46;
+}
+
+.partHead {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(19px, 1.4vw, 23px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.partText {
+  max-width: 28ch;
+  margin: 10px auto 0;
+  color: #8a857c;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+@media (max-width: 760px) {
+  .parts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+}

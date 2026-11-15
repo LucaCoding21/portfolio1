@@ -120,33 +120,70 @@ details[open] > summary .plus {
 
 /* ---- hero ---- */
 
+/* One photo card under the floating nav, inset from the window's edges
+   with rounded corners (Nov 13 2026). From 761px wide the headline,
+   sub-line and promise sit top left, the buttons and trust line bottom
+   right (William picked
+   layout 5 and overlay 2 of six each); phones stack it all low on the
+   left. */
+/* the floating nav sits over the card's top, so the card starts at the
+   same inset as its sides */
 .hero {
+  padding: clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px) 0;
+}
+
+.heroCard {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px 64px;
-  max-width: 1280px;
-  margin: 0 auto;
-  /* 92px on top at 1440 (pinned in the handoff), under the 69px its own
-     header took, which the floating site nav now overlaps instead; the
-     bottom comes out at the 47px the pinned 620px height left */
-  padding: calc(69px + clamp(32px, 6.4vw, 92px)) clamp(20px, 4.5vw, 48px) clamp(36px, 4vw, 47px);
+  align-items: flex-end;
+  justify-content: flex-start;
+  /* the window less the same gap above and below, so the foot and its
+     rounded corners show */
+  min-height: max(640px, calc(var(--svh, 1svh) * 100 - 2 * clamp(8px, 1vw, 16px)));
+  overflow: hidden;
+  border-radius: clamp(14px, 1.4vw, 22px);
+  background: #1a1613;
+  isolation: isolate;
+}
+
+.heroImage {
+  z-index: -2;
+  object-fit: cover;
+  object-position: 50% 62%;
+  transform: scaleX(-1); /* flipped horizontally */
+}
+
+/* dark on the left fading out by two thirds across, and along the foot */
+.heroShade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgb(17 15 13 / 0.7) 0%, rgb(17 15 13 / 0.15) 65%),
+    linear-gradient(180deg, transparent 45%, rgb(17 15 13 / 0.7) 100%);
 }
 
 .heroCopy {
-  display: flex;
-  flex: 1 1 440px;
-  flex-direction: column;
-  gap: 22px;
-  min-width: 0;
-  max-width: 650px;
+  display: grid;
+  grid-template-areas: "title" "lede" "promise" "ctas" "proof";
+  justify-items: start;
+  gap: 20px;
+  width: 100%;
+  padding: 120px 20px 36px;
+  color: #fff;
+  text-align: left;
 }
+
+.heroCopy > .h1 { grid-area: title; }
+.heroCopy > .lede { grid-area: lede; }
+.heroCopy > .proof { grid-area: proof; }
+.heroCopy > .promiseText { grid-area: promise; }
+.heroCopy > .heroCtas { grid-area: ctas; }
 
 .h1 {
   margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(38px, 4.3vw, 60px);
+  font-size: clamp(38px, 5vw, 72px);
   font-weight: 500;
   line-height: 1.02;
   letter-spacing: -0.045em;
@@ -227,55 +264,85 @@ details[open] > summary .plus {
   }
 }
 
-/* Side by side, the copy stands 481px tall (pinned in the handoff), so it
-   sits a little above the card's top, and the headline keeps its 193px. */
-@media (min-width: 1000px) {
-  .heroCopy {
-    min-height: 481px;
-  }
-  .h1 {
-    min-height: 3.217em;
-  }
-}
-
 .lede {
-  max-width: 540px;
+  max-width: 560px;
   margin: 0;
-  color: #6a665e;
+  color: rgb(255 255 255 / 0.82);
   font-size: clamp(17px, 1.4vw, 19px);
-  line-height: 1.55;
+  line-height: 1.5;
   text-wrap: pretty;
 }
 
-.promiseLine {
-  display: flex;
+.promiseText {
+  display: inline-flex;
   align-items: flex-start;
-  gap: 12px;
-  padding-top: 2px;
+  gap: 10px;
+  max-width: 620px;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(17px, 1.4vw, 19px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  text-align: left;
 }
 
 .shield {
   flex: none;
-  margin-top: 3px;
-  color: #2a7a3c;
+  margin-top: 1px;
+  color: #8fd19e;
 }
 
-.promiseText {
-  max-width: 560px;
-  margin: 0;
+.heroCtas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.heroBtn,
+.heroBtnGhost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 28px;
+  border-radius: 999px;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(18px, 1.5vw, 20px);
+  font-size: 16px;
   font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.heroBtn {
+  background: #fff;
+  color: #111113;
+}
+
+.heroBtn:hover {
+  background: #e6e2da;
+}
+
+/* outline only, filled faintly on hover */
+.heroBtnGhost {
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.85);
+  color: #fff;
+}
+
+.heroBtnGhost:hover {
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 0 0 1.5px #fff;
 }
 
 .proof {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 14px;
-  padding-top: 4px;
+  justify-content: flex-start;
+  gap: 10px 12px;
+  padding-top: 6px;
 }
 
 .faces {
@@ -283,9 +350,9 @@ details[open] > summary .plus {
 }
 
 .face {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #f9f8f5;
+  width: 42px;
+  height: 42px;
+  border: 2px solid #1a1613;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -295,43 +362,58 @@ details[open] > summary .plus {
 }
 
 .proofText {
-  max-width: 260px;
   margin: 0;
-  color: #55504a;
-  font-size: 14px;
+  color: rgb(255 255 255 / 0.8);
+  font-size: 16px;
   line-height: 1.4;
+  text-align: left;
 }
 
 .proofText strong {
-  color: #1a1613;
+  color: #fff;
   font-weight: 600;
 }
 
-.check {
-  flex: 1 1 380px;
-  min-width: 0;
-  max-width: 470px;
-  scroll-margin-top: 92px;
+@media (max-width: 600px) {
+  .heroCopy {
+    gap: 16px;
+    padding-bottom: 28px;
+  }
+  .heroCtas {
+    flex-direction: column;
+    justify-self: stretch;
+  }
+  .heroBtn,
+  .heroBtnGhost {
+    justify-content: center;
+  }
+  .proofText {
+    max-width: 220px;
+  }
 }
 
-.talk {
-  margin: 16px 0 0;
-  color: #6a665e;
-  font-size: 15px;
-  text-align: center;
-}
-
-.talk a {
-  color: #1a1613;
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-color: rgb(26 22 19 / 0.35);
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.15s ease;
-}
-
-.talk a:hover {
-  text-decoration-color: currentColor;
+/* the headline, sub-line and promise at the top left, the buttons and
+   trust line at the bottom right */
+@media (min-width: 761px) {
+  .heroCard {
+    align-items: stretch;
+  }
+  .heroCopy {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto 1fr auto auto;
+    grid-template-areas: "title ." "lede ." "promise ." ". ." ". ctas" ". proof";
+    align-items: end;
+    row-gap: 18px;
+    padding: clamp(80px, 9vw, 120px) clamp(28px, 4vw, 64px) clamp(32px, 4vw, 48px);
+  }
+  .heroCopy .h1 {
+    max-width: 980px;
+    font-size: clamp(44px, 5.6vw, 88px);
+  }
+  .heroCopy .heroCtas,
+  .heroCopy .proof {
+    justify-self: end;
+  }
 }
 
 /* ---- where leads stall ---- */
@@ -340,65 +422,190 @@ details[open] > summary .plus {
   background: #f9f8f5;
 }
 
+/* Nov 13 2026: laid out like the reference William sent (a small label,
+   a big heading over about 60% of the width, then three tall cards with the
+   small line at the top and the big line at the foot) */
 .stallInner {
+  /* full width like the reference, about 3% in from each side */
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: clamp(80px, 7.8vw, 112px) clamp(20px, 3vw, 56px);
+}
+
+.stallLabel {
+  margin: 0;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* heading on the left, a short line and the button on the right, sitting
+   level with the heading's last line as the reference's byline does */
+.stallHeadRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px clamp(32px, 5vw, 80px);
-  max-width: 1280px;
-  margin: 0 auto;
-  /* 112px on top (pinned), and the same under the cards since the button
-     that sat below them was taken out (Nov 10 2026) */
-  padding: clamp(96px, 7.8vw, 112px) clamp(20px, 4.5vw, 48px);
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px clamp(32px, 5vw, 96px);
+  margin-top: clamp(48px, 7vw, 104px);
 }
 
-.sideLabel {
-  flex: 1 1 160px;
-  max-width: 240px;
-  padding-top: 12px;
-}
-
-.stallBody {
+.stallAside {
   display: flex;
-  flex: 4 1 640px;
+  flex: 0 1 340px;
   flex-direction: column;
   align-items: flex-start;
-  min-width: 0;
 }
 
+.asideLead {
+  margin: 0;
+  color: #55504a;
+  font-size: 15px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.stallTitle {
+  flex: 0 1 auto;
+  max-width: 17em;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* Nov 14 2026: hovering a card (a tap on touch screens) widens it and the
+   other two narrow, and a picture slides in from its right edge (StallCards).
+   The text keeps the wrapping it had before (the description at its 34ch),
+   and the picture takes what's left. */
 .stallCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
-  gap: 12px;
-  width: 100%;
-  margin: clamp(40px, 5vw, 64px) 0 0;
+  --card-pad: clamp(20px, 1.8vw, 28px);
+
+  display: flex;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin: clamp(56px, 7vw, 104px) 0 0;
   padding: 0;
   list-style: none;
 }
 
 .stallCard {
-  display: grid;
-  grid-row: span 3;
-  grid-template-rows: subgrid;
-  row-gap: 12px;
-  align-content: start;
-  padding: 20px;
-  border: 1px solid #f0ece6;
-  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: clamp(220px, 18vw, 270px);
+  overflow: hidden;
+  padding: var(--card-pad);
+  border-radius: 10px;
   background: #fff;
+  cursor: pointer;
+  transition: flex-grow 0.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 
-.stallIcon {
+.stallCard[data-on] {
+  flex-grow: 1.55;
+}
+
+.stallCardText {
   display: flex;
-  margin-bottom: 16px;
-  color: #1a1613;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  min-width: 0;
+}
+
+/* the picture fills the rest of the card, 10px in from its edges */
+.stallMedia {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: calc(10px - var(--card-pad)) calc(10px - var(--card-pad)) calc(10px - var(--card-pad)) var(--card-pad);
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f3f1ec;
+  transform: translateX(calc(100% + 12px + var(--card-pad)));
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.stallCard[data-on] .stallMedia {
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.stallMediaEl {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+/* titles hold one line, except where StallCards sets a break (the long
+   "You've heard the / promises before"), so every card leaves the picture
+   about the same room; phones wrap as normal */
+@media (min-width: 901px) {
+  .stallCard .stallHead {
+    white-space: pre;
+  }
+}
+
+@media (max-width: 900px) {
+  .stallCard .stallHead {
+    white-space: pre-line;
+  }
+}
+
+/* stacked on phones and tablets: the picture covers the card's right three
+   quarters when tapped */
+@media (max-width: 900px) {
+  .stallCards {
+    flex-direction: column;
+  }
+
+  .stallMedia {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: 75%;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stallCard,
+  .stallMedia {
+    transition: none;
+  }
 }
 
 .stallText {
-  max-width: 32ch;
+  max-width: 34ch;
   margin: 0;
-  color: #55504a;
-  font-size: 15px;
-  line-height: 1.6;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.stallHead {
+  max-width: none;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  /* sized so every title holds one line in the three-across cards */
+  font-size: clamp(22px, 1.7vw, 32px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 /* ---- results (dark): the screenshot rows (ProofShots) ---- */
@@ -408,13 +615,69 @@ details[open] > summary .plus {
   color: #fff;
 }
 
+/* the same width and side padding as the offer above (SeoOffer .inner) */
 .resultsInner {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  max-width: 1280px;
+  max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(80px, 9vw, 120px) clamp(20px, 4.5vw, 48px);
+  padding: clamp(80px, 9vw, 140px) clamp(20px, 3vw, 56px);
+}
+
+/* Nov 15 2026, from a reference: a small label and the heading top left,
+   its line small on the right, then ruled rows: the business, the two
+   captions in one line beside it, and the two shots under the captions */
+.resultsHead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 24px clamp(40px, 6vw, 96px);
+  align-items: start;
+  padding-bottom: clamp(40px, 4vw, 64px);
+}
+
+.resultsLabel {
+  margin: 0 0 12px;
+  color: rgb(255 255 255 / 0.5);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.resultsHead .h2 {
+  max-width: 17em;
+  font-size: clamp(28px, 2.8vw, 40px);
+  line-height: 1.12;
+}
+
+.resultsHead .resultsLede {
+  margin: 30px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* the business, first in the row's line */
+.rowWho {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.resultsLede {
+  margin: 0;
+}
+
+/* the business in the row's first column */
+.rowWho {
+  margin: 0;
+  color: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(18px, 1.5vw, 22px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
 }
 
 .resultsLede {
@@ -430,18 +693,31 @@ details[open] > summary .plus {
 .rows {
   display: flex;
   flex-direction: column;
-  gap: clamp(40px, 5vw, 56px);
+  gap: 0;
   align-self: stretch;
-  margin: clamp(56px, 6vw, 72px) 0 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* a hairline over each row; the business, then its two shots, each with
+   its caption on top so the captions line up with the business */
 .row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: minmax(0, 0.75fr) repeat(2, minmax(0, 1fr));
+  gap: 16px;
   align-items: start;
+  padding: clamp(28px, 3vw, 40px) 0 clamp(36px, 4vw, 56px);
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+}
+
+.row .fig {
+  flex-direction: column-reverse;
+  gap: clamp(24px, 2.4vw, 36px);
+}
+
+.row .box {
+  border-radius: 4px;
 }
 
 .fig {
@@ -619,12 +895,33 @@ details[open] > summary .plus {
 
 .resultsFoot {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px 32px;
-  align-self: stretch;
-  margin-top: clamp(32px, 4vw, 44px);
+  gap: 16px;
+  padding-top: clamp(32px, 4vw, 48px);
+  border-top: 1px solid rgb(255 255 255 / 0.14);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .resultsHead {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .resultsHead .resultsLede {
+    margin-top: 0;
+  }
+
+  .rowWho {
+    grid-column: 1 / -1;
+  }
+}
+
+/* tablets: the business over its two shots; phones stack (below) */
+@media (min-width: 761px) and (max-width: 900px) {
+  .row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .asideNote {
@@ -705,107 +1002,109 @@ details[open] > summary .plus {
   cursor: pointer;
 }
 
-/* ---- the promise (green band) ----
- * Nov 11 2026: the promise and what happens if it's missed, in two
- * sentences, between the dark proof and the dark FAQ. The terms are in the
- * FAQ. The green is the old promise card's. */
-
-.promiseBand {
-  background: #1e5c30;
-  color: #fff;
-}
-
-.promiseBandInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: clamp(88px, 10vw, 128px) clamp(20px, 4.5vw, 48px);
-  text-align: center;
-}
-
-.promiseBandIcon {
-  color: #dcebd9;
-}
-
-.promiseBandTitle {
-  margin: 20px 0 0;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, 4.2vw, 56px);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-}
-
-.promiseBandText {
-  max-width: 600px;
-  margin: 20px 0 0;
-  color: rgb(255 255 255 / 0.85);
-  font-size: 18px;
-  line-height: 1.6;
-  text-wrap: pretty;
-}
-
-.promiseBand .btn {
-  margin-top: 36px;
-}
-
-/* ---- questions (dark) ---- */
+/* ---- questions: grey, all centred: the heading and its line, then the
+   questions in one wide white container, one open at a time (FaqList) ---- */
 
 .faq {
-  background: #111113;
-  color: #fff;
+  background: #e9e7e2;
+  color: #1a1613;
 }
 
 .faqInner {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px 72px;
-  max-width: 1280px;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(36px, 4vw, 56px);
+  max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(88px, 10vw, 144px) clamp(20px, 4.5vw, 48px) clamp(48px, 5vw, 72px);
+  padding: clamp(80px, 8vw, 128px) clamp(20px, 3vw, 56px);
 }
 
 .faqIntro {
   display: flex;
-  flex: 1 1 300px;
   flex-direction: column;
+  align-items: center;
   gap: 16px;
   min-width: 0;
+  text-align: center;
 }
 
 .faqTitle {
   margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(34px, 3.8vw, 52px);
-  font-weight: 500;
-  line-height: 1.04;
+  font-size: clamp(30px, 3.4vw, 48px);
+  font-weight: 400;
+  line-height: 1.1;
   letter-spacing: -0.04em;
 }
 
 .faqLede {
+  max-width: 24em;
   margin: 0;
-  color: #a8a39b;
+  color: #6a665e;
   font-size: 17px;
   line-height: 1.55;
 }
 
 .faqLede a {
-  color: #fff;
+  color: #1a1613;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
+/* an arrow slides in from the bottom left, pointing up and right, on hover */
+.faqCall {
+  white-space: nowrap;
+}
+
+.faqCallArrow {
+  display: inline-block;
+  width: 0;
+  height: 0.85em;
+  margin-left: 0;
+  vertical-align: -0.05em;
+  opacity: 0;
+  transform: translate(-6px, 6px);
+  transition:
+    width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    margin-left 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease,
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faqCall:hover .faqCallArrow,
+.faqCall:focus-visible .faqCallArrow {
+  width: 0.85em;
+  margin-left: 0.2em;
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faqCallArrow {
+    transition: none;
+  }
+}
+
+/* the one container */
 .faqList {
-  flex: 2 1 520px;
+  width: min(100%, 920px);
   min-width: 0;
-  border-top: 1px solid rgb(255 255 255 / 0.14);
+  padding: 8px clamp(20px, 2vw, 32px);
+  border-radius: 16px;
+  background: #fff;
 }
 
 .faqItem {
-  border-bottom: 1px solid rgb(255 255 255 / 0.14);
+  border-bottom: 1px solid rgb(26 22 19 / 0.1);
+}
+
+.faqItem:last-child {
+  border-bottom: 0;
+}
+
+.faqH {
+  margin: 0;
 }
 
 .faqQ {
@@ -813,20 +1112,57 @@ details[open] > summary .plus {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  width: 100%;
   min-height: 44px;
-  padding: 22px 0;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  color: inherit;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 500;
   letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.faqItem[data-open] .plus {
+  transform: rotate(45deg);
+}
+
+/* the answer slides open and shut */
+.faqPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+}
+
+.faqItem[data-open] .faqPanel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.faqPanelIn {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .faqA {
-  max-width: 640px;
-  margin: 0 0 24px;
-  color: #bdb8af;
+  max-width: 720px;
+  margin: 0 0 22px;
+  color: #5d5951;
   font-size: 16px;
   line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faqPanel,
+  .plus {
+    transition: none;
+  }
 }
 
 .faqAWithFaces {
@@ -844,40 +1180,33 @@ details[open] > summary .plus {
 }
 
 .faqLink {
-  color: #fff;
+  color: #1a1613;
   white-space: nowrap;
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 
-/* ---- footer ---- */
-
-.footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 28px clamp(20px, 4.5vw, 48px);
-  color: #55504a;
-  font-size: 14px;
+/* ProofShots' boxes on a light page (the proof drafts board, Nov 15 2026) */
+.figLight .box {
+  box-shadow: 0 0 0 1px rgb(26 22 19 / 0.08);
 }
 
-.footerLogo {
-  display: block;
-  width: auto;
-  height: 20px;
+.figLight .cap {
+  color: #6a665e;
 }
 
-.footerLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
+.figLight .cap strong {
+  color: #1a1613;
 }
 
-.footerLinks a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.figLight .tick::before {
+  background: rgb(26 22 19 / 0.14);
+}
+
+.figLight .tick:hover::before {
+  background: rgb(26 22 19 / 0.3);
+}
+
+.figLight .tickFill {
+  background: #1a1613;
 }

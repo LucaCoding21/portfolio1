@@ -1,0 +1,674 @@
+/* The proof drafts (ProofDrafts.tsx). Type and spacing from "The problem"
+   (SeoPage .stall*) and the offer (SeoOffer.module.css), so they sit with
+   the sections above them. */
+
+/* ---- board chrome ---- */
+
+.board {
+  padding-bottom: 120px;
+}
+
+.jump {
+  /* bottom right, clear of the site nav and dock */
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 55;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgb(26 22 19 / 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.jump a {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 1px #e6e2da;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.jump a:hover {
+  background: #1a1613;
+  color: #fff;
+}
+
+.draft {
+  scroll-margin-top: 52px;
+}
+
+.tagBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 18px clamp(20px, 3vw, 56px);
+  border-top: 6px solid #1a1613;
+  background: #1a1613;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 14px;
+}
+
+.tagBar strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fdf3a1;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.secOff {
+  background: #f9f8f5;
+}
+
+.secWhite {
+  background: #fff;
+}
+
+/* ---- shared: the problem section's frame and type ---- */
+
+.inner {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: clamp(96px, 9vw, 168px) clamp(20px, 3vw, 56px);
+}
+
+.label {
+  margin: 0;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.headRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px clamp(32px, 5vw, 96px);
+  margin-top: clamp(48px, 7vw, 104px);
+}
+
+.title {
+  flex: 0 1 auto;
+  max-width: 17em;
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.9vw, 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.aside {
+  flex: 0 1 340px;
+  margin: 0;
+  color: #55504a;
+  font-size: 15px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.lede {
+  max-width: 30em;
+  margin: 0;
+  color: #55504a;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.note {
+  margin: 0;
+  color: #8a857c;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  margin-top: clamp(40px, 4vw, 56px);
+  padding-top: 24px;
+  border-top: 1px solid #ddd8ce;
+}
+
+/* a still screenshot, fitted on its own page colour, with the ring */
+.shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+
+.shotFill {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
+.shotImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---- 1 cards ---- */
+
+.cardRows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 4vw, 64px);
+  margin: clamp(56px, 7vw, 104px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rowWho {
+  margin: 0 0 14px;
+  color: #1a1613;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cardPair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.whiteCard {
+  padding: 10px 10px 4px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.whiteCard figcaption {
+  padding: 4px 8px 4px 6px;
+}
+
+/* ---- 2 sticky ---- */
+
+.sticky {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 48px clamp(64px, 8vw, 160px);
+  align-items: start;
+}
+
+.stickyLeft {
+  align-self: stretch;
+}
+
+.stickyHold {
+  position: sticky;
+  top: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.stickyHold .title {
+  margin-top: 4px;
+}
+
+.stickyList {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(64px, 6vw, 96px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stickyGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.ruledWho {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ddd8ce;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(18px, 1.3vw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.count {
+  color: #8a857c;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+/* ---- 3 searches ---- */
+
+.searchGroup {
+  margin-top: clamp(56px, 6vw, 88px);
+}
+
+.searchGroup + .searchGroup {
+  margin-top: clamp(40px, 4vw, 64px);
+}
+
+.searchWho {
+  margin: 0 0 12px;
+  color: #8a857c;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.searchList {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #ddd8ce;
+  list-style: none;
+}
+
+.searchRow {
+  border-bottom: 1px solid #ddd8ce;
+  cursor: pointer;
+}
+
+.searchHead {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.6fr) minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 16px clamp(24px, 3vw, 56px);
+  align-items: baseline;
+  padding: clamp(20px, 1.8vw, 28px) 0;
+}
+
+.searchKind {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: #8a857c;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.searchQ {
+  color: #8a857c;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(20px, 1.7vw, 28px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  transition: color 0.3s ease;
+}
+
+.searchTag {
+  color: #8a857c;
+  font-size: 15px;
+  text-align: right;
+  transition: color 0.3s ease;
+}
+
+.searchRow[data-on] .searchQ {
+  color: #1a1613;
+}
+
+.searchRow[data-on] .searchTag {
+  color: #328c46;
+  font-weight: 500;
+}
+
+.searchBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.searchRow[data-on] .searchBody {
+  grid-template-rows: 1fr;
+}
+
+.searchBodyIn {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* lined up under the search, about as wide as the search and result columns */
+.searchShot {
+  max-width: 760px;
+  margin-left: calc((100% - 2 * clamp(24px, 3vw, 56px)) * 0.6 / 3.2 + clamp(24px, 3vw, 56px));
+  padding-bottom: clamp(24px, 2.4vw, 36px);
+}
+
+.searchShot .shot {
+  box-shadow: 0 0 0 1px rgb(26 22 19 / 0.08);
+}
+
+/* ---- 4 cards, hover (StallCards' slide) ---- */
+
+.hCards {
+  --card-pad: clamp(20px, 1.8vw, 28px);
+
+  display: flex;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin: clamp(56px, 7vw, 104px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hCards + .hCards {
+  margin-top: clamp(12px, 1.4vw, 20px);
+}
+
+.hCard {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: clamp(280px, 25vw, 400px);
+  overflow: hidden;
+  padding: var(--card-pad);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: flex-grow 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hCard[data-on] {
+  flex-grow: 2.8;
+}
+
+.hText {
+  display: flex;
+  flex: 0 0 min(300px, 100%);
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  min-width: 0;
+}
+
+.hSmall {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 0 0 10px;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.hBody {
+  max-width: 34ch;
+  margin: 0;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.hTitle {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(22px, 1.7vw, 32px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.hMedia {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: calc(10px - var(--card-pad)) calc(10px - var(--card-pad)) calc(10px - var(--card-pad)) var(--card-pad);
+  overflow: hidden;
+  border-radius: 8px;
+  transform: translateX(calc(100% + 12px + var(--card-pad)));
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hCard[data-on] .hMedia {
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.hMedia .shot {
+  border-radius: 8px;
+}
+
+/* ---- 5 list and grey box ---- */
+
+.list {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+  gap: 40px clamp(48px, 6vw, 120px);
+  align-items: start;
+  margin-top: clamp(56px, 7vw, 104px);
+}
+
+.listItems {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.listWho {
+  margin: 0 0 8px;
+  color: #8a857c;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.listUl {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #ddd8ce;
+  list-style: none;
+}
+
+.listBtn {
+  position: relative;
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 2px 12px;
+  align-items: center;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid #ddd8ce;
+  background: none;
+  color: #8a857c;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.listBtn:hover,
+.listBtn[data-on] {
+  color: #1a1613;
+}
+
+.listBtn svg {
+  opacity: 0.5;
+  transition: opacity 0.25s ease;
+}
+
+.listBtn[data-on] svg {
+  opacity: 1;
+}
+
+.listTag {
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(17px, 1.25vw, 20px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.listFor {
+  grid-column: 2;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.listBar {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: #1a1613;
+  transform-origin: left;
+}
+
+.listBarRun {
+  animation: barRun linear forwards;
+}
+
+@keyframes barRun {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.greyBox {
+  position: sticky;
+  top: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: clamp(16px, 2vw, 32px);
+  border-radius: 14px;
+  background: #f3f2ef;
+}
+
+.greyStage {
+  position: relative;
+  aspect-ratio: 3 / 2;
+}
+
+.greyShot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s ease,
+    visibility 0s 0.5s;
+}
+
+.greyOn {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease;
+}
+
+.greyCap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #6a665e;
+  font-size: 14px;
+}
+
+.greyCap strong {
+  color: #1a1613;
+  font-weight: 600;
+}
+
+/* ---- phones and tablets ---- */
+
+@media (max-width: 900px) {
+  .cardPair,
+  .sticky,
+  .list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stickyHold,
+  .greyBox {
+    position: static;
+  }
+
+  .greyBox {
+    order: -1;
+  }
+
+  .searchHead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .searchTag {
+    text-align: left;
+  }
+
+  .searchShot {
+    margin-left: 0;
+  }
+
+  .hCards {
+    flex-direction: column;
+  }
+
+  .hMedia {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: 75%;
+    margin: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .searchBody,
+  .hCard,
+  .hMedia,
+  .greyShot {
+    transition: none;
+  }
+}

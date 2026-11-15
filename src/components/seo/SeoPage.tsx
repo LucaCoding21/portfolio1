@@ -6,79 +6,72 @@
  * day by request, and the hero starts lower by its height so the rest sits
  * where the handoff has it. Top to bottom:
  *
- *   hero      the promise and the trust line on the left, the free
- *             competitor check (CompetitorCheck, id="check") on the right,
- *             which replaced the handoff's "free map snapshot"
+ *   hero      a photo card (Nov 13 2026, from a reference): headline, sub-line,
+ *             the promise, "Book a free SEO call" and the trust line, centred
+ *             low. The free competitor check card that sat on the right
+ *             (CompetitorCheck, still in this folder) was taken out.
  *   stall     "The problem": the problem as owners think it (Nov 10 2026),
- *             a competitor first, slow months, empty SEO promises
+ *             a competitor first, slow months, empty SEO promises; hovering
+ *             a card widens it and slides a picture in (StallCards, Nov 14)
+ *   offer     white: the promise and a signed quote in a grey box, then
+ *             "How it works" in five ruled steps (SeoOffer, Nov 14 2026)
  *   results   dark band: "Our websites alone got these businesses into the top
- *             3 on Google.", then a wall of real screenshots (ProofShots:
- *             each Google result paired with what ChatGPT said), Nov 10 2026
+ *             3 on Google.", its line beside it, then ruled rows (Nov 15 2026,
+ *             from a reference): the business on the left, its real
+ *             screenshots beside it (ProofShots: each Google result paired
+ *             with what AI said), the button centred below, Nov 10 2026
  *             ("How it works", four steps from Qualify to Prove, came out
  *             after it on Nov 11 2026, and so did a Hook Agency style
  *             "How are we different?" table that replaced it for a day)
- *   promise   green band: the promise and what happens if it's missed, in
- *             two sentences, and the button (Nov 11 2026; it replaced the
- *             handoff's "What do I get?" list and promise card, after five
- *             longer drafts read as too much text). The terms live in the FAQ.
- *   faq       dark band: "Still have questions?"
- *   footer    logo, copyright and the privacy policy
+ *   get       white: "What you get", the six things we do every month,
+ *             three across (SeoGet, Nov 15 2026)
+ *             (a green promise band sat here from Nov 11 2026, the promise
+ *             and what happens if it's missed; taken out Nov 15 2026 by
+ *             request, as the hero and the offer already say it. The terms
+ *             live in the FAQ.)
+ *   faq       grey: "Still have questions?" and six questions in one white
+ *             container, one open at a time (FaqList, Nov 15 2026)
+ *   footer    the homepage's footer (HomeFooter, Nov 15 2026; the handoff's
+ *             small logo and copyright footer was swapped out by request)
  *
  * The handoff's design tool left fixed widths and heights on several boxes.
  * They're dropped here (they broke phones and clipped the FAQ over the
  * footer), and the few that set spacing on desktop are kept as minimum
- * heights or paddings that come out the same at 1440 wide. The page has no
- * scroll motion: the handoff has none.
+ * heights or paddings that come out the same at 1440 wide. The handoff has no
+ * scroll motion; on Nov 14 2026 William asked for some at the top of the page
+ * (SeoMotion for "The problem", SeoOffer's own for the offer); the hero
+ * stays still, by request.
  */
 
 import Image from "next/image";
 import Link from "next/link";
+import HomeFooter from "@/components/HomeFooter";
 import { CAL_URL } from "@/data/projects";
+import FaqList from "./FaqList";
 import ProofShots from "./ProofShots";
-import CompetitorCheck from "./CompetitorCheck";
-import AiSwap from "./AiSwap";
+import SeoGet from "./SeoGet";
+import SeoHero from "./SeoHero";
+import SeoMotion from "./SeoMotion";
+import SeoOffer from "./SeoOffer";
+import StallAside from "./StallAside";
+import StallCards from "./StallCards";
 import s from "./SeoPage.module.css";
-
-/** Trust line faces, as on the free homepage sample page: WrapCity, Innovative Aluminum, Flow State, ACE. */
-const FACES = [
-  "/wrapcity-headshot-v3.webp",
-  "/testimonials/mike-victory.webp",
-  "/flowstate/paula-headshot.jpg",
-  "/ACE/ace-headshot-v5.webp",
-];
-
-const STALLS = [
-  {
-    title: "A competitor shows up first",
-    body: "You search for your own service in your city, and someone else comes up before you. Some of them aren’t even as good as you.",
-    icon: (
-      <>
-        <circle cx="11" cy="11" r="7" />
-        <path d="m20 20-3.5-3.5" />
-      </>
-    ),
-  },
-  {
-    title: "Some months are slow",
-    body: "Most of your work comes from word of mouth, so some months are busy and some are slow.",
-    icon: (
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
-    ),
-  },
-  {
-    title: "You’ve heard the promises before",
-    body: "Every week, someone emails you promising #1 on Google. If you’ve hired one, you got a monthly report and no new calls.",
-    icon: (
-      <>
-        <rect x="2" y="4" width="20" height="16" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </>
-    ),
-  },
-];
 
 /** How many searches a plan works on, set by budget (William, Nov 11 2026). */
 const SEARCH_RANGE = "10 to 40";
+
+/** The six questions on the page (Nov 15 2026: William asked for fewer). The
+ *  rest stay in FAQS, written and ready to bring back. The promise's four
+ *  (#1, missing it, what you do, each month) must stay in step with the hero,
+ *  the green band and the meta. */
+const FAQ_SHOWN = [
+  "How much does it cost?",
+  "What do you do each month?",
+  "Do I need a website from you?",
+  "Can you promise #1 on Google?",
+  "What if you don’t get there?",
+  "What do I have to do?",
+];
 
 const FAQS: { q: string; a: React.ReactNode }[] = [
   {
@@ -153,191 +146,88 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
 ];
 
-function Plus() {
-  return (
-    <svg className={s.plus} viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" aria-hidden>
-      <path d="M12 5v14M5 12h14" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 export default function SeoPage() {
   return (
-    <div className={s.page}>
+    <>
+      {/* rounded at the foot, it lifts off the homepage's pinned footer reel,
+          as on /sight; overflow clip (not hidden) keeps sticky parts working */}
+      <div className={`${s.page} relative z-10 overflow-clip rounded-b-[28px] md:rounded-b-[48px]`}>
       <main>
-        <section className={s.hero} data-section="hero">
-          <div className={s.heroCopy}>
-            <h1 className={s.h1}>
-              Get more calls from Google and{" "}
-              <span className={s.nowrap}>
-                AI <AiSwap />
-              </span>{" "}
-              without paying for ads.
-            </h1>
-            <p className={s.lede}>
-              Monthly SEO for local businesses, from a small web design team in Surrey, BC.
-            </p>
-            <div className={s.promiseLine}>
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden className={s.shield}>
-                <path
-                  d="M12 3 5 6v5c0 4.5 2.9 8.2 7 10 4.1-1.8 7-5.5 7-10V6l-7-3Z"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="m8.8 11.8 2.2 2.2 4.2-4.4"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <p className={s.promiseText}>
-                <mark className={s.mark}>Top 3 on Google in 6 months, or we work for free until you get there.</mark>
-              </p>
-            </div>
-            <div className={s.proof}>
-              <div className={s.faces} aria-hidden>
-                {FACES.map((src) => (
-                  <Image key={src} src={src} alt="" width={40} height={40} className={s.face} />
-                ))}
-              </div>
-              <p className={s.proofText}>
-                <strong>3,000+ inquiries</strong> generated for local businesses by sites we&rsquo;ve built
-              </p>
-            </div>
-          </div>
-
-          <div id="check" className={s.check}>
-            <CompetitorCheck />
-            {/* For owners who already want help and don't need the check
-                (since Nov 11 2026 the page sells to any local business, not
-                only our own website clients): a quiet second
-                way in, worded as on the free sample page's header. */}
-            <p className={s.talk}>
-              Prefer to talk?{" "}
-              <a href={CAL_URL} target="_blank" rel="noopener noreferrer">
-                Book a free call
-              </a>
-            </p>
-          </div>
-        </section>
+        <SeoHero />
+        <SeoMotion />
 
         <section className={s.stall} data-section="stall">
           <div className={s.stallInner}>
-            <p className={s.sideLabel}>The problem</p>
-            <div className={s.stallBody}>
-              <h2 className={s.h2}>People near you are searching for what you do, and calling someone else.</h2>
-              <ol className={s.stallCards}>
-                {STALLS.map((c) => (
-                  <li key={c.title} className={s.stallCard}>
-                    <span className={s.stallIcon}>
-                      <svg
-                        viewBox="0 0 24 24"
-                        width="22"
-                        height="22"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden
-                      >
-                        {c.icon}
-                      </svg>
-                    </span>
-                    <h3 className={s.h3}>{c.title}</h3>
-                    <p className={s.stallText}>{c.body}</p>
-                  </li>
-                ))}
-              </ol>
+            <p className={s.stallLabel} data-stall="label">
+              The problem
+            </p>
+            <div className={s.stallHeadRow}>
+              <h2 className={s.stallTitle} data-stall="title">
+                People near you are searching for what you do, and calling someone else.
+              </h2>
+              <StallAside />
             </div>
+            <StallCards />
           </div>
         </section>
 
-        <section className={s.results} data-section="results">
+        <SeoOffer />
+
+        <section id="results" className={s.results} data-section="results">
           <div className={s.resultsInner}>
-            <h2 className={s.h2}>Our websites alone got these businesses into the top 3 on Google.</h2>
-            <p className={s.resultsLede}>
-              None of them had monthly SEO. We&rsquo;re starting that now with a few founding clients.
-            </p>
+            {/* Nov 15 2026, from a reference William sent: the heading on
+                the left and its line on the right, then one ruled row per
+                business (its name on the left, the shots beside it), the
+                button centred at the foot */}
+            <div className={s.resultsHead}>
+              <div>
+                <p className={s.resultsLabel}>Results</p>
+                <h2 className={s.h2}>Our websites alone got these businesses into the top 3 on Google.</h2>
+              </div>
+              <p className={s.resultsLede}>
+                None of them had monthly SEO. We&rsquo;re starting that now with a few founding clients.
+              </p>
+            </div>
 
             <ProofShots />
 
             <div className={s.resultsFoot}>
-              <p className={s.asideNote}>Searches checked in November 2026. Ads aren&rsquo;t counted.</p>
-              <a className={`${s.btn} ${s.btnLight}`} href="#check">
-                Check my competitors
+              <a className={`${s.btn} ${s.btnLight}`} href={CAL_URL} target="_blank" rel="noopener noreferrer">
+                Book a free SEO call
               </a>
+              <p className={s.asideNote}>Searches checked in November 2026. Ads aren&rsquo;t counted.</p>
             </div>
           </div>
         </section>
 
-        <section className={s.promiseBand} data-section="promise">
-          <div className={s.promiseBandInner}>
-            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" aria-hidden className={s.promiseBandIcon}>
-              <path
-                d="M12 3 5 6v5c0 4.5 2.9 8.2 7 10 4.1-1.8 7-5.5 7-10V6l-7-3Z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinejoin="round"
-              />
-              <path
-                d="m8.8 11.8 2.2 2.2 4.2-4.4"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <h2 className={s.promiseBandTitle}>Top 3 on Google in 6 months, or we work for free until you get there.</h2>
-            <p className={s.promiseBandText}>
-              We pick your 5 main searches together. If you&rsquo;re not in the top 3 for at least 3 of them by month 6,
-              you stop paying and we keep working until you are.
-            </p>
-            <a className={`${s.btn} ${s.btnLight}`} href="#check">
-              Check my competitors
-            </a>
-          </div>
-        </section>
+        <SeoGet searchRange={SEARCH_RANGE} />
 
+        {/* Nov 15 2026: grey and centred, "Still have questions?" and its
+            line over one wide white container of questions, one open at a
+            time (FaqList); full-width photos and a big heading on the left
+            were tried first */}
         <section className={s.faq} data-section="faq">
           <div className={s.faqInner}>
             <div className={s.faqIntro}>
               <h2 className={s.faqTitle}>Still have questions?</h2>
               <p className={s.faqLede}>
                 Here are the ones we expect. Or{" "}
-                <a href={CAL_URL} target="_blank" rel="noopener noreferrer">
+                <a className={s.faqCall} href={CAL_URL} target="_blank" rel="noopener noreferrer">
                   book a free call
+                  {/* slides in pointing up and right on hover */}
+                  <svg className={s.faqCallArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+                    <path d="M7 17 17 7M8 7h9v9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </a>{" "}
                 and ask us anything.
               </p>
             </div>
-            <div className={s.faqList}>
-              {FAQS.map((f) => (
-                <details key={f.q} className={s.faqItem}>
-                  <summary className={s.faqQ}>
-                    {f.q}
-                    <Plus />
-                  </summary>
-                  <p className={`${s.faqA} ${typeof f.a === "string" ? "" : s.faqAWithFaces}`}>{f.a}</p>
-                </details>
-              ))}
-            </div>
+            <FaqList items={FAQS.filter((f) => FAQ_SHOWN.includes(f.q))} />
           </div>
         </section>
       </main>
-
-      <footer className={s.footer}>
-        <Image src="/cloverfield-logo.png" alt="Cloverfield Studio" width={4162} height={662} sizes="126px" className={s.footerLogo} />
-        <div className={s.footerLinks}>
-          <span>&copy; {new Date().getFullYear()} Cloverfield Studio Inc.</span>
-          <Link href="/privacy" target="_blank" rel="noopener">
-            Privacy policy
-          </Link>
-        </div>
-      </footer>
-    </div>
+      </div>
+      <HomeFooter />
+    </>
   );
 }

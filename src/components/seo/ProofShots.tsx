@@ -41,14 +41,16 @@ import { CLAUDE_D, OPENAI_D } from "./marks";
 import s from "./SeoPage.module.css";
 
 /** x, y, width, height in the screenshot's own pixels */
-type Box = [number, number, number, number];
-type Pic = { src: string; w: number; h: number; alt: string };
-type Shot = Pic & {
+export type Box = [number, number, number, number];
+export type Pic = { src: string; w: number; h: number; alt: string };
+export type Shot = Pic & {
   kind: "google" | "googleai" | "chatgpt" | "claude";
   /** the line under the box */
   tag: string;
   /** the Google search, for the line under the box */
   search?: string;
+  /** what the AI was asked, in our words (not the exact prompt); for Google’s AI, the search */
+  ask?: string;
   /** what the ring goes around */
   ring: Box[];
   /** on a results page, left bright (the search box) along with the ring; the rest is dimmed */
@@ -56,15 +58,17 @@ type Shot = Pic & {
   /** the page colour around the shot, so a shorter shot fills its box */
   bg: string;
 };
-type Row = { google: Shot[]; ai: Shot[] };
+/** `who` describes the business without naming it */
+export type Row = { who: string; google: Shot[]; ai: Shot[] };
 
 const GOOGLE_BG = "#23242a";
 const CHATGPT_BG = "#000";
 const CLAUDE_BG = "#181818";
 const CHATGPT_PICK = "ChatGPT’s top pick";
 
-const ROWS: Row[] = [
+export const ROWS: Row[] = [
   {
+    who: "A wrap shop in Langley, BC",
     google: [
       {
         kind: "google",
@@ -95,6 +99,7 @@ const ROWS: Row[] = [
       {
         kind: "chatgpt",
         src: "/seo/proof/wrapcity-chatgpt.webp",
+        ask: "Asked for the best wrap shop in Langley",
         w: 1568,
         h: 680,
         alt: "ChatGPT asked what's the best wrap shop in Langley, BC, answering that its top recommendation is Wrap City",
@@ -105,6 +110,7 @@ const ROWS: Row[] = [
       {
         kind: "claude",
         src: "/seo/proof/claude-wrap-shop-langley.webp",
+        ask: "Asked for the best wrap shop in Langley",
         w: 1400,
         h: 742,
         alt: "Claude asked what's the best wrap shop in Langley, BC, listing Wrap City first as its top pick for colour-change wraps",
@@ -115,6 +121,7 @@ const ROWS: Row[] = [
       {
         kind: "chatgpt",
         src: "/seo/proof/chatgpt-vehicle-wraps-langley.webp",
+        ask: "Asked who’s best for vehicle wraps in Langley",
         w: 1444,
         h: 840,
         alt: "ChatGPT asked who's the best for vehicle wraps in Langley, BC, listing Wrap City first",
@@ -125,6 +132,7 @@ const ROWS: Row[] = [
     ],
   },
   {
+    who: "A railing company in Yakima, WA",
     google: [
       {
         kind: "google",
@@ -170,6 +178,7 @@ const ROWS: Row[] = [
       {
         kind: "chatgpt",
         src: "/seo/chatgpt-yakima.webp",
+        ask: "Asked for the top 3 railing installers in Yakima",
         w: 790,
         h: 224,
         alt: "ChatGPT's top 3 railing installers in Yakima, with Northwest Railing listed first",
@@ -180,6 +189,7 @@ const ROWS: Row[] = [
       {
         kind: "googleai",
         src: "/seo/proof/google-ai-overview-deck-railing-yakima.webp",
+        ask: "deck railing yakima",
         w: 1425,
         h: 840,
         alt: "Google's AI Overview for deck railing yakima, listing Northwest Railing first under custom railing contractors and installers in Yakima",
@@ -190,6 +200,7 @@ const ROWS: Row[] = [
       {
         kind: "chatgpt",
         src: "/seo/proof/chatgpt-deck-railing-yakima.webp",
+        ask: "Asked who to hire for deck railings in Yakima",
         w: 1568,
         h: 438,
         alt: "ChatGPT asked who to hire for deck railings in Yakima, WA, answering that it would start with Northwest Railing",
@@ -205,7 +216,7 @@ const TURN_MS = 4000;
 /** how far the AI box runs behind the Google box */
 const AI_LAG_MS = 2000;
 
-function Icon({ kind }: { kind: Shot["kind"] }) {
+export function Icon({ kind }: { kind: Shot["kind"] }) {
   if (kind === "chatgpt") {
     return (
       <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
@@ -222,16 +233,25 @@ function Icon({ kind }: { kind: Shot["kind"] }) {
   }
   return (
     <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
-      <path fill="#4285F4" d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.57-5.17 3.57-8.81Z" />
-      <path fill="#34A853" d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.88-3.01c-1.07.72-2.45 1.15-4.06 1.15-3.13 0-5.78-2.11-6.72-4.95H1.27v3.11A12 12 0 0 0 12 24Z" />
+      <path
+        fill="#4285F4"
+        d="M23.5 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.45a5.52 5.52 0 0 1-2.4 3.62v3h3.88c2.27-2.09 3.57-5.17 3.57-8.81Z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 24c3.24 0 5.96-1.07 7.94-2.91l-3.88-3.01c-1.07.72-2.45 1.15-4.06 1.15-3.13 0-5.78-2.11-6.72-4.95H1.27v3.11A12 12 0 0 0 12 24Z"
+      />
       <path fill="#FBBC05" d="M5.28 14.28a7.2 7.2 0 0 1 0-4.56V6.61H1.27a12 12 0 0 0 0 10.78l4.01-3.11Z" />
-      <path fill="#EA4335" d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44A11.94 11.94 0 0 0 12 0 12 12 0 0 0 1.27 6.61l4.01 3.11C6.22 6.88 8.87 4.77 12 4.77Z" />
+      <path
+        fill="#EA4335"
+        d="M12 4.77c1.76 0 3.34.61 4.59 1.8l3.44-3.44A11.94 11.94 0 0 0 12 0 12 12 0 0 0 1.27 6.61l4.01 3.11C6.22 6.88 8.87 4.77 12 4.77Z"
+      />
     </svg>
   );
 }
 
 /** The dim (results pages only) and the yellow ring, drawn in the screenshot's own pixels. */
-function Marks({ shot, id }: { shot: Shot; id: string }) {
+export function Marks({ shot, id }: { shot: Shot; id: string }) {
   const r = (b: Box, key: string, extra?: React.SVGProps<SVGRectElement>) => (
     <rect key={key} x={b[0]} y={b[1]} width={b[2]} height={b[3]} rx={Math.min(16, b[3] / 2)} {...extra} />
   );
@@ -256,7 +276,7 @@ function Marks({ shot, id }: { shot: Shot; id: string }) {
   );
 }
 
-type Open = (p: Pic) => void;
+export type Open = (p: Pic) => void;
 
 const noChange = () => () => {};
 
@@ -264,18 +284,21 @@ const noChange = () => () => {};
  * A box the shape of the row's first Google shot, holding its shots stacked
  * and taking turns; each fits inside on its own page colour.
  */
-function Turns({
+export function Turns({
   shots,
   ratio,
   lag,
   id,
   onOpen,
+  light,
 }: {
   shots: Shot[];
   ratio: string;
   lag: number;
   id: string;
   onOpen: Open;
+  /** on a light page (the drafts board) */
+  light?: boolean;
 }) {
   const [on, setOn] = useState(0);
   const [held, setHeld] = useState(false);
@@ -284,7 +307,7 @@ function Turns({
   const still = useSyncExternalStore(
     noChange,
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-    () => false
+    () => false,
   );
   const turning = shots.length > 1 && !held && !still;
   const wait = started ? TURN_MS : TURN_MS + lag;
@@ -302,7 +325,11 @@ function Turns({
   const shot = shots[on];
 
   return (
-    <figure className={s.fig} onPointerEnter={() => setHeld(true)} onPointerLeave={() => setHeld(false)}>
+    <figure
+      className={`${s.fig} ${light ? s.figLight : ""}`}
+      onPointerEnter={() => setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+    >
       <div className={s.box} style={{ aspectRatio: ratio }}>
         {shots.map((sh, i) => (
           <button
@@ -364,17 +391,38 @@ function Turns({
   );
 }
 
-export default function ProofShots() {
-  const [open, setOpen] = useState<Pic | null>(null);
-
+/** The enlarged screenshot; a tap anywhere, the close button or Escape shuts it. */
+export function Zoom({ pic, onClose }: { pic: Pic; onClose: () => void }) {
   useEffect(() => {
-    if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(null);
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [onClose]);
+
+  return (
+    <div className={s.zoom} role="dialog" aria-modal="true" aria-label={pic.alt}>
+      <button
+        type="button"
+        aria-label="Close the enlarged screenshot"
+        className={s.zoomBackdrop}
+        onClick={() => onClose()}
+      />
+      <div className={s.zoomPan}>
+        <Image src={pic.src} alt={pic.alt} width={pic.w} height={pic.h} sizes={`${pic.w}px`} className={s.zoomImg} />
+      </div>
+      <button type="button" aria-label="Close" className={s.zoomClose} onClick={() => onClose()} autoFocus>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" aria-hidden>
+          <path d="M6 6l12 12M18 6 6 18" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
+export default function ProofShots() {
+  const [open, setOpen] = useState<Pic | null>(null);
 
   return (
     <>
@@ -383,38 +431,17 @@ export default function ProofShots() {
           const ratio = `${row.google[0].w} / ${row.google[0].h}`;
           return (
             <li key={row.google[0].src} className={s.row}>
-              <Turns shots={row.google} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} />
-              <Turns shots={row.ai} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} />
+              <p className={s.rowWho}>{row.who}</p>
+              {/* Nov 15 2026: one shot each, no taking turns and no bars, by
+                  request; the rest stay in ROWS for the drafts board */}
+              <Turns shots={row.google.slice(0, 1)} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} />
+              <Turns shots={row.ai.slice(0, 1)} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} />
             </li>
           );
         })}
       </ul>
 
-      {open && (
-        <div className={s.zoom} role="dialog" aria-modal="true" aria-label={open.alt}>
-          <button
-            type="button"
-            aria-label="Close the enlarged screenshot"
-            className={s.zoomBackdrop}
-            onClick={() => setOpen(null)}
-          />
-          <div className={s.zoomPan}>
-            <Image
-              src={open.src}
-              alt={open.alt}
-              width={open.w}
-              height={open.h}
-              sizes={`${open.w}px`}
-              className={s.zoomImg}
-            />
-          </div>
-          <button type="button" aria-label="Close" className={s.zoomClose} onClick={() => setOpen(null)} autoFocus>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" aria-hidden>
-              <path d="M6 6l12 12M18 6 6 18" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </button>
-        </div>
-      )}
+      {open && <Zoom pic={open} onClose={() => setOpen(null)} />}
     </>
   );
 }
