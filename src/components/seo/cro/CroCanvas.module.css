@@ -1,0 +1,657 @@
+/* Draft 3 of "02 / Get chosen" (CroCanvas): the steps on the left, one
+   white card at a time over the mountain photo on the right. */
+
+.canvas {
+  display: grid;
+  grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr);
+  gap: clamp(32px, 4vw, 72px);
+  align-items: start;
+  margin-top: clamp(40px, calc(4.6 * var(--fit, 1vw)), 72px);
+}
+
+/* ---------- the left column ---------- */
+
+.left {
+  padding-top: 8px;
+}
+
+.title {
+  max-width: 12em;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(30px, calc(3 * var(--fit, 1vw)), 46px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 24em;
+  margin: 16px 0 0;
+  color: #6a665e;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.steps {
+  margin: 32px 0 0;
+  padding: 0;
+  border-top: 1px solid #e3dfd6;
+  list-style: none;
+}
+
+.step {
+  border-bottom: 1px solid #e3dfd6;
+}
+
+.stepBtn {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: none;
+  color: #8a857c;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.stepBtn:hover,
+.step[data-on] .stepBtn {
+  color: #1a1613;
+}
+
+.stepNum {
+  color: #b4afa5;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.25s ease;
+}
+
+.step[data-on] .stepNum {
+  color: #1f8a4c;
+}
+
+/* only the open step shows its sentence */
+.stepBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s ease;
+}
+
+.step[data-on] .stepBody {
+  grid-template-rows: 1fr;
+}
+
+.stepBody > div {
+  position: relative;
+  overflow: hidden;
+}
+
+.stepText {
+  max-width: 26em;
+  margin: -6px 0 0;
+  padding: 0 0 20px 31px;
+  color: #6a665e;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+/* how long until the next step */
+.stepTime {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #1a1613;
+  transform-origin: 0 50%;
+  animation: stepTime linear forwards;
+}
+
+@keyframes stepTime {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- the photo and its card ---------- */
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #2a2a2a;
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(440px, 76%);
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.5);
+  opacity: 0;
+  translate: -50% -46%;
+  transition:
+    opacity 0.45s ease,
+    translate 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.card[data-on] {
+  opacity: 1;
+  translate: -50% -50%;
+}
+
+.cardHead {
+  margin: 0 0 18px;
+  color: #1a1613;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cardFoot {
+  margin: 18px 0 0;
+  color: #6a665e;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+/* step 1: the heatmap, wider, in a browser window */
+
+.card[data-wide] {
+  width: min(640px, 86%);
+  padding: 10px;
+}
+
+.heatBrowser {
+  flex: none;
+  box-shadow: 0 0 0 1px rgb(26 22 19 / 0.08);
+}
+
+/* the top of the page: the header, the hero and its photo */
+.heatBrowser > div:last-child {
+  flex: none;
+  aspect-ratio: 1440 / 900;
+}
+
+.heatPage img {
+  filter: brightness(0.8) saturate(0.7);
+}
+
+.heatChip {
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f1ec;
+  color: #6a665e;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.heatFoot {
+  margin: 12px 6px 4px;
+  color: #4a463f;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.flag {
+  color: #c2413c;
+  font-weight: 600;
+}
+
+/* step 2: the shorter form */
+
+.toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 4px;
+  border-radius: 10px;
+  background: #f3f1ec;
+  font-size: 13px;
+  text-align: center;
+}
+
+.toggle span {
+  padding: 7px 6px;
+  border-radius: 7px;
+  color: #a39e93;
+  text-decoration: line-through;
+}
+
+.toggle span[data-on] {
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  color: #1a1613;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field {
+  padding: 11px 14px;
+  border: 1px solid #e6e2da;
+  border-radius: 9px;
+  color: #a39e93;
+  font-size: 14px;
+}
+
+.send {
+  margin-top: 4px;
+  padding: 12px;
+  border-radius: 9px;
+  background: #1e3524;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* step 3, version 1: the notification */
+
+.notes {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.note {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #f3f1ec;
+}
+
+.noteBack {
+  position: absolute;
+  left: calc(var(--d) * 12px);
+  right: calc(var(--d) * 12px);
+  bottom: calc(16px - var(--d) * 8px);
+  height: 40px;
+  border-radius: 14px;
+  background: #f3f1ec;
+  opacity: calc(1 - var(--d) * 0.35);
+}
+
+.noteBack[data-depth="1"] {
+  --d: 1;
+  z-index: 1;
+}
+
+.noteBack[data-depth="2"] {
+  --d: 2;
+}
+
+.card[data-on] .note {
+  animation: noteIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+}
+
+@keyframes noteIn {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.97);
+  }
+}
+
+.noteIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #1f8a4c;
+  color: #fff;
+}
+
+.noteBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.noteTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.noteTop span {
+  color: #8a857c;
+  font-size: 12.5px;
+}
+
+.noteText {
+  color: #4a463f;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* step 3, version 2: the chart */
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chartFix {
+  stroke: #c9c4ba;
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.chartFixText {
+  fill: #6a665e;
+  font-size: 10px;
+}
+
+.chartBefore,
+.chartAfter {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chartBefore {
+  stroke: #c9c4ba;
+}
+
+.chartAfter {
+  stroke: #1f8a4c;
+}
+
+.chartDot {
+  fill: #1f8a4c;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+/* step 3, version 3: the big number */
+
+.big {
+  padding: 18px 6px 14px;
+  text-align: center;
+}
+
+.bigNum {
+  display: block;
+  color: #1f8a4c;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 96px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.bigText {
+  margin: 12px auto 0;
+  max-width: 14em;
+  color: #4a463f;
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+/* step 3, version 4: a hundred dots */
+
+.dots {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 6px;
+}
+
+.dots i {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ece9e2;
+}
+
+.dots i[data-was] {
+  background: #1e3524;
+}
+
+/* the two more who get in touch now */
+.dots i[data-new] {
+  background: #3fbf6f;
+  box-shadow: 0 0 0 3px rgb(63 191 111 / 0.25);
+}
+
+.card[data-on] .dots i[data-new] {
+  animation: dotIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: 0.6s;
+}
+
+.card[data-on] .dots i[data-new] + i[data-new] {
+  animation-delay: 0.8s;
+}
+
+@keyframes dotIn {
+  from {
+    background: #ece9e2;
+    transform: scale(0.4);
+  }
+}
+
+.dotsStrong {
+  color: #1a1613;
+  font-weight: 600;
+}
+
+/* step 3, version 5: messages floating on the photo, no card */
+
+.card[data-bare] {
+  width: min(520px, 84%);
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.card[data-bare] a {
+  pointer-events: auto;
+}
+
+.msgs {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 78%;
+  margin: 0;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 40px -18px rgb(0 0 0 / 0.45);
+  color: #4a463f;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.msg[data-dark] {
+  background: rgb(22 22 24 / 0.92);
+  color: #fff;
+}
+
+.msg[data-pos="right"] {
+  align-self: flex-end;
+}
+
+.msg[data-pos="left"] {
+  align-self: flex-start;
+}
+
+.msg[data-small] {
+  align-self: center;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.card[data-on] .msg {
+  animation: msgIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(0.2s + var(--i) * 0.45s);
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+}
+
+.msgDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 0.6em;
+  border-radius: 50%;
+  background: #3fbf6f;
+}
+
+.msgText {
+  display: block;
+  text-wrap: pretty;
+}
+
+.msgLink {
+  display: inline-block;
+  margin-top: 12px;
+  color: #1f8a4c;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.msgLink:hover {
+  text-decoration: underline;
+}
+
+.msgIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  opacity: 0.75;
+}
+
+/* the version picker (not on the live site) */
+
+.c3Picker {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(17 17 19 / 0.85);
+  color: #fff;
+  font-size: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.c3Picker > span {
+  padding: 0 6px 0 8px;
+  opacity: 0.7;
+}
+
+.c3Picker button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.c3Picker button[data-on] {
+  background: #fff;
+  color: #111113;
+}
+
+.up {
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #e3f3e8;
+  color: #1f7a43;
+  font-weight: 600;
+}
+
+/* ---------- smaller screens ---------- */
+
+@media (max-width: 900px) {
+  .canvas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stage {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 86%;
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepBody,
+  .card {
+    transition: none;
+  }
+
+  .card[data-on] .note,
+  .card[data-on] .msg,
+  .card[data-on] .dots i[data-new] {
+    animation: none;
+  }
+}

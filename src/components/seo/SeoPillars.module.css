@@ -1,4 +1,4 @@
-/* "Our approach" (SeoPillars), three drafts while William picks (Nov 24
+/* "Our approach" (SeoPillars), the Gallery layout William picked (Nov 24
    2026). Same page colours and side padding as "The problem"; compact, as
    the low-fi asked: a small intro, not a feature section. */
 
@@ -14,682 +14,367 @@
   padding: clamp(80px, calc(7.8 * var(--fit, 1vw)), 112px) clamp(20px, 3vw, 56px);
 }
 
-/* ================= 1: Stacked (the Terrava reference) ================= */
+/* ================= 4: Gallery (the "Where Runners Connect" reference) ================= */
 
-.stacked {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 780px);
-  gap: 40px clamp(32px, 6vw, 120px);
-}
-
-.stLeft {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-.stPill {
-  display: inline-block;
-  margin: 0;
-  padding: 4px 9px;
-  border: 1px solid #dcd8cf;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 13px;
-  line-height: 1.3;
-}
-
-.stTitle {
-  max-width: 10.5em;
-  margin: 16px 0 0;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(34px, calc(4 * var(--fit, 1vw)), 58px);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
-}
-
-/* the picture inside the heading, as the wind turbine sits in the reference:
-   the start of a Google search for one of our clients */
-.chip {
-  position: relative;
-  display: inline-block;
-  width: 1.9em;
-  height: 0.82em;
-  overflow: hidden;
-  border-radius: 0.18em;
-  vertical-align: -0.08em;
-  background: #202124;
-}
-
-.chip img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: left center;
-}
-
-.stText {
-  max-width: 25em;
-  margin: 0;
-  color: #8a857c;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-.stPics {
-  display: flex;
-  gap: 12px;
-}
-
-.stPic {
-  width: clamp(80px, 7vw, 112px);
-  aspect-ratio: 1;
-  overflow: hidden;
-  border-radius: 10px;
-  background: #e6e2da;
-}
-
-.stPic img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.stCards {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.stCard {
-  --thumb: clamp(112px, 9.5vw, 150px);
-
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 20px;
-  padding: clamp(14px, 1.2vw, 18px) clamp(14px, 1.2vw, 18px) clamp(14px, 1.2vw, 18px) clamp(20px, 1.8vw, 26px);
-  border-radius: 18px;
-  background: #efece6;
-}
-
-.stCard[data-dark] {
-  background: #1e3524;
-  color: #fff;
-}
-
-.stBody {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.stNum {
-  margin: 0;
-  color: #8a857c;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.stCard[data-dark] .stNum {
-  color: rgb(255 255 255 / 0.55);
-}
-
-.stCardTitle {
-  margin: 8px 0 0;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(22px, 1.9vw, 30px);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-.stCardText {
-  margin: 8px 0 0;
-  color: #6a665e;
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.stCard[data-dark] .stCardText {
-  color: rgb(255 255 255 / 0.72);
-}
-
-.stMore {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 18px;
-  padding: 4px 4px 4px 11px;
-  border: 1px solid #dcd8cf;
-  border-radius: 7px;
-  background: #fff;
-  color: #1a1613;
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: border-color 0.2s ease;
-}
-
-.stMore:hover {
-  border-color: #1a1613;
-}
-
-.stCard[data-dark] .stMore {
-  border-color: #fff;
-}
-
-.stMoreChip {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 5px;
-  background: #1a1613;
-  color: #fff;
-  transition: transform 0.2s ease;
-}
-
-.stMore:hover .stMoreChip {
-  transform: translate(1px, 1px);
-}
-
-/* the card's picture */
-.thumb {
-  position: relative;
-  width: var(--thumb);
-  height: var(--thumb);
-  overflow: hidden;
-  border-radius: 12px;
-  background: #fff;
-}
-
-.thumbCover {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* the client's home page, zoomed on the hero's left side, where its two
-   buttons are */
-.thumbPage {
-  position: absolute;
-  top: -18%;
-  left: 0;
-  width: 160%;
-  max-width: none;
-  height: auto;
-}
-
-/* click heat: red where it's hottest, through yellow and green */
-.heat {
-  position: absolute;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: radial-gradient(
-    closest-side,
-    rgb(255 36 0 / 0.92),
-    rgb(255 128 0 / 0.78) 32%,
-    rgb(255 222 0 / 0.58) 54%,
-    rgb(70 214 120 / 0.34) 76%,
-    rgb(40 120 255 / 0) 100%
-  );
-  translate: -50% -50%;
-  pointer-events: none;
-}
-
-.chart {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* ================= 2: Featured (the Euphoria reference) ================= */
-
-.featured {
-  max-width: 1180px;
+.gallery {
+  max-width: 1320px;
   margin: 0 auto;
   text-align: center;
 }
 
-.ftPill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin: 0;
-  padding: 4px 11px 4px 5px;
-  border: 1px solid #e3dfd6;
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  font-size: 12.5px;
-  line-height: 1.3;
-}
-
-.ftPillDot {
-  display: grid;
-  place-items: center;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background: #1a1613;
-}
-
-.ftPillDot::after {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #fff;
-  content: "";
-}
-
-.ftTitle {
-  max-width: 13em;
-  margin: 18px auto 0;
+.gaTitle {
+  max-width: 16em;
+  margin: 0 auto;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 56px);
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
-.ftGrey {
-  color: #a39e93;
-}
-
-.ftTabs {
-  display: inline-flex;
-  gap: 4px;
-  margin-top: 24px;
-  padding: 3px;
-  border-radius: 10px;
-  background: #efece6;
-}
-
-.ftTab {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px 5px 5px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
+.gaLede {
+  max-width: 34em;
+  margin: 16px auto 0;
   color: #6a665e;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
+  font-size: clamp(15px, 1.15vw, 17px);
+  line-height: 1.5;
+  text-wrap: balance;
 }
 
-.ftTab[data-on] {
-  background: #fff;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
-  color: #1a1613;
-}
-
-.ftTabIcon {
-  display: grid;
-  place-items: center;
-  width: 19px;
-  height: 19px;
-  border-radius: 5px;
-  background: #d6d1c7;
-  color: #fff;
-  transition: background 0.2s ease;
-}
-
-.ftTab[data-on] .ftTabIcon {
-  background: #1a1613;
-}
-
-.ftCards {
+.gaCards {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: start;
-  gap: clamp(14px, 1.6vw, 24px);
-  margin: clamp(36px, calc(4 * var(--fit, 1vw)), 56px) 0 0;
+  gap: clamp(12px, 1.3vw, 20px);
+  margin: clamp(40px, calc(4.4 * var(--fit, 1vw)), 64px) 0 0;
   padding: 0;
   list-style: none;
   text-align: left;
 }
 
-.ftCard {
-  border: 1px solid #e6e2da;
-  border-radius: 16px;
-  background: #fff;
-  cursor: pointer;
-  transition:
-    padding 0.3s ease,
-    box-shadow 0.3s ease;
+.gaCard {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  container-type: inline-size;
 }
 
-.ftCard[data-on] {
-  padding: 6px;
-  box-shadow: 0 22px 44px -28px rgb(0 0 0 / 0.3);
-  cursor: default;
-}
-
-.ftInner {
+/* the card's content, inside the card so cqw counts the card's width */
+.gaType,
+.gaPhoto,
+.gaDark {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  min-height: clamp(210px, calc(17 * var(--fit, 1vw)), 250px);
-  padding: clamp(20px, 1.8vw, 26px);
-  border-radius: 12px;
-  transition:
-    background 0.3s ease,
-    color 0.3s ease,
-    min-height 0.3s ease;
 }
 
-.ftCard[data-on] .ftInner {
-  min-height: clamp(240px, calc(19.5 * var(--fit, 1vw)), 290px);
+/* ---- 1: white, two-tone type ---- */
+
+.gaType {
+  align-items: flex-start;
+  padding: 7cqw;
+  background: #fff;
+}
+
+/* plain, top right, as card 02's label */
+.gaTag {
+  align-self: flex-end;
+  margin: 0;
+  font-size: max(11px, 3.1cqw);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gaWords {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.gaBig {
+  margin: 0;
+  color: #111113;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 17cqw;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+
+.gaMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.gaMask > span {
+  display: block;
+}
+
+.gaSoft {
+  margin: 3cqw 0 0;
+  color: #b4afa5;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 9.6cqw;
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.gaFoot {
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 12px;
+  color: #111113;
+  font-size: max(13px, 3.6cqw);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.gaRound {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: max(34px, 9cqw);
+  height: max(34px, 9cqw);
+  border-radius: 50%;
+  background: #1e3524;
+  color: #fff;
+  transition: transform 0.25s ease;
+}
+
+.gaFoot:hover .gaRound {
+  transform: translateX(3px);
+}
+
+/* ---- 2: the photo ---- */
+
+.gaPhoto {
+  justify-content: flex-end;
+  padding: 7cqw;
+  background: #1a1613;
+  color: #fff;
+}
+
+.gaPhotoImg {
+  object-fit: cover;
+  object-position: 38% 50%;
+}
+
+/* dark at the foot so the title reads */
+.gaPhoto::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.62), rgb(0 0 0 / 0) 50%);
+  content: "";
+  pointer-events: none;
+}
+
+.gaPhotoNum {
+  position: absolute;
+  top: 7cqw;
+  right: 7cqw;
+  z-index: 1;
+  margin: 0;
+  font-size: max(11px, 3.1cqw);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gaView {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px 7px 7px;
+  border-radius: 999px;
+  background: #fff;
+  color: #111113;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  translate: -50% -50%;
+  transition: scale 0.25s ease;
+}
+
+.gaView:hover {
+  scale: 1.05;
+}
+
+.gaViewIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   background: #111113;
   color: #fff;
 }
 
-.ftIcon {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #1a1613;
-  box-shadow: 0 4px 10px rgb(0 0 0 / 0.18);
+.gaPhotoFoot {
+  position: relative;
+  z-index: 1;
+}
+
+.gaPhotoTitle {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 11cqw;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.gaPhotoText {
+  max-width: 16em;
+  margin: 10px 0 0;
+  color: rgb(255 255 255 / 0.8);
+  font-size: max(14px, 3.9cqw);
+  line-height: 1.4;
+}
+
+/* ---- 3: black, the chart ---- */
+
+.gaDark {
+  padding: 7cqw;
+  background: #000;
   color: #fff;
 }
 
-.ftCard[data-on] .ftIcon {
-  background: #fff;
-  color: #111113;
+.gaDarkHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.ftNum {
-  margin: 40px 0 0;
-  color: #8a857c;
-  font-size: 11.5px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.ftCard[data-on] .ftNum {
-  color: rgb(255 255 255 / 0.55);
-}
-
-.ftCardTitle {
-  margin: 8px 0 0;
+.gaDarkTitle {
+  margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(22px, 1.8vw, 28px);
+  font-size: 11cqw;
   font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  line-height: 1;
+  letter-spacing: -0.035em;
 }
 
-.ftCardText {
-  margin: 10px 0 0;
-  color: #8a857c;
-  font-size: 14px;
-  line-height: 1.45;
-}
-
-.ftCard[data-on] .ftCardText {
-  color: rgb(255 255 255 / 0.7);
-}
-
-.ftMore {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: auto;
-  padding-top: 22px;
-  align-self: flex-end;
-  color: #1a1613;
-  font-size: 13px;
+.gaDarkNum {
+  margin: 0;
+  padding-top: 0.3em;
+  font-size: max(11px, 3.1cqw);
   font-weight: 500;
-  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.ftMore svg {
-  transition: transform 0.2s ease;
+/* twelve months of bars, the last one green with the 3× on it */
+.gaChart {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin: 8cqw 0 6cqw;
 }
 
-.ftMore:hover svg {
-  transform: translateX(3px);
+.gaBars {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: 1.6cqw;
+  border-bottom: 1px solid rgb(255 255 255 / 0.18);
 }
 
-.ftFoot {
+.gaBar {
+  position: relative;
+  flex: 1;
+  border-radius: 1.2cqw 1.2cqw 0 0;
+  background: rgb(255 255 255 / 0.14);
+  transform-origin: 50% 100%;
+}
+
+.gaBar[data-last] {
+  background: #3fbf6f;
+}
+
+.gaBarTag {
+  position: absolute;
+  bottom: calc(100% + 2cqw);
+  right: 0;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: max(14px, 4.6cqw);
+  font-weight: 500;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.gaAxis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2.4cqw;
+  color: rgb(255 255 255 / 0.45);
+  font-size: max(11px, 3cqw);
+}
+
+.gaDarkText {
+  max-width: 19em;
+  margin: 0;
+  color: rgb(255 255 255 / 0.68);
+  font-size: max(14px, 4.2cqw);
+  line-height: 1.4;
+}
+
+.gaPill {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 10px 4px;
-}
-
-.ftFoot .ftMore {
-  margin: 0;
-  padding: 0;
-}
-
-.ftProof {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #4a463f;
-  font-size: 12.5px;
-  line-height: 1.35;
-  text-wrap: balance;
-}
-
-.ftProofIcon {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #efece6;
-  color: #1a1613;
-}
-
-/* ================= 3: Type (the low-fi as written) ================= */
-
-.tyLabel {
-  margin: 0;
-  color: #6a665e;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.tyTitle {
-  max-width: 14em;
-  margin: clamp(24px, calc(3 * var(--fit, 1vw)), 40px) 0 0;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
-  font-weight: 400;
-  line-height: 1.12;
-  letter-spacing: -0.035em;
-  text-wrap: balance;
-}
-
-.tyCols {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: clamp(44px, calc(5.5 * var(--fit, 1vw)), 80px) 0 0;
-  padding: 0;
-  border-top: 1px solid #dcd8cf;
-  list-style: none;
-}
-
-.tyCols > li + li {
-  border-left: 1px solid #dcd8cf;
-}
-
-.tyCol {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: clamp(20px, calc(2 * var(--fit, 1vw)), 30px) clamp(20px, 2vw, 32px) 4px;
-  color: inherit;
-  text-decoration: none;
-}
-
-.tyCols > li:first-child .tyCol {
-  padding-left: 0;
-}
-
-.tyNum {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #6a665e;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.tyArrow {
-  display: grid;
-  opacity: 0;
-  transform: translate(-4px, -4px);
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.tyCol:hover .tyArrow,
-.tyCol:focus-visible .tyArrow {
-  opacity: 1;
-  transform: none;
-}
-
-.tyColTitle {
-  margin-top: clamp(28px, calc(3.5 * var(--fit, 1vw)), 52px);
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(30px, calc(3.2 * var(--fit, 1vw)), 46px);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-}
-
-.tyColText {
-  max-width: 20em;
-  margin-top: 12px;
-  color: #8a857c;
-  font-size: 15px;
-  line-height: 1.5;
-}
-
-/* ================= the picker (not on the live site) ================= */
-
-.picker {
-  position: fixed;
-  bottom: 16px;
-  left: 16px;
-  z-index: 60;
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  padding: 4px;
+  height: max(46px, 14.5cqw);
+  margin-top: 5cqw;
+  padding: 0 6cqw;
   border-radius: 999px;
-  background: rgb(17 17 19 / 0.9);
+  background: #333;
   color: #fff;
-  font-size: 12px;
-  backdrop-filter: blur(8px);
+  font-size: max(13px, 3.8cqw);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
 }
 
-.pickerLabel {
-  padding: 0 6px 0 8px;
-  opacity: 0.7;
+.gaPill:hover {
+  background: #444;
 }
 
-.pickerBtn {
-  width: 26px;
-  height: 26px;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: #fff;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
+.gaPill svg {
+  flex: none;
+  transition: transform 0.2s ease;
 }
 
-.pickerBtn[data-on] {
-  background: #fff;
-  color: #111113;
+.gaPill:hover svg {
+  transform: translateX(3px);
 }
 
 /* ================= tablets ================= */
 
 @media (max-width: 900px) {
-  .stacked {
+  .gaCards {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .stLeft {
-    justify-content: flex-start;
-    gap: 20px;
-  }
-
-  .stPics {
-    display: none;
-  }
-
-  .ftCards {
-    grid-template-columns: minmax(0, 1fr);
-    max-width: 520px;
+    max-width: 460px;
     margin-inline: auto;
-  }
-
-  .ftInner,
-  .ftCard[data-on] .ftInner {
-    min-height: 0;
-  }
-
-  /* above the phone dock */
-  .picker {
-    bottom: 96px;
-  }
-}
-
-@media (max-width: 760px) {
-  .tyCols {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .tyCols > li + li {
-    border-top: 1px solid #dcd8cf;
-    border-left: 0;
-  }
-
-  .tyCol,
-  .tyCols > li:first-child .tyCol {
-    padding: 22px 0 26px;
-  }
-
-  .tyColTitle {
-    margin-top: 16px;
   }
 }
 
@@ -700,86 +385,13 @@
     padding: 72px 20px;
   }
 
-  .stTitle,
-  .ftTitle,
-  .tyTitle {
+  .gaTitle {
     font-size: 28px;
-  }
-
-  .stTitle {
-    max-width: 11em;
-  }
-
-  .stText {
-    font-size: 14px;
-  }
-
-  .stCard {
-    --thumb: 92px;
-
-    gap: 14px;
-    padding: 14px 14px 14px 18px;
-    border-radius: 16px;
-  }
-
-  .stCardTitle {
-    font-size: 21px;
-  }
-
-  .stCardText {
-    font-size: 13.5px;
-  }
-
-  .stMore {
-    margin-top: 14px;
-  }
-
-  .ftTabs {
-    margin-top: 20px;
-  }
-
-  .ftCards {
-    margin-top: 28px;
-  }
-
-  .ftNum {
-    margin-top: 28px;
-  }
-
-  .ftCardTitle {
-    font-size: 22px;
-  }
-
-  .ftFoot {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .ftFoot .ftMore {
-    align-self: flex-end;
-  }
-
-  .tyTitle {
-    margin-top: 16px;
-  }
-
-  .tyCols {
-    margin-top: 32px;
-  }
-
-  .tyColTitle {
-    font-size: 26px;
-  }
-
-  .tyColText {
-    font-size: 14px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section *,
-  .picker * {
+  .section * {
     transition: none !important;
   }
 }

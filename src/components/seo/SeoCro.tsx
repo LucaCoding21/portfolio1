@@ -8,9 +8,14 @@
  * tour of the tools over a real site we built (cro/CroTabs), and 2 one
  * visitor's story, pinned while you scroll (cro/CroStory). Both use
  * Northwest Railing's home page and the same example data, and say so.
- * Once William picks, delete the other draft and the picker.
+ * Draft 3 (Nov 24 2026, the default): an "Agent Canvas" reference William
+ * sent, numbered steps beside one plain card over a mountain photo
+ * (cro/CroCanvas), the label, heading and line at the top of the left
+ * column (by request, no centred heading).
+ * Once William picks, delete the other drafts and the picker.
  */
 import { useEffect, useState } from "react";
+import CroCanvas from "./cro/CroCanvas";
 import CroStory from "./cro/CroStory";
 import CroTabs from "./cro/CroTabs";
 import s from "./SeoCro.module.css";
@@ -18,17 +23,22 @@ import s from "./SeoCro.module.css";
 const DRAFTS = [
   { n: 1, name: "Tabs" },
   { n: 2, name: "Story" },
+  { n: 3, name: "Canvas" },
 ];
 
+const TITLE = "Your website gets better every month.";
+const LEDE =
+  "We study how people use your website and improve what stops them from getting in touch.";
+
 export default function SeoCro() {
-  const [draft, setDraft] = useState(2);
+  const [draft, setDraft] = useState(3);
   const [picker, setPicker] = useState(false);
 
   // read after mount, so the server's HTML and the first render agree
   useEffect(() => {
     const q = Number(new URLSearchParams(window.location.search).get("cro"));
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reads the URL once, after hydration
-    if (q === 1 || q === 2) setDraft(q);
+    if (q === 1 || q === 2 || q === 3) setDraft(q);
     setPicker(!window.location.hostname.endsWith("cloverfield.studio"));
   }, []);
 
@@ -42,20 +52,28 @@ export default function SeoCro() {
   return (
     <section id="get-chosen" className={s.cro} data-section="cro">
       <div className={s.inner}>
-        <div className={s.head}>
-          <p className={s.eyebrow}>02 / Get chosen</p>
-          <h2 className={s.title}>Your website gets better every month.</h2>
-          <p className={s.lede}>
-            We study how people use your website and improve what stops them from getting in touch.
-          </p>
-        </div>
-
-        {draft === 1 ? (
-          <CroTabs />
+        {draft === 3 ? (
+          <>
+            <CroCanvas title={TITLE} lede={LEDE} />
+          </>
         ) : (
           <>
-            <CroStory />
-            <p className={s.note}>Example data, shown on a website we built.</p>
+            <div className={s.head}>
+              <p className={s.eyebrow}>02 / Get chosen</p>
+              <h2 className={s.title}>{TITLE}</h2>
+              <p className={s.lede}>{LEDE}</p>
+            </div>
+
+            {draft === 1 ? (
+              <CroTabs />
+            ) : (
+              <>
+                <CroStory />
+                <p className={s.note}>
+                  Example data, shown on a website we built.
+                </p>
+              </>
+            )}
           </>
         )}
       </div>

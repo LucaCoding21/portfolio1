@@ -1,27 +1,19 @@
 "use client";
 
 /**
- * "Our approach" on /seo (Nov 24 2026, William's low-fi): a short intro to
- * the three pillars between the solution band and "01 / Get found" (SeoGet).
- * The low-fi asked for a compact, typography-led section; William then sent
- * two references, so it's three drafts with a picker (?pillars=1|2|3, the
- * pill at the bottom left, hidden on cloverfield.studio):
- *   1 Stacked: the Terrava "Built for Green Infrastructure" layout (heading
- *     with an inline picture, a line and two small pictures on the left,
- *     three stacked cards with a picture each on the right, the middle one
- *     dark)
- *   2 Featured: the Euphoria layout (centred heading, three pills that pick
- *     the featured card, three cards with the featured one black)
- *   3 Type: the low-fi as written (the heading, three ruled columns)
- * Once William picks, delete the other drafts and the picker.
- *
- * Pictures are real material only: Google results for a client, a client's
- * home page (with heat drawn over its buttons) and a drawn chart. The
- * "Learn more" links go to #get-found (SeoGet), #get-chosen (SeoCro) and
- * #results (the proof).
+ * "Our approach" on /seo (Nov 24 2026, William's low-fi, then a "Where
+ * Runners Connect" reference he sent; picked from four drafts the same day):
+ * a centred heading and line between the solution band and "01 / Get found"
+ * (SeoGet), then three tall cards. 01 is type only, the grey line filling to
+ * ink as you scroll (William turned down a picture there, first a Google
+ * screenshot, then a shopfront photo); 02 a full photo with a "Learn more"
+ * pill; 03 black with twelve months of bars rising to the 3× (a line chart
+ * was turned down). The labels are plain small caps, not pills (by request).
+ * The links go to #get-found (SeoGet), #get-chosen (SeoCro) and #results.
  */
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 import s from "./SeoPillars.module.css";
 
 type Key = "seo" | "cro" | "roi";
@@ -92,15 +84,13 @@ const PILLARS: Pillar[] = [
   },
 ];
 
-const DRAFTS = [
-  { n: 1, name: "Stacked" },
-  { n: 2, name: "Featured" },
-  { n: 3, name: "Type" },
-] as const;
-
-type DraftN = (typeof DRAFTS)[number]["n"];
-
-function Icon({ children, size = 16 }: { children: React.ReactNode; size?: number }) {
+function Icon({
+  children,
+  size = 16,
+}: {
+  children: React.ReactNode;
+  size?: number;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -118,300 +108,200 @@ function Icon({ children, size = 16 }: { children: React.ReactNode; size?: numbe
   );
 }
 
-const ARROW_DOWN_RIGHT = <path d="m7 7 10 10M17 8v9H8" />;
 const ARROW_RIGHT = <path d="M5 12h14M13 6l6 6-6 6" />;
 
-/* ---------- the card pictures (draft 1) ---------- */
+const [SEO, CRO, ROI] = PILLARS;
 
-/** Google's map results for one of our clients */
-function SeoThumb() {
-  return (
-    <Image
-      src="/seo/proof/google-vehicle-wraps-langley.webp"
-      alt=""
-      width={1344}
-      height={896}
-      sizes="180px"
-      loading="lazy"
-      className={s.thumbCover}
-      style={{ objectPosition: "22% 30%" }}
-    />
-  );
+/** card 03's bars, month 1 to month 12, as % of the chart's height */
+const ROI_BARS = [14, 17, 16, 22, 26, 31, 36, 43, 51, 60, 71, 88];
+
+/**
+ * The cards' motion (Nov 24 2026, by request): card 01's title rises out of
+ * a mask and its grey line fills to ink word by word as the card scrolls
+ * through (scrubbed); card 03's bars grow up one after another and
+ * the 3× tag pops on the last (once). Nothing moves with reduced motion.
+ */
+function useGalleryMotion(root: React.RefObject<HTMLDivElement | null>) {
+  useEffect(() => {
+    const el = root.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return;
+    let ctx: gsap.Context | undefined;
+    let cancelled = false;
+    import("gsap/dist/ScrollTrigger").then(({ ScrollTrigger }) => {
+      if (cancelled) return;
+      gsap.registerPlugin(ScrollTrigger);
+      ctx = gsap.context(() => {
+        const seo = el.querySelector("[data-ga='seo']");
+        if (seo) {
+          gsap.from(seo.querySelector("[data-ga='title']"), {
+            yPercent: 110,
+            duration: 1.1,
+            ease: "expo.out",
+            scrollTrigger: { trigger: seo, start: "top 80%", once: true },
+          });
+          gsap.to(seo.querySelectorAll("[data-ga='word']"), {
+            color: "#111113",
+            stagger: 0.5,
+            ease: "none",
+            scrollTrigger: {
+              trigger: seo,
+              start: "top 70%",
+              end: "center 40%",
+              scrub: 0.6,
+            },
+          });
+        }
+        const roi = el.querySelector("[data-ga='roi']");
+        if (roi) {
+          gsap
+            .timeline({
+              scrollTrigger: { trigger: roi, start: "top 72%", once: true },
+            })
+            .from(roi.querySelectorAll("[data-ga='bar']"), {
+              scaleY: 0,
+              duration: 0.9,
+              ease: "expo.out",
+              stagger: 0.06,
+            })
+            .from(
+              roi.querySelector("[data-ga='tag']"),
+              { y: 8, opacity: 0, duration: 0.5, ease: "back.out(2)" },
+              0.85,
+            );
+        }
+      }, el);
+    });
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
+  }, [root]);
 }
 
-/** a client's home page with click heat over its buttons */
-function CroThumb() {
+function Gallery() {
+  const root = useRef<HTMLDivElement>(null);
+  useGalleryMotion(root);
   return (
-    <>
-      <Image
-        src="/seo/cro/nwr-page.webp"
-        alt=""
-        width={1280}
-        height={2898}
-        sizes="440px"
-        loading="lazy"
-        className={s.thumbPage}
-      />
-      <span className={s.heat} style={{ left: "14%", top: "72%", width: "46%" }} />
-      <span className={s.heat} style={{ left: "35%", top: "72%", width: "30%", opacity: 0.75 }} />
-      <span className={s.heat} style={{ left: "30%", top: "48%", width: "26%", opacity: 0.5 }} />
-    </>
-  );
-}
-
-/** a drawn chart going up */
-function RoiThumb() {
-  return (
-    <svg className={s.chart} viewBox="0 0 120 120" aria-hidden>
-      <defs>
-        <linearGradient id="pillar-roi-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#1f8a4c" stopOpacity="0.22" />
-          <stop offset="1" stopColor="#1f8a4c" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      {[30, 54, 78, 102].map((y) => (
-        <line key={y} x1="10" x2="110" y1={y} y2={y} stroke="rgb(0 0 0 / 0.07)" strokeWidth="1" />
-      ))}
-      <path
-        d="M10 94 L24 90 L38 92 L52 80 L66 74 L80 62 L94 48 L108 32 L108 102 L10 102 Z"
-        fill="url(#pillar-roi-fill)"
-      />
-      <path
-        d="M10 94 L24 90 L38 92 L52 80 L66 74 L80 62 L94 48 L108 32"
-        fill="none"
-        stroke="#1f8a4c"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="108" cy="32" r="4.2" fill="#1f8a4c" stroke="#fff" strokeWidth="2" />
-    </svg>
-  );
-}
-
-const THUMBS: Record<Key, () => React.ReactNode> = { seo: SeoThumb, cro: CroThumb, roi: RoiThumb };
-
-/* ---------- 1: Stacked ---------- */
-
-function Stacked() {
-  return (
-    <div className={s.stacked}>
-      <div className={s.stLeft}>
-        <div>
-          <p className={s.stPill}>Our approach</p>
-          <h2 className={s.stTitle}>
-            Getting found{" "}
-            <span className={s.chip} aria-hidden>
-              <Image
-                src="/seo/proof/google-railing-installation-yakima.webp"
-                alt=""
-                width={1568}
-                height={395}
-                sizes="160px"
-                loading="lazy"
-              />
-            </span>{" "}
-            is only half the job.
-          </h2>
-        </div>
-        <p className={s.stText}>
-          Showing up on Google is the first step. Then your website has to get people to call you. We work on both, and
-          show you what it brings back.
-        </p>
-        <div className={s.stPics} aria-hidden>
-          <span className={s.stPic}>
-            <Image src="/seo/offer-planing.webp" alt="" width={1400} height={936} sizes="120px" loading="lazy" />
-          </span>
-          <span className={s.stPic}>
-            <Image
-              src="/success/cards/northwest-railing.webp"
-              alt=""
-              width={640}
-              height={400}
-              sizes="120px"
-              loading="lazy"
-              style={{ objectPosition: "68% 50%" }}
-            />
-          </span>
-        </div>
-      </div>
-
-      <ul className={s.stCards}>
-        {PILLARS.map((p) => {
-          const Thumb = THUMBS[p.key];
-          return (
-            <li key={p.key} className={s.stCard} data-dark={p.key === "cro" || undefined}>
-              <div className={s.stBody}>
-                <p className={s.stNum}>{p.num}</p>
-                <h3 className={s.stCardTitle}>{p.title}</h3>
-                <p className={s.stCardText}>{p.text}</p>
-                <a className={s.stMore} href={p.href}>
-                  Learn more
-                  <span className={s.stMoreChip}>
-                    <Icon size={13}>{ARROW_DOWN_RIGHT}</Icon>
-                  </span>
-                </a>
-              </div>
-              <div className={s.thumb} data-kind={p.key} aria-hidden>
-                <Thumb />
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/* ---------- 2: Featured ---------- */
-
-function Featured() {
-  const [on, setOn] = useState<Key>("cro");
-  return (
-    <div className={s.featured}>
-      <p className={s.ftPill}>
-        <span className={s.ftPillDot} aria-hidden />
-        Our approach
+    <div className={s.gallery} ref={root}>
+      <h2 className={s.gaTitle}>Getting found is only half the job.</h2>
+      <p className={s.gaLede}>
+        Showing up on Google is the first step. Then your website has to get
+        people to call you. We work on both, and show you what it brings back.
       </p>
-      <h2 className={s.ftTitle}>
-        Getting found is only <span className={s.ftGrey}>half</span> the job.
-      </h2>
 
-      <div className={s.ftTabs} role="group" aria-label="Pick a part">
-        {PILLARS.map((p) => (
-          <button
-            key={p.key}
-            type="button"
-            className={s.ftTab}
-            data-on={on === p.key || undefined}
-            aria-pressed={on === p.key}
-            onClick={() => setOn(p.key)}
-          >
-            <span className={s.ftTabIcon} aria-hidden>
-              <Icon size={11}>{p.icon}</Icon>
-            </span>
-            {p.tag}
-          </button>
-        ))}
-      </div>
-
-      <ul className={s.ftCards}>
-        {PILLARS.map((p) => {
-          const lit = on === p.key;
-          return (
-            <li key={p.key} className={s.ftCard} data-on={lit || undefined} onClick={() => setOn(p.key)}>
-              <div className={s.ftInner}>
-                <span className={s.ftIcon} aria-hidden>
-                  <Icon size={15}>{p.icon}</Icon>
+      <ul className={s.gaCards}>
+        {/* 1: white, big two-tone type */}
+        <li className={s.gaCard} data-ga="seo">
+          <div className={s.gaType}>
+            <p className={s.gaTag}>{SEO.num}</p>
+            <div className={s.gaWords}>
+              <h3 className={s.gaBig}>
+                <span className={s.gaMask}>
+                  <span data-ga="title">{SEO.title}</span>
                 </span>
-                <p className={s.ftNum}>{p.num}</p>
-                <h3 className={s.ftCardTitle}>{p.title}</h3>
-                <p className={s.ftCardText}>{p.text}</p>
-                {!lit && (
-                  <a className={s.ftMore} href={p.href}>
-                    Learn more <Icon size={14}>{ARROW_RIGHT}</Icon>
-                  </a>
-                )}
-              </div>
-              {lit && (
-                <div className={s.ftFoot}>
-                  <span className={s.ftProof}>
-                    <span className={s.ftProofIcon} aria-hidden>
-                      <Icon size={10}>{p.icon}</Icon>
-                    </span>
-                    {p.proof}
+              </h3>
+              <p className={s.gaSoft} aria-label={SEO.text}>
+                {SEO.text.split(" ").map((w, i) => (
+                  <span key={i} data-ga="word" aria-hidden>
+                    {w}{" "}
                   </span>
-                  <a className={s.ftMore} href={p.href}>
-                    Learn more <Icon size={14}>{ARROW_RIGHT}</Icon>
-                  </a>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/* ---------- 3: Type ---------- */
-
-function Type() {
-  return (
-    <div className={s.type}>
-      <p className={s.tyLabel}>Our approach</p>
-      <h2 className={s.tyTitle}>Getting found is only half the job.</h2>
-      <ul className={s.tyCols}>
-        {PILLARS.map((p) => (
-          <li key={p.key}>
-            <a className={s.tyCol} href={p.href}>
-              <span className={s.tyNum}>
-                {p.num}
-                <span className={s.tyArrow} aria-hidden>
-                  <Icon size={16}>{ARROW_DOWN_RIGHT}</Icon>
-                </span>
+                ))}
+              </p>
+            </div>
+            <a className={s.gaFoot} href={SEO.href}>
+              Learn more
+              <span className={s.gaRound} aria-hidden>
+                <Icon size={14}>{ARROW_RIGHT}</Icon>
               </span>
-              <span className={s.tyColTitle}>{p.title}</span>
-              <span className={s.tyColText}>{p.text}</span>
             </a>
-          </li>
-        ))}
+          </div>
+        </li>
+
+        {/* 2: a full photo, the pill in the middle, the title at the foot */}
+        <li className={s.gaCard}>
+          <div className={s.gaPhoto}>
+            <Image
+              src="/seo/faq-workshop.webp"
+              alt=""
+              fill
+              sizes="(max-width: 900px) 100vw, 33vw"
+              loading="lazy"
+              className={s.gaPhotoImg}
+            />
+            <p className={s.gaPhotoNum}>{CRO.num}</p>
+            <a className={s.gaView} href={CRO.href}>
+              <span className={s.gaViewIcon} aria-hidden>
+                <Icon size={12}>{CRO.icon}</Icon>
+              </span>
+              Learn more
+            </a>
+            <div className={s.gaPhotoFoot}>
+              <h3 className={s.gaPhotoTitle}>{CRO.title}</h3>
+              <p className={s.gaPhotoText}>{CRO.text}</p>
+            </div>
+          </div>
+        </li>
+
+        {/* 3: black, a chart rising across it to the 3× */}
+        <li className={s.gaCard} data-ga="roi">
+          <div className={s.gaDark}>
+            <div className={s.gaDarkHead}>
+              <h3 className={s.gaDarkTitle}>{ROI.title}</h3>
+              <p className={s.gaDarkNum}>{ROI.num}</p>
+            </div>
+            <div className={s.gaChart} aria-hidden>
+              <div className={s.gaBars}>
+                {ROI_BARS.map((h, i) => {
+                  const last = i === ROI_BARS.length - 1;
+                  return (
+                    <span
+                      key={i}
+                      className={s.gaBar}
+                      data-last={last || undefined}
+                      style={{ height: `${h}%` }}
+                      data-ga="bar"
+                    >
+                      {last && (
+                        <span className={s.gaBarTag} data-ga="tag">
+                          3×
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+              <div className={s.gaAxis}>
+                <span>Month 1</span>
+                <span>Month 12</span>
+              </div>
+            </div>
+            <div className={s.gaDarkFoot}>
+              <p className={s.gaDarkText}>
+                3× your SEO investment back, or we work for free.
+              </p>
+              <a className={s.gaPill} href={ROI.href}>
+                {ROI.text}
+                <Icon size={15}>{ARROW_RIGHT}</Icon>
+              </a>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
   );
-}
-
-/* ---------- the section and the picker ---------- */
-
-function readDraft(): DraftN {
-  const n = Number(new URLSearchParams(window.location.search).get("pillars"));
-  return n === 2 || n === 3 ? n : 1;
 }
 
 export default function SeoPillars() {
-  const [draft, setDraft] = useState<DraftN>(1);
-  const [picker, setPicker] = useState(false);
-
-  // read the URL after mount, so the server and first client render agree
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDraft(readDraft());
-    setPicker(!window.location.hostname.endsWith("cloverfield.studio"));
-  }, []);
-
-  const pick = (n: DraftN) => {
-    setDraft(n);
-    const url = new URL(window.location.href);
-    url.searchParams.set("pillars", String(n));
-    window.history.replaceState(window.history.state, "", url);
-  };
-
   return (
-    <section className={s.section} data-section="approach" aria-label="Our approach">
+    <section
+      className={s.section}
+      data-section="approach"
+      aria-label="Our approach"
+    >
       <div className={s.inner}>
-        {draft === 1 && <Stacked />}
-        {draft === 2 && <Featured />}
-        {draft === 3 && <Type />}
+        <Gallery />
       </div>
-
-      {picker && (
-        <div className={s.picker} role="group" aria-label="Pillars draft">
-          <span className={s.pickerLabel}>Pillars</span>
-          {DRAFTS.map((d) => (
-            <button
-              key={d.n}
-              type="button"
-              title={d.name}
-              className={s.pickerBtn}
-              data-on={draft === d.n || undefined}
-              aria-pressed={draft === d.n}
-              onClick={() => pick(d.n)}
-            >
-              {d.n}
-            </button>
-          ))}
-        </div>
-      )}
     </section>
   );
 }
