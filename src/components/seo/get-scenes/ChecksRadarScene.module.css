@@ -1,0 +1,404 @@
+/* ChecksRadarScene: the radar over a map in "Your rankings, checked monthly"
+   (Nov 23 2026). The stage, pop-in, digit roll and text swap come from
+   StallScenes.module.css (x.ai's light feature cards); these are the pale
+   map, the range rings, the beam, the grid of points, the business and the
+   month chip. */
+
+/* the grid needs the slot's height as well as its width (the stage has a
+   definite height) */
+.scene.scene {
+  container-type: size;
+}
+
+/* ---------- the map: warm grey, white roads, one park, a bit of water ---------- */
+
+.map {
+  position: absolute;
+  inset: 0;
+  background: #f4f2ed;
+}
+
+.road,
+.park,
+.water {
+  position: absolute;
+  display: block;
+}
+
+.road {
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.025);
+}
+
+/* the main road, across the upper part */
+.road[data-r="a"] {
+  top: 27%;
+  right: -10%;
+  left: -10%;
+  height: 6px;
+  rotate: -5deg;
+}
+
+/* a long road down the left */
+.road[data-r="b"] {
+  top: -20%;
+  left: 29%;
+  width: 5px;
+  height: 140%;
+  rotate: 11deg;
+}
+
+/* side streets */
+.road[data-r="c"] {
+  top: 74%;
+  right: -10%;
+  left: 38%;
+  height: 3px;
+  rotate: 3deg;
+}
+
+.road[data-r="d"] {
+  top: -10%;
+  left: 77%;
+  width: 3px;
+  height: 120%;
+  rotate: -7deg;
+}
+
+.road[data-r="e"] {
+  top: 56%;
+  left: -10%;
+  width: 34%;
+  height: 3px;
+  rotate: -14deg;
+}
+
+.park {
+  top: 66%;
+  left: 5%;
+  width: 21%;
+  height: 26%;
+  border-radius: 10px;
+  background: #e8ece2;
+}
+
+.water {
+  top: -18%;
+  right: -6%;
+  width: 24%;
+  height: 46%;
+  border-radius: 46% 40% 50% 60%;
+  background: #e4e9ea;
+}
+
+/* ---------- the field: rings, beam, points and the business ----------
+   the business sits in the middle of the grid; the first row clears the
+   month chip and the last keeps a margin from the foot. Columns are spaced
+   at most 1.4 times the rows, so the angles the script times the points by
+   stay within a few degrees */
+
+.field {
+  --p: clamp(13px, 5.4cqw, 16px);
+  --dy-room: calc((100cqh - 66px) / 2);
+  --dx: min(calc((100cqw - 48px) / 4), calc(var(--dy-room) * 1.4));
+  --dy: min(var(--dy-room), var(--dx));
+  --cy: calc(50cqh + 11px);
+
+  position: absolute;
+  inset: 0;
+}
+
+/* tall slots: two more rows, a 5 by 5 grid */
+@container (min-height: 215px) {
+  .field {
+    --dy-room: calc((100cqh - 66px) / 4);
+  }
+}
+
+.ring,
+.beam,
+.ping {
+  position: absolute;
+  top: var(--cy);
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.ring {
+  width: calc(var(--n) * 2 * var(--dx));
+  aspect-ratio: 1;
+  border: 1px solid rgb(0 0 0 / 0.055);
+  border-radius: 50%;
+}
+
+/* the beam: a soft green wedge trailing a thin edge, turning clockwise from
+   30 degrees before straight up to 30 past a full turn, fading in and out
+   at the ends (the script's TURN and LEAD_IN match) */
+.beam {
+  width: 220cqmax;
+  aspect-ratio: 1;
+  animation: sweep var(--sweep) linear both;
+}
+
+@keyframes sweep {
+  from {
+    opacity: 0;
+    rotate: -30deg;
+  }
+
+  7.14% {
+    opacity: 1;
+  }
+
+  85.71% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    rotate: 390deg;
+  }
+}
+
+.wedge,
+.edge {
+  position: absolute;
+  display: block;
+}
+
+.wedge {
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from -62deg, rgb(0 201 114 / 0) 0deg, rgb(0 201 114 / 0.3) 62deg, transparent 62deg);
+  mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
+}
+
+.edge {
+  bottom: 50%;
+  left: 50%;
+  width: 1.5px;
+  height: 50%;
+  translate: -50% 0;
+  background: linear-gradient(to top, rgb(0 201 114 / 0.85), rgb(0 201 114 / 0.35) 45%, rgb(0 201 114 / 0) 80%);
+}
+
+/* ---------- the points ---------- */
+
+.point {
+  position: absolute;
+  top: calc(var(--cy) + var(--row) * var(--dy));
+  left: calc(50% + var(--col) * var(--dx));
+  width: var(--p);
+  height: var(--p);
+  margin: calc(var(--p) / -2) 0 0 calc(var(--p) / -2);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.11),
+    0 1px 2px rgb(0 0 0 / 0.04);
+}
+
+.point[data-outer] {
+  display: none;
+}
+
+@container (min-height: 215px) {
+  .point[data-outer] {
+    display: block;
+  }
+}
+
+/* a point's result pops in as the beam's edge reaches it (x.ai's
+   check-in), each on its own delay from the start of the sweep */
+.fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1.5px #fff,
+    0 1px 3px rgb(0 0 0 / 0.16);
+  animation: fillIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) var(--d-short) both;
+}
+
+@container (min-height: 215px) {
+  .fill {
+    animation-delay: var(--d-tall);
+  }
+}
+
+.fill[data-tone="top"] {
+  background: var(--green);
+}
+
+.fill[data-tone="mid"] {
+  background: #f2ac3d;
+}
+
+.fill[data-tone="low"] {
+  background: #d5d1c9;
+}
+
+/* last month's colours fade back while the next check runs */
+.fill[data-dim] {
+  filter: opacity(0.32);
+  transition: filter 0.3s ease-out;
+}
+
+@keyframes fillIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* ---------- your business ---------- */
+
+.pin {
+  position: absolute;
+  top: var(--cy);
+  left: 50%;
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 2px 7px 1px rgb(0 0 0 / 0.22);
+}
+
+.ping {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgb(0 201 114 / 0.7);
+  border-radius: 50%;
+  animation: ping 1.1s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@keyframes ping {
+  from {
+    opacity: 1;
+    scale: 0.6;
+  }
+
+  to {
+    opacity: 0;
+    scale: 3.4;
+  }
+}
+
+.tag {
+  position: absolute;
+  top: calc(var(--cy) + 11px);
+  left: 50%;
+  translate: -50% 0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #1c1c1c;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+/* ---------- the month chip, top left ---------- */
+
+.chip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--float);
+  font-size: 11px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.month {
+  font-weight: 600;
+}
+
+/* the count opens beside the month once October's check is done (its
+   space before sits on the dot, inside the clip, so the closed chip is
+   just the month) */
+.more {
+  display: grid;
+  grid-template-columns: 0fr;
+  opacity: 0;
+}
+
+.more[data-open] {
+  grid-template-columns: 1fr;
+  opacity: 1;
+  transition:
+    grid-template-columns 0.42s cubic-bezier(0.2, 0, 0, 1),
+    opacity 0.26s ease-out 0.08s;
+}
+
+.moreIn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-2);
+}
+
+.key {
+  display: block;
+  flex-shrink: 0;
+  margin-left: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+.count {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.countTall {
+  display: none;
+}
+
+@container (min-height: 215px) {
+  .countShort {
+    display: none;
+  }
+
+  .countTall {
+    display: inline-flex;
+  }
+}
+
+/* the narrowest slots keep the month alone */
+@container (max-width: 199px) {
+  .more {
+    display: none;
+  }
+}
+
+/* the still frame (reduced motion) shows the end at once */
+.scene[data-still] * {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

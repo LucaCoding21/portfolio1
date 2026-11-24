@@ -1,0 +1,176 @@
+/* PagesScene (Nov 23 2026): a website's Pages list in x.ai/bot's light
+   feature-card style. The window, head, title, grey lines, pop-in and cursor
+   come from StallScenes.module.css; this holds the list itself. Rows are
+   26px, so the three new pages sit inside the top 140px of the slot. */
+
+.headLeft {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* the page count: a quiet grey pill, so green stays for what's new */
+.count {
+  display: inline-flex;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.05);
+  color: var(--ink-2);
+  font-size: 11px;
+  line-height: 18px;
+  transition: opacity 0.26s;
+}
+
+.count[data-hidden] {
+  opacity: 0;
+}
+
+.newBtn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+  padding: 0 9px 0 7px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    transform 0.1s,
+    background-color 0.15s;
+}
+
+.newBtn[data-hover] {
+  background: #2b2b2b;
+}
+
+.newBtn[data-pressed] {
+  transform: scale(0.95);
+}
+
+/* ---------- the rows ---------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 26px;
+  padding: 0 8px 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--ink-3);
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.old .name {
+  color: var(--ink-2);
+}
+
+.status {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-left: auto;
+  padding-left: 6px;
+}
+
+/* a new page opens from nothing at the top, pushing the rest down, with a
+   faint green wash that fades; its words rise into the opening */
+.rowNew {
+  overflow: hidden;
+  animation:
+    rowOpen 0.34s cubic-bezier(0.2, 0, 0, 1) both,
+    rowWash 1.6s ease-out 0.1s both;
+}
+
+.rowInner {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  animation: popIn 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) 0.06s both;
+}
+
+.rowNew .icon {
+  color: var(--ink-2);
+}
+
+.rowNew .name {
+  font-weight: 500;
+}
+
+/* the green "New" pill, scaled in just after its row (x.ai's check timing) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 17px;
+  white-space: nowrap;
+  animation: pillIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+}
+
+@keyframes rowOpen {
+  from {
+    height: 0;
+  }
+}
+
+@keyframes rowWash {
+  from {
+    background-color: rgb(0 201 114 / 0.08);
+  }
+  to {
+    background-color: rgb(0 201 114 / 0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+@keyframes pillIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* the longest name ("Fence repair · Langley", 118px) and its pill fit with
+   the icons down to a 230px slot; anything narrower drops the icons */
+@container (max-width: 224px) {
+  .icon {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

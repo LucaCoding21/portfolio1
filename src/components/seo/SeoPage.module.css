@@ -5,6 +5,14 @@
  */
 
 .page {
+  /* Nov 15 2026: 1vw, or less on a short window. Section padding and big
+     headings count in it, so they keep the proportions they have on a
+     roughly 1512 x 815 window (and taller) but shrink on wide, short ones,
+     like a 13-inch laptop's 1470 x 673 Chrome window, where the hero ran
+     125px past the fold and every section felt a screen too tall. Phones
+     always get 1vw. */
+  --fit: min(1vw, calc(var(--svh, 1svh) * 1.86));
+
   overflow-x: clip;
   background: #f9f8f5;
   color: #1a1613;
@@ -38,7 +46,7 @@
   max-width: 920px;
   margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, 3.9vw, 52px);
+  font-size: clamp(32px, calc(3.9 * var(--fit)), 52px);
   font-weight: 400;
   line-height: 1.14;
   letter-spacing: -0.035em;
@@ -139,7 +147,7 @@ details[open] > summary .plus {
   justify-content: flex-start;
   /* the window less the same gap above and below, so the foot and its
      rounded corners show */
-  min-height: max(640px, calc(var(--svh, 1svh) * 100 - 2 * clamp(8px, 1vw, 16px)));
+  min-height: max(520px, calc(var(--svh, 1svh) * 100 - 2 * clamp(8px, 1vw, 16px)));
   overflow: hidden;
   border-radius: clamp(14px, 1.4vw, 22px);
   background: #1a1613;
@@ -165,7 +173,7 @@ details[open] > summary .plus {
 
 .heroCopy {
   display: grid;
-  grid-template-areas: "title" "lede" "promise" "ctas" "proof";
+  grid-template-areas: "title" "lede" "promise" "side";
   justify-items: start;
   gap: 20px;
   width: 100%;
@@ -187,9 +195,15 @@ details[open] > summary .plus {
 
 .heroCopy > .h1 { grid-area: title; }
 .heroCopy > .lede { grid-area: lede; }
-.heroCopy > .proof { grid-area: proof; }
+.heroCopy > .heroSide { grid-area: side; }
 .heroCopy > .promiseText { grid-area: promise; }
-.heroCopy > .heroCtas { grid-area: ctas; }
+
+/* the buttons over the trust line, in the copy's own spacing */
+.heroSide {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
 
 .h1 {
   margin: 0;
@@ -385,21 +399,78 @@ details[open] > summary .plus {
   font-weight: 600;
 }
 
+.proofShort {
+  display: none;
+}
+
+/* Phones (Nov 23 2026, by request: too much text): smaller type and more
+   room between the parts, one button ("See our results" hidden), and the
+   trust line short and beside the faces instead of three lines under them. */
 @media (max-width: 600px) {
   .heroCopy {
-    gap: 16px;
-    padding-bottom: 28px;
+    gap: 12px;
+    padding-bottom: 24px;
+  }
+  .heroCopy .h1 {
+    font-size: clamp(32px, 9vw, 38px);
+  }
+  .lede {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .promiseText {
+    gap: 8px;
+    margin-top: 12px;
+    font-size: 15px;
+    line-height: 1.4;
+    /* even lines, never "there." alone on the last */
+    text-wrap: balance;
+  }
+  .shield {
+    width: 19px;
+    height: 19px;
+    margin-top: 0;
+  }
+  .heroSide {
+    justify-self: stretch;
+    gap: 18px;
+    margin-top: 16px;
   }
   .heroCtas {
     flex-direction: column;
     justify-self: stretch;
+    padding-top: 0;
   }
-  .heroBtn,
-  .heroBtnGhost {
+  .heroBtn {
     justify-content: center;
+    min-height: 50px;
+  }
+  .heroBtnGhost {
+    display: none;
+  }
+  .proof {
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding-top: 0;
+  }
+  .face {
+    width: 30px;
+    height: 30px;
+  }
+  .face + .face {
+    margin-left: -7px;
   }
   .proofText {
-    max-width: 220px;
+    min-width: 0;
+    font-size: 13px;
+    /* two even lines, never "built" alone on the second */
+    text-wrap: balance;
+  }
+  .proofLong {
+    display: none;
+  }
+  .proofShort {
+    display: inline;
   }
 }
 
@@ -411,19 +482,21 @@ details[open] > summary .plus {
   }
   .heroCopy {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto auto 1fr auto auto;
-    grid-template-areas: "title ." "lede ." "promise ." ". ." ". ctas" ". proof";
+    grid-template-rows: auto auto auto 1fr;
+    grid-template-areas: "title side" "lede side" "promise side" ". side";
     align-items: end;
     row-gap: 18px;
-    padding: clamp(80px, 9vw, 120px) clamp(28px, 4vw, 64px) clamp(32px, 4vw, 48px);
+    padding: clamp(80px, calc(9 * var(--fit)), 120px) clamp(28px, 4vw, 64px) clamp(32px, calc(4 * var(--fit)), 48px);
   }
   .heroCopy .h1 {
     max-width: 980px;
-    font-size: clamp(44px, 5.6vw, 88px);
+    font-size: clamp(44px, calc(5.6 * var(--fit)), 88px);
   }
-  .heroCopy .heroCtas,
-  .heroCopy .proof {
+  .heroSide {
+    align-self: end;
     justify-self: end;
+    justify-items: end;
+    gap: 18px;
   }
 }
 
@@ -440,7 +513,7 @@ details[open] > summary .plus {
   /* full width like the reference, about 3% in from each side */
   max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(80px, 7.8vw, 112px) clamp(20px, 3vw, 56px);
+  padding: clamp(80px, calc(7.8 * var(--fit)), 112px) clamp(20px, 3vw, 56px);
 }
 
 .stallLabel {
@@ -453,30 +526,15 @@ details[open] > summary .plus {
   text-transform: uppercase;
 }
 
-/* heading on the left, a short line and the button on the right, sitting
-   level with the heading's last line as the reference's byline does */
+/* the heading on its own (the line beside it, "Three things we hear…",
+   was taken out on Nov 15 2026 by request) */
 .stallHeadRow {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px clamp(32px, 5vw, 96px);
-  margin-top: clamp(48px, 7vw, 104px);
-}
-
-.stallAside {
-  display: flex;
-  flex: 0 1 340px;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.asideLead {
-  margin: 0;
-  color: #55504a;
-  font-size: 15px;
-  line-height: 1.55;
-  text-wrap: pretty;
+  margin-top: clamp(48px, calc(7 * var(--fit)), 104px);
 }
 
 .stallTitle {
@@ -484,7 +542,7 @@ details[open] > summary .plus {
   max-width: 17em;
   margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, 3.9vw, 54px);
+  font-size: clamp(32px, calc(3.9 * var(--fit)), 54px);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.035em;
@@ -500,7 +558,7 @@ details[open] > summary .plus {
 
   display: flex;
   gap: clamp(12px, 1.4vw, 20px);
-  margin: clamp(56px, 7vw, 104px) 0 0;
+  margin: clamp(56px, calc(7 * var(--fit)), 104px) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -510,7 +568,7 @@ details[open] > summary .plus {
   display: flex;
   flex: 1 1 0;
   min-width: 0;
-  min-height: clamp(220px, 18vw, 270px);
+  min-height: clamp(220px, calc(18 * var(--fit)), 270px);
   overflow: hidden;
   padding: var(--card-pad);
   border-radius: 10px;
@@ -575,22 +633,51 @@ details[open] > summary .plus {
   }
 }
 
-/* stacked on phones and tablets: the picture covers the card's right three
-   quarters when tapped */
+/* stacked on phones and tablets (Nov 15 2026, after x.ai/bot's cards on
+   phones): the picture sits under the text in a 190px band (230px from
+   640px wide, x.ai's heights), always shown, its scene playing while the
+   card is on screen; it covered the card's right three quarters on a tap
+   before */
 @media (max-width: 900px) {
   .stallCards {
     flex-direction: column;
   }
 
+  .stallCard {
+    flex: none;
+    flex-direction: column;
+    cursor: default;
+  }
+
+  /* stacked, the cards read slow months, then no leads, then the competitor
+     (Nov 24 2026, by request); desktop keeps the competitor first */
+  .stallCard:nth-child(1) {
+    order: 3;
+  }
+
+  .stallCard:nth-child(2) {
+    order: 1;
+  }
+
+  .stallCard:nth-child(3) {
+    order: 2;
+  }
+
   .stallMedia {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    bottom: 10px;
-    width: 75%;
-    margin: 0;
+    flex: none;
+    height: 190px;
+    margin: 28px calc(10px - var(--card-pad)) calc(10px - var(--card-pad));
+    transform: none;
+    transition: none;
   }
 }
+
+@media (min-width: 640px) and (max-width: 900px) {
+  .stallMedia {
+    height: 230px;
+  }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   .stallCard,
@@ -632,7 +719,7 @@ details[open] > summary .plus {
   flex-direction: column;
   max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(80px, 9vw, 140px) clamp(20px, 3vw, 56px);
+  padding: clamp(80px, calc(9 * var(--fit)), 140px) clamp(20px, 3vw, 56px);
 }
 
 /* Nov 15 2026, from a reference: a small label and the heading top left,
@@ -643,7 +730,7 @@ details[open] > summary .plus {
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 24px clamp(40px, 6vw, 96px);
   align-items: start;
-  padding-bottom: clamp(40px, 4vw, 64px);
+  padding-bottom: clamp(40px, calc(4 * var(--fit)), 64px);
 }
 
 .resultsLabel {
@@ -655,7 +742,7 @@ details[open] > summary .plus {
 
 .resultsHead .h2 {
   max-width: 17em;
-  font-size: clamp(28px, 2.8vw, 40px);
+  font-size: clamp(28px, calc(2.8 * var(--fit)), 40px);
   line-height: 1.12;
 }
 
@@ -665,30 +752,92 @@ details[open] > summary .plus {
   line-height: 1.55;
 }
 
-/* the business, first in the row's line */
-.rowWho {
-  margin: 0;
-  color: #fff;
-  font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(18px, 1.5vw, 22px);
-  font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-}
-
 .resultsLede {
   margin: 0;
 }
 
-/* the business in the row's first column */
+/* the business in the row's first column: its logo (black on clear,
+   turned white here) and what it does where (Nov 23 2026) */
 .rowWho {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.rowLogo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  filter: invert(1);
+}
+
+.rowTrade {
   margin: 0;
+  color: rgb(255 255 255 / 0.64);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.rowName {
+  margin: 0 0 4px;
   color: #fff;
   font-family: var(--font-outfit), system-ui, sans-serif;
   font-size: clamp(18px, 1.5vw, 22px);
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.01em;
+}
+
+/* the searches it's #1 for on Google, under the name: each a small search
+   box, the search in white and a #1 badge in the rings' yellow */
+.rowSearches {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 100%;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rowSearch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 6px 6px 6px 11px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+  color: rgb(255 255 255 / 0.86);
+  font-size: 13.5px;
+  line-height: 18px;
+}
+
+.rowSearch svg {
+  flex: none;
+  color: rgb(255 255 255 / 0.45);
+}
+
+.rowSearch span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowSearch b {
+  flex: none;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #fdf3a1;
+  color: #111113;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
 }
 
 .resultsLede {
@@ -718,7 +867,7 @@ details[open] > summary .plus {
   grid-template-columns: minmax(0, 0.75fr) repeat(2, minmax(0, 1fr));
   gap: 16px;
   align-items: start;
-  padding: clamp(28px, 3vw, 40px) 0 clamp(36px, 4vw, 56px);
+  padding: clamp(28px, calc(3 * var(--fit)), 40px) 0 clamp(36px, calc(4 * var(--fit)), 56px);
   border-top: 1px solid rgb(255 255 255 / 0.14);
 }
 
@@ -909,7 +1058,7 @@ details[open] > summary .plus {
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding-top: clamp(32px, 4vw, 48px);
+  padding-top: clamp(32px, calc(4 * var(--fit)), 48px);
   border-top: 1px solid rgb(255 255 255 / 0.14);
   text-align: center;
 }
@@ -1025,10 +1174,10 @@ details[open] > summary .plus {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(36px, 4vw, 56px);
+  gap: clamp(36px, calc(4 * var(--fit)), 56px);
   max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(80px, 8vw, 128px) clamp(20px, 3vw, 56px);
+  padding: clamp(80px, calc(8 * var(--fit)), 128px) clamp(20px, 3vw, 56px);
 }
 
 .faqIntro {
@@ -1043,7 +1192,7 @@ details[open] > summary .plus {
 .faqTitle {
   margin: 0;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(30px, 3.4vw, 48px);
+  font-size: clamp(30px, calc(3.4 * var(--fit)), 48px);
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: -0.04em;
@@ -1220,4 +1369,109 @@ details[open] > summary .plus {
 
 .figLight .tickFill {
   background: #1a1613;
+}
+
+/* ---- phones, the whole page (Nov 23 2026, by request, after
+   hiveclimbing.com's phone pages): one heading size, 14 to 15px body, one
+   short line per item, the same air between sections, and nothing said
+   twice. The hero's own phone rules sit with the hero. ---- */
+@media (max-width: 600px) {
+  /* the hero: the headline already says what the sub-line does */
+  .heroCopy .lede {
+    display: none;
+  }
+
+  /* every section heading at one size, each section on the same rhythm */
+  .stallTitle,
+  .resultsHead .h2,
+  .faqTitle {
+    font-size: 28px;
+    line-height: 1.14;
+  }
+
+  .stallInner,
+  .resultsInner,
+  .faqInner {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  /* the problem: the label close over the heading, the cards nearer */
+  .stallHeadRow {
+    margin-top: 16px;
+  }
+
+  .stallCards {
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  /* each card reads title first, then its one line, then the scene */
+  .stallCardText {
+    gap: 8px;
+  }
+
+  .stallCard .stallHead {
+    order: -1;
+    font-size: 20px;
+    line-height: 1.2;
+    white-space: normal;
+  }
+
+  .stallText {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .stallMedia {
+    margin-top: 20px;
+  }
+
+  /* the proof: the line under the heading smaller, the rows closer */
+  .resultsHead {
+    padding-bottom: 28px;
+  }
+
+  .resultsHead .resultsLede {
+    font-size: 15px;
+  }
+
+  .row {
+    gap: 20px;
+    padding: 24px 0 36px;
+  }
+
+  .row .fig {
+    gap: 14px;
+  }
+
+  .rowTrade {
+    font-size: 14px;
+  }
+
+  .resultsFoot {
+    padding-top: 28px;
+  }
+
+  /* the FAQ */
+  .faqInner {
+    gap: 28px;
+  }
+
+  .faqLede {
+    font-size: 15px;
+  }
+
+  .faqQ {
+    padding: 18px 0;
+    font-size: 17px;
+  }
+
+  .faqA {
+    font-size: 15px;
+  }
+
+  .asideNote {
+    font-size: 13px;
+  }
 }

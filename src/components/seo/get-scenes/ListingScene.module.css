@@ -1,0 +1,172 @@
+/* ListingScene: the business profile in "Your Google listing" (Nov 23 2026).
+   The window, head, badge and motion come from StallScenes.module.css (x.ai's
+   light feature cards); these are the profile's rows, drawn like x.ai's
+   "Accounts" list: 28px rows, grey while empty, tinted green once done. */
+
+/* the head's title gives way before the badge, should a font run wide */
+.title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* "60% complete": the digits roll on their own, the words stay put */
+.pct {
+  display: inline-flex;
+  align-items: center;
+}
+
+.word {
+  margin-left: 3px;
+}
+
+.tick {
+  display: flex;
+  animation: tickIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.list {
+  display: grid;
+  gap: 3px;
+  padding: 5px 5px 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 28px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 0.025);
+  transition: background-color 0.3s;
+}
+
+.row[data-done] {
+  background: rgb(0 201 114 / 0.08);
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+  color: var(--ink-2);
+}
+
+.label {
+  flex-shrink: 0;
+  color: var(--ink-2);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+.row[data-done] .label {
+  color: var(--ink);
+}
+
+/* the field's value as a grey line, drawn in from the left once it's added */
+.fill {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+}
+
+.fill[data-on] {
+  clip-path: inset(0);
+}
+
+/* the Add pill and the check share one spot at the row's end */
+.end {
+  display: grid;
+  flex-shrink: 0;
+  align-items: center;
+  justify-items: end;
+  min-width: 44px;
+}
+
+.end > * {
+  grid-area: 1 / 1;
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 20px;
+  padding: 0 7px 0 5px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    transform 0.1s,
+    opacity 0.16s;
+}
+
+.add svg {
+  color: var(--ink-2);
+}
+
+.add[data-pressed] {
+  transform: scale(0.94);
+}
+
+.add[data-gone] {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  transition:
+    opacity 0.2s,
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.check[data-hidden] {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+@keyframes tickIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* under 240px wide (the narrowest laptop slots) the badge reads "60%",
+   so the head's title still fits beside it */
+@container (max-width: 239px) {
+  .word {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

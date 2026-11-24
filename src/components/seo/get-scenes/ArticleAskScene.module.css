@@ -1,0 +1,281 @@
+/* ArticleAskScene (Nov 24 2026): a "People also ask" box in "Articles your
+   customers search for". The colours, grey lines and the loop's fade come
+   from StallScenes.module.css (x.ai's light feature cards); these are the
+   box, its rows, the open and close, and the answer's source line.
+   Transitions run only into the later states (a row opening, or closing as
+   the next opens), so the loop's reset is instant while the stage fades in.
+
+   Three sizes, read off the slot's height: short (150, laptops at 1280 and
+   phones) shows three rows and no heading; the larger slots add "People also
+   ask" over the box; the tall ones (1920) a fourth row and larger type. The
+   picture is centred in the slot by its finished height (one row open). */
+
+.room {
+  position: absolute;
+  inset: 0;
+  container: ask / size;
+}
+
+.col {
+  /* a closed row, and the finished picture's height, to centre it */
+  --row: 27px;
+  --tall: calc(var(--row) * 3 + 47px);
+
+  width: calc(100% - 20px);
+  max-width: 272px;
+  margin: 0 auto;
+  padding-top: max(10px, calc((100cqh - var(--tall)) / 2));
+}
+
+.heading {
+  display: none;
+  margin: 0 0 6px 2px;
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* ---------- the box and its rows ---------- */
+
+.box {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.04),
+    0 12px 26px -12px rgb(50 50 93 / 0.24),
+    0 2px 6px -2px rgb(0 0 0 / 0.06);
+  list-style: none;
+}
+
+.row {
+  position: relative;
+}
+
+/* hairlines between the rows, drawn over them so they take no height */
+.row + .row::before {
+  position: absolute;
+  top: 0;
+  right: 10px;
+  left: 10px;
+  height: 1px;
+  background: rgb(0 0 0 / 0.07);
+  content: "";
+}
+
+/* the fourth question only fits the tall slots */
+.row:nth-child(4) {
+  display: none;
+}
+
+.q {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--row);
+  padding: 0 9px 0 10px;
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: rgb(0 0 0 / 0.78);
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row[data-open] .text {
+  color: var(--ink);
+}
+
+.row[data-open] .text,
+.row[data-was] .text {
+  transition: color 0.26s;
+}
+
+.chev {
+  flex: none;
+  color: var(--ink-2);
+}
+
+.row[data-open] .chev {
+  transform: rotate(180deg);
+}
+
+.row[data-open] .chev,
+.row[data-was] .chev {
+  transition: transform 0.45s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ---------- the open and close ---------- */
+
+/* the answer's height eases open from nothing (0fr to 1fr); the row
+   closing and the row opening share one curve, so the box keeps its height
+   through the swap and only the rows between them move */
+.fold {
+  display: grid;
+  grid-template-rows: 0fr;
+}
+
+.row[data-open] .fold {
+  grid-template-rows: 1fr;
+}
+
+.row[data-open] .fold,
+.row[data-was] .fold {
+  transition: grid-template-rows 0.45s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.foldIn {
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ---------- the answer ---------- */
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  padding: 1px 10px 9px;
+}
+
+.row[data-was] .answer {
+  opacity: 0;
+  transition: opacity 0.16s ease-in;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  animation: rise 0.32s cubic-bezier(0.2, 0, 0, 1) 0.1s both;
+}
+
+/* a shade darker than x.ai's lines, so the answer reads on white */
+.lines > span {
+  background: rgb(0 0 0 / 0.07);
+}
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 14px;
+  margin-top: 8px;
+  animation: rise 0.32s cubic-bezier(0.2, 0, 0, 1) 0.26s both;
+}
+
+/* the business's round icon, popping in as the source lands (x.ai's check-in) */
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgb(0 201 114 / 0.16);
+  color: var(--success);
+  animation: iconIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.icon svg {
+  display: block;
+}
+
+.name {
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.kind {
+  color: var(--ink-3);
+  font-size: 10.5px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.kind::before {
+  margin-right: 5px;
+  content: "·";
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+@keyframes iconIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* ---------- sizes ---------- */
+
+/* the larger slots: "People also ask" over the box */
+@container ask (min-height: 160px) {
+  .col {
+    --tall: calc(20px + var(--row) * 3 + 47px);
+  }
+
+  .heading {
+    display: block;
+  }
+}
+
+/* tall slots (1920 and the like): a fourth question and larger type */
+@container ask (min-height: 200px) and (min-width: 260px) {
+  .col {
+    --row: 28px;
+    --tall: calc(21px + var(--row) * 4 + 49px);
+  }
+
+  .heading {
+    margin-bottom: 7px;
+    font-size: 12px;
+  }
+
+  .row:nth-child(4) {
+    display: block;
+  }
+
+  .text {
+    font-size: 12px;
+  }
+
+  .answer {
+    padding: 1px 10px 10px;
+  }
+
+  .source {
+    margin-top: 9px;
+  }
+
+  .name {
+    font-size: 11.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -8,7 +8,7 @@
 .inner {
   max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(96px, 9vw, 168px) clamp(20px, 3vw, 56px);
+  padding: clamp(96px, calc(9 * var(--fit, 1vw)), 168px) clamp(20px, 3vw, 56px);
 }
 
 /* both parts share these columns: the promise's title lines up with "How it
@@ -32,11 +32,21 @@
   grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
   grid-template-rows: auto 1fr;
   gap: 48px;
-  min-height: clamp(640px, 54vw, 980px);
-  margin: calc(-1 * clamp(96px, 9vw, 168px)) calc(-1 * clamp(20px, 3vw, 56px)) clamp(72px, 7vw, 120px);
-  padding: clamp(72px, 7vw, 128px) clamp(20px, 3vw, 56px);
+  min-height: clamp(520px, calc(54 * var(--fit, 1vw)), 980px);
+  margin: calc(-1 * clamp(96px, calc(9 * var(--fit, 1vw)), 168px)) calc(-1 * clamp(20px, 3vw, 56px)) clamp(72px, calc(7 * var(--fit, 1vw)), 120px);
+  padding: clamp(72px, calc(7 * var(--fit, 1vw)), 128px) clamp(20px, 3vw, 56px);
   overflow: hidden;
   background: #1a1d22;
+}
+
+/* on its own (Nov 23 2026, "How it works" moved after the proof), the band
+   runs to the foot of its section */
+.promiseOnly .inner {
+  padding-bottom: 0;
+}
+
+.promiseOnly .promise {
+  margin-bottom: 0;
 }
 
 /* taller than the band so it can drift for the parallax (SeoOffer.tsx);
@@ -73,7 +83,7 @@
   margin: 0;
   color: #fff;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, 3.9vw, 54px);
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.035em;
@@ -166,7 +176,7 @@
 
 /* the label and heading sit across the top, then the photo and steps */
 .processHead {
-  margin-bottom: clamp(28px, 2.6vw, 44px);
+  margin-bottom: clamp(28px, calc(2.6 * var(--fit, 1vw)), 44px);
 }
 
 /* the photo sits on the steps' bottom line (Nov 15 2026, by request) */
@@ -193,7 +203,7 @@
   margin: 20px 0 0;
   color: #1a1613;
   font-family: var(--font-outfit), system-ui, sans-serif;
-  font-size: clamp(32px, 3.9vw, 54px);
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
   font-weight: 400;
   line-height: 1.12;
   letter-spacing: -0.035em;
@@ -231,7 +241,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 16px clamp(24px, 3vw, 56px);
-  padding: clamp(22px, 2vw, 32px) 0;
+  padding: clamp(22px, calc(2 * var(--fit, 1vw)), 32px) 0;
 }
 
 /* the hairlines are spans so they can draw in left to right */
@@ -316,5 +326,42 @@
 
   .step {
     gap: 10px;
+  }
+}
+
+/* phones (Nov 23 2026, the page's phone pass): the heading at the page's
+   one phone size, the quote smaller and the box tighter, less photo */
+@media (max-width: 600px) {
+  .title {
+    font-size: 28px;
+    line-height: 1.14;
+  }
+
+  .promise {
+    gap: clamp(160px, 46vw, 220px);
+    padding: 48px 16px 16px;
+  }
+
+  .box {
+    gap: 18px;
+    padding: 22px 22px 20px;
+  }
+
+  .badge svg {
+    width: 28px;
+  }
+
+  .quote {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .faces img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .sign {
+    font-size: 13px;
   }
 }

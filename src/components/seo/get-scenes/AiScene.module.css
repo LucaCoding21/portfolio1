@@ -1,0 +1,191 @@
+/* "What AI says about you" (AiScene): one white window, a chat thread in
+   x.ai/bot's light style, with the base scene's tokens and timings
+   (StallScenes.module.css) and x.ai's "Thinking" shimmer (Nov 23 2026).
+   Transitions run only into the later states, so the loop's reset back to
+   the start is instant while the stage is faded out. The point (the
+   "Your business" row) sits about 125px down, above the phones' cut. */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* the customer's question, a light grey card on the right */
+.q {
+  align-self: flex-end;
+  max-width: 88%;
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.045);
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.q[data-hidden] {
+  opacity: 0;
+}
+
+/* the assistant's line: a sparkle, then "Thinking" and the answer in one cell */
+.answer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 9px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.spark {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--ink);
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.spark[data-on] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lineStack {
+  display: grid;
+  min-width: 0;
+}
+
+.lineStack > * {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+
+/* x.ai's thinking: a soft light passing over the word, left to right */
+.thinking {
+  background: linear-gradient(
+    90deg,
+    var(--ink-3) 0%,
+    var(--ink-3) 38%,
+    var(--ink) 50%,
+    var(--ink-3) 62%,
+    var(--ink-3) 100%
+  );
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 500;
+}
+
+.thinking:not([data-hidden]) {
+  animation: shimmer 1.6s linear infinite;
+  transition: opacity 0.18s ease-out;
+}
+
+.thinking[data-hidden] {
+  opacity: 0;
+  transition: opacity 0.11s ease-in;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.line > span {
+  opacity: 0;
+}
+
+.line > span[data-on] {
+  opacity: 1;
+  transition: opacity 0.18s ease-out;
+}
+
+/* the answers, under the answer's first line */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0 0 0 18px;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 16px;
+}
+
+.row[data-hidden] {
+  opacity: 0;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.2);
+}
+
+/* the second answer's name: its grey line, then the pill, in one cell */
+.cell {
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 16px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+/* one soft ring as it lands */
+.pill[data-on] {
+  animation: ring 0.9s ease-out 0.12s both;
+}
+
+@keyframes ring {
+  from {
+    box-shadow: 0 0 0 0 rgb(31 138 101 / 0.32);
+  }
+  to {
+    box-shadow: 0 0 0 7px rgb(31 138 101 / 0);
+  }
+}
+
+/* the slots about 230px wide: a little tighter */
+@container (max-width: 239px) {
+  .panel {
+    padding: 9px 9px 9px 10px;
+  }
+
+  .q {
+    max-width: 92%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .root * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

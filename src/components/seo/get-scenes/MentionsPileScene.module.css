@@ -1,0 +1,292 @@
+/* MentionsPileScene (Nov 23 2026): three clippings dropped on a pile in
+   "Mentions on other sites". The colours, grey lines and the loop's fade come
+   from StallScenes.module.css (x.ai's light feature cards); these are the
+   pages, how they lie on the pile, their drop and the highlighter. */
+
+/* the pile measures the slot's height too, to sit centred in the tall ones */
+.room {
+  position: absolute;
+  inset: 0;
+  container-type: size;
+}
+
+/* the pages share one size, like sheets of paper, and each lies a little
+   lower than the one under it, so every page's header shows above the next;
+   in short slots they run off the foot of the slot, as a pile would */
+.pile {
+  --h: 150px;
+  --lap: 54px;
+
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: min(72cqw, 196px);
+  height: calc(var(--h) + var(--lap));
+  translate: -50% 0;
+}
+
+.page {
+  --paper:
+    0 0 0 1px rgb(0 0 0 / 0.045),
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 8px 18px -8px rgb(50 50 93 / 0.24);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: var(--h);
+  padding: 8px 10px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: var(--paper);
+  transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1);
+  /* drops in from a little higher, bigger and more tilted, and settles
+     (x.ai's pop-in, eased a touch flatter so paper doesn't bounce) */
+  animation: drop 0.52s cubic-bezier(0.2, 0.9, 0.3, 1.08) both;
+}
+
+.page[data-p="news"] {
+  --x: -10px;
+  --y: 0px;
+  --r: -4deg;
+}
+
+.page[data-p="chamber"] {
+  --x: 12px;
+  --y: 26px;
+  --r: 3deg;
+}
+
+.page[data-p="dir"] {
+  --x: -2px;
+  --y: var(--lap);
+  --r: -1.5deg;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translate(var(--x), calc(var(--y) - 22px)) rotate(calc(var(--r) * 2.4)) scale(1.07);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.03),
+      0 6px 10px rgb(0 0 0 / 0.04),
+      0 22px 34px -10px rgb(50 50 93 / 0.3);
+  }
+
+  35% {
+    opacity: 1;
+  }
+}
+
+/* ---------- the highlighter ---------- */
+
+/* a soft yellow swipe, a little taller and wider than the words, drawn
+   left to right just after the page lands */
+.mark {
+  position: relative;
+  z-index: 0;
+  margin: -1px -3px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  background-image: linear-gradient(rgb(255 222 74 / 0.75), rgb(255 222 74 / 0.75));
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.mark[data-on] {
+  background-size: 100% 100%;
+  animation: swipe 0.5s cubic-bezier(0.5, 0, 0.2, 1) both;
+}
+
+@keyframes swipe {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+/* ---------- shared bits ---------- */
+
+.fill {
+  flex: 1 1 auto;
+  min-width: 8px;
+}
+
+.label {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgb(0 0 0 / 0.07);
+  color: var(--ink-2);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+/* ---------- 1. the local news story ---------- */
+
+.masthead {
+  flex-shrink: 0;
+  padding-bottom: 4px;
+  border-bottom: 3px double rgb(0 0 0 / 0.13);
+  color: rgb(0 0 0 / 0.6);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 13px;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.headline {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 4px;
+  margin: 8px 0 9px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.textRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 14px;
+  margin: -2px 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+/* ---------- 2. the Chamber of Commerce member list ---------- */
+
+.members {
+  display: flex;
+  flex-direction: column;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 20px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.bullet {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.12);
+}
+
+.bullet[data-you] {
+  background: var(--green);
+}
+
+/* each member's trade, set to the right */
+.trade {
+  display: flex;
+  margin-left: auto;
+}
+
+/* ---------- 3. the local directory listing ---------- */
+
+.listings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 7px;
+}
+
+.listing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+}
+
+.avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: rgb(0 0 0 / 0.06);
+}
+
+.avatar[data-you] {
+  background: rgb(0 201 114 / 0.14);
+  color: var(--success);
+}
+
+.who {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.name {
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 14px;
+}
+
+.stars {
+  display: flex;
+  gap: 1.5px;
+  color: #f2ac3d;
+}
+
+.stars svg {
+  display: block;
+}
+
+/* ---------- sizes ---------- */
+
+/* the narrowest slots: the Chamber's label keeps its first words */
+@container (max-width: 259px) {
+  .labelMore {
+    display: none;
+  }
+}
+
+/* tall slots (the 1920 laptop's): the pile lies whole, centred, on taller sheets */
+@container (min-height: 220px) {
+  .pile {
+    --h: 164px;
+
+    top: calc((100cqh - var(--h) - var(--lap)) / 2 + 2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,451 @@
+/* ListingMapScene: the pin on a map in "Your Google listing" (Nov 23 2026).
+   The colour tokens, pop-ins and the pointer come from StallScenes.module.css
+   (x.ai's light feature cards); these are the map, the pin and the place card
+   that slides up from the foot like a phone map's bottom sheet. */
+
+/* the whole slot is the map; sized both ways so the sheet can follow the
+   slot's height */
+.scene[class] {
+  container-type: size;
+  background: #f5f3ee;
+}
+
+/* --sheet: how much of the place card shows above the slot's foot */
+.view {
+  --sheet: 88px;
+  --pin-w: 22px;
+  --pin-h: 29px;
+
+  position: absolute;
+  inset: 0;
+}
+
+/* ---------- the map: everything here is placed in % of the map above the
+   sheet, so the pin and the places stay in view at every size ---------- */
+
+.map {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: var(--sheet);
+  left: 0;
+}
+
+.road,
+.park,
+.water,
+.dot {
+  position: absolute;
+  display: block;
+}
+
+.road {
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.04);
+}
+
+/* two main roads and three side streets, at angles. The steep ones hang from
+   their top end and run far down, so they reach the slot's foot at any size
+   (they show beside the sheet, and before it slides up) */
+.road[data-r="a"] {
+  top: 8%;
+  right: -12%;
+  left: -12%;
+  height: 6px;
+  rotate: -6deg;
+}
+
+.road[data-r="b"] {
+  top: -20%;
+  left: 33%;
+  width: 6px;
+  height: 600px;
+  transform-origin: 50% 0;
+  rotate: 17deg;
+}
+
+.road[data-r="c"] {
+  top: 88%;
+  right: -12%;
+  left: -12%;
+  height: 3px;
+  rotate: 5deg;
+}
+
+.road[data-r="d"] {
+  top: -20%;
+  left: 69%;
+  width: 3px;
+  height: 600px;
+  transform-origin: 50% 0;
+  rotate: -11deg;
+}
+
+/* a street under where the sheet comes up, so the map is whole before it */
+.road[data-r="e"] {
+  top: 150%;
+  right: -12%;
+  left: -12%;
+  height: 3px;
+  rotate: -4deg;
+}
+
+.park {
+  top: 30%;
+  left: 3%;
+  width: 17%;
+  height: 46%;
+  border-radius: 9px;
+  background: #e2ead7;
+}
+
+/* a bit of shore along the top right */
+.water {
+  top: -30%;
+  right: -14%;
+  width: 30%;
+  height: 70%;
+  border-radius: 0 0 0 100% / 0 0 0 100%;
+  background: #dfe8ec;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 999px;
+  background: #c3beb5;
+  box-shadow: 0 0 0 1.5px #fff;
+}
+
+/* ---------- the pin, its shadow and its ripple, all on its tip ---------- */
+
+.spot {
+  position: absolute;
+  top: 74%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.pin {
+  position: absolute;
+  bottom: -1px;
+  left: calc(var(--pin-w) / -2);
+  display: block;
+  width: var(--pin-w);
+  height: var(--pin-h);
+  transform-origin: 50% 100%;
+  animation: drop 0.65s both;
+}
+
+.pinGlyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 1.5px 1.5px rgb(0 0 0 / 0.16));
+}
+
+/* it falls, squashes a little as it lands, hops once and settles */
+@keyframes drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-34px);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.5);
+  }
+
+  18% {
+    opacity: 1;
+  }
+
+  44% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  }
+
+  54% {
+    transform: scale(1.09, 0.87);
+    animation-timing-function: cubic-bezier(0.3, 0, 0.4, 1);
+  }
+
+  72% {
+    transform: translateY(-4px) scale(0.97, 1.03);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.7, 1);
+  }
+
+  88% {
+    transform: scale(1.02, 0.98);
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+/* the ground shadow grows as the pin comes down */
+.shadow {
+  position: absolute;
+  top: -3px;
+  left: -9px;
+  width: 18px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.26), rgb(0 0 0 / 0));
+  animation: shadowIn 0.65s both;
+}
+
+@keyframes shadowIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.85, 0.5);
+  }
+
+  44% {
+    opacity: 1;
+    transform: none;
+  }
+
+  54% {
+    transform: scale(1.1);
+  }
+
+  72% {
+    transform: scale(0.88);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+/* one ring spreads from the tip once it lands; at rest it's gone */
+.ripple {
+  position: absolute;
+  top: -10px;
+  left: -30px;
+  width: 60px;
+  height: 20px;
+  border: 1.5px solid rgb(232 69 60 / 0.6);
+  border-radius: 50%;
+  background: rgb(232 69 60 / 0.07);
+  opacity: 0;
+  animation: ripple 1.2s cubic-bezier(0.25, 0.6, 0.4, 1);
+}
+
+@keyframes ripple {
+  from {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* ---------- the place card: a phone map's bottom sheet ---------- */
+
+.sheet {
+  position: absolute;
+  top: calc(100% - var(--sheet));
+  right: 8px;
+  bottom: -40px;
+  left: 8px;
+  max-width: 300px;
+  margin-inline: auto;
+  padding: 10px 12px 0;
+  border-radius: 14px 14px 0 0;
+  background: #fff;
+  box-shadow: var(--float);
+  animation: sheetUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.handle {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  display: block;
+  width: 24px;
+  height: 3px;
+  margin-left: -12px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.1);
+}
+
+.name {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+.rating,
+.meta {
+  margin-top: 1px;
+  color: var(--ink-2);
+  font-size: 11px;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.score {
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.stars {
+  display: flex;
+  gap: 1px;
+  color: #f2ac3d;
+}
+
+.stars svg {
+  display: block;
+}
+
+.open {
+  color: var(--success);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 21px;
+  padding: 0 10px 0 9px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.14);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.26s;
+}
+
+.pill svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.pill[data-tone="ink"] {
+  background: var(--ink);
+  box-shadow: none;
+  color: #fff;
+}
+
+.pill[data-pressed] {
+  transform: scale(0.94);
+  transition:
+    transform 80ms ease-out,
+    background-color 80ms;
+}
+
+.pill[data-tone="ink"][data-pressed] {
+  background: #2a2a2a;
+}
+
+.dirIcon {
+  display: flex;
+  color: var(--ink-2);
+}
+
+/* ---------- sizes ---------- */
+
+/* taller slots (laptops at 1440 and up): a roomier card and a bigger pin,
+   and the map takes the rest */
+@container (min-height: 180px) {
+  .view {
+    --sheet: 104px;
+    --pin-w: 25px;
+    --pin-h: 33px;
+  }
+
+  .spot {
+    top: 70%;
+  }
+
+  .sheet {
+    padding: 15px 14px 0;
+  }
+
+  .handle {
+    top: 6px;
+  }
+
+  .rating,
+  .meta {
+    margin-top: 2px;
+  }
+
+  .actions {
+    margin-top: 9px;
+  }
+
+  .pill {
+    height: 23px;
+    padding: 0 11px 0 10px;
+  }
+}
+
+/* the tall slots on big screens: a bigger pin and ripple for the bigger map */
+@container (min-height: 240px) {
+  .view {
+    --pin-w: 28px;
+    --pin-h: 37px;
+  }
+
+  .shadow {
+    top: -3.5px;
+    left: -10px;
+    width: 20px;
+    height: 7px;
+  }
+
+  .ripple {
+    top: -12px;
+    left: -36px;
+    width: 72px;
+    height: 24px;
+  }
+}
+
+/* the narrowest slots drop the Directions arrow so both pills fit */
+@container (max-width: 229px) {
+  .dirIcon {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

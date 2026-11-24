@@ -1,0 +1,176 @@
+/* ReviewsCountScene: the review count in "More reviews" (Nov 23 2026). One
+   big number in the middle of the slot with its stars and label, and small
+   white review cards drifting up in the lanes beside it. The colour tokens,
+   the digit roll and the loop's fade come from StallScenes.module.css
+   (x.ai's light feature cards). Every size counts from --n, the number's
+   size, which grows with the slot's width and height. */
+
+/* sized by both width and height, so the number grows in the tall laptop
+   slots and stays small in the short band on phones */
+.scene.scene {
+  container-type: size;
+}
+
+/* the lanes take what the number leaves, so the cards always sit beside it
+   and never over it */
+.row {
+  --n: clamp(44px, min(20cqw, 28cqh), 60px);
+  --gap: clamp(8px, 3.4cqw, 14px);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.lane {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ---------- the number, its stars and label ---------- */
+
+.tally {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* the digits' line box has more room above them than below */
+  padding-bottom: calc(var(--n) * 0.06);
+}
+
+.count {
+  display: flex;
+  color: var(--ink);
+  font-size: var(--n);
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* tight tracking, set as a pull between the digits since each one clips
+   its own roll */
+.count > * + * {
+  margin-left: -0.06em;
+}
+
+.stars {
+  display: flex;
+  gap: calc(var(--n) * 0.04);
+  margin-top: calc(var(--n) * 0.17);
+  color: #f5a623;
+}
+
+.stars svg {
+  display: block;
+  width: calc(var(--n) * 0.22);
+  height: calc(var(--n) * 0.22);
+}
+
+.label {
+  margin-top: calc(var(--n) * 0.08);
+  color: var(--ink-2);
+  font-size: clamp(11.5px, calc(var(--n) * 0.24), 13px);
+  line-height: 1.25;
+}
+
+/* ---------- the review cards ---------- */
+
+/* each card rests a little below (left) or above (right) the middle,
+   hugging the number, spread further apart in the taller slots, and drifts
+   up and away once the next one in its lane comes in */
+.quote {
+  position: absolute;
+  top: calc(50% + var(--y));
+  transform: translateY(-50%);
+}
+
+.lane[data-lane="l"] .quote {
+  right: 0;
+}
+
+.lane[data-lane="r"] .quote {
+  left: 0;
+}
+
+.quote[data-slot="0"],
+.quote[data-slot="2"] {
+  --y: 12.5cqh;
+}
+
+.quote[data-slot="1"] {
+  --y: -14cqh;
+}
+
+.quote[data-gone] {
+  opacity: 0;
+  /* further in the taller slots, so it still fades near the top */
+  translate: 0 calc(-1 * max(var(--n) * 0.95, 28cqh));
+  transition:
+    translate 1.2s cubic-bezier(0.45, 0, 0.55, 1),
+    opacity 0.9s ease-in 0.15s;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 8px 7px;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: var(--float);
+  animation:
+    rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) backwards,
+    float 4s cubic-bezier(0.33, 0, 0.67, 1) 0.9s forwards;
+}
+
+.miniStars {
+  display: flex;
+  gap: 1px;
+  color: #f5a623;
+}
+
+.miniStars svg {
+  display: block;
+  width: calc(var(--n) * 0.165);
+  height: calc(var(--n) * 0.165);
+}
+
+.words {
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  font-size: clamp(10.5px, calc(var(--n) * 0.205), 11.5px);
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+/* rises in from below, fading up over the first half */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(max(36px, 17cqh));
+  }
+
+  55% {
+    opacity: 1;
+  }
+}
+
+/* and keeps drifting up a touch while it rests */
+@keyframes float {
+  to {
+    translate: 0 -4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

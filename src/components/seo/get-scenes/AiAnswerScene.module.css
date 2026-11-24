@@ -1,0 +1,384 @@
+/* AiAnswerScene: "What AI says about you" as type on the slot's grey
+   (Nov 23 2026). One white search box with the question, and the answer
+   under it with no window; tokens, the pop-in and the fade between loops
+   come from StallScenes.module.css (x.ai's light feature cards), the
+   "Thinking" shimmer is x.ai's. Transitions run only into the later states,
+   so the loop's reset is instant while the stage fades back in.
+
+   Three sizes, read off the slot's height: short (laptops at 1280 and the
+   150px band on phones) drops the answer's first line so all three rows fit
+   and "Thinking" sits where the first row lands; the larger slots show it;
+   the tall ones (1920) get larger type. The picture is centred in the slot
+   by its finished height. */
+
+.wrap {
+  position: absolute;
+  inset: 0;
+  container: ai / size;
+}
+
+.col {
+  /* the box's inside padding, which the answer lines up with */
+  --pad: 10px;
+  /* the finished picture's height, to centre it in the slot */
+  --tall: 140px;
+
+  width: calc(100% - 24px);
+  max-width: 276px;
+  margin: 0 auto;
+  padding-top: max(12px, calc((100cqh - var(--tall)) / 2));
+}
+
+/* ---------- the search box ---------- */
+
+.press {
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.press[data-press] {
+  transform: scale(0.975);
+  transition: transform 80ms ease-out;
+}
+
+.box {
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--float);
+}
+
+.boxIn {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 8px 8px 8px var(--pad);
+}
+
+.spark {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 17px;
+  color: var(--ink-2);
+}
+
+.q {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 17px;
+  letter-spacing: -0.01em;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 15px;
+  margin: 0 1px -3px;
+  border-radius: 1px;
+  background: var(--ink);
+  animation: blink 1.05s steps(1) infinite;
+}
+
+/* solid while typing, as a real caret is */
+.caret[data-solid] {
+  animation: none;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.ph {
+  color: var(--ink-3);
+}
+
+.send {
+  display: grid;
+  flex: none;
+  place-items: center;
+  align-self: flex-end;
+  width: 20px;
+  height: 20px;
+  margin-bottom: -1.5px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.06);
+  color: var(--ink-3);
+}
+
+.send[data-on] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.send[data-on],
+.send[data-done] {
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+/* ---------- the answer ---------- */
+
+.answer {
+  position: relative;
+  margin-top: 9px;
+  padding-left: var(--pad);
+}
+
+/* "Thinking", then the answer's first line in its place */
+.lead {
+  display: grid;
+  height: 16px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.lead > * {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+
+/* x.ai's thinking: a soft light passing over the word, left to right */
+.thinking {
+  justify-self: start;
+  background: linear-gradient(
+    90deg,
+    var(--ink-3) 0%,
+    var(--ink-3) 38%,
+    var(--ink) 50%,
+    var(--ink-3) 62%,
+    var(--ink-3) 100%
+  );
+  background-size: 250% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-weight: 500;
+}
+
+.thinking:not([data-hidden]) {
+  animation: shimmer 1.2s linear infinite;
+  transition: opacity 0.18s ease-out;
+}
+
+.thinking[data-hidden] {
+  opacity: 0;
+  transition: opacity 0.11s ease-in;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.leadLine {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.leadLine > span {
+  opacity: 0;
+}
+
+.leadLine > span[data-on] {
+  opacity: 1;
+  transition: opacity 0.18s ease-out;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 18px;
+}
+
+.num {
+  flex: none;
+  width: 12px;
+  color: var(--ink-3);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* the second answer: our words, with a pale green marker drawn across them
+   as they land (the colour turns as the marker passes) */
+.mark {
+  flex: none;
+  margin: 0 -1px 0 -5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: linear-gradient(rgb(0 201 114 / 0.18), rgb(0 201 114 / 0.18)) no-repeat 0 0 / 100% 100%;
+  color: var(--success);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+  animation: mark 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+}
+
+@keyframes mark {
+  from {
+    background-size: 0% 100%;
+    color: var(--ink);
+  }
+}
+
+/* ---------- sizes ---------- */
+
+/* laptops at 1280 (about 160 high): everything a little tighter, so the
+   answer's first line still fits with room around it */
+@container ai (max-height: 170px) {
+  .col {
+    --tall: 128px;
+  }
+
+  .boxIn {
+    padding-block: 7px;
+  }
+
+  .answer {
+    margin-top: 7px;
+  }
+
+  .lead {
+    height: 15px;
+    margin-bottom: 3px;
+    line-height: 15px;
+  }
+
+  .rows {
+    gap: 2px;
+  }
+
+  .row {
+    height: 17px;
+  }
+}
+
+/* the 150px band on phones: no first line, so the three rows fit with
+   air; "Thinking" waits where the first row will land */
+@container ai (max-height: 155px) {
+  .col {
+    --tall: 119px;
+  }
+
+  .boxIn {
+    padding-block: 8px;
+  }
+
+  .answer {
+    margin-top: 9px;
+  }
+
+  .leadLine {
+    display: none;
+  }
+
+  .lead {
+    position: absolute;
+    top: 1px;
+    left: var(--pad);
+    height: 16px;
+    margin: 0;
+    line-height: 16px;
+  }
+
+  .rows {
+    gap: 3px;
+  }
+
+  .row {
+    height: 18px;
+  }
+}
+
+/* tall slots (1920 and the like): larger type and a little more air */
+@container ai (min-height: 220px) and (min-width: 260px) {
+  .col {
+    --pad: 12px;
+    --tall: 163px;
+  }
+
+  .box {
+    border-radius: 18px;
+  }
+
+  .boxIn {
+    gap: 8px;
+    padding: 10px 10px 10px var(--pad);
+  }
+
+  .spark {
+    height: 19px;
+  }
+
+  .spark svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .q {
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  .caret {
+    height: 16px;
+  }
+
+  .send {
+    width: 22px;
+    height: 22px;
+  }
+
+  .answer {
+    margin-top: 11px;
+  }
+
+  .lead {
+    height: 17px;
+    margin-bottom: 5px;
+    font-size: 12.5px;
+    line-height: 17px;
+  }
+
+  .rows {
+    gap: 5px;
+  }
+
+  .row {
+    height: 20px;
+  }
+
+  .mark {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

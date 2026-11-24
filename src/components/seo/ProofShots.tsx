@@ -7,8 +7,13 @@
  * AI box 2s behind the Google box so they never change together, with a
  * short bar per shot under each box (the showing one fills until the next;
  * a tap jumps to one). Turning stops while the pointer is on a box, and with
- * reduced motion. No client names: each Google shot shows the search box,
- * each AI shot the question. On Google everything but the search box and
+ * reduced motion. Each row opens with the client's logo and what they do
+ * where (Nov 23 2026: named by request, so the proof reads as real
+ * businesses you can look up), then the searches it's #1 for on Google (a
+ * count of every result above the rows was tried first and cut the same
+ * day: 5 searches and 6 AI answers read as thin, "people will see through
+ * it");
+ * each Google shot shows the search box, each AI shot the question. On Google everything but the search box and
  * the business is dimmed; the business is ringed in yellow everywhere. A
  * tap opens the shot big (on phones it pans sideways so the words can be
  * read); a tap anywhere, the close button or Escape shuts it.
@@ -36,6 +41,7 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { CLAUDE_D, OPENAI_D } from "./marks";
 import s from "./SeoPage.module.css";
@@ -58,8 +64,14 @@ export type Shot = Pic & {
   /** the page colour around the shot, so a shorter shot fills its box */
   bg: string;
 };
-/** `who` describes the business without naming it */
-export type Row = { who: string; google: Shot[]; ai: Shot[] };
+/** `who` is what the business does and where; `logo` is its mark, drawn in white on the dark band */
+export type Row = {
+  name: string;
+  who: string;
+  logo: Pic & { height: number };
+  google: Shot[];
+  ai: Shot[];
+};
 
 const GOOGLE_BG = "#23242a";
 const CHATGPT_BG = "#000";
@@ -68,7 +80,9 @@ const CHATGPT_PICK = "ChatGPT’s top pick";
 
 export const ROWS: Row[] = [
   {
-    who: "A wrap shop in Langley, BC",
+    name: "Wrap City",
+    who: "Vehicle wraps in Langley, BC",
+    logo: { src: "/seo/proof/logos/wrapcity.png", w: 312, h: 96, height: 26, alt: "Wrap City" },
     google: [
       {
         kind: "google",
@@ -132,7 +146,9 @@ export const ROWS: Row[] = [
     ],
   },
   {
-    who: "A railing company in Yakima, WA",
+    name: "Northwest Railing",
+    who: "Custom railings in Yakima, WA",
+    logo: { src: "/seo/proof/logos/northwest-railing.png", w: 94, h: 96, height: 40, alt: "Northwest Railing" },
     google: [
       {
         kind: "google",
@@ -276,6 +292,10 @@ export function Marks({ shot, id }: { shot: Shot; id: string }) {
   );
 }
 
+/** the searches a row's business is #1 for on Google */
+const firsts = (row: Row) =>
+  row.google.flatMap((sh) => (sh.tag.startsWith("#1") && sh.search ? [sh.search] : []));
+
 export type Open = (p: Pic) => void;
 
 const noChange = () => () => {};
@@ -401,7 +421,9 @@ export function Zoom({ pic, onClose }: { pic: Pic; onClose: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  return (
+  // straight into <body>, so no section's stacking can put the site's nav
+  // over it (on phones the floating menu sat on top, Nov 23 2026)
+  return createPortal(
     <div className={s.zoom} role="dialog" aria-modal="true" aria-label={pic.alt}>
       <button
         type="button"
@@ -417,7 +439,8 @@ export function Zoom({ pic, onClose }: { pic: Pic; onClose: () => void }) {
           <path d="M6 6l12 12M18 6 6 18" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </button>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -431,11 +454,39 @@ export default function ProofShots() {
           const ratio = `${row.google[0].w} / ${row.google[0].h}`;
           return (
             <li key={row.google[0].src} className={s.row}>
-              <p className={s.rowWho}>{row.who}</p>
-              {/* Nov 15 2026: one shot each, no taking turns and no bars, by
-                  request; the rest stay in ROWS for the drafts board */}
-              <Turns shots={row.google.slice(0, 1)} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} />
-              <Turns shots={row.ai.slice(0, 1)} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} />
+              <div className={s.rowWho}>
+                <Image
+                  src={row.logo.src}
+                  alt={row.logo.alt}
+                  width={row.logo.w}
+                  height={row.logo.h}
+                  className={s.rowLogo}
+                  style={{ height: row.logo.height }}
+                />
+                <div>
+                  <p className={s.rowName}>{row.name}</p>
+                  <p className={s.rowTrade}>{row.who}</p>
+                </div>
+                {/* the searches it's #1 for, read from its Google shots, so
+                    the proof is specific without waiting for the turns: each
+                    a small search box with a #1 badge in the rings' yellow */}
+                <ul className={s.rowSearches} aria-label={`${row.name} is #1 on Google for`}>
+                  {firsts(row).map((q) => (
+                    <li key={q} className={s.rowSearch}>
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden>
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+                      </svg>
+                      <span>{q}</span>
+                      <b>#1</b>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* taking turns again (Nov 23 2026, by request), so every shot
+                  shows; from Nov 15 it was one shot each */}
+              <Turns shots={row.google} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} />
+              <Turns shots={row.ai} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} />
             </li>
           );
         })}

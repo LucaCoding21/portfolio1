@@ -1,0 +1,264 @@
+/* "More reviews" (ReviewsScene): x.ai/bot's floating white message cards on
+   the slot's grey, with the base scene's tokens (StallScenes.module.css:
+   --ink, --float, --success...) and timings (Nov 23 2026). Transitions run
+   only into the later states, so the loop's reset back to the start is
+   instant while the stage is faded out. */
+
+.root {
+  --gold: #f5b301;
+}
+
+/* the two cards, stacked: 12px in from the top, as the base window */
+.cards {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(100% - 24px);
+  max-width: 300px;
+  margin-inline: auto;
+}
+
+.card {
+  position: relative;
+  padding: 10px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--float);
+}
+
+/* ---------- the request ---------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 22px;
+}
+
+.to {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.toLabel {
+  margin-right: 4px;
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.send {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 22px;
+  white-space: nowrap;
+  transition: transform 0.1s;
+}
+
+.send[data-pressed] {
+  transform: scale(0.94);
+}
+
+.send[data-sent] {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  transition:
+    transform 0.1s,
+    background-color 0.26s,
+    color 0.26s;
+}
+
+/* "Send" and "Sent" share one cell, centred, so the pill keeps its width */
+.send .sendLabel {
+  justify-items: center;
+}
+
+.sentLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* the message and its link, folded away once sent */
+.body {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.body > div {
+  min-height: 0;
+}
+
+.body[data-folded] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.42s cubic-bezier(0.2, 0, 0, 1),
+    opacity 0.2s;
+}
+
+.body[data-folded] > div {
+  overflow: hidden;
+}
+
+.msg {
+  margin: 0;
+  /* the gap under the To line, inside the fold so it folds away too */
+  padding-top: 7px;
+  font-size: 11.5px;
+  line-height: 15px;
+}
+
+.msg > span {
+  opacity: 0;
+}
+
+.msg > span[data-on] {
+  opacity: 1;
+  transition: opacity 0.18s ease-out;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  margin-top: 7px;
+  padding: 0 9px 0 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.chip svg {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.chip[data-hidden] {
+  opacity: 0;
+  transform: translateY(6px) scale(0.97);
+}
+
+/* x.ai's pop-in, as a transition so the chip holds its place in the card */
+.chip:not([data-hidden]) {
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+}
+
+/* ---------- the review ---------- */
+
+.note {
+  display: flex;
+  gap: 8px;
+  padding: 9px 10px 9px 9px;
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.06);
+  color: var(--ink-2);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.noteBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.noteHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  height: 20px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+  margin-top: 3px;
+}
+
+.star {
+  display: flex;
+  color: rgb(0 0 0 / 0.1);
+}
+
+.star[data-on] {
+  color: var(--gold);
+}
+
+/* x.ai's check-in, for each star as it fills */
+.star[data-on] svg {
+  animation: starIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes starIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.quote {
+  margin: 4px 0 0;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  line-height: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.quote[data-hidden] {
+  opacity: 0;
+  transform: translateY(3px);
+}
+
+.quote:not([data-hidden]) {
+  transition:
+    opacity 0.18s ease-out,
+    transform 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* the slots about 230px wide: the count goes so "New review" has room */
+@container (max-width: 239px) {
+  .noteHead .count {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root,
+  .root * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,574 @@
+/* ArticleBlogScene (Nov 24 2026): the website's articles growing month after
+   month in "Articles your customers search for". The colour tokens and the
+   loop's fade come from StallScenes.module.css (x.ai's light feature cards);
+   these are the row of article cards, their small pictures, the "New" mark,
+   the face with its check and the slide along. */
+
+/* sized both ways, so the cards can follow the slot's height; the peek of
+   the third card fades out at the right edge */
+.scene[class] {
+  container-type: size;
+  mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent calc(100% - 2px));
+}
+
+/* --cw: two cards and a peek of the third fill the width, so there's always
+   more to the right; --th: the picture takes the height the words leave,
+   never squarer than 5:4, and the cards sit centred in tall slots */
+.row {
+  --pad: 10px;
+  --gap: 8px;
+  --peek: 18px;
+  --text: 58px;
+  --cw: calc((100cqw - var(--pad) - var(--gap) * 2 - var(--peek)) / 2);
+  --pitch: calc(var(--cw) + var(--gap));
+  --th: min(calc(100cqh - 24px - var(--text) - 4px), calc((var(--cw) - 8px) * 0.8));
+  --ch: calc(var(--th) + var(--text) + 4px);
+
+  position: absolute;
+  top: calc((100cqh - var(--ch)) / 2);
+  left: var(--pad);
+  height: var(--ch);
+  transform: translateX(calc(var(--n, 0) * var(--pitch)));
+}
+
+.row[data-run] {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card {
+  position: absolute;
+  top: 0;
+  left: calc(var(--slot) * var(--pitch));
+  width: var(--cw);
+  height: var(--ch);
+  padding: 4px 4px 0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.04),
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 18px -8px rgb(50 50 93 / 0.22);
+}
+
+/* a new month's card pops in once the row has made room (x.ai's pop-in) */
+.card[data-fresh] {
+  animation: cardIn 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) 0.16s both;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+/* ---------- the words ---------- */
+
+.text {
+  padding: 6px 3px 0;
+}
+
+.title {
+  height: 25px;
+  overflow: hidden;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 12.5px;
+  letter-spacing: -0.01em;
+}
+
+.byline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 16px;
+  margin-top: 4px;
+}
+
+.month {
+  color: var(--ink-3);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
+/* the face of the one of us who checked it, with a green check */
+.face {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin-right: 2px;
+  border-radius: 999px;
+  background-position: center;
+  background-size: cover;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+
+.face[data-pop] {
+  animation: checkIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+.tick {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--success);
+  box-shadow: 0 0 0 1.5px #fff;
+  color: #fff;
+}
+
+.tick svg {
+  display: block;
+}
+
+/* ---------- the "New" mark: on the newest card, gone when the next comes ---------- */
+
+.new {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 15px;
+  padding: 0 6px 0 5px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 15px;
+  transition:
+    opacity 0.35s ease-out,
+    scale 0.35s ease-out;
+}
+
+.new i {
+  flex-shrink: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+.new[data-gone] {
+  opacity: 0;
+  scale: 0.9;
+}
+
+/* ---------- the pictures: flat shapes in warm, quiet colours ---------- */
+
+.thumb {
+  position: relative;
+  height: var(--th);
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.thumb i {
+  position: absolute;
+  display: block;
+}
+
+/* the drawing keeps one shape (13:10) and covers the picture, standing on
+   its foot (a few px of sky or a sliver at the sides is cut, never the
+   point); the gutter, seen from under the eave, hangs from the top instead */
+.art {
+  bottom: 0;
+  left: 50%;
+  width: max(100%, calc(var(--th) * 1.3));
+  aspect-ratio: 13 / 10;
+  translate: -50% 0;
+}
+
+.thumb[data-pic="gutter"] .art {
+  top: 0;
+  bottom: auto;
+}
+
+.grass {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 16%;
+  background: #d3dec6;
+}
+
+/* the house and its roof */
+.thumb[data-pic="roof"] {
+  background: linear-gradient(#e8eff2, #dee8ec);
+}
+
+.houseWall {
+  bottom: 16%;
+  left: 31%;
+  width: 38%;
+  height: 30%;
+  background: #f8f2e8;
+}
+
+.houseRoof {
+  bottom: 44%;
+  left: 21%;
+  width: 58%;
+  height: 34%;
+  background: repeating-linear-gradient(#d08669 0 4px, #c47b5f 4px 5px);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.chimney {
+  bottom: 58%;
+  left: 59%;
+  width: 7%;
+  height: 16%;
+  background: #b9735a;
+}
+
+.houseDoor {
+  bottom: 16%;
+  left: 38%;
+  width: 9%;
+  height: 17%;
+  border-radius: 1px 1px 0 0;
+  background: #a98266;
+}
+
+.houseWin {
+  bottom: 25%;
+  left: 54%;
+  width: 9%;
+  height: 10%;
+  border-radius: 1px;
+  background: #d5e3e9;
+  box-shadow: 0 0 0 1.5px #fff;
+}
+
+/* a gutter along the eave, leaves caught in it */
+.thumb[data-pic="gutter"] {
+  background: #f6efe4;
+}
+
+.eave {
+  top: -16%;
+  right: -10%;
+  left: -10%;
+  height: 58%;
+  background: repeating-linear-gradient(#9c968f 0 5px, #8f8983 5px 6px);
+  rotate: -5deg;
+}
+
+.gutterBar {
+  top: 39%;
+  left: -8%;
+  width: 88%;
+  height: 10%;
+  border-radius: 0 0 3px 3px;
+  background: #fff;
+  box-shadow: 0 1px 1.5px rgb(0 0 0 / 0.1);
+  rotate: -5deg;
+}
+
+/* the downspout and the corner trim run on past the drawing to the picture's edge */
+.spout {
+  top: 38%;
+  bottom: -100%;
+  left: 70%;
+  width: 7%;
+  background: #ece9e3;
+  box-shadow: inset -1.5px 0 0 rgb(0 0 0 / 0.06);
+}
+
+/* the leaves sit behind the gutter's front, poking up out of it along its slope */
+.leaf {
+  width: 14%;
+  height: 12%;
+  border-radius: 0 100% 0 100%;
+}
+
+.leaf[data-l="1"] {
+  top: 34%;
+  left: 12%;
+  background: #df9f4d;
+  rotate: -24deg;
+}
+
+.leaf[data-l="2"] {
+  top: 31%;
+  left: 27%;
+  background: #c9763f;
+  rotate: 18deg;
+}
+
+.leaf[data-l="3"] {
+  top: 30%;
+  left: 43%;
+  background: #c4a24c;
+  rotate: -10deg;
+}
+
+.leaf[data-l="4"] {
+  top: 27.5%;
+  left: 57%;
+  background: #d98b48;
+  rotate: 32deg;
+}
+
+/* the top of a window on the wall under the gutter, cut by the picture's foot */
+.winFrame[data-gutter] {
+  top: 64%;
+  left: 14%;
+  width: 34%;
+  height: 56%;
+}
+
+/* a window on a warm wall, a shrub under it */
+.thumb[data-pic="window"] {
+  background: #eedfcb;
+}
+
+.winFrame {
+  top: 13%;
+  left: 31%;
+  width: 38%;
+  height: 56%;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+.winGlass {
+  inset: 10% 12%;
+  background:
+    linear-gradient(#fff, #fff) 50% 0 / 8% 100% no-repeat,
+    linear-gradient(#fff, #fff) 0 50% / 100% 8% no-repeat,
+    linear-gradient(150deg, #dceaf0 0 46%, #cbdde6 46%);
+}
+
+.winSill {
+  top: 68%;
+  left: 27%;
+  width: 46%;
+  height: 6%;
+  border-radius: 1px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+}
+
+.shrub {
+  border-radius: 50% 50% 0 0;
+  background: #9db48a;
+}
+
+.shrub[data-s="1"] {
+  bottom: -2%;
+  left: 18%;
+  width: 34%;
+  height: 22%;
+}
+
+.shrub[data-s="2"] {
+  bottom: -2%;
+  left: 44%;
+  width: 40%;
+  height: 18%;
+  background: #8ea97c;
+}
+
+/* a front door, its step and a pot beside it */
+.thumb[data-pic="door"] {
+  background: #f2e9dc;
+}
+
+.doorTrim {
+  bottom: 10%;
+  left: 35%;
+  width: 30%;
+  height: 76%;
+  border-radius: 2px 2px 0 0;
+  background: #fff;
+}
+
+.doorLeaf {
+  bottom: 10%;
+  left: 39%;
+  width: 22%;
+  height: 70%;
+  border-radius: 1px 1px 0 0;
+  background: #6f978b;
+}
+
+.doorPanel {
+  left: 18%;
+  width: 64%;
+  border-radius: 1px;
+  background: #628a7e;
+}
+
+.doorPanel[data-p="1"] {
+  top: 9%;
+  height: 34%;
+}
+
+.doorPanel[data-p="2"] {
+  top: 52%;
+  height: 38%;
+}
+
+.doorKnob {
+  top: 47%;
+  right: 9%;
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: #e6b964;
+}
+
+.doorStep {
+  bottom: 4%;
+  left: 29%;
+  width: 42%;
+  height: 7%;
+  border-radius: 1px;
+  background: #dcd3c6;
+}
+
+.pot {
+  bottom: 10%;
+  left: 13%;
+  width: 11%;
+  height: 14%;
+  background: #cf8b69;
+  clip-path: polygon(0 0, 100% 0, 84% 100%, 16% 100%);
+}
+
+.potPlant {
+  bottom: 21%;
+  left: 10%;
+  width: 17%;
+  height: 22%;
+  border-radius: 50% 50% 45% 45%;
+  background: #93ad7f;
+}
+
+/* a fence beside a hedge */
+.thumb[data-pic="fence"] {
+  background: linear-gradient(#e8eff2, #dee8ec);
+}
+
+.rail {
+  left: 4%;
+  width: 46%;
+  height: 5%;
+  background: #f7f5f0;
+  box-shadow: 0 0.5px 1px rgb(0 0 0 / 0.08);
+}
+
+.rail[data-r="1"] {
+  bottom: 24%;
+}
+
+.rail[data-r="2"] {
+  bottom: 46%;
+}
+
+.picket {
+  bottom: 13%;
+  left: calc(6% + var(--p) * 11%);
+  width: 9%;
+  height: 46%;
+  background: linear-gradient(90deg, #fff 60%, #efede8 60%);
+  clip-path: polygon(50% 0, 100% 20%, 100% 100%, 0 100%);
+}
+
+.hedge {
+  right: 6%;
+  bottom: 13%;
+  left: 55%;
+  height: 50%;
+  border-radius: 46% 46% 8% 8% / 42% 42% 8% 8%;
+  background:
+    radial-gradient(circle at 30% 34%, #a3ba8f 0 14%, transparent 15%),
+    radial-gradient(circle at 68% 52%, #86a273 0 13%, transparent 14%),
+    #93ae80;
+}
+
+/* lap siding with a corner trim and a window */
+.thumb[data-pic="siding"] {
+  background: repeating-linear-gradient(#d0dbe0 0 8px, #c1ced4 8px 9px);
+}
+
+.sideTrim {
+  top: -100%;
+  bottom: 0;
+  left: 12%;
+  width: 7%;
+  background: #fff;
+}
+
+.winFrame[data-side] {
+  top: 20%;
+  left: 44%;
+  width: 34%;
+  height: 50%;
+}
+
+/* ---------- sizes ---------- */
+
+/* taller slots (laptops at 1440 and up): a size up for the words and the face */
+@container (min-height: 170px) {
+  .row {
+    --text: 64px;
+  }
+
+  .text {
+    padding: 7px 5px 0;
+  }
+
+  .title {
+    height: 27px;
+    font-size: 11px;
+    line-height: 13.5px;
+  }
+
+  .byline {
+    height: 18px;
+    margin-top: 5px;
+  }
+
+  .face {
+    width: 18px;
+    height: 18px;
+  }
+
+  .new {
+    top: 10px;
+    left: 10px;
+  }
+}
+
+/* the still frame (reduced motion) is drawn finished, with nothing to play */
+.scene[data-still] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

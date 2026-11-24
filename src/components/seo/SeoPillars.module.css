@@ -1,0 +1,785 @@
+/* "Our approach" (SeoPillars), three drafts while William picks (Nov 24
+   2026). Same page colours and side padding as "The problem"; compact, as
+   the low-fi asked: a small intro, not a feature section. */
+
+.section {
+  position: relative;
+  background: #f9f8f5;
+  color: #1a1613;
+}
+
+.inner {
+  max-width: 1920px;
+  margin: 0 auto;
+  padding: clamp(80px, calc(7.8 * var(--fit, 1vw)), 112px) clamp(20px, 3vw, 56px);
+}
+
+/* ================= 1: Stacked (the Terrava reference) ================= */
+
+.stacked {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 780px);
+  gap: 40px clamp(32px, 6vw, 120px);
+}
+
+.stLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.stPill {
+  display: inline-block;
+  margin: 0;
+  padding: 4px 9px;
+  border: 1px solid #dcd8cf;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.stTitle {
+  max-width: 10.5em;
+  margin: 16px 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(34px, calc(4 * var(--fit, 1vw)), 58px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+/* the picture inside the heading, as the wind turbine sits in the reference:
+   the start of a Google search for one of our clients */
+.chip {
+  position: relative;
+  display: inline-block;
+  width: 1.9em;
+  height: 0.82em;
+  overflow: hidden;
+  border-radius: 0.18em;
+  vertical-align: -0.08em;
+  background: #202124;
+}
+
+.chip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left center;
+}
+
+.stText {
+  max-width: 25em;
+  margin: 0;
+  color: #8a857c;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.stPics {
+  display: flex;
+  gap: 12px;
+}
+
+.stPic {
+  width: clamp(80px, 7vw, 112px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e6e2da;
+}
+
+.stPic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stCards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stCard {
+  --thumb: clamp(112px, 9.5vw, 150px);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding: clamp(14px, 1.2vw, 18px) clamp(14px, 1.2vw, 18px) clamp(14px, 1.2vw, 18px) clamp(20px, 1.8vw, 26px);
+  border-radius: 18px;
+  background: #efece6;
+}
+
+.stCard[data-dark] {
+  background: #1e3524;
+  color: #fff;
+}
+
+.stBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stNum {
+  margin: 0;
+  color: #8a857c;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stCard[data-dark] .stNum {
+  color: rgb(255 255 255 / 0.55);
+}
+
+.stCardTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(22px, 1.9vw, 30px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.stCardText {
+  margin: 8px 0 0;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.stCard[data-dark] .stCardText {
+  color: rgb(255 255 255 / 0.72);
+}
+
+.stMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 4px 4px 4px 11px;
+  border: 1px solid #dcd8cf;
+  border-radius: 7px;
+  background: #fff;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+}
+
+.stMore:hover {
+  border-color: #1a1613;
+}
+
+.stCard[data-dark] .stMore {
+  border-color: #fff;
+}
+
+.stMoreChip {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: #1a1613;
+  color: #fff;
+  transition: transform 0.2s ease;
+}
+
+.stMore:hover .stMoreChip {
+  transform: translate(1px, 1px);
+}
+
+/* the card's picture */
+.thumb {
+  position: relative;
+  width: var(--thumb);
+  height: var(--thumb);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.thumbCover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the client's home page, zoomed on the hero's left side, where its two
+   buttons are */
+.thumbPage {
+  position: absolute;
+  top: -18%;
+  left: 0;
+  width: 160%;
+  max-width: none;
+  height: auto;
+}
+
+/* click heat: red where it's hottest, through yellow and green */
+.heat {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 36 0 / 0.92),
+    rgb(255 128 0 / 0.78) 32%,
+    rgb(255 222 0 / 0.58) 54%,
+    rgb(70 214 120 / 0.34) 76%,
+    rgb(40 120 255 / 0) 100%
+  );
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ================= 2: Featured (the Euphoria reference) ================= */
+
+.featured {
+  max-width: 1180px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.ftPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 4px 11px 4px 5px;
+  border: 1px solid #e3dfd6;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+.ftPillDot {
+  display: grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #1a1613;
+}
+
+.ftPillDot::after {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  content: "";
+}
+
+.ftTitle {
+  max-width: 13em;
+  margin: 18px auto 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.ftGrey {
+  color: #a39e93;
+}
+
+.ftTabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 24px;
+  padding: 3px;
+  border-radius: 10px;
+  background: #efece6;
+}
+
+.ftTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 5px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #6a665e;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ftTab[data-on] {
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  color: #1a1613;
+}
+
+.ftTabIcon {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 5px;
+  background: #d6d1c7;
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.ftTab[data-on] .ftTabIcon {
+  background: #1a1613;
+}
+
+.ftCards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(14px, 1.6vw, 24px);
+  margin: clamp(36px, calc(4 * var(--fit, 1vw)), 56px) 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.ftCard {
+  border: 1px solid #e6e2da;
+  border-radius: 16px;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    padding 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.ftCard[data-on] {
+  padding: 6px;
+  box-shadow: 0 22px 44px -28px rgb(0 0 0 / 0.3);
+  cursor: default;
+}
+
+.ftInner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: clamp(210px, calc(17 * var(--fit, 1vw)), 250px);
+  padding: clamp(20px, 1.8vw, 26px);
+  border-radius: 12px;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    min-height 0.3s ease;
+}
+
+.ftCard[data-on] .ftInner {
+  min-height: clamp(240px, calc(19.5 * var(--fit, 1vw)), 290px);
+  background: #111113;
+  color: #fff;
+}
+
+.ftIcon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #1a1613;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.18);
+  color: #fff;
+}
+
+.ftCard[data-on] .ftIcon {
+  background: #fff;
+  color: #111113;
+}
+
+.ftNum {
+  margin: 40px 0 0;
+  color: #8a857c;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ftCard[data-on] .ftNum {
+  color: rgb(255 255 255 / 0.55);
+}
+
+.ftCardTitle {
+  margin: 8px 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(22px, 1.8vw, 28px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.ftCardText {
+  margin: 10px 0 0;
+  color: #8a857c;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.ftCard[data-on] .ftCardText {
+  color: rgb(255 255 255 / 0.7);
+}
+
+.ftMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 22px;
+  align-self: flex-end;
+  color: #1a1613;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ftMore svg {
+  transition: transform 0.2s ease;
+}
+
+.ftMore:hover svg {
+  transform: translateX(3px);
+}
+
+.ftFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 10px 4px;
+}
+
+.ftFoot .ftMore {
+  margin: 0;
+  padding: 0;
+}
+
+.ftProof {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #4a463f;
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.ftProofIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #efece6;
+  color: #1a1613;
+}
+
+/* ================= 3: Type (the low-fi as written) ================= */
+
+.tyLabel {
+  margin: 0;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tyTitle {
+  max-width: 14em;
+  margin: clamp(24px, calc(3 * var(--fit, 1vw)), 40px) 0 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.tyCols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(44px, calc(5.5 * var(--fit, 1vw)), 80px) 0 0;
+  padding: 0;
+  border-top: 1px solid #dcd8cf;
+  list-style: none;
+}
+
+.tyCols > li + li {
+  border-left: 1px solid #dcd8cf;
+}
+
+.tyCol {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: clamp(20px, calc(2 * var(--fit, 1vw)), 30px) clamp(20px, 2vw, 32px) 4px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.tyCols > li:first-child .tyCol {
+  padding-left: 0;
+}
+
+.tyNum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tyArrow {
+  display: grid;
+  opacity: 0;
+  transform: translate(-4px, -4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.tyCol:hover .tyArrow,
+.tyCol:focus-visible .tyArrow {
+  opacity: 1;
+  transform: none;
+}
+
+.tyColTitle {
+  margin-top: clamp(28px, calc(3.5 * var(--fit, 1vw)), 52px);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(30px, calc(3.2 * var(--fit, 1vw)), 46px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.tyColText {
+  max-width: 20em;
+  margin-top: 12px;
+  color: #8a857c;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ================= the picker (not on the live site) ================= */
+
+.picker {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(17 17 19 / 0.9);
+  color: #fff;
+  font-size: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.pickerLabel {
+  padding: 0 6px 0 8px;
+  opacity: 0.7;
+}
+
+.pickerBtn {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pickerBtn[data-on] {
+  background: #fff;
+  color: #111113;
+}
+
+/* ================= tablets ================= */
+
+@media (max-width: 900px) {
+  .stacked {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stLeft {
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  .stPics {
+    display: none;
+  }
+
+  .ftCards {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  .ftInner,
+  .ftCard[data-on] .ftInner {
+    min-height: 0;
+  }
+
+  /* above the phone dock */
+  .picker {
+    bottom: 96px;
+  }
+}
+
+@media (max-width: 760px) {
+  .tyCols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tyCols > li + li {
+    border-top: 1px solid #dcd8cf;
+    border-left: 0;
+  }
+
+  .tyCol,
+  .tyCols > li:first-child .tyCol {
+    padding: 22px 0 26px;
+  }
+
+  .tyColTitle {
+    margin-top: 16px;
+  }
+}
+
+/* ================= phones (the page's 600px pass) ================= */
+
+@media (max-width: 600px) {
+  .inner {
+    padding: 72px 20px;
+  }
+
+  .stTitle,
+  .ftTitle,
+  .tyTitle {
+    font-size: 28px;
+  }
+
+  .stTitle {
+    max-width: 11em;
+  }
+
+  .stText {
+    font-size: 14px;
+  }
+
+  .stCard {
+    --thumb: 92px;
+
+    gap: 14px;
+    padding: 14px 14px 14px 18px;
+    border-radius: 16px;
+  }
+
+  .stCardTitle {
+    font-size: 21px;
+  }
+
+  .stCardText {
+    font-size: 13.5px;
+  }
+
+  .stMore {
+    margin-top: 14px;
+  }
+
+  .ftTabs {
+    margin-top: 20px;
+  }
+
+  .ftCards {
+    margin-top: 28px;
+  }
+
+  .ftNum {
+    margin-top: 28px;
+  }
+
+  .ftCardTitle {
+    font-size: 22px;
+  }
+
+  .ftFoot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ftFoot .ftMore {
+    align-self: flex-end;
+  }
+
+  .tyTitle {
+    margin-top: 16px;
+  }
+
+  .tyCols {
+    margin-top: 32px;
+  }
+
+  .tyColTitle {
+    font-size: 26px;
+  }
+
+  .tyColText {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section *,
+  .picker * {
+    transition: none !important;
+  }
+}

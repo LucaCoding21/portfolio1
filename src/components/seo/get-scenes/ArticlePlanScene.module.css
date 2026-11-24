@@ -1,0 +1,360 @@
+/* ArticlePlanScene: this month's articles, done by a person (draft B,
+   Nov 24 2026). Three white rows straight on the slot's warm grey under a
+   small month label, each with a status pill that goes Drafted, Edited,
+   Live. Colours, shadows and the loop's fade come from
+   StallScenes.module.css (.stage, x.ai's light feature cards). Every size is
+   a variable on .list, opened up for the taller slots at the end. */
+
+/* its own size container (the stage's height is set), so the rows can
+   grow in the tall laptop slots; the list sits in the middle */
+.fit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  container-type: size;
+}
+
+.list {
+  --rh: 33px; /* a row's height */
+  --gap: 5px; /* between rows */
+  --t: 11px; /* the title */
+  --ph: 22px; /* the pill's height */
+  --fc: 16px; /* the face */
+  --w: 10.5px; /* the pill's word */
+  --mg: 6px; /* under the month */
+  --pl: 10px; /* a row's left padding */
+  /* a lighter float than x.ai's chips, so three rows close together don't
+     cloud into each other */
+  --row-shadow: 0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.04),
+    0 8px 18px -10px rgb(50 50 93 / 0.22);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: calc(100% - 20px);
+  max-width: 296px;
+  /* a touch above the middle, as the rows' shadows weigh the foot */
+  margin-bottom: 3px;
+}
+
+.month {
+  /* in line with the titles under it */
+  margin: 0 0 calc(var(--mg) - var(--gap)) var(--pl);
+  color: var(--ink-2);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 14px;
+}
+
+/* ---------- a row ---------- */
+
+/* the pill sits as far in from the row's right edge as from its top, so
+   their corners nest */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--rh);
+  padding: 0 calc((var(--rh) - var(--ph)) / 2) 0 var(--pl);
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: var(--row-shadow);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--t);
+  font-weight: 500;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the short questions in the slots up to 300px wide (all the laptop ones:
+   the longer ones would be cut there) */
+.mid {
+  display: none;
+}
+
+@container (min-width: 300px) {
+  .mid {
+    display: inline;
+  }
+
+  .short {
+    display: none;
+  }
+}
+
+/* ---------- the status pill ---------- */
+
+/* one width for all three words (the widest, "Drafted"), so the pills line
+   up as a column and the face never shifts as the word changes */
+.status {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: var(--ph);
+  padding: 0 8px 0 calc((var(--ph) - var(--fc)) / 2);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.045);
+  color: var(--ink-2);
+  font-size: var(--w);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.status[data-step="1"] {
+  color: var(--ink);
+  transition: color 0.26s;
+}
+
+.status[data-step="2"] {
+  /* solid, so the check's edge matches it */
+  --pill: color-mix(in srgb, var(--success) 14%, #fff);
+
+  background: var(--pill);
+  color: var(--success);
+  transition:
+    background-color 0.26s,
+    color 0.26s;
+}
+
+/* who has it: a dashed ring with AI's sparkle (a draft, no person yet),
+   then a face */
+.who {
+  position: relative;
+  flex: none;
+  width: var(--fc);
+  height: var(--fc);
+}
+
+.ring {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 1px dashed rgb(0 0 0 / 0.28);
+  border-radius: 999px;
+  color: var(--ink-3);
+}
+
+.ring svg {
+  display: block;
+  width: 50%;
+  height: 50%;
+}
+
+.status:not([data-step="0"]) .ring {
+  opacity: 0;
+  transition: opacity 0.16s;
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  opacity: 0;
+}
+
+.face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* in closer on the face, as the photos are framed head and shoulders */
+  transform: scale(1.3);
+  transform-origin: 50% 40%;
+}
+
+/* x.ai's pop-in, from the middle of the ring */
+.face[data-on] {
+  opacity: 1;
+  animation: faceIn 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+@keyframes faceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* the green check on the face's corner (x.ai's check-in, then one soft
+   ring as it lands) */
+.ok {
+  position: absolute;
+  right: -3px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 1.5px var(--pill, #fff);
+  color: #fff;
+  opacity: 0;
+}
+
+.ok svg {
+  display: block;
+  width: 7px;
+  height: 7px;
+}
+
+.ok[data-on] {
+  opacity: 1;
+  animation: checkIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+}
+
+.ok::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.ok[data-on]::after {
+  animation: ring 0.9s ease-out 0.2s both;
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+@keyframes ring {
+  from {
+    box-shadow: 0 0 0 0 rgb(0 201 114 / 0.4);
+  }
+  to {
+    box-shadow: 0 0 0 6px rgb(0 201 114 / 0);
+  }
+}
+
+/* the word: x.ai's text swap (the old fades, the new rises 3px), run only
+   into the later steps, so the reset at the loop's start is instant */
+.word {
+  display: grid;
+  justify-items: center;
+}
+
+.word > span {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(3px);
+}
+
+.word > span[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.status:not([data-step="0"]) .word > span {
+  transition:
+    opacity 0.11s ease-in,
+    transform 0s linear 0.11s;
+}
+
+.status:not([data-step="0"]) .word > span[data-on] {
+  transition:
+    opacity 0.18s ease-out 0.11s,
+    transform 0.22s cubic-bezier(0.2, 0, 0, 1) 0.11s;
+}
+
+/* ---------- sizes ---------- */
+
+@container (min-width: 262px) {
+  .list {
+    width: calc(100% - 24px);
+  }
+}
+
+/* the taller laptop slots (1440): rows and type open up */
+@container (min-height: 170px) {
+  .list {
+    --rh: 36px;
+    --gap: 6px;
+    --t: 11.5px;
+    --ph: 23px;
+    --fc: 17px;
+    --w: 11px;
+    --mg: 7px;
+  }
+
+  .month {
+    font-size: 11px;
+  }
+}
+
+@container (min-height: 200px) {
+  .list {
+    --rh: 40px;
+    --gap: 7px;
+    --t: 12px;
+    --ph: 24px;
+    --fc: 18px;
+    --mg: 8px;
+  }
+
+  .row {
+    border-radius: 10px;
+  }
+}
+
+/* the tall slot (1920): bigger rows, so the list fills it rather than
+   floating in the middle */
+@container (min-height: 240px) {
+  .list {
+    --rh: 45px;
+    --gap: 9px;
+    --t: 12.5px;
+    --ph: 26px;
+    --fc: 20px;
+    --w: 11.5px;
+    --mg: 10px;
+    --pl: 12px;
+  }
+
+  .month {
+    font-size: 11.5px;
+  }
+
+  .row {
+    border-radius: 11px;
+  }
+
+  .ok {
+    width: 10px;
+    height: 10px;
+  }
+
+  .ok svg {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+/* the still frame (reduced motion) shows the done list as is */
+.scene[data-still] *,
+.scene[data-still] *::after {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene *,
+  .scene *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

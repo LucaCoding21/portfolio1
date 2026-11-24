@@ -1,0 +1,196 @@
+/* ChecksScene: the monthly map check in "Your rankings, checked monthly"
+   (Nov 23 2026). The window, head, badge, page swap and motion come from
+   StallScenes.module.css (x.ai's light feature cards); these are the pale
+   map, its grid of points and the neutral tally badge. */
+
+/* the map fills the window under the head */
+.panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  /* clip, not hidden, so the month's 3px rise isn't cut */
+  overflow-x: clip;
+}
+
+.month {
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+/* "Oct" and "Nov" stand in for the full names where the head is tight */
+.month.short {
+  display: none;
+}
+
+.tally {
+  background: rgb(0 0 0 / 0.045);
+  color: var(--ink);
+}
+
+/* the badge's dot doubles as the key: green is the top 3 */
+.key {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  margin-right: 1px;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+/* ---------- the map: warm grey with white roads and one park ---------- */
+
+.map {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #f5f3ee;
+}
+
+.road,
+.park {
+  position: absolute;
+  display: block;
+}
+
+.road {
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.03);
+}
+
+.road[data-r="a"] {
+  top: 50px;
+  right: -10%;
+  left: -10%;
+  height: 6px;
+  rotate: -6deg;
+}
+
+.road[data-r="b"] {
+  top: -40px;
+  left: 34%;
+  width: 5px;
+  height: 260px;
+  rotate: 14deg;
+}
+
+.road[data-r="c"] {
+  top: 18px;
+  right: -10%;
+  left: 55%;
+  height: 3px;
+  rotate: 4deg;
+}
+
+.road[data-r="d"] {
+  top: -20px;
+  left: 80%;
+  width: 3px;
+  height: 240px;
+  rotate: -8deg;
+}
+
+.park {
+  top: 64px;
+  left: 5%;
+  width: 24%;
+  height: 46px;
+  border-radius: 9px;
+  background: #e9ede3;
+}
+
+/* ---------- the grid of points ---------- */
+
+.grids {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  /* its own width, not the half left of `left: 50%`, so it centres */
+  width: max-content;
+  translate: -50% 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 20px);
+  grid-auto-rows: 20px;
+  column-gap: clamp(16px, 8cqi, 28px);
+  row-gap: 9px;
+}
+
+.dot {
+  position: relative;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.1);
+}
+
+/* the point's result pops in as the check reaches it (x.ai's check-in) */
+.fill {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+  animation: fillIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fill[data-tone="top"] {
+  background: var(--green);
+}
+
+.fill[data-tone="mid"] {
+  background: #f2ac3d;
+}
+
+.fill[data-tone="low"] {
+  background: #e7e4de;
+  color: rgb(0 0 0 / 0.45);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.04);
+}
+
+@keyframes fillIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* phones and most laptops: the short month names, so the badge fits */
+@container (max-width: 269px) {
+  .month.long {
+    display: none;
+  }
+
+  .month.short {
+    display: grid;
+  }
+}
+
+/* the narrowest slots drop the badge's dot */
+@container (max-width: 229px) {
+  .key {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

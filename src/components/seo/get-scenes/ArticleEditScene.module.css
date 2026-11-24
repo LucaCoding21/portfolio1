@@ -1,0 +1,339 @@
+/* ArticleEditScene: an editor's pass on one article in "Articles your
+   customers search for" (Nov 23 2026). One white sheet on the slot's grey,
+   running off its foot like a page; the colour tokens, the pop-in, the text
+   swap and the loop's fade come from StallScenes.module.css (x.ai's light
+   feature cards). The pen's marks are thin rounded lines in one warm red,
+   drawn left to right; the rewrites are green lines. Transitions run only
+   into the later states, so the loop's reset is instant while the stage
+   fades back in. */
+
+/* the sheet reads the slot's height too, for the taller slots */
+.wrap {
+  position: absolute;
+  inset: 0;
+  container: art / size;
+}
+
+/* capped and centred, so the wide slots never stretch it */
+.sheet {
+  --pen: #d6453d;
+  /* the body's lines: their pitch and thickness */
+  --pitch: 16px;
+  --bar: 4px;
+  --body: rgb(0 0 0 / 0.075);
+
+  position: absolute;
+  top: 12px;
+  bottom: -24px;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(calc(100% - 28px), 236px);
+  padding: 10px 13px 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.045),
+    0 1px 2px rgb(0 0 0 / 0.05),
+    0 10px 24px -10px rgb(50 50 93 / 0.24);
+  translate: -50% 0;
+}
+
+/* ---------- the tag: "Draft", then "Edited" ---------- */
+
+.tag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 17px;
+  padding: 0 7px 0 6px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.055);
+  color: var(--ink-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 17px;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+}
+
+.tag[data-edited] {
+  background: color-mix(in srgb, var(--success) 14%, transparent);
+  color: var(--success);
+  transition:
+    background-color 0.26s,
+    color 0.26s;
+}
+
+/* back to "Draft" at once at the loop's start */
+.tag:not([data-edited]) .word > * {
+  transition: none;
+}
+
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 9px;
+  height: 9px;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* x.ai's check-in */
+.icon svg {
+  display: block;
+  animation: checkIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes checkIn {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* ---------- the title and body ---------- */
+
+.title {
+  margin: 7px 0 0;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--pitch) - var(--bar));
+  width: 100%;
+  margin-top: 10px;
+}
+
+.row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: var(--bar);
+}
+
+/* a new paragraph */
+.row[data-para] {
+  margin-top: 3px;
+}
+
+.seg {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--bar);
+  border-radius: 999px;
+  background: var(--body);
+}
+
+/* the struck words go paler once the pen has crossed them out */
+.seg[data-struck] {
+  background: rgb(0 0 0 / 0.045);
+  transition: background-color 0.3s 0.2s;
+}
+
+/* a subheading, partway down the page */
+.sub {
+  flex: none;
+  width: 44%;
+  height: 6px;
+  margin-top: 6px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.13);
+}
+
+/* ---------- the pen ---------- */
+
+/* a thin strike, a little past the words at both ends */
+.strike {
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  left: -2px;
+  height: 1.5px;
+  margin-top: -0.75px;
+  border-radius: 999px;
+  background: var(--pen);
+  animation: draw 0.34s cubic-bezier(0.5, 0, 0.2, 1) both;
+}
+
+@keyframes draw {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* the caret just under the start of the struck words, pointing up at the
+   rewrite, as an editor marks an insert */
+.caret {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: -5px;
+  display: block;
+  color: var(--pen);
+  animation: rise 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
+}
+
+/* the new words, written above the old */
+.insert {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: -1px;
+  height: var(--bar);
+  border-radius: 999px;
+  background: rgb(0 201 114 / 0.5);
+  transform-origin: 0 100%;
+  animation: rise 0.42s cubic-bezier(0.2, 0.9, 0.3, 1.15) 0.06s both;
+}
+
+/* x.ai's pop-in, moved less for a mark this small */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(3px) scale(0.96);
+  }
+}
+
+/* the margin note's row: the paragraph's short last line, a hairline from
+   its end, and the note at the right */
+.text {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  width: 40%;
+}
+
+.leader {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 10px;
+  height: 1px;
+  margin: 0 4px 0 6px;
+}
+
+.leader i {
+  position: absolute;
+  inset: 0;
+  background: var(--pen);
+  opacity: 0.65;
+  animation: draw 0.26s cubic-bezier(0.5, 0, 0.2, 1) both;
+}
+
+.note {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  height: 17px;
+  padding: 0 6px 0 5px;
+  border: 1px solid rgb(214 69 61 / 0.55);
+  border-radius: 5px;
+  background: #fff;
+  color: var(--pen);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: -0.1px;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.note[data-on] {
+  opacity: 1;
+}
+
+.note svg {
+  display: block;
+  flex: none;
+}
+
+/* ---------- sizes ---------- */
+
+/* the narrowest slots: the sheet comes in closer to the edges */
+@container art (max-width: 229px) {
+  .sheet {
+    width: calc(100% - 20px);
+    padding-inline: 11px;
+  }
+}
+
+/* the short slots (150 to 179px: phones, 1280 laptops, short windows): the
+   page sits tighter, so the second fix clears the slot's foot by 16px
+   instead of 7 (it looked cut off, Nov 23 2026) */
+@container art (max-height: 179px) {
+  .sheet {
+    top: 10px;
+    padding-top: 9px;
+  }
+
+  .title {
+    margin-top: 5px;
+  }
+
+  .body {
+    margin-top: 9px;
+  }
+
+  .row[data-para] {
+    margin-top: 0;
+  }
+}
+
+/* the taller slots (1440 and up): a little more air at the top */
+@container art (min-height: 180px) {
+  .sheet {
+    top: 16px;
+  }
+}
+
+/* the tall slots (1920): larger type and more room on the page */
+@container art (min-height: 220px) {
+  .sheet {
+    --pitch: 17px;
+
+    top: 20px;
+    width: min(calc(100% - 40px), 240px);
+    padding: 14px 16px 0;
+  }
+
+  .title {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 17px;
+  }
+
+  .body {
+    margin-top: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene,
+  .scene * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

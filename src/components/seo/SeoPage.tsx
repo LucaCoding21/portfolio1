@@ -49,11 +49,12 @@ import HomeFooter from "@/components/HomeFooter";
 import { CAL_URL } from "@/data/projects";
 import FaqList from "./FaqList";
 import ProofShots from "./ProofShots";
+import SeoCro from "./SeoCro";
 import SeoGet from "./SeoGet";
 import SeoHero from "./SeoHero";
 import SeoMotion from "./SeoMotion";
 import SeoOffer from "./SeoOffer";
-import StallAside from "./StallAside";
+import SeoPillars from "./SeoPillars";
 import StallCards from "./StallCards";
 import s from "./SeoPage.module.css";
 
@@ -80,7 +81,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "What do you do each month?",
-    a: `Depending on your plan, we work on ${SEARCH_RANGE} searches. We fix your Google listing, add pages for the jobs and towns you want, help you get more reviews and get you mentioned on other sites. We also work on what ChatGPT and Google’s AI say about you. Each month you get a short video showing what we did and what changed.`,
+    a: `Depending on your plan, we work on ${SEARCH_RANGE} searches. We fix your Google listing, add pages for the jobs and towns you want, add articles that answer what your customers search (planned to rank and edited by us so they’re correct), help you get more reviews and get you mentioned on other sites. We also work on what ChatGPT and Google’s AI say about you.`,
   },
   {
     q: "Do I need a website from you?",
@@ -165,13 +166,18 @@ export default function SeoPage() {
               <h2 className={s.stallTitle} data-stall="title">
                 People near you are searching for what you do, and calling someone else.
               </h2>
-              <StallAside />
             </div>
             <StallCards />
           </div>
         </section>
 
-        <SeoOffer />
+        {/* the solution band, then (Nov 24 2026, William's low-fi) the three
+            pillars, "01 / Get found" (the things we take care of) and
+            "02 / Get chosen" (the CRO showcase) */}
+        <SeoOffer part="promise" />
+        <SeoPillars />
+        <SeoGet />
+        <SeoCro />
 
         <section id="results" className={s.results} data-section="results">
           <div className={s.resultsInner}>
@@ -185,7 +191,7 @@ export default function SeoPage() {
                 <h2 className={s.h2}>Our websites alone got these businesses into the top 3 on Google.</h2>
               </div>
               <p className={s.resultsLede}>
-                None of them had monthly SEO. We&rsquo;re starting that now with a few founding clients.
+                They show up at the top when people nearby search, without paying for ads.
               </p>
             </div>
 
@@ -200,7 +206,9 @@ export default function SeoPage() {
           </div>
         </section>
 
-        <SeoGet searchRange={SEARCH_RANGE} />
+        {/* "How it works" (<SeoOffer part="process" />) sat here until Nov 23
+            2026; taken out by request so the page goes from the proof to
+            the FAQ and the booking. It still renders if put back. */}
 
         {/* Nov 15 2026: grey and centred, "Still have questions?" and its
             line over one wide white container of questions, one open at a
