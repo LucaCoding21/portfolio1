@@ -80,9 +80,7 @@ const Svg = ({ className, children }: IconProps & { children: React.ReactNode })
   </svg>
 );
 
-/* Monthly SEO: a magnifier (Sight's sparkle went with it, Nov 9 2026); kept
-   for when SEO comes back to the dock */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* Monthly SEO: a magnifier (Sight's sparkle went with it, Nov 9 2026) */
 const IconSearch = (p: IconProps) => (
   <Svg {...p}>
     <circle cx={11} cy={11} r={7} />
@@ -123,8 +121,8 @@ const MAIN = [
   { label: "Work", href: "/work", Icon: IconCloud },
   { label: "Approach", href: "/#how-we-do-it", Icon: IconFileLines },
   { label: "About", href: "/#about", Icon: IconUser },
-  // Out of the nav while /seo isn't ready (Nov 15 2026); see NAV_ITEMS.
-  // { label: "SEO", href: "/seo", Icon: IconSearch },
+  // out of the nav Nov 15 to Nov 24 2026; see NAV_ITEMS
+  { label: "SEO", href: "/seo", Icon: IconSearch },
 ];
 
 type Geom = { side: number; bottom: number };
