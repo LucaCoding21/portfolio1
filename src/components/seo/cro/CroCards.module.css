@@ -341,6 +341,9 @@
   top: 0;
   left: 0;
   width: 100%;
+  /* the whole capture's shape (1440 x 3260 in the spots' units), though the
+     image is only its top: the spots are placed in % of this box */
+  aspect-ratio: 1440 / 3260;
 }
 
 .shotPage img {

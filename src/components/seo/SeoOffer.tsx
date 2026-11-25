@@ -45,16 +45,9 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-// the scroll plugins load after the page is up (below), not with it, so they
-// don't hold up the hero on a phone (Nov 23 2026)
 import type { SplitText } from "gsap/dist/SplitText";
+import { loadScrollMotion, seen } from "./scrollMotion";
 import s from "./SeoOffer.module.css";
-
-const loadPlugins = () =>
-  Promise.all([import("gsap/dist/ScrollTrigger"), import("gsap/dist/SplitText")]).then(([a, b]) => {
-    gsap.registerPlugin(a.ScrollTrigger, b.SplitText);
-    return b.SplitText;
-  });
 
 // Nov 23 2026, William's words: the hero's new guarantee, with its 12 months
 // (the steps below check it at month 12) ("We'll pick 5
@@ -101,163 +94,187 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
     const splits: SplitText[] = [];
     // A heading's lines rise out of masks, then the split is undone so the
     // text flows as normal text again (a later resize or font swap can't
-    // leave it broken). The split waits for the fonts (below): split before
-    // Outfit had loaded, on a slow phone, the lines came out wrong ("We /
-    // get / your / business / to the top of Google...", Nov 23 2026).
+    // leave it broken). The split waits for the fonts (loadScrollMotion).
+    // Anything already on screen when the script arrives is left still
+    // (see `seen`), so a slow phone never sees words vanish and come back.
     let ctx: gsap.Context | undefined;
     let cancelled = false;
 
-    Promise.all([document.fonts.ready, loadPlugins()]).then(([, Split]) => {
-      if (cancelled) return;
-      const rise = (node: Element, vars: gsap.TweenVars) => {
-        const sp = Split.create(node, { type: "lines", mask: "lines", linesClass: s.line });
-        splits.push(sp);
-        return [sp.lines, { ...vars, onComplete: () => sp.revert() }] as const;
-      };
-      ctx = gsap.context(() => {
-        // the promise: title lines, then the box, its badge, quote and signature
-        // (each part is its own section since Nov 23 2026, so each animates
-        // only what it holds)
-        const promise = el.querySelector("[data-m='promise']");
-        if (promise) {
-          const tl = gsap.timeline({
-            scrollTrigger: { trigger: promise, start: "top 78%", once: true },
-          });
-          tl.fromTo(q("[data-m='promiseBg'] img"), { scale: 1.15 }, { scale: 1, duration: 2.2, ease: EASE }, 0)
-            .from(q("[data-m='promiseLabel']"), { y: 12, opacity: 0, duration: 0.7, ease: EASE }, 0)
-            .from(
-              ...rise(q("[data-m='title']"), {
-                yPercent: 105,
-                duration: 1.1,
-                ease: EASE,
-                stagger: 0.09,
-              }),
-            )
-            .from(q("[data-m='box']"), { y: 70, opacity: 0, scale: 0.96, duration: 1.2, ease: EASE }, 0.15)
-            .from(
-              q("[data-m='badge']"),
-              {
-                scale: 0,
-                rotate: -20,
-                transformOrigin: "left bottom",
-                duration: 0.8,
-                ease: "back.out(2.2)",
-              },
-              0.6,
-            )
-            .from(
-              ...rise(q("[data-m='quote']"), {
-                yPercent: 105,
-                duration: 0.9,
-                ease: EASE,
-                stagger: 0.07,
-              }),
-              0.45,
-            )
-            .from(q("[data-m='sign']"), { x: -18, opacity: 0, duration: 0.8, ease: EASE }, 0.85);
+    loadScrollMotion()
+      .then((Split) => {
+        if (cancelled) return;
+        const rise = (node: Element, vars: gsap.TweenVars) => {
+          const sp = Split.create(node, { type: "lines", mask: "lines", linesClass: s.line });
+          splits.push(sp);
+          return [sp.lines, { ...vars, onComplete: () => sp.revert() }] as const;
+        };
+        ctx = gsap.context(() => {
+          // the promise: title lines, then the box, its badge, quote and
+          // signature (each part is its own section since Nov 23 2026, so
+          // each animates only what it holds)
+          const promise = el.querySelector("[data-m='promise']");
+          if (promise) {
+            const tl = gsap.timeline({
+              scrollTrigger: { trigger: promise, start: "top 78%", once: true },
+            });
+            if (!seen(promise)) {
+              tl.fromTo(q("[data-m='promiseBg'] img"), { scale: 1.15 }, { scale: 1, duration: 2.2, ease: EASE }, 0);
+            }
+            const label = q("[data-m='promiseLabel']");
+            if (!seen(label)) tl.from(label, { y: 12, opacity: 0, duration: 0.7, ease: EASE }, 0);
+            // at 0.1, just after the label: with no position it went after
+            // the photo's 2.2s zoom, and the heading stayed blank for about
+            // 2.7s once it was on screen (Nov 25 2026)
+            const title = q("[data-m='title']");
+            if (!seen(title)) {
+              tl.from(
+                ...rise(title, {
+                  yPercent: 105,
+                  duration: 1.1,
+                  ease: EASE,
+                  stagger: 0.09,
+                }),
+                0.1,
+              );
+            }
+            if (!seen(q("[data-m='box']"))) {
+              tl.from(q("[data-m='box']"), { y: 70, opacity: 0, scale: 0.96, duration: 1.2, ease: EASE }, 0.15)
+                .from(
+                  q("[data-m='badge']"),
+                  {
+                    scale: 0,
+                    rotate: -20,
+                    transformOrigin: "left bottom",
+                    duration: 0.8,
+                    ease: "back.out(2.2)",
+                  },
+                  0.6,
+                )
+                .from(
+                  ...rise(q("[data-m='quote']"), {
+                    yPercent: 105,
+                    duration: 0.9,
+                    ease: EASE,
+                    stagger: 0.07,
+                  }),
+                  0.45,
+                )
+                .from(q("[data-m='sign']"), { x: -18, opacity: 0, duration: 0.8, ease: EASE }, 0.85);
+            }
 
-          // the solution's photo drifts slower than the page (parallax): the
-          // layer is taller than the band (see .promiseBg) and slides through it
+            // the solution's photo drifts slower than the page (parallax): the
+            // layer is taller than the band (see .promiseBg) and slides through it
+            gsap.fromTo(
+              q("[data-m='promiseBg']"),
+              { yPercent: -9 },
+              {
+                yPercent: 9,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: promise,
+                  start: "top bottom",
+                  end: "bottom top",
+                  scrub: true,
+                },
+              },
+            );
+          }
+
+          // how it works: label and heading, then the photo uncovered from below
+          const left = el.querySelector("[data-m='processHead']");
+          if (!left) return;
+          if (!seen(left)) {
+            gsap
+              .timeline({
+                scrollTrigger: { trigger: left, start: "top 78%", once: true },
+              })
+              .from(q("[data-m='label']"), {
+                y: 12,
+                opacity: 0,
+                duration: 0.7,
+                ease: EASE,
+              })
+              .from(
+                ...rise(q("[data-m='processTitle']"), {
+                  yPercent: 105,
+                  duration: 1.1,
+                  ease: EASE,
+                  stagger: 0.09,
+                }),
+                0.1,
+              );
+          }
+
+          const photo = q("[data-m='photo']");
+          const img = q("[data-m='photo'] img");
+          if (!seen(photo)) {
+            gsap
+              .timeline({
+                scrollTrigger: { trigger: photo, start: "top 85%", once: true },
+              })
+              .fromTo(
+                photo,
+                { clipPath: "inset(100% 0% 0% 0% round 10px)" },
+                {
+                  clipPath: "inset(0% 0% 0% 0% round 10px)",
+                  duration: 1.4,
+                  ease: "expo.inOut",
+                },
+              )
+              .from(img, { scale: 1.3, duration: 1.8, ease: EASE }, 0.1);
+          }
+          // then it drifts a little as the page scrolls past
           gsap.fromTo(
-            q("[data-m='promiseBg']"),
-            { yPercent: -9 },
+            q("[data-m='photoInner']"),
+            { yPercent: -5 },
             {
-              yPercent: 9,
+              yPercent: 5,
               ease: "none",
               scrollTrigger: {
-                trigger: promise,
+                trigger: photo,
                 start: "top bottom",
                 end: "bottom top",
                 scrub: true,
               },
             },
           );
-        }
 
-        // how it works: label and heading, then the photo uncovered from below
-        const left = el.querySelector("[data-m='processHead']");
-        if (!left) return;
-        gsap
-          .timeline({
-            scrollTrigger: { trigger: left, start: "top 78%", once: true },
-          })
-          .from(q("[data-m='label']"), {
-            y: 12,
-            opacity: 0,
-            duration: 0.7,
-            ease: EASE,
-          })
-          .from(
-            ...rise(q("[data-m='processTitle']"), {
-              yPercent: 105,
-              duration: 1.1,
-              ease: EASE,
-              stagger: 0.09,
-            }),
-            0.1,
-          );
-
-        const photo = q("[data-m='photo']");
-        const img = q("[data-m='photo'] img");
-        gsap
-          .timeline({
-            scrollTrigger: { trigger: photo, start: "top 85%", once: true },
-          })
-          .fromTo(
-            photo,
-            { clipPath: "inset(100% 0% 0% 0% round 10px)" },
-            {
-              clipPath: "inset(0% 0% 0% 0% round 10px)",
-              duration: 1.4,
-              ease: "expo.inOut",
-            },
-          )
-          .from(img, { scale: 1.3, duration: 1.8, ease: EASE }, 0.1);
-        // then it drifts a little as the page scrolls past
-        gsap.fromTo(
-          q("[data-m='photoInner']"),
-          { yPercent: -5 },
-          {
-            yPercent: 5,
-            ease: "none",
-            scrollTrigger: {
-              trigger: photo,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          },
-        );
-
-        // the steps: the top rule, then each row draws its rule and its words rise
-        gsap.from(q("[data-m='topRule']"), {
-          scaleX: 0,
-          duration: 1.2,
-          ease: "expo.inOut",
-          scrollTrigger: {
-            trigger: q("[data-m='steps']"),
-            start: "top 85%",
-            once: true,
-          },
-        });
-        qa("[data-m='step']").forEach((row) => {
-          gsap
-            .timeline({
-              scrollTrigger: { trigger: row, start: "top 88%", once: true },
-            })
-            .from(row.querySelector("[data-m='rule']"), {
+          // the steps: the top rule, then each row draws its rule and its words rise
+          const steps = q("[data-m='steps']");
+          if (!seen(steps)) {
+            gsap.from(q("[data-m='topRule']"), {
               scaleX: 0,
               duration: 1.2,
               ease: "expo.inOut",
-            })
-            .from(
-              row.querySelectorAll("[data-m='rise']"),
-              { y: 22, opacity: 0, duration: 0.9, ease: EASE, stagger: 0.08 },
-              0.1,
-            );
-        });
-      }, el);
-    });
+              scrollTrigger: {
+                trigger: steps,
+                start: "top 85%",
+                once: true,
+              },
+            });
+          }
+          qa("[data-m='step']")
+            .filter((row) => !seen(row))
+            .forEach((row) => {
+              gsap
+                .timeline({
+                  scrollTrigger: { trigger: row, start: "top 88%", once: true },
+                })
+                .from(row.querySelector("[data-m='rule']"), {
+                  scaleX: 0,
+                  duration: 1.2,
+                  ease: "expo.inOut",
+                })
+                .from(
+                  row.querySelectorAll("[data-m='rise']"),
+                  { y: 22, opacity: 0, duration: 0.9, ease: EASE, stagger: 0.08 },
+                  0.1,
+                );
+            });
+        }, el);
+      })
+      // if the script can't load, the words simply stay where they are
+      .catch(() => {});
 
     return () => {
       cancelled = true;

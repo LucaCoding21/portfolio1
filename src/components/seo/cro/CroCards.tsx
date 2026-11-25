@@ -121,8 +121,13 @@ export function Heatmap() {
     <Widget label="Clicks · home page">
       <div className={c.shotBox}>
         <div className={c.shotPage}>
+          {/* only the top of the page shows in the frame (30% of it at
+              most), so the image is that top 36% at 832 wide, enough for a
+              phone's 3x screen: 53 KB against the full capture's 228 KB
+              (nwr-page.webp, kept, Nov 25 2026). .shotPage keeps the whole
+              page's shape so the spots land where they did. */}
           {/* eslint-disable-next-line @next/next/no-img-element -- a fixed capture, sized by its frame */}
-          <img src="/seo/cro/nwr-page.webp" width={1280} height={2898} alt="" loading="lazy" />
+          <img src="/seo/cro/nwr-page-top.webp" width={832} height={678} alt="" loading="lazy" decoding="async" />
           {SPOTS.map(([x, y, w], i) => (
             <span
               key={i}

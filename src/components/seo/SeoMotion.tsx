@@ -7,23 +7,17 @@
  * turned down an entrance and a scroll drift on it the same day.
  *
  *   stall   the label fades up, the heading rises line by line out of masks
- *           (SplitText, as on the homepage), the line beside it follows, then
- *           the three cards lift in one after another.
+ *           (SplitText, as on the homepage), then the three cards lift in one
+ *           after another.
  *
- * Nothing moves with reduced motion. The offer section has its own motion
- * (SeoOffer).
+ * Nothing moves with reduced motion, and anything already on screen when the
+ * script arrives stays still (see `seen`). The offer section has its own
+ * motion (SeoOffer).
  */
 import { useEffect } from "react";
 import gsap from "gsap";
-// the scroll plugins load after the page is up (below), not with it, so they
-// don't hold up the hero on a phone (Nov 23 2026)
 import type { SplitText } from "gsap/dist/SplitText";
-
-const loadPlugins = () =>
-  Promise.all([import("gsap/dist/ScrollTrigger"), import("gsap/dist/SplitText")]).then(([a, b]) => {
-    gsap.registerPlugin(a.ScrollTrigger, b.SplitText);
-    return b.SplitText;
-  });
+import { loadScrollMotion, seen } from "./scrollMotion";
 
 const EASE = "expo.out";
 
@@ -31,30 +25,28 @@ export default function SeoMotion() {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const stall = document.querySelector<HTMLElement>("[data-section='stall']");
+    if (!stall) return;
     const splits: SplitText[] = [];
     let ctx: gsap.Context | undefined;
     let cancelled = false;
 
-    // after the fonts, so the heading splits into its real lines (split
-    // before Outfit had loaded on a slow phone, it came out "People / near /
-    // you / are searching...", Nov 23 2026)
-    Promise.all([document.fonts.ready, loadPlugins()]).then(([, Split]) => {
-      if (cancelled) return;
-      ctx = gsap.context(() => {
-        if (stall) {
+    loadScrollMotion()
+      .then((Split) => {
+        if (cancelled) return;
+        ctx = gsap.context(() => {
           const label = stall.querySelector("[data-stall='label']");
           const title = stall.querySelector("[data-stall='title']");
           // in the order they're seen: on phones and tablets CSS puts the
           // slow months first and the competitor last (Nov 24 2026), so the
           // lift-in goes top to bottom and starts on the card that's on top
-          const cards = Array.from(stall.querySelectorAll<HTMLElement>("[data-section='stall'] ol > li")).sort(
-            (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
-          );
+          const cards = Array.from(stall.querySelector("ol")?.children ?? [])
+            .filter((c) => !seen(c))
+            .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
           const tl = gsap.timeline({
             scrollTrigger: { trigger: stall, start: "top 75%", once: true },
           });
-          if (label) tl.from(label, { y: 14, opacity: 0, duration: 0.7, ease: EASE });
-          if (title) {
+          if (label && !seen(label)) tl.from(label, { y: 14, opacity: 0, duration: 0.7, ease: EASE });
+          if (title && !seen(title)) {
             const sp = Split.create(title, {
               type: "lines",
               mask: "lines",
@@ -87,9 +79,10 @@ export default function SeoMotion() {
               },
             });
           }
-        }
-      });
-    });
+        });
+      })
+      // if the script can't load, the words simply stay where they are
+      .catch(() => {});
 
     return () => {
       cancelled = true;
