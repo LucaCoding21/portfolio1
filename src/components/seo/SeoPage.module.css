@@ -880,6 +880,44 @@ details[open] > summary .plus {
   border-radius: 4px;
 }
 
+/* the two boxes a business above phones, one mixed box on phones (ProofShots) */
+.fig.figPhone {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .fig.figWide {
+    display: none;
+  }
+
+  .fig.figPhone {
+    display: flex;
+  }
+
+  /* its five or six bars run across the top like a story's, so the caption
+     gets the full width, held at two lines so the box doesn't move as the
+     captions change */
+  .figPhone .capRow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .figPhone .ticks {
+    order: -1;
+    gap: 4px;
+  }
+
+  .figPhone .tick {
+    flex: 1;
+    width: auto;
+  }
+
+  .figPhone .cap {
+    min-height: 2.8em;
+  }
+}
+
 .fig {
   display: flex;
   flex-direction: column;

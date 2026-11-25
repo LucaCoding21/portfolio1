@@ -36,14 +36,14 @@ How we work:
 - [Web Development](${SITE}): Fast, modern websites built with Next.js.
 - [Lead-Generating Landing Pages](${SITE}): Conversion-focused landing pages that turn visitors into booked calls and customers.
 - [Shopify Stores](${SITE}/work): Shopify stores designed and built for local brands selling online.
-- [Monthly SEO](${SITE}/seo): Monthly SEO for local businesses, on the website they have now or one we build: the pages, Google listing, reviews and links that bring more calls from Google and AI without paying for ads. Top 3 on Google (the map or the regular results) for at least 3 of 5 main searches picked together, within 6 months (plans work on 10 to 40 searches, depending on budget), or we work for free until you get there. Starts with a free competitor check: we compare you to the top 3 businesses for your main job in your city on Google, show what they have that you don't, and tell you plainly if you can catch them.
+- [Monthly SEO](${SITE}/seo): Monthly SEO for local businesses, on the website they have now or one we build: the Google Business Profile, pages for their jobs and towns, articles, reviews and mentions that bring more calls from Google and AI without paying for ads. We also watch how people use the website and keep making changes so more visitors get in touch, and send a report every month. The guarantee: 3× what the client pays us back in gross profit within 12 months, or we work for free until we get there. Starts with a free call.
 - [Sight](${SITE}/sight): Our own product. Sight connects a business's spreadsheets, CRM, and accounting into one screen, with an AI that answers questions about the whole business and alerts that catch problems before they cost money. Live in 45 days or the client doesn't pay.`;
 
 const OUTRO = `## Pages
 
 - [Homepage](${SITE}): Overview of Cloverfield Studio's services, recent work, and free consultation booking.
 - [Work](${SITE}/work): Full portfolio of recent projects.
-- [Monthly SEO](${SITE}/seo): How our monthly SEO works, results from a website build (Northwest Railing), and the free competitor check.
+- [Monthly SEO](${SITE}/seo): What our monthly SEO covers, results from websites we built (Wrap City and Northwest Railing), the guarantee, and booking a free call.
 - [Sight](${SITE}/sight): Sight by Cloverfield, one dashboard and AI for the whole business. Demos book through a 30-minute call.
 - [Book a free consultation](${CAL_URL}): 30-minute call via Cal.com.
 

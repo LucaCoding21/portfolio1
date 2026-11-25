@@ -62,22 +62,38 @@ import s from "./SeoPage.module.css";
 const SEARCH_RANGE = "10 to 40";
 
 /** The six questions on the page (Nov 15 2026: William asked for fewer). The
- *  rest stay in FAQS, written and ready to bring back. The promise's four
- *  (#1, missing it, what you do, each month) must stay in step with the hero,
- *  the green band and the meta. */
+ *  rest stay in FAQS, written and ready to bring back. Rewritten Nov 24 2026
+ *  around what an owner still asks before booking (cost, time, the
+ *  guarantee, how they'll know, their website, their part). William's terms:
+ *  "what you pay us" is the whole monthly fee; the minimum term and how gross
+ *  profit is counted are for the call, not the page; no competitor question.
+ *  The guarantee answer must stay in step with the hero and the solution box.
+ *  They show in FAQS' order. */
 const FAQ_SHOWN = [
   "How much does it cost?",
-  "What do you do each month?",
+  "How long until I see results?",
+  "Can you guarantee results?",
+  "How will I know it’s working?",
   "Do I need a website from you?",
-  "Can you promise #1 on Google?",
-  "What if you don’t get there?",
   "What do I have to do?",
 ];
 
 const FAQS: { q: string; a: React.ReactNode }[] = [
   {
     q: "How much does it cost?",
-    a: "It depends on how fast you want to build. Every plan gets the same system, and we’ll go through the options after your free check.",
+    a: "It depends on how many jobs and towns you want to show up for. We’ll give you a price on the free call, once we’ve looked at your business and who you’re up against.",
+  },
+  {
+    q: "How long until I see results?",
+    a: "In the first month we fix your Google listing and set up tracking. By month 3 we’re aiming for your first spots on page one, and by month 6, steady calls from Google. It keeps building after that.",
+  },
+  {
+    q: "Can you guarantee results?",
+    a: "No one can promise #1 on Google, and we’d be careful with anyone who does. What we do promise is 3× what you pay us back in gross profit within 12 months. If we don’t get there, you stop paying and we keep working for free until we do. We’ll go through how we count it on your call.",
+  },
+  {
+    q: "How will I know it’s working?",
+    a: "Every month you get a report with where you show up on Google, how many people tapped to call or sent a form from your website, and what we did. You can also see what we’re working on any time.",
   },
   {
     q: "What do you do each month?",
@@ -85,27 +101,15 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Do I need a website from you?",
-    a: "No. We can work on the website you have now. If it’s holding you back, we’ll tell you in your free check.",
-  },
-  {
-    q: "My website already shows up. Why pay monthly?",
-    a: "Your website gets you showing up for the searches it was built for. Monthly SEO adds the pages, reviews and links that win more searches and more areas, and it keeps what you’ve built from fading.",
-  },
-  {
-    q: "When will I see results?",
-    a: "By day 30, tracking is live, your Google listing is fixed and the quick wins are done. By day 90, we’re aiming for your first page-one spots and first tracked leads from Google. By day 180, we’re aiming for steady leads.",
-  },
-  {
-    q: "Can you promise #1 on Google?",
-    a: "No one can promise #1, and we’d be careful with anyone who does. What we promise is the top 3 on Google within 6 months, on the map or in the regular results, for at least 3 of your 5 main searches. We pick those 5 together, like “deck railings yakima”, and write them into your agreement. Ads don’t count. We check every month (the map with Local Falcon) and send you the results.",
-  },
-  {
-    q: "What if you don’t get there?",
-    a: "You stop paying, and we keep doing the same work every month for free until you do. There’s no end date on that. We can promise it because we only take you on if your free check shows you can get there.",
+    a: "No. We can work on the website you have now, whoever built it. If it’s holding you back, we’ll tell you on the call.",
   },
   {
     q: "What do I have to do?",
     a: "Give us access to your Google listing and website, and ask happy customers for reviews. We’ll give you the text to send. The rest is on us.",
+  },
+  {
+    q: "My website already shows up. Why pay monthly?",
+    a: "Your website gets you showing up for the searches it was built for. Monthly SEO adds the pages, reviews and links that win more searches and more areas, and it keeps what you’ve built from fading.",
   },
   {
     q: "What happens if I stop?",
@@ -121,7 +125,11 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "Will you keep calling me?",
-    a: "No. We’ll walk you through your check, and if it’s not for you, that’s the end of it.",
+    a: "No. We’ll talk on the call, and if it’s not for you, that’s the end of it.",
+  },
+  {
+    q: "Why not just run Google Ads?",
+    a: "Ads stop the day you stop paying. Showing up on your own keeps bringing in calls, so it costs less over time. Plenty of businesses do both.",
   },
   {
     q: "Who are you guys?",

@@ -1,100 +1,28 @@
-"use client";
-
 /**
- * "02 / Get chosen" on /seo (Nov 24 2026, from William's low-fi): the second
- * of the three pillars (SeoPillars), the CRO work, between "What we take care
- * of for you" (01 / Get found) and the proof. Two drafts with a dev-only
- * picker (?cro=1|2, hidden on cloverfield.studio): 1 the tabs, a product
- * tour of the tools over a real site we built (cro/CroTabs), and 2 one
- * visitor's story, pinned while you scroll (cro/CroStory). Both use
- * Northwest Railing's home page and the same example data, and say so.
- * Draft 3 (Nov 24 2026, the default): an "Agent Canvas" reference William
- * sent, numbered steps beside one plain card over a mountain photo
- * (cro/CroCanvas), the label, heading and line at the top of the left
- * column (by request, no centred heading).
- * Once William picks, delete the other drafts and the picker.
+ * The CRO section on /seo (Nov 24 2026, from William's low-fi): the second
+ * of the three pillars (SeoPillars), between the SEO section (SeoGet) and the
+ * proof. The cards are in cro/CroCards.
+ *
+ * The copy (Nov 24 2026): here the owner thinks "my website barely brings in
+ * anything, and who's going to look after it?", and wants to hand it off.
+ * William: it's constant monitoring, not one fix a month, and we bring what
+ * we've seen work. Cut to one sentence the same day ("a bit too long"). It
+ * replaced "Your website gets better every month." / "We
+ * study how people use your website and improve what stops them from getting
+ * in touch."
  */
-import { useEffect, useState } from "react";
-import CroCanvas from "./cro/CroCanvas";
-import CroStory from "./cro/CroStory";
-import CroTabs from "./cro/CroTabs";
+import CroCards from "./cro/CroCards";
 import s from "./SeoCro.module.css";
 
-const DRAFTS = [
-  { n: 1, name: "Tabs" },
-  { n: 2, name: "Story" },
-  { n: 3, name: "Canvas" },
-];
-
-const TITLE = "Your website gets better every month.";
-const LEDE =
-  "We study how people use your website and improve what stops them from getting in touch.";
-
 export default function SeoCro() {
-  const [draft, setDraft] = useState(3);
-  const [picker, setPicker] = useState(false);
-
-  // read after mount, so the server's HTML and the first render agree
-  useEffect(() => {
-    const q = Number(new URLSearchParams(window.location.search).get("cro"));
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads the URL once, after hydration
-    if (q === 1 || q === 2 || q === 3) setDraft(q);
-    setPicker(!window.location.hostname.endsWith("cloverfield.studio"));
-  }, []);
-
-  const choose = (n: number) => {
-    setDraft(n);
-    const url = new URL(window.location.href);
-    url.searchParams.set("cro", String(n));
-    window.history.replaceState(window.history.state, "", url);
-  };
-
   return (
     <section id="get-chosen" className={s.cro} data-section="cro">
       <div className={s.inner}>
-        {draft === 3 ? (
-          <>
-            <CroCanvas title={TITLE} lede={LEDE} />
-          </>
-        ) : (
-          <>
-            <div className={s.head}>
-              <p className={s.eyebrow}>02 / Get chosen</p>
-              <h2 className={s.title}>{TITLE}</h2>
-              <p className={s.lede}>{LEDE}</p>
-            </div>
-
-            {draft === 1 ? (
-              <CroTabs />
-            ) : (
-              <>
-                <CroStory />
-                <p className={s.note}>
-                  Example data, shown on a website we built.
-                </p>
-              </>
-            )}
-          </>
-        )}
+        <CroCards
+          title="We look after your website for you."
+          lede="We watch how people use it and keep making changes, based on what's worked on the sites we've built."
+        />
       </div>
-
-      {picker ? (
-        <div className={s.picker} role="group" aria-label="Get chosen draft">
-          <span className={s.pickerLabel}>CRO</span>
-          {DRAFTS.map((d) => (
-            <button
-              key={d.n}
-              type="button"
-              title={d.name}
-              className={s.pickerBtn}
-              data-on={draft === d.n || undefined}
-              onClick={() => choose(d.n)}
-            >
-              {d.n}
-            </button>
-          ))}
-        </div>
-      ) : null}
     </section>
   );
 }

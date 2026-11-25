@@ -229,15 +229,24 @@ export default function SeoGet() {
   };
 
   return (
-    // "01 / Get found" since Nov 24 2026: the first of the three pillars
-    // (SeoPillars), whose "Learn more" lands here; the line is William's
+    // "Get found" since Nov 24 2026 (numbered "01 /" until William took the
+    // numbers off the page the same day): the first of the three pillars
+    // (SeoPillars), whose "Learn more" lands here. The copy (Nov 24 2026):
+    // owners know what SEO is and have heard it's a few keywords and a
+    // report, so the heading frames the cards as the whole job and the line
+    // names what they expect, so the cards read as more (William wants it to
+    // feel like good value). "All of it comes with every plan." would be
+    // stronger, but isn't confirmed. It was "What we take care of for you." /
+    // "We handle your SEO so you can focus on running your business."
     <section id="get-found" className={s.get} data-section="get">
       <div className={s.inner}>
         <div className={s.side}>
           <div>
-            <p className={s.eyebrow}>01 / Get found</p>
-            <h2 className={s.title}>What we take care of for you.</h2>
-            <p className={s.lede}>We handle your SEO so you can focus on running your business.</p>
+            <p className={s.eyebrow}>Search engine optimization</p>
+            <h2 className={s.title}>Everything it takes to get you to the top of Google.</h2>
+            <p className={s.lede}>
+              We do all of this for you every month. It&apos;s a lot more than a few keywords and a report.
+            </p>
             <a className={s.cta} href={CAL_URL} target="_blank" rel="noopener noreferrer">
               Book a free SEO call
               <svg

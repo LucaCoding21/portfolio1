@@ -311,6 +311,7 @@ export function Turns({
   id,
   onOpen,
   light,
+  only,
 }: {
   shots: Shot[];
   ratio: string;
@@ -319,6 +320,8 @@ export function Turns({
   onOpen: Open;
   /** on a light page (the drafts board) */
   light?: boolean;
+  /** shown only above phones ("wide") or only on phones ("phone") */
+  only?: "wide" | "phone";
 }) {
   const [on, setOn] = useState(0);
   const [held, setHeld] = useState(false);
@@ -346,7 +349,7 @@ export function Turns({
 
   return (
     <figure
-      className={`${s.fig} ${light ? s.figLight : ""}`}
+      className={`${s.fig} ${light ? s.figLight : ""} ${only === "wide" ? s.figWide : only === "phone" ? s.figPhone : ""}`}
       onPointerEnter={() => setHeld(true)}
       onPointerLeave={() => setHeld(false)}
     >
@@ -444,6 +447,16 @@ export function Zoom({ pic, onClose }: { pic: Pic; onClose: () => void }) {
   );
 }
 
+/** a row's shots for the one phone box: Google, AI, Google, AI… */
+function mixed(row: Row): Shot[] {
+  const out: Shot[] = [];
+  for (let n = 0; n < Math.max(row.google.length, row.ai.length); n++) {
+    if (row.google[n]) out.push(row.google[n]);
+    if (row.ai[n]) out.push(row.ai[n]);
+  }
+  return out;
+}
+
 export default function ProofShots() {
   const [open, setOpen] = useState<Pic | null>(null);
 
@@ -485,8 +498,12 @@ export default function ProofShots() {
               </div>
               {/* taking turns again (Nov 23 2026, by request), so every shot
                   shows; from Nov 15 it was one shot each */}
-              <Turns shots={row.google} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} />
-              <Turns shots={row.ai} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} />
+              <Turns shots={row.google} ratio={ratio} lag={0} id={`g-${i}`} onOpen={setOpen} only="wide" />
+              <Turns shots={row.ai} ratio={ratio} lag={AI_LAG_MS} id={`ai-${i}`} onOpen={setOpen} only="wide" />
+              {/* phones (Nov 24 2026): one box per business taking turns
+                  through all its shots, Google and AI in turn, so the
+                  section isn't two stacked boxes a business */}
+              <Turns shots={mixed(row)} ratio={ratio} lag={0} id={`m-${i}`} onOpen={setOpen} only="phone" />
             </li>
           );
         })}

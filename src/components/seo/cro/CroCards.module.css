@@ -1,0 +1,671 @@
+/* "02 / Get chosen" (CroCards): the heading across the top, then a row of
+   cards like "01 / Get found"'s (SeoGet.module.css, the same row, card width
+   and arrows), drawn from William's SaaS reference: a light grey card, a white
+   widget at the top with its label and a ⋮, the title and a grey line under
+   it. Widgets size their type in em off a cqw base, so they keep their look
+   from a 280px phone card to a 380px desktop one. The bars are a soft
+   yellow, the reference's lime kept off the brand list (CLAUDE.md: no lime
+   as a brand colour); green marks what got better, red where people got
+   stuck. */
+
+.wrap {
+  --pad: clamp(20px, 3vw, 56px);
+  --bar: #e9d95c;
+  --bar-soft: #f7f0c4;
+  --ink: #1a1613;
+  --muted: #8a857c;
+  --good: #1f8a65;
+  --bad: #c0362c;
+
+  color: var(--ink);
+}
+
+/* ---------- the heading across the top ---------- */
+
+/* the line on the left and the label and heading on the right, their feet
+   level (the heading comes first in the page, for reading order) */
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px clamp(32px, 5vw, 96px);
+  margin-bottom: clamp(32px, calc(3.4 * var(--fit, 1vw)), 52px);
+}
+
+.heading {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  text-align: right;
+}
+
+.heading .title {
+  margin-left: auto;
+}
+
+.head .lede {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* ---------- the heading's type (SeoGet's) ---------- */
+
+.eyebrow {
+  margin: 0 0 20px;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: 13em;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(30px, calc(3 * var(--fit, 1vw)), 46px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.lede {
+  max-width: 24em;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* ---------- the row ---------- */
+
+/* runs past the right padding to the page's edge */
+.main {
+  min-width: 0;
+  margin-right: calc(-1 * var(--pad));
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(290px, 24vw, 380px);
+  column-gap: 14px;
+  margin: 0;
+  padding: 0 var(--pad) 0 0;
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border-radius: 14px;
+  background: #f0eee9;
+  scroll-snap-align: start;
+}
+
+.words {
+  padding: 22px 8px 10px;
+}
+
+.cardTitle {
+  max-width: 15em;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(20px, 1.55vw, 24px);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.cardText {
+  max-width: 34ch;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.arrows {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  margin-left: -10px;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.arrow:hover:not(:disabled) {
+  background: #e7e4de;
+}
+
+.arrow:disabled {
+  color: #bdb8af;
+  cursor: default;
+}
+
+.note {
+  margin: 0 0 0 auto;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* ---------- the widget ---------- */
+
+/* the widget carries its own colours, so it draws the same outside the
+   section (the "Get chosen." pillar card borrows them) */
+.widget {
+  --ink: #1a1613;
+  --muted: #8a857c;
+  --bar: #e9d95c;
+  --bar-soft: #f7f0c4;
+  --good: #1f8a65;
+  --bad: #c0362c;
+
+  display: flex;
+  color: var(--ink);
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px 12px 10px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(26 22 19 / 0.04),
+    0 1px 3px rgb(26 22 19 / 0.06);
+  container-type: inline-size;
+  aspect-ratio: 1.3;
+  font-size: clamp(9px, 3.3cqw, 12px);
+  line-height: 1.3;
+}
+
+.wHead {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wLabel {
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.wMore {
+  flex: none;
+  color: #b9b3a9;
+}
+
+/* the bars, rows and spots grow in once, when the section comes on screen
+   (`data-shown`, set at once with reduced motion) */
+
+/* ---------- 1: recordings ---------- */
+
+.table {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 0.86em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.table th {
+  padding: 0 6px 5px 0;
+  border-bottom: 1px solid #edeae5;
+  color: #a39d93;
+  font-weight: 500;
+  text-align: left;
+}
+
+.table td {
+  padding: 0.48em 6px 0.48em 0;
+  border-bottom: 1px solid #f4f2ee;
+}
+
+.table tbody tr {
+  transition:
+    opacity 0.4s,
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 45ms);
+}
+
+.wrap:not([data-shown]) .table tbody tr {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.who i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 0.3em;
+  color: #fff;
+  font-size: 0.85em;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 500;
+}
+
+.status::before {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status[data-tone="bad"] {
+  color: var(--bad);
+}
+
+.status[data-tone="good"] {
+  color: var(--good);
+}
+
+.status[data-tone="off"] {
+  color: var(--muted);
+}
+
+/* the From column goes on the narrowest cards */
+@container (max-width: 310px) {
+  .colFrom {
+    display: none;
+  }
+}
+
+/* ---------- 2: heatmap ---------- */
+
+.shotBox {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #f3f2ef;
+}
+
+.shotPage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.shotPage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: brightness(0.82) saturate(0.75);
+}
+
+/* a soft spot coloured as heatmaps are, red at the middle out to blue */
+.spot {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle closest-side,
+    rgb(255 45 10 / 0.92) 0 24%,
+    rgb(255 190 0 / 0.82) 42%,
+    rgb(60 220 90 / 0.58) 62%,
+    rgb(0 150 255 / 0.34) 82%,
+    transparent 100%
+  );
+  translate: -50% -50%;
+  aspect-ratio: 1;
+  transition: transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.15);
+  transition-delay: calc(150ms + var(--i) * 70ms);
+}
+
+.wrap:not([data-shown]) .spot {
+  transform: scale(0);
+}
+
+/* ---------- 3: funnel ---------- */
+
+.funnel {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 2.6em minmax(0, 1fr);
+  gap: 0.5em;
+  min-height: 0;
+  margin-top: 6px;
+  padding-top: 1.6em;
+}
+
+.axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: -0.5em 0 2.9em;
+  color: #b9b3a9;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+.fBars {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 8%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fBars li {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 2.6em;
+  min-width: 0;
+}
+
+.fCol {
+  position: relative;
+  border-bottom: 1px solid #e6e2db;
+}
+
+.fDrop,
+.fFill {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 4px 4px 0 0;
+  transform-origin: 50% 100%;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 110ms);
+}
+
+.fDrop {
+  background: repeating-linear-gradient(135deg, rgb(26 22 19 / 0.08) 0 3px, transparent 3px 7px);
+}
+
+.fFill {
+  background: linear-gradient(to bottom, var(--bar), var(--bar-soft));
+  transition-delay: calc(120ms + var(--i) * 110ms);
+}
+
+.wrap:not([data-shown]) .fDrop,
+.wrap:not([data-shown]) .fFill {
+  transform: scaleY(0);
+}
+
+.fPct {
+  position: absolute;
+  left: 50%;
+  margin-bottom: 0.3em;
+  font-size: 0.86em;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  translate: -50% 0;
+  transition: opacity 0.4s;
+  transition-delay: calc(600ms + var(--i) * 110ms);
+}
+
+.wrap:not([data-shown]) .fPct {
+  opacity: 0;
+}
+
+/* the step most people leave at */
+.fBars li:last-child .fPct {
+  color: var(--bad);
+}
+
+.fName {
+  padding-top: 0.45em;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.8em;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ---------- 4 and 5: a big figure over bars ---------- */
+
+.stat {
+  flex: none;
+  margin-top: 10px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.big {
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 2.6em;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.2em 0.65em;
+  border-radius: 999px;
+  background: rgb(31 138 101 / 0.12);
+  color: var(--good);
+  font-size: 0.85em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statSub {
+  margin: 0.45em 0 0;
+  color: var(--muted);
+  font-size: 0.86em;
+}
+
+.versus {
+  display: grid;
+  gap: 1em;
+  margin-top: auto;
+}
+
+/* the letter, the name and the rate on one line, a thick bar under them */
+.vRow {
+  display: grid;
+  grid-template-columns: 1.5em minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.45em 0.6em;
+  font-size: 0.9em;
+}
+
+.vKey {
+  display: grid;
+  place-items: center;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 0.35em;
+  background: #ece9e3;
+  font-size: 0.9em;
+  font-weight: 700;
+}
+
+.vRow[data-win] .vKey {
+  background: var(--ink);
+  color: #fff;
+}
+
+.vName {
+  overflow: hidden;
+  color: #6a665e;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vBar {
+  grid-column: 1 / -1;
+  height: 1.35em;
+  overflow: hidden;
+  border-radius: 0.4em;
+  background: #f2f0ec;
+}
+
+.vBar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #d9d4cb;
+  transform-origin: 0 50%;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(200ms + var(--i) * 140ms);
+}
+
+.vRow[data-win] .vBar i {
+  background: linear-gradient(to right, var(--bar-soft), var(--bar));
+}
+
+.wrap:not([data-shown]) .vBar i {
+  transform: scaleX(0);
+}
+
+.vVal {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.weeks {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  gap: 2.5px;
+  min-height: 0;
+  margin-top: 12px;
+}
+
+.weeks i {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(to bottom, var(--bar), var(--bar-soft));
+  transform-origin: 50% 100%;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: calc(var(--i) * 22ms);
+}
+
+.wrap:not([data-shown]) .weeks i {
+  transform: scaleY(0);
+}
+
+.weeksFoot {
+  display: flex;
+  flex: none;
+  justify-content: space-between;
+  margin-top: 5px;
+  color: #b9b3a9;
+  font-size: 0.8em;
+}
+
+/* ---------- smaller screens ---------- */
+
+/* stacked: the label and heading, then the line, both on the left */
+@media (max-width: 900px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 16px;
+  }
+
+  .heading,
+  .head .lede {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    text-align: left;
+  }
+
+  .heading .title {
+    margin-left: 0;
+  }
+
+  .track {
+    grid-auto-columns: min(82vw, 320px);
+  }
+
+  .foot {
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .head {
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .note {
+    margin-left: 0;
+  }
+
+  .title {
+    font-size: 28px;
+    line-height: 1.14;
+  }
+
+  .cardText {
+    font-size: 13.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap *,
+  .wrap *::before {
+    transition: none !important;
+  }
+}
