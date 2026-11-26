@@ -8,10 +8,13 @@
   color: #1a1613;
 }
 
+/* less room on top: "The problem" above is on the same paper and already
+   ends in its own padding (the dark solution band sat between them until
+   Nov 25 2026) */
 .inner {
   max-width: 1920px;
   margin: 0 auto;
-  padding: clamp(80px, calc(7.8 * var(--fit, 1vw)), 112px) clamp(20px, 3vw, 56px);
+  padding: clamp(32px, calc(3.6 * var(--fit, 1vw)), 56px) clamp(20px, 3vw, 56px) clamp(80px, calc(7.8 * var(--fit, 1vw)), 112px);
 }
 
 /* ================= 4: Gallery (the "Where Runners Connect" reference) ================= */
@@ -20,6 +23,17 @@
   max-width: 1320px;
   margin: 0 auto;
   text-align: center;
+}
+
+/* the same small label as "The problem" (SeoPage .stallLabel) */
+.gaLabel {
+  margin: 0 0 20px;
+  color: #6a665e;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .gaTitle {
@@ -73,7 +87,7 @@
 
 @media (max-width: 600px) {
   .inner {
-    padding: 72px 20px;
+    padding: 24px 20px 72px;
   }
 
   .gaTitle {

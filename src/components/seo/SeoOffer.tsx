@@ -45,14 +45,14 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import { GUARANTEE_QUOTE } from "./guarantee";
 import { loadScrollMotion, riseLines, seen } from "./scrollMotion";
 import s from "./SeoOffer.module.css";
 
 // Nov 23 2026, William's words: the hero's new guarantee, with its 12 months
 // (the steps below check it at month 12) ("We'll pick 5
 // searches with you... top 3 on Google for at least 3 of them..." before)
-const QUOTE =
-  "We’re aiming to generate 3× your SEO investment in additional gross profit within 12 months. If we don’t get you there, we’ll keep working for free until we do.";
+const QUOTE = GUARANTEE_QUOTE;
 
 const STEPS = [
   {

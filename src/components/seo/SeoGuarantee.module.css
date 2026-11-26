@@ -1,0 +1,114 @@
+/* The guarantee strip on /seo (SeoGuarantee, Nov 25 2026): a white card on
+   the seam between the dark results (#111113) and the grey FAQ (#e9e7e2). */
+
+.strip {
+  padding: 0 clamp(20px, 3vw, 56px);
+  background: linear-gradient(180deg, #111113 50%, #e9e7e2 50%);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 3vw, 48px);
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(28px, 3vw, 44px) clamp(28px, 3.6vw, 56px);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgb(26 22 19 / 0.05),
+    0 24px 48px -28px rgb(0 0 0 / 0.35);
+}
+
+.faces {
+  display: inline-flex;
+  flex: none;
+}
+
+.face {
+  width: 64px;
+  height: 64px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.face + .face {
+  margin-left: -14px;
+}
+
+.quote {
+  max-width: 34em;
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(19px, 1.6vw, 24px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  text-wrap: pretty;
+}
+
+/* the names on the left, the guarantee badge at the far end */
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  margin-top: 20px;
+}
+
+.who {
+  display: grid;
+  gap: 2px;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.who strong {
+  color: #1a1613;
+  font-weight: 600;
+}
+
+/* sentence case in a soft green pill, not a tracked capitals eyebrow */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px 7px 11px;
+  border-radius: 999px;
+  background: #eaf4ec;
+  color: #2a7a3d;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding: 24px 22px;
+    border-radius: 20px;
+  }
+  .face {
+    width: 56px;
+    height: 56px;
+  }
+  .face + .face {
+    margin-left: -12px;
+  }
+  .quote {
+    font-size: 17px;
+    line-height: 1.45;
+  }
+  .who {
+    font-size: 13px;
+  }
+  .badge {
+    font-size: 13px;
+  }
+}

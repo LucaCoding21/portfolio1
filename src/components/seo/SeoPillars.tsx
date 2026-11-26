@@ -1,7 +1,8 @@
 /**
- * "How we get you there" on /seo ("Our approach" at first; Nov 24 2026, William's low-fi, then a "Where
- * Runners Connect" reference he sent): a centred heading and line between
- * the solution band and the SEO section (SeoGet), then three tall cards,
+ * "The solution" on /seo (Nov 24 2026, William's low-fi, then a "Where
+ * Runners Connect" reference he sent): a centred label, heading and line
+ * straight after "The problem" (since Nov 25 2026, when the solution band
+ * between them came out), then three tall cards,
  * each redone one at a time and picked from drafts the same day:
  * 1 searches drifting up in pills, each #1 (pillars/FoundCard);
  * 2 the CRO section's funnel under its words (pillars/ChosenCard);
@@ -41,7 +42,7 @@ const TRACKING = {
 
 export default function SeoPillars() {
   return (
-    <section className={s.section} data-section="approach" aria-label="How we get you there">
+    <section className={s.section} data-section="approach" aria-labelledby="solution-title">
       <div className={s.inner}>
         <div className={s.gallery}>
           {/* Nov 24 2026, William: no hook, a short plain line, and no need
@@ -51,7 +52,14 @@ export default function SeoPillars() {
               the cards for the second, without listing them ("Our approach"
               / "We get you found on Google, help more visitors call you, and
               show you what it brings back." before it). */}
-          <h2 className={s.gaTitle}>How we get you there</h2>
+          {/* Nov 25 2026: with the solution band gone it follows "The
+              problem" directly, so it's labelled to match and the heading
+              answers that one ("…and calling someone else."); "How we get
+              you there" pointed back at the band's promise. */}
+          <p className={s.gaLabel}>The solution</p>
+          <h2 id="solution-title" className={s.gaTitle}>
+            How we get people near you to call you instead.
+          </h2>
           <p className={s.gaLede}>Here&apos;s what you get every month.</p>
 
           <ul className={s.gaCards}>

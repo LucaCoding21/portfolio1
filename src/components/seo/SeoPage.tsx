@@ -13,8 +13,10 @@
  *   stall     "The problem": the problem as owners think it (Nov 10 2026),
  *             a competitor first, slow months, empty SEO promises; hovering
  *             a card widens it and slides a picture in (StallCards, Nov 14)
- *   offer     white: the promise and a signed quote in a grey box, then
- *             "How it works" in five ruled steps (SeoOffer, Nov 14 2026)
+ *   solution  "The solution" (SeoPillars), straight after the problem since
+ *             Nov 25 2026; the solution band (SeoOffer, the promise and a
+ *             signed quote over a photo) came out then, and its quote is now
+ *             the guarantee strip after the results (SeoGuarantee)
  *   results   dark band: "Our websites alone got these businesses into the top
  *             3 on Google.", its line beside it, then ruled rows (Nov 15 2026,
  *             from a reference): the business on the left, its real
@@ -51,9 +53,9 @@ import FaqList from "./FaqList";
 import ProofShots from "./ProofShots";
 import SeoCro from "./SeoCro";
 import SeoGet from "./SeoGet";
+import SeoGuarantee from "./SeoGuarantee";
 import SeoHero from "./SeoHero";
 import SeoMotion from "./SeoMotion";
-import SeoOffer from "./SeoOffer";
 import SeoPillars from "./SeoPillars";
 import StallCards from "./StallCards";
 import s from "./SeoPage.module.css";
@@ -179,10 +181,11 @@ export default function SeoPage() {
           </div>
         </section>
 
-        {/* the solution band, then (Nov 24 2026, William's low-fi) the three
-            pillars, "01 / Get found" (the things we take care of) and
-            "02 / Get chosen" (the CRO showcase) */}
-        <SeoOffer part="promise" />
+        {/* straight from the problem to the solution (Nov 25 2026, by
+            request: the solution band, a photo with "We get your business
+            to the top of Google…" and the guarantee in a box, came out; the
+            guarantee is now its own strip after the results, SeoGuarantee),
+            then the SEO and CRO sections the pillars link to */}
         <SeoPillars />
         <SeoGet />
         <SeoCro />
@@ -213,6 +216,10 @@ export default function SeoPage() {
             </div>
           </div>
         </section>
+
+        {/* the guarantee, signed, between the proof and the FAQ (Nov 25
+            2026, by request: a small strip, not a full section) */}
+        <SeoGuarantee />
 
         {/* "How it works" (<SeoOffer part="process" />) sat here until Nov 23
             2026; taken out by request so the page goes from the proof to
