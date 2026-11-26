@@ -82,6 +82,11 @@ export default function Analytics() {
         track("panel_open", { label: labelOf(toggle), placement: placementOf(toggle) });
       }
 
+      // A click the page names itself (data-click="event_name"), for links
+      // the rules below don't cover, such as /seo's hero "How it works".
+      const named = target?.closest?.<HTMLElement>("[data-click]");
+      if (named?.dataset.click) track(named.dataset.click, { placement: placementOf(named) });
+
       const link = target?.closest?.("a[href]");
       if (!(link instanceof HTMLAnchorElement)) return;
       const url = new URL(link.href, location.href);

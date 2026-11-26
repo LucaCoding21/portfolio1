@@ -318,6 +318,24 @@ details[open] > summary .plus {
   color: #8fd19e;
 }
 
+/* "How it works" after the promise, down to the guarantee section (Nov 25
+   2026): small, grey and underlined, so it doesn't compete with the buttons */
+.promiseMore {
+  color: rgb(255 255 255 / 0.62);
+  font-size: 0.82em;
+  font-weight: 400;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-color: rgb(255 255 255 / 0.35);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.promiseMore:hover {
+  color: #fff;
+}
+
 .heroCtas {
   display: flex;
   flex-wrap: wrap;
@@ -587,6 +605,10 @@ details[open] > summary .plus {
   max-width: 1920px;
   margin: 0 auto;
   padding: clamp(80px, calc(7.8 * var(--fit)), 112px) clamp(20px, 3vw, 56px);
+  /* "The solution" follows on the same paper with no top padding of its
+     own, so this alone is the gap between them (Nov 25 2026: 164px at 1440
+     wide read as a dead space) */
+  padding-bottom: clamp(64px, calc(6.4 * var(--fit)), 96px);
 }
 
 .stallLabel {
@@ -607,7 +629,9 @@ details[open] > summary .plus {
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px clamp(32px, 5vw, 96px);
-  margin-top: clamp(48px, calc(7 * var(--fit)), 104px);
+  /* the label close over the heading, as over "The solution" (Nov 25 2026,
+     by request; it was up to 104px) */
+  margin-top: clamp(16px, calc(1.8 * var(--fit)), 26px);
 }
 
 .stallTitle {
@@ -1584,5 +1608,71 @@ details[open] > summary .plus {
 
   .asideNote {
     font-size: 13px;
+  }
+}
+
+/* ---- the problem as a list (Nov 25 2026, William's pick) ----
+   Back to back, "The problem" and "Our solution" were two rows of three
+   cards on the same paper and read as one long grid, so on tablets and
+   desktops the problems are ruled rows of plain text (StallList) and only the
+   solution has cards. Phones keep the cards with their animated scenes
+   (StallCards), which William likes there, with a shorter line. */
+@media (min-width: 601px) {
+  .stallCards {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .stallList {
+    display: none;
+  }
+}
+
+.stallList {
+  margin: clamp(48px, calc(5.6 * var(--fit)), 88px) 0 0;
+  padding: 0;
+  border-bottom: 1px solid rgb(26 22 19 / 0.14);
+  list-style: none;
+}
+
+.stallRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 10px clamp(32px, 5vw, 96px);
+  padding: clamp(24px, calc(2.6 * var(--fit)), 38px) 0;
+  border-top: 1px solid rgb(26 22 19 / 0.14);
+}
+
+.stallRowTitle {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(24px, calc(2.4 * var(--fit)), 36px);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.stallRowText {
+  max-width: 32em;
+  margin: 0;
+  color: #6a665e;
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.5;
+}
+
+/* the phone cards' shorter line (StallCards), in place of the full one */
+.stallTextShort {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .stallCardText .stallText:not(.stallTextShort) {
+    display: none;
+  }
+  .stallCardText .stallTextShort {
+    display: block;
   }
 }

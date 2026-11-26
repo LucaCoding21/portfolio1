@@ -11,8 +11,9 @@
  *             low. The free competitor check card that sat on the right
  *             (CompetitorCheck, still in this folder) was taken out.
  *   stall     "The problem": the problem as owners think it (Nov 10 2026),
- *             a competitor first, slow months, empty SEO promises; hovering
- *             a card widens it and slides a picture in (StallCards, Nov 14)
+ *             as ruled rows of plain text on tablets and desktops since Nov
+ *             25 2026 (StallList); phones keep the cards with their scenes
+ *             (StallCards, Nov 14), with a shorter line
  *   solution  "The solution" (SeoPillars), straight after the problem since
  *             Nov 25 2026; the solution band (SeoOffer, the promise and a
  *             signed quote over a photo) came out then, and its quote is now
@@ -58,6 +59,7 @@ import SeoHero from "./SeoHero";
 import SeoMotion from "./SeoMotion";
 import SeoPillars from "./SeoPillars";
 import StallCards from "./StallCards";
+import StallList from "./StallList";
 import s from "./SeoPage.module.css";
 
 /** How many searches a plan works on, set by budget (William, Nov 11 2026). */
@@ -73,9 +75,12 @@ const SEARCH_RANGE = "10 to 40";
  *  They show in FAQS' order. */
 const FAQ_SHOWN = [
   "How much does it cost?",
+  "Do I have to pay for ads?",
   "How long until I see results?",
   "Can you guarantee results?",
+  "We’ve been burned by an SEO agency before. How is this different?",
   "How will I know it’s working?",
+  "Will I still need Semrush or other SEO tools?",
   "Do I need a website from you?",
   "What do I have to do?",
 ];
@@ -86,6 +91,11 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     a: "It depends on how many jobs and towns you want to show up for. We’ll give you a price on the free call, once we’ve looked at your business and who you’re up against.",
   },
   {
+    // Nov 25 2026 copy pass: the first worry on the call with Mike and Fred
+    q: "Do I have to pay for ads?",
+    a: "No. We don’t run ads, and this works without them.",
+  },
+  {
     q: "How long until I see results?",
     a: "In the first month we fix your Google listing and set up tracking. By month 3 we’re aiming for your first spots on page one, and by month 6, steady calls from Google. It keeps building after that.",
   },
@@ -94,8 +104,19 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
     a: "No one can promise #1 on Google, and we’d be careful with anyone who does. What we do promise is 3× what you pay us back in gross profit within 12 months. If we don’t get there, you stop paying and we keep working for free until we do. We’ll go through how we count it on your call.",
   },
   {
+    // Nov 25 2026: they'd been through three or four agencies (homework, a
+    // big report, "be patient"); the 3× here must stay in step with the hero
+    q: "We’ve been burned by an SEO agency before. How is this different?",
+    a: "We do the work ourselves instead of handing you a to-do list, and you see everything we change. If we don’t get you to 3× in 12 months, you stop paying.",
+  },
+  {
     q: "How will I know it’s working?",
     a: "Every month you get a report with where you show up on Google, how many people tapped to call or sent a form from your website, and what we did. You can also see what we’re working on any time.",
+  },
+  {
+    // Nov 25 2026: Mike asked straight away if they could cancel Semrush
+    q: "Will I still need Semrush or other SEO tools?",
+    a: "No. We use our own tools and send you the report every month.",
   },
   {
     q: "What do you do each month?",
@@ -107,7 +128,8 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
   {
     q: "What do I have to do?",
-    a: "Give us access to your Google listing and website, and ask happy customers for reviews. We’ll give you the text to send. The rest is on us.",
+    // seeing articles first is theirs to ask for, not a job (Nov 25 2026)
+    a: "Give us access to your Google listing and website, and ask happy customers for reviews. We’ll give you the text to send. The rest is on us. If you’d like to see articles before they go live, just tell us.",
   },
   {
     q: "My website already shows up. Why pay monthly?",
@@ -177,7 +199,12 @@ export default function SeoPage() {
                 People near you are searching for what you do, and calling someone else.
               </h2>
             </div>
+            {/* Nov 25 2026, William's pick: ruled rows of plain text on
+                tablets and desktops, so only the solution below has cards;
+                phones keep the cards with their animated scenes, with a
+                shorter line (each hides itself at the other size) */}
             <StallCards />
+            <StallList />
           </div>
         </section>
 

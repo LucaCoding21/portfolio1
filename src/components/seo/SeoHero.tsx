@@ -80,7 +80,15 @@ export default function SeoHero() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>3× your SEO investment back in gross profit, or we work for free until you get there.</span>
+            <span>
+              3× your SEO investment back in gross profit, or we work for free until you get there.{" "}
+              {/* Nov 25 2026: a quiet link down to the guarantee section, so
+                  owners who doubt it can read how it works; its clicks are
+                  counted (guarantee_link_click) to see how many want that */}
+              <a className={s.promiseMore} href="#guarantee" data-click="guarantee_link_click">
+                How it works
+              </a>
+            </span>
           </p>
           {/* the buttons and trust line share a column (bottom right on
               desktop), so on short laptop windows they sit beside the

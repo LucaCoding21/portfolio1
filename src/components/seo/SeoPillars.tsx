@@ -20,14 +20,18 @@ import s from "./SeoPillars.module.css";
 const SEO = {
   title: "Search engine optimization",
   // what we do, not what it is (Nov 24 2026, by request)
-  text: "We work on your website and Google listing so more people nearby find you.",
+  // Nov 25 2026 copy pass after the call with Mike and Fred: the right
+  // customers finding you, not distance (William: "its not about nearby")
+  text: "We help the customers you want find you, on Google and in AI answers.",
   href: "#get-found",
 };
 
 const CRO = {
   title: "Conversion rate optimization",
   // plain, no marketing words (William, Nov 24 2026)
-  text: "We monitor your analytics and website, then make changes so more visitors get in touch.",
+  // the dream is a team that owns the website, not a report to read (Nov 25
+  // 2026); "site" and "call" so it stays on two lines like the other two cards
+  text: "Like having a web team on staff, we keep improving your site so more visitors call.",
   href: "#get-chosen",
 };
 
@@ -35,7 +39,8 @@ const TRACKING = {
   title: "Tracking and reporting",
   // the point is reassurance that the work is being done, not counting
   // inquiries (William, Nov 24 2026)
-  text: "You can see what we're working on any time, and get a report every month.",
+  // where you stand, in words an owner reads (Nov 25 2026)
+  text: "Every month you see what we did and where you stand, in plain English.",
   href: "#results",
   cta: "See our results",
 };
@@ -53,26 +58,40 @@ export default function SeoPillars() {
               / "We get you found on Google, help more visitors call you, and
               show you what it brings back." before it). */}
           {/* Nov 25 2026: with the solution band gone it follows "The
-              problem" directly, so it's labelled to match and the heading
-              answers that one ("…and calling someone else."); "How we get
-              you there" pointed back at the band's promise. */}
-          <p className={s.gaLabel}>The solution</p>
+              problem" directly. Later the same day, by request, the "The
+              solution" eyebrow came off and "Our solution" became the
+              heading; the line under it is about people choosing you, not
+              calling (William's pick of five). It was
+              "How we get people near you to call you instead." as the
+              heading, with "Here's what you get every month." under it. */}
           <h2 id="solution-title" className={s.gaTitle}>
-            How we get people near you to call you instead.
+            Our solution
           </h2>
-          <p className={s.gaLede}>Here&apos;s what you get every month.</p>
+          {/* Nov 25 2026 copy pass: shorter, the handoff in it, and no
+              "Every monthly plan includes all three" (the yellow tab says
+              that); no comparison with other agencies (William: no shade) */}
+          <p className={s.gaLede}>Here&apos;s how we get people near you to choose you, and we do all of the work.</p>
 
-          <ul className={s.gaCards}>
-            <li className={s.gaCard}>
-              <FoundCard {...SEO} />
-            </li>
-            <li className={s.gaCard}>
-              <ChosenCard {...CRO} />
-            </li>
-            <li className={s.gaCard}>
-              <ResultsCard {...TRACKING} />
-            </li>
-          </ul>
+          {/* the three cards are one plan (Nov 25 2026, William's pick of
+              four ways to show it, after a "+" between cards was turned
+              down; a bracket over them, one shared frame and the cards
+              joined into one block were the others): a tab on a rule across
+              their tops, like a folder, in our yellow (his pick over green,
+              ink and warm grey). */}
+          <div className={s.bundle}>
+            <p className={s.bundleLabel}>Included in every plan</p>
+            <ul className={s.gaCards}>
+              <li className={s.gaCard}>
+                <FoundCard {...SEO} />
+              </li>
+              <li className={s.gaCard}>
+                <ChosenCard {...CRO} />
+              </li>
+              <li className={s.gaCard}>
+                <ResultsCard {...TRACKING} />
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

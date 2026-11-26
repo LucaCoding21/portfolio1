@@ -81,7 +81,8 @@ const ITEMS: { title: string; text: string; Scene: (p: SceneProps) => React.Reac
     // (William's pick of three drafts, Nov 24 2026)
     title: "Articles your customers search for",
     Scene: ArticleBlogScene,
-    text: "Planned around what your customers search, and edited by us so they’re correct.",
+    // their old agency wrote about the wrong product (Nov 25 2026 copy pass)
+    text: "Planned around what your customers search, and checked by us so they get your business right.",
     icon: (
       <>
         <path d="M13 21h8" />
@@ -113,7 +114,8 @@ const ITEMS: { title: string; text: string; Scene: (p: SceneProps) => React.Reac
     // (William called it AI slop); the monthly map check is (Local Falcon)
     title: "Your rankings, checked monthly",
     Scene: ChecksRadarScene,
-    text: "Every month we check where you show up on the Google map for your searches.",
+    // the searches that bring work, not ones nobody makes (Nov 25 2026)
+    text: "Every month we check where you show up on the Google map for the searches people actually use to hire.",
     icon: (
       <>
         <path d="M19.07 4.93A10 10 0 0 0 6.99 3.34" />
@@ -244,9 +246,9 @@ export default function SeoGet() {
           <div>
             <p className={s.eyebrow}>Search engine optimization</p>
             <h2 className={s.title}>Everything it takes to get you to the top of Google.</h2>
-            <p className={s.lede}>
-              We do all of this for you every month. It&apos;s a lot more than a few keywords and a report.
-            </p>
+            {/* no homework, their worst agency memory (Nov 25 2026 copy pass;
+                the heading already says it's a lot) */}
+            <p className={s.lede}>We do all of this for you every month, and you never have to write or edit a thing.</p>
             <a className={s.cta} href={CAL_URL} target="_blank" rel="noopener noreferrer">
               Book a free SEO call
               <svg

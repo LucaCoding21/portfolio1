@@ -7,7 +7,8 @@
  * turned down an entrance and a scroll drift on it the same day.
  *
  *   stall   the label fades up, the heading rises line by line out of masks
- *           (riseLines), then the three cards lift in one after another.
+ *           (riseLines), then the three cards (phones) or rows (larger
+ *           screens) lift in one after another.
  *
  * Nothing moves with reduced motion, and anything already on screen when the
  * script arrives stays still (see `seen`). The offer section has its own
@@ -34,11 +35,16 @@ export default function SeoMotion() {
         ctx = gsap.context(() => {
           const label = stall.querySelector("[data-stall='label']");
           const title = stall.querySelector<HTMLElement>("[data-stall='title']");
-          // in the order they're seen: on phones and tablets CSS puts the
-          // slow months first and the competitor last (Nov 24 2026), so the
-          // lift-in goes top to bottom and starts on the card that's on top
-          const cards = Array.from(stall.querySelector("ol")?.children ?? [])
-            .filter((c) => !seen(c))
+          // in the order they're seen: on phones CSS puts the slow months
+          // first and the competitor last (Nov 24 2026), so the lift-in goes
+          // top to bottom and starts on the card that's on top. Phones have
+          // the cards, larger screens the rows (StallList, Nov 25 2026); the
+          // hidden set measures as "seen" and is left alone.
+          const cards = [
+            ...Array.from(stall.querySelector("ol")?.children ?? []),
+            ...Array.from(stall.querySelector("[data-stall='list']")?.children ?? []),
+          ]
+            .filter((c) => (c as HTMLElement).offsetParent !== null && !seen(c))
             .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
           const tl = gsap.timeline({
             scrollTrigger: { trigger: stall, start: "top 75%", once: true },

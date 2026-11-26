@@ -1,9 +1,12 @@
 /* The guarantee strip on /seo (SeoGuarantee, Nov 25 2026): a white card on
-   the seam between the dark results (#111113) and the grey FAQ (#e9e7e2). */
+   the seam between the dark results (#111113) and the grey FAQ (#e9e7e2),
+   with "How it works" opening the questions under the signature. */
 
 .strip {
   padding: 0 clamp(20px, 3vw, 56px);
   background: linear-gradient(180deg, #111113 50%, #e9e7e2 50%);
+  /* the hero's link lands with the card clear of the floating nav */
+  scroll-margin-top: 90px;
 }
 
 .card {
@@ -19,6 +22,32 @@
   box-shadow:
     0 0 0 1px rgb(26 22 19 / 0.05),
     0 24px 48px -28px rgb(0 0 0 / 0.35);
+}
+
+/* Opening, the faces glide from the middle of the closed card up to the top,
+   after the questions have mostly slid open; closing, they slide back down
+   with the panel. Once SeoGuarantee has measured the middle (--faces-y), the
+   card is top-aligned and the faces are moved there with a transform, so
+   nothing jumps. Before that it's centred, which looks the same. */
+.card[data-measured],
+.cardOpen {
+  align-items: start;
+}
+
+.card[data-measured] .faces {
+  transform: translateY(var(--faces-y, 0px));
+}
+
+.card[data-anim] .faces {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card[data-measured].cardOpen .faces {
+  transform: none;
+}
+
+.card[data-anim].cardOpen .faces {
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.32s;
 }
 
 .faces {
@@ -50,7 +79,7 @@
   text-wrap: pretty;
 }
 
-/* the names on the left, the guarantee badge at the far end */
+/* the names on the left, "How it works" at the far end */
 .foot {
   display: flex;
   flex-wrap: wrap;
@@ -73,18 +102,212 @@
   font-weight: 600;
 }
 
-/* sentence case in a soft green pill, not a tracked capitals eyebrow */
-.badge {
+/* "How it works": the site's own button (ArrowCta), as a button with a
+   chevron in the chip, William's pick of five (Nov 25 2026). An ink pill;
+   on hover the paper chip swells to fill it (useChipFill) and the label,
+   blended with `difference`, turns ink as it passes under. */
+.how {
+  --h: 46px;
+  --chip: 34px;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 14px 7px 11px;
+  height: var(--h);
+  margin: 0;
+  padding: 0 calc((var(--h) - var(--chip)) / 2 - 1px) 0 20px;
+  border: 1px solid #111113;
   border-radius: 999px;
-  background: #eaf4ec;
-  color: #2a7a3d;
-  font-size: 14px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #111113;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 15px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.18s ease;
+}
+
+.how:active {
+  transform: scale(0.97);
+}
+
+.how:focus-visible {
+  outline: 2px solid #328c46;
+  outline-offset: 3px;
+}
+
+/* the chip; useChipFill scales it from here, so it owns no other transform */
+.howFill {
+  position: absolute;
+  top: calc(50% - var(--chip) / 2);
+  right: calc((var(--h) - var(--chip)) / 2 - 1px);
+  width: var(--chip);
+  height: var(--chip);
+  border-radius: 50%;
+  background: #f9f8f5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* paper on ink reads as paper, paper on the paper chip as ink */
+.howContent {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: #f9f8f5;
+  mix-blend-mode: difference;
+}
+
+.howArrow {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--chip);
+  height: var(--chip);
+}
+
+.chev {
+  display: block;
+  width: 17px;
+  height: 17px;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.how[aria-expanded="true"] .chev {
+  transform: rotate(180deg);
+}
+
+/* the questions, sliding open under the signature */
+.more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.moreOpen {
+  grid-template-rows: 1fr;
+}
+
+.moreInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.moreList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* a little more room between the questions (William's markup, Nov 25) */
+  gap: 34px 52px;
+  margin: 28px 0 0;
+  padding: 30px 0 0;
+  border-top: 1px solid #ece8e0;
+  list-style: none;
+}
+
+.moreQ {
+  margin: 0;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.moreA {
+  margin: 8px 0 0;
+  color: #6a665e;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.moreClose {
+  margin: 34px 0 2px;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.moreClose a {
+  color: #1a1613;
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
+/* phones: the questions as an accordion (shown at 600px and under) */
+.acc {
+  display: none;
+  margin: 22px 0 0;
+  padding: 0;
+  border-top: 1px solid #ece8e0;
+  list-style: none;
+}
+
+.accItem {
+  border-bottom: 1px solid #ece8e0;
+}
+
+.accQ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin: 0;
+  padding: 16px 0;
+  border: 0;
+  background: none;
+  color: #1a1613;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.accPlus {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: #6a665e;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.accQ[aria-expanded="true"] .accPlus {
+  transform: rotate(45deg);
+}
+
+.accA {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.accAOpen {
+  grid-template-rows: 1fr;
+}
+
+.accA > div {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.accA p {
+  margin: 0;
+  padding: 0 30px 16px 0;
+  color: #6a665e;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 @media (max-width: 600px) {
@@ -108,7 +331,33 @@
   .who {
     font-size: 13px;
   }
-  .badge {
-    font-size: 13px;
+  /* the button under the names, the card's width, the chip at the far end */
+  .how {
+    width: 100%;
+  }
+  .howContent {
+    flex: 1;
+    justify-content: space-between;
+  }
+  /* the accordion in place of the two columns (William's pick, Nov 25) */
+  .moreList {
+    display: none;
+  }
+  .acc {
+    display: block;
+  }
+  .moreA {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .more,
+  .chev,
+  .accPlus,
+  .accA,
+  .card[data-anim] .faces,
+  .card[data-anim].cardOpen .faces {
+    transition: none;
   }
 }

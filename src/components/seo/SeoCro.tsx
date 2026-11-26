@@ -20,7 +20,8 @@ export default function SeoCro() {
       <div className={s.inner}>
         <CroCards
           title="We look after your website for you."
-          lede="We watch how people use it and keep making changes, based on what's worked on the sites we've built."
+          // what the owner no longer has to do (Nov 25 2026 copy pass)
+          lede="You don't need to check analytics or plan changes. We watch how people use your site and keep making it better, based on what's worked on the sites we've built."
         />
       </div>
     </section>

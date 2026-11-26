@@ -32,15 +32,20 @@ type Media =
 // 2 and 3: scenes (Nov 15 2026); the photos before them, a woodworker
 //    tapping in a nail and Pexels 5973925, stay in public/seo (stall-slow,
 //    stall-promises), unused
-const STALLS: { title: string; body: string; media: Media }[] = [
+// `short`: the line on phones, where these cards show (Nov 25 2026, by
+// request: tablets and desktops have StallList's rows, and the full line read
+// as too much text under the scene on a phone). StallList shares the copy.
+const STALLS: { title: string; body: string; short: string; media: Media }[] = [
   {
     title: "A competitor shows up first",
     body: "You search for your own service in your city, and someone else comes up before you. Some of them aren’t even as good as you.",
+    short: "Someone else comes up before you on Google.",
     media: { kind: "img", src: "/seo/stall-competitor-v2.webp" },
   },
   {
     title: "Some months are slow",
     body: "Most of your work comes from word of mouth, so some months are busy and some are slow.",
+    short: "Most of your work comes from word of mouth.",
     media: { kind: "scene", scene: "calendar" },
   },
   {
@@ -52,6 +57,7 @@ const STALLS: { title: string; body: string; media: Media }[] = [
     // picked from three tries (his first, "You have a website, but you don't
     // know how many customers it's actually bringing you.", read as weak)
     body: "You keep checking for new inquiries from your website, and most days there aren’t any.",
+    short: "Most days there are no new inquiries.",
     media: { kind: "scene", scene: "pull" },
   },
 ];
@@ -121,6 +127,7 @@ function Card({ c, media }: { c: (typeof STALLS)[number]; media: Media }) {
     >
       <div className={s.stallCardText}>
         <p className={s.stallText}>{c.body}</p>
+        <p className={`${s.stallText} ${s.stallTextShort}`}>{c.short}</p>
         <h3 className={s.stallHead}>{c.title}</h3>
       </div>
       <div className={s.stallMedia} aria-hidden>
