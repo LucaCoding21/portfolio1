@@ -1,0 +1,114 @@
+/* The closing ask on /seo (SeoClosing), after the FAQ: a rounded card inset
+   on the FAQ's grey (#e9e7e2), the homepage closing's reel behind a dark
+   shade, the words at the bottom left. The inset and corners match the
+   hero's card. */
+
+.wrap {
+  padding: 0 clamp(8px, 1vw, 16px) clamp(8px, 1vw, 16px);
+  background: #e9e7e2;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(440px, 36vw, 580px);
+  overflow: hidden;
+  border-radius: clamp(14px, 1.4vw, 22px);
+  background: #1a1613;
+  color: #fff;
+  isolation: isolate;
+}
+
+/* the reel and its still, both filling the card */
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* dark on the left and along the foot, as the hero's */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgb(17 15 13 / 0.78) 0%, rgb(17 15 13 / 0.2) 70%),
+    linear-gradient(180deg, transparent 30%, rgb(17 15 13 / 0.65) 100%);
+}
+
+.copy {
+  max-width: 780px;
+  padding: clamp(32px, 4vw, 64px);
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, calc(3.9 * var(--fit, 1vw)), 54px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.line {
+  max-width: 34em;
+  margin: 16px 0 0;
+  color: rgb(255 255 255 / 0.82);
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 28px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px 0 24px;
+  border-radius: 999px;
+  background: #fff;
+  color: #111113;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn:hover {
+  background: #e6e2da;
+}
+
+@media (max-width: 600px) {
+  .card {
+    min-height: 500px;
+  }
+  .copy {
+    padding: 28px 22px;
+  }
+  .heading {
+    font-size: 28px;
+    line-height: 1.14;
+  }
+  .line {
+    font-size: 15px;
+  }
+  .btn {
+    justify-content: center;
+    width: 100%;
+  }
+}

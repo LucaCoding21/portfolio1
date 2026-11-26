@@ -52,6 +52,7 @@ import HomeFooter from "@/components/HomeFooter";
 import { CAL_URL } from "@/data/projects";
 import FaqList from "./FaqList";
 import ProofShots from "./ProofShots";
+import SeoClosing from "./SeoClosing";
 import SeoCro from "./SeoCro";
 import SeoGet from "./SeoGet";
 import SeoGuarantee from "./SeoGuarantee";
@@ -275,6 +276,9 @@ export default function SeoPage() {
             <FaqList items={FAQS.filter((f) => FAQ_SHOWN.includes(f.q))} />
           </div>
         </section>
+
+        {/* the closing ask after the questions (Nov 25 2026, drafts) */}
+        <SeoClosing />
       </main>
       </div>
       <HomeFooter />
