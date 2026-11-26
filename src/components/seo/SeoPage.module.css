@@ -500,6 +500,79 @@ details[open] > summary .plus {
   }
 }
 
+/* ---- hero entrance (Nov 25 2026, by request) ----
+   William asked for an entrance like the homepage's words and the /work
+   load-in (he had turned down a plain fade-up on Nov 13), and picked "open"
+   from three drafts (the others: the words focusing in over a blurred photo,
+   and the homepage's word drop). The photo card opens out from the middle,
+   the photo settling as it does, then each headline word comes into focus in
+   turn while the headline settles up, and the sub-line, promise and buttons
+   follow. It starts the moment the copy shows (the :has() on the marker, see
+   .heroCopy above), so a slow phone still sees all of it, and browsers
+   without :has() just show the hero. Transforms, opacity and blur only:
+   nothing moves in the layout, the words stay plain inline text (so the
+   line breaks are the browser's own), and the photo is drawn from the first
+   frame, so Lighthouse still times the largest paint from it (text starts
+   at 1% rather than 0 for the same reason). */
+@media (prefers-reduced-motion: no-preference) {
+  .heroCard:has([data-hero-done]) {
+    animation: seo-open 1.2s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  .heroCard:has([data-hero-done]) .heroImage {
+    animation: seo-open-photo 1.6s cubic-bezier(0.76, 0, 0.24, 1) both;
+  }
+  .heroCopy:has(> [data-hero-done]) .w {
+    animation: seo-focus 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.75s + var(--i, 0) * 0.055s);
+  }
+  .heroCopy:has(> [data-hero-done]) > .h1 {
+    animation: seo-settle 1.3s cubic-bezier(0.16, 1, 0.3, 1) 0.75s both;
+  }
+  .heroCopy:has(> [data-hero-done]) > .lede {
+    animation: seo-focus-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.1s both;
+  }
+  .heroCopy:has(> [data-hero-done]) > .promiseText {
+    animation: seo-focus-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+  }
+  .heroCopy:has(> [data-hero-done]) > .heroSide {
+    animation: seo-focus-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s both;
+  }
+}
+
+@keyframes seo-open {
+  from {
+    transform: scale(0.78);
+  }
+}
+
+/* the photo keeps its flip (scaleX(-1)) all the way */
+@keyframes seo-open-photo {
+  from {
+    transform: scaleX(-1) scale(1.3);
+  }
+}
+
+@keyframes seo-focus {
+  from {
+    opacity: 0.01;
+    filter: blur(14px);
+  }
+}
+
+@keyframes seo-settle {
+  from {
+    transform: translateY(0.35em);
+  }
+}
+
+@keyframes seo-focus-up {
+  from {
+    opacity: 0.01;
+    filter: blur(8px);
+    transform: translateY(16px);
+  }
+}
+
 /* ---- where leads stall ---- */
 
 .stall {

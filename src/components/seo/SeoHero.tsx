@@ -4,12 +4,31 @@
  * headline, sub-line and promise sit top left; "Book a free SEO call" and
  * the trust line bottom right. William
  * chose this (layout 5) and its overlay (2) from six of each.
+ *
+ * Entrance (Nov 25 2026, by request, after the homepage's words and the
+ * /work load-in): the card opens out from the middle, then the headline's
+ * words come into focus in turn. Pure CSS, starting the moment the copy shows
+ * (see "hero entrance" in the stylesheet). The words are plain inline spans,
+ * numbered for the stagger, so the line breaks stay the browser's own.
  */
 
 import Image from "next/image";
+import { Fragment } from "react";
 import { CAL_URL } from "@/data/projects";
 import AiSwap from "./AiSwap";
 import s from "./SeoPage.module.css";
+
+/** each word in its own span, numbered from `from` for the entrance's stagger */
+function words(text: string, from: number) {
+  return text.split(" ").map((w, i) => (
+    <Fragment key={i}>
+      {i > 0 && " "}
+      <span className={s.w} style={{ "--i": from + i } as React.CSSProperties}>
+        {w}
+      </span>
+    </Fragment>
+  ));
+}
 
 /** Trust line faces, as on the free homepage sample page: WrapCity, Innovative Aluminum, Flow State, ACE. */
 const FACES = [
@@ -38,11 +57,11 @@ export default function SeoHero() {
 
         <div className={s.heroCopy}>
           <h1 className={s.h1}>
-            Get more calls from Google and{" "}
-            <span className={s.nowrap}>
+            {words("Get more calls from Google and", 0)}{" "}
+            <span className={`${s.nowrap} ${s.w}`} style={{ "--i": 6 } as React.CSSProperties}>
               AI <AiSwap />
             </span>{" "}
-            without paying for ads.
+            {words("without paying for ads.", 7)}
           </h1>
           <p className={s.lede}>Turn Google into another source of customers, so you rely less on word of mouth.</p>
           <p className={s.promiseText}>
