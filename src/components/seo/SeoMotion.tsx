@@ -7,8 +7,7 @@
  * turned down an entrance and a scroll drift on it the same day.
  *
  *   stall   the label fades up, the heading rises line by line out of masks
- *           (SplitText, as on the homepage), then the three cards lift in one
- *           after another.
+ *           (riseLines), then the three cards lift in one after another.
  *
  * Nothing moves with reduced motion, and anything already on screen when the
  * script arrives stays still (see `seen`). The offer section has its own
@@ -16,8 +15,7 @@
  */
 import { useEffect } from "react";
 import gsap from "gsap";
-import type { SplitText } from "gsap/dist/SplitText";
-import { loadScrollMotion, seen } from "./scrollMotion";
+import { loadScrollMotion, riseLines, seen } from "./scrollMotion";
 
 const EASE = "expo.out";
 
@@ -26,16 +24,16 @@ export default function SeoMotion() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const stall = document.querySelector<HTMLElement>("[data-section='stall']");
     if (!stall) return;
-    const splits: SplitText[] = [];
+    let undoTitle: (() => void) | undefined;
     let ctx: gsap.Context | undefined;
     let cancelled = false;
 
     loadScrollMotion()
-      .then((Split) => {
+      .then(() => {
         if (cancelled) return;
         ctx = gsap.context(() => {
           const label = stall.querySelector("[data-stall='label']");
-          const title = stall.querySelector("[data-stall='title']");
+          const title = stall.querySelector<HTMLElement>("[data-stall='title']");
           // in the order they're seen: on phones and tablets CSS puts the
           // slow months first and the competitor last (Nov 24 2026), so the
           // lift-in goes top to bottom and starts on the card that's on top
@@ -47,23 +45,7 @@ export default function SeoMotion() {
           });
           if (label && !seen(label)) tl.from(label, { y: 14, opacity: 0, duration: 0.7, ease: EASE });
           if (title && !seen(title)) {
-            const sp = Split.create(title, {
-              type: "lines",
-              mask: "lines",
-            });
-            splits.push(sp);
-            // then the split is undone, so it flows as normal text again
-            tl.from(
-              sp.lines,
-              {
-                yPercent: 105,
-                duration: 1.1,
-                ease: EASE,
-                stagger: 0.09,
-                onComplete: () => sp.revert(),
-              },
-              0.1,
-            );
+            undoTitle = riseLines(tl, title, 0.1, { duration: 1.1, ease: EASE, stagger: 0.09 });
           }
           if (cards.length) {
             gsap.from(cards, {
@@ -86,8 +68,8 @@ export default function SeoMotion() {
 
     return () => {
       cancelled = true;
+      undoTitle?.();
       ctx?.revert();
-      splits.forEach((sp) => sp.revert());
     };
   }, []);
 

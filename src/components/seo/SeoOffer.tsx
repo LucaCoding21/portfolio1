@@ -36,7 +36,7 @@
  *
  * Scroll motion (Nov 14 2026, by request; the rest of the page has none):
  * each part plays once as it comes into view. The headings rise line by line
- * out of masks (SplitText, as on the homepage), the grey box lifts in and its
+ * out of masks (riseLines), the grey box lifts in and its
  * quote badge pops onto the corner, the quote follows line by line, the
  * photo is uncovered from below and then drifts as you scroll, and each step
  * draws its rule left to right before its words rise. Nothing moves with
@@ -45,8 +45,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import type { SplitText } from "gsap/dist/SplitText";
-import { loadScrollMotion, seen } from "./scrollMotion";
+import { loadScrollMotion, riseLines, seen } from "./scrollMotion";
 import s from "./SeoOffer.module.css";
 
 // Nov 23 2026, William's words: the hero's new guarantee, with its 12 months
@@ -91,23 +90,18 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
     if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const q = <T extends Element>(sel: string) => el.querySelector<T>(sel)!;
     const qa = <T extends Element>(sel: string) => Array.from(el.querySelectorAll<T>(sel));
-    const splits: SplitText[] = [];
-    // A heading's lines rise out of masks, then the split is undone so the
-    // text flows as normal text again (a later resize or font swap can't
-    // leave it broken). The split waits for the fonts (loadScrollMotion).
-    // Anything already on screen when the script arrives is left still
-    // (see `seen`), so a slow phone never sees words vanish and come back.
+    const undo: (() => void)[] = [];
+    // A heading's lines rise out of masks, then it goes back to plain text
+    // (riseLines). Anything already on screen when the script arrives is left
+    // still (see `seen`), so a slow phone never sees words vanish and come back.
     let ctx: gsap.Context | undefined;
     let cancelled = false;
 
     loadScrollMotion()
-      .then((Split) => {
+      .then(() => {
         if (cancelled) return;
-        const rise = (node: Element, vars: gsap.TweenVars) => {
-          const sp = Split.create(node, { type: "lines", mask: "lines", linesClass: s.line });
-          splits.push(sp);
-          return [sp.lines, { ...vars, onComplete: () => sp.revert() }] as const;
-        };
+        const rise = (tl: gsap.core.Timeline, node: HTMLElement, at: number, vars: gsap.TweenVars) =>
+          undo.push(riseLines(tl, node, at, vars));
         ctx = gsap.context(() => {
           // the promise: title lines, then the box, its badge, quote and
           // signature (each part is its own section since Nov 23 2026, so
@@ -125,18 +119,8 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
             // at 0.1, just after the label: with no position it went after
             // the photo's 2.2s zoom, and the heading stayed blank for about
             // 2.7s once it was on screen (Nov 25 2026)
-            const title = q("[data-m='title']");
-            if (!seen(title)) {
-              tl.from(
-                ...rise(title, {
-                  yPercent: 105,
-                  duration: 1.1,
-                  ease: EASE,
-                  stagger: 0.09,
-                }),
-                0.1,
-              );
-            }
+            const title = q<HTMLElement>("[data-m='title']");
+            if (!seen(title)) rise(tl, title, 0.1, { duration: 1.1, ease: EASE, stagger: 0.09 });
             if (!seen(q("[data-m='box']"))) {
               tl.from(q("[data-m='box']"), { y: 70, opacity: 0, scale: 0.96, duration: 1.2, ease: EASE }, 0.15)
                 .from(
@@ -150,16 +134,8 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
                   },
                   0.6,
                 )
-                .from(
-                  ...rise(q("[data-m='quote']"), {
-                    yPercent: 105,
-                    duration: 0.9,
-                    ease: EASE,
-                    stagger: 0.07,
-                  }),
-                  0.45,
-                )
                 .from(q("[data-m='sign']"), { x: -18, opacity: 0, duration: 0.8, ease: EASE }, 0.85);
+              rise(tl, q<HTMLElement>("[data-m='quote']"), 0.45, { duration: 0.9, ease: EASE, stagger: 0.07 });
             }
 
             // the solution's photo drifts slower than the page (parallax): the
@@ -184,7 +160,7 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
           const left = el.querySelector("[data-m='processHead']");
           if (!left) return;
           if (!seen(left)) {
-            gsap
+            const tl = gsap
               .timeline({
                 scrollTrigger: { trigger: left, start: "top 78%", once: true },
               })
@@ -193,16 +169,8 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
                 opacity: 0,
                 duration: 0.7,
                 ease: EASE,
-              })
-              .from(
-                ...rise(q("[data-m='processTitle']"), {
-                  yPercent: 105,
-                  duration: 1.1,
-                  ease: EASE,
-                  stagger: 0.09,
-                }),
-                0.1,
-              );
+              });
+            rise(tl, q<HTMLElement>("[data-m='processTitle']"), 0.1, { duration: 1.1, ease: EASE, stagger: 0.09 });
           }
 
           const photo = q("[data-m='photo']");
@@ -278,8 +246,8 @@ function useOfferMotion(root: React.RefObject<HTMLElement | null>) {
 
     return () => {
       cancelled = true;
+      undo.forEach((fn) => fn());
       ctx?.revert();
-      splits.forEach((sp) => sp.revert());
     };
   }, [root]);
 }

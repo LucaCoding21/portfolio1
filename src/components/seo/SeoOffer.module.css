@@ -260,11 +260,6 @@
   bottom: auto;
 }
 
-/* SplitText's line masks */
-.line {
-  padding-bottom: 0.06em;
-}
-
 /* the timing sits in the title's line, in grey (Nov 15 2026: the eyebrows
    over each title were turned down) */
 .when {
