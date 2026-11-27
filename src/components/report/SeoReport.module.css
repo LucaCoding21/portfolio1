@@ -1,0 +1,875 @@
+/* An SEO client's live report (SeoReport), /report/<token>, Nov 2026: the
+   /seo page's "Tracking and reporting" card (seo/pillars/ResultsCard) made
+   page sized. The black card with the business name and their website in
+   the dark pill (no line under the name, by request), then the white report rising
+   out of it. Same pieces as the card's report (logo and chip, "Monthly
+   report" and the month, grey stat tiles with green deltas, green checks), in
+   px rather than the card's cqw. Colours are the SEO page's: its yellows for
+   anything highlighted (the CRO cards' bar gradient and the #1 badges'
+   yellow), no blue. Spacing was tightened by about a third on Nov 26 2026
+   (William: "the spacing and padding so fat"). */
+
+.page {
+  --ink: #1a1613;
+  --label: #6a665e;
+  --muted: #8a857c;
+  --tile: #f0efec;
+  --chip: #ecebe7;
+  --rule: #ecebe7;
+  --good: #1f8a65;
+  --yellow: #fbe35a;
+  --bar: #e9d95c;
+  --bar-soft: #f7f0c4;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  min-height: 100svh;
+  overflow-x: clip;
+  background: #efede8;
+  color: var(--ink);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page :focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* ---------- the black card's top ---------- */
+
+.hero {
+  padding: clamp(28px, 4vw, 56px) clamp(16px, 4vw, 48px) clamp(96px, 9vw, 128px);
+  background: #000;
+  color: #fff;
+}
+
+.heroInner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* the card's title, at page size */
+.title {
+  max-width: 14em;
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 4.4vw, 58px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+/* the card's dark pill, here their website */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #1c1c1e;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.pill:hover {
+  background: #2a2a2d;
+}
+
+.pill svg {
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.pill:hover svg {
+  transform: translate(2px, -2px);
+}
+
+/* ---------- the report ---------- */
+
+.sheetWrap {
+  margin-top: calc(-1 * clamp(70px, 6.5vw, 92px));
+  padding: 0 clamp(10px, 3vw, 40px) 36px;
+}
+
+.sheet {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 36px);
+  border-radius: clamp(18px, 2vw, 26px);
+  background: #fff;
+  box-shadow: 0 30px 70px -45px rgb(0 0 0 / 0.45);
+  animation: rise 0.6s var(--ease) 0.05s both;
+}
+
+.rTop {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0 12px;
+}
+
+.rLogo {
+  display: block;
+  width: auto;
+  height: clamp(14px, 1.3vw, 18px);
+}
+
+.rChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--label);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--good);
+}
+
+.rName {
+  grid-column: 1 / -1;
+  margin-top: clamp(16px, 2vw, 24px);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.rMonth {
+  grid-column: 1 / -1;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+/* the months: the one thing to press */
+.months {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.monthBtn {
+  flex: none;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tile);
+  color: var(--label);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.monthBtn:hover {
+  background: var(--chip);
+  color: var(--ink);
+}
+
+.monthBtn[aria-pressed="true"] {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
+/* the card's stat tiles, bigger */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tile {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--tile);
+}
+
+.tLabel {
+  color: var(--label);
+  font-size: 14px;
+}
+
+.tValue {
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(32px, 3.3vw, 42px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tDelta,
+.tFlat {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.tDelta {
+  color: var(--good);
+  font-weight: 600;
+}
+
+.tFlat {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.tDelta svg,
+.tFlat svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+.soft {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--tile);
+  color: var(--label);
+}
+
+/* ---------- sections ---------- */
+
+.block {
+  margin-top: clamp(26px, 3vw, 36px);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: clamp(17px, 1.5vw, 19px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.headGap {
+  margin-top: 24px;
+}
+
+.count {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--yellow);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.sub {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* the first number by month, in the CRO cards' yellow bars */
+.chart {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: clamp(5px, 1vw, 10px);
+  height: clamp(150px, 16vw, 200px);
+  margin-top: 14px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.colValue {
+  color: var(--label);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.colTrack {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.colBar {
+  width: 100%;
+  border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(to bottom, var(--bar), var(--bar-soft));
+  opacity: 0.45;
+  transform-origin: 50% 100%;
+  transition: opacity 0.25s ease;
+  animation: grow 0.7s var(--ease) both;
+  animation-delay: calc(200ms + var(--i) * 50ms);
+}
+
+.col:hover .colBar {
+  opacity: 0.75;
+}
+
+.col[aria-pressed="true"] .colBar {
+  opacity: 1;
+}
+
+.col[aria-pressed="true"] .colValue {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.colMonth {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.col[aria-pressed="true"] .colMonth {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.chartNote {
+  margin: 10px 0 0;
+  color: var(--label);
+  font-size: 14px;
+}
+
+/* where they show up: search boxes with #1 badges, as in the proof section */
+.ranks {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rank {
+  display: grid;
+  grid-template-areas:
+    "box right"
+    "where right";
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--tile);
+}
+
+.searchBox {
+  display: inline-flex;
+  grid-area: box;
+  align-items: center;
+  justify-self: start;
+  gap: 8px;
+  max-width: 100%;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 0 0 1px rgb(0 0 0 / 0.05);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.searchBox svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--muted);
+}
+
+.term {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.where {
+  grid-area: where;
+  padding-left: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.rankRight {
+  display: flex;
+  grid-area: right;
+  align-items: center;
+  gap: 12px;
+}
+
+.gain {
+  color: var(--good);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.loss {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge,
+.badgeTop {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.07);
+}
+
+.badgeTop {
+  background: var(--yellow);
+  box-shadow: none;
+}
+
+.notYet {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* the work: the card's green checks */
+.checks {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.line:first-child {
+  border-top: 0;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--good);
+}
+
+.mark svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* working on now: a yellow dot that breathes slowly */
+.line[data-status="doing"] .mark::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: 0 0 0 0 rgb(233 217 92 / 0.7);
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+/* next up: an empty ring */
+.line[data-status="next"] .mark::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border: 2px solid #cfcac0;
+  border-radius: 50%;
+}
+
+.lineBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lineTitle {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.lineWhy {
+  color: var(--label);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.lineMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.lineDate {
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lineLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--tile);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.lineLink:hover {
+  background: var(--chip);
+}
+
+.lineLink svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ---------- give $500, get $500 (the referral gift) ---------- */
+
+.gift {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-top: clamp(26px, 3vw, 36px);
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--tile);
+}
+
+/* the gift card's blank artwork with its amount set as the real card sets it
+   (gift/cardLayout.ts, on a 350px card: 22px in, the amount block about
+   51px down, 64px type), so it reads as the same card */
+.giftCard {
+  position: relative;
+  width: 96px;
+  aspect-ratio: 2100 / 1500;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 6px 14px -8px rgb(0 0 0 / 0.35);
+  container-type: inline-size;
+}
+
+.giftCard img {
+  object-fit: cover;
+}
+
+.giftAmount {
+  position: absolute;
+  top: 14.7cqw;
+  left: 6.3cqw;
+  display: grid;
+  color: #22231f;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: 18.3cqw;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.giftAmount small {
+  margin-top: 0.6cqw;
+  font-size: 4.9cqw;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.giftText {
+  display: grid;
+  gap: 2px;
+  color: var(--label);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.giftText b {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.giftBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.giftBtn:hover {
+  background: #f5d63a;
+}
+
+.giftBtn svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ---------- the foot ---------- */
+
+.sheetFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  color: var(--label);
+  font-size: 14px;
+}
+
+.footLink {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+
+.since {
+  color: var(--muted);
+}
+
+.madeBy {
+  display: block;
+  width: fit-content;
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.madeBy:hover {
+  color: var(--ink);
+}
+
+/* ---------- a link that leads nowhere ---------- */
+
+.missing {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  min-height: 100svh;
+  padding: 24px;
+  text-align: center;
+}
+
+.missingLogo {
+  width: auto;
+  height: 20px;
+  margin-bottom: 14px;
+}
+
+.missingTitle {
+  margin: 0;
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  font-size: clamp(28px, 3.4vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.missingText {
+  max-width: 30em;
+  margin: 0;
+  color: var(--label);
+}
+
+.missingLink {
+  margin-top: 6px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* ---------- motion ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes breathe {
+  50% {
+    box-shadow: 0 0 0 6px rgb(233 217 92 / 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet,
+  .colBar,
+  .line[data-status="doing"] .mark::before {
+    animation: none;
+  }
+}
+
+/* ---------- phones ---------- */
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 24px 16px 84px;
+  }
+
+  .title {
+    font-size: 30px;
+  }
+
+  .pill {
+    margin-top: 12px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .sheetWrap {
+    margin-top: -64px;
+  }
+
+  /* one row of months that scrolls sideways, not two rows */
+  .months {
+    flex-wrap: nowrap;
+    margin-inline: -18px;
+    padding-inline: 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .months::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tiles {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .tile {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .tLabel {
+    font-size: 12px;
+  }
+
+  .tValue {
+    font-size: 28px;
+  }
+
+  .tDelta,
+  .tFlat {
+    font-size: 11px;
+  }
+
+  .colValue,
+  .colMonth {
+    font-size: 11px;
+  }
+
+  .rank {
+    grid-template-areas:
+      "box box"
+      "where right";
+  }
+
+  .line {
+    grid-template-columns: 20px minmax(0, 1fr);
+    gap: 3px 10px;
+  }
+
+  .lineMeta {
+    grid-column: 2;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .gift {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .giftBtn {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+}
